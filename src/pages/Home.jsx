@@ -1,37 +1,87 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getAllProducts, getDashboardStats } from '../api/api';
-import SearchBar from '../components/SearchBar';
-import LiveActivityPill from '../components/LiveActivityPill';
-import TrendingStrip from '../components/TrendingStrip';
-import HotDropsRail from '../components/HotDropsRail';
-import RecentlyViewedRail from '../components/RecentlyViewedRail';
-import ProtectShowcase from '../components/ProtectShowcase';
-import WorldCupRail from '../components/WorldCupRail';
 import {
-  Sparkles, Database, ShieldCheck, Store, ArrowRight, Crown,
-  Radio, MessageSquare, BadgeCheck, ShoppingBag,
+  getDashboardStats, getHotDrops, getAllProducts, getTrendingSearches, getLiveStats,
+  getShops, getShopTrust,
+} from '../api/api';
+import SearchBar from '../components/SearchBar';
+import ProtectShowcase from '../components/ProtectShowcase';
+import { TrustScore, deliveryText } from '../components/TrustBadge';
+import {
+  Sparkles, Database, ShieldCheck, Store, ArrowRight, Crown, Flame, Truck,
+  Radio, MessageSquare, BadgeCheck, ShoppingBag, TrendingDown,
 } from 'lucide-react';
 
 function fmt(p) {
   if (p == null) return 'N/A';
   return '৳' + Number(p).toLocaleString('en-IN');
 }
+const fmtNum = (n) => (n == null ? '—' : Number(n).toLocaleString('en-IN'));
+
+// Normalise a hot-drop or a catalog product into one card shape.
+function fromDrop(p) {
+  return {
+    id: p.id, slug: p.slug, name: p.name, category: p.category, imageUrl: p.imageUrl,
+    price: p.currentPrice, oldPrice: p.peakPrice, pct: p.dropPct, kind: 'drop', sellers: null,
+  };
+}
+function fromProduct(p) {
+  const sellers = Array.isArray(p.prices) ? p.prices.length : 0;
+  const lo = p.lowestPrice, hi = p.highestPrice;
+  const savePct = (hi != null && lo != null && hi > lo) ? Math.round((hi - lo) / hi * 100) : 0;
+  return {
+    id: p.id, slug: p.slug, name: p.name, category: p.category, imageUrl: p.imageUrl,
+    price: lo, oldPrice: savePct > 0 ? hi : null, pct: savePct, kind: 'save', sellers,
+    product: p,
+  };
+}
 
 export default function Home() {
   const navigate = useNavigate();
-  const [trending, setTrending] = useState([]);
   const [stats, setStats] = useState(null);
+  const [live, setLive] = useState(null);
+  const [trending, setTrending] = useState([]);
+  const [deals, setDeals] = useState([]);
+  const [shops, setShops] = useState([]);
 
   useEffect(() => {
-    getAllProducts(0, 12)
-      .then((res) => {
-        const items = res.data?.content || [];
-        const withPrice = items.filter((p) => p.lowestPrice != null && p.imageUrl);
-        setTrending(withPrice.slice(0, 6));
+    getDashboardStats().then((r) => setStats(r.data)).catch(() => {});
+    getLiveStats().then((r) => setLive(r.data)).catch(() => {});
+    getTrendingSearches(10).then((r) => setTrending(Array.isArray(r.data) ? r.data : [])).catch(() => {});
+
+    // Top-deals grid: prefer real hot-drops; fall back to featured catalog with
+    // cross-seller savings so the grid is never empty.
+    getHotDrops(8)
+      .then((r) => {
+        const drops = Array.isArray(r.data) ? r.data : [];
+        if (drops.length >= 4) { setDeals(drops.slice(0, 8).map(fromDrop)); return; }
+        return getAllProducts(0, 12).then((res) => {
+          const ps = (res.data?.content || []).filter((p) => p.lowestPrice != null && p.imageUrl);
+          setDeals(ps.slice(0, 8).map(fromProduct));
+        });
       })
-      .catch(() => setTrending([]));
-    getDashboardStats().then((res) => setStats(res.data)).catch(() => setStats(null));
+      .catch(() => {
+        getAllProducts(0, 12).then((res) => {
+          const ps = (res.data?.content || []).filter((p) => p.lowestPrice != null && p.imageUrl);
+          setDeals(ps.slice(0, 8).map(fromProduct));
+        }).catch(() => {});
+      });
+
+    // Sidebar: most-trusted well-stocked shops (real trust scores).
+    getShops().then((r) => {
+      const dir = (Array.isArray(r.data) ? r.data : []).filter((s) => s.productCount > 0).slice(0, 14);
+      if (!dir.length) return;
+      getShopTrust(dir.map((s) => s.slug))
+        .then((tr) => {
+          const t = tr.data || {};
+          const ranked = dir
+            .map((s) => ({ ...s, trust: t[s.slug] || null }))
+            .sort((a, b) => (b.trust?.trustScore ?? 0) - (a.trust?.trustScore ?? 0))
+            .slice(0, 5);
+          setShops(ranked);
+        })
+        .catch(() => setShops(dir.slice(0, 5)));
+    }).catch(() => {});
   }, []);
 
   const handleSearch = (query) => {
@@ -39,123 +89,201 @@ export default function Home() {
   };
 
   const steps = [
-    { num: '01', title: 'Nightly index',  desc: 'Every night at 3 AM we crawl 60+ Bangladesh shops and refresh prices into our catalog.', icon: Database },
+    { num: '01', title: 'Nightly index', desc: 'Every night at 3 AM we crawl Bangladesh shops and refresh prices into our catalog.', icon: Database },
     { num: '02', title: 'Cross-shop merge', desc: 'When the same product is sold by multiple shops, we merge them so you see every seller in one row.', icon: ShieldCheck },
-    { num: '03', title: 'You search, instantly', desc: 'No live scraping at search time. The DB serves you a complete comparison the moment you hit Enter.', icon: Sparkles },
+    { num: '03', title: 'You search, instantly', desc: 'No live scraping at search time. The DB serves a complete comparison the moment you hit Enter.', icon: Sparkles },
   ];
 
   return (
-    <div className="min-h-screen overflow-x-hidden">
-      <section className="relative">
-        <div className="absolute top-20 -left-32 w-80 h-80 rounded-full bg-yellow/30 blur-3xl animate-blob pointer-events-none" />
-        <div className="absolute top-40 -right-32 w-96 h-96 rounded-full bg-red/15 blur-3xl animate-blob pointer-events-none" style={{ animationDelay: '4s' }} />
-        <div className="absolute -bottom-20 left-1/3 w-72 h-72 rounded-full bg-lime/25 blur-3xl animate-blob pointer-events-none" style={{ animationDelay: '8s' }} />
+    <div className="overflow-x-hidden">
+      {/* ── Hero ───────────────────────────────────────────────── */}
+      <section className="container-tight pt-5 sm:pt-7 lg:pt-9">
+        <div className="relative rounded-[1.75rem] sm:rounded-[2rem] overflow-hidden border border-line-strong bg-gradient-to-br from-lime-soft via-cream-soft to-yellow-soft p-6 sm:p-10 lg:p-14">
+          <div className="absolute -top-16 -right-16 w-72 h-72 rounded-full bg-red/10 blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-20 -left-12 w-80 h-80 rounded-full bg-lime/20 blur-3xl pointer-events-none" />
 
-        <div className="container-tight pt-8 sm:pt-14 lg:pt-20 pb-10 sm:pb-14 lg:pb-16 text-center relative">
-          <LiveActivityPill fallbackProductsCount={stats?.totalProducts} />
-
-          <h1 className="font-serif font-semibold leading-[0.92] tracking-[-0.035em] mb-4 sm:mb-5 text-[clamp(2.5rem,8.5vw,6.75rem)]">
-            <em className="text-red font-medium">Dam kemon,</em>
-            <br />
-            <span className="scribble-underline">
-              really?
-              <svg viewBox="0 0 200 14" preserveAspectRatio="none">
-                <path d="M2 10 Q 50 2, 100 8 T 198 6" stroke="#FF4521" strokeWidth="3" fill="none" strokeLinecap="round" className="animate-scribble" />
-              </svg>
-            </span>
-          </h1>
-
-          <p className="text-[15px] sm:text-lg lg:text-xl text-gray max-w-[600px] mx-auto mb-7 sm:mb-10 px-2 leading-relaxed">
-            One search across <span className="text-ink font-semibold">{stats?.totalSites ?? '60+'} Bangladesh shops</span>.
-            Side-by-side prices, the cheapest seller wins.
-          </p>
-
-          <SearchBar large onSearch={handleSearch} />
-
-          {stats && (stats.totalProducts > 0 || stats.totalSites > 0) && (
-            <div className="grid grid-cols-3 max-w-md mx-auto mt-8 sm:mt-10 gap-2">
-              <Stat label="products" value={stats.totalProducts?.toLocaleString() || '—'} />
-              <Stat label="shops" value={String(stats.totalSites || '—')} />
-              <Stat label="prices tracked" value={stats.totalPricePoints?.toLocaleString() || '—'} />
+          <div className="relative grid lg:grid-cols-2 gap-8 lg:gap-10 items-center">
+            <div>
+              <div className="tag-bar mb-3"><Store className="w-3.5 h-3.5" /> Bangladesh price comparison</div>
+              <h1 className="font-serif font-semibold leading-[0.95] tracking-[-0.03em] text-[clamp(2.4rem,6.5vw,4.5rem)] text-ink">
+                <em className="text-red font-medium">Dam kemon,</em><br />really?
+              </h1>
+              <p className="text-[15px] sm:text-lg text-ink/70 max-w-xl mt-4 mb-6 leading-relaxed">
+                One search across <span className="font-semibold text-ink">{stats?.totalSellers ? fmtNum(stats.totalSellers) : (stats?.totalSites ?? '2,000+')} Bangladesh shops</span> —
+                every seller's price &amp; trust, side by side. The smart buy wins.
+              </p>
+              <SearchBar large onSearch={handleSearch} sellerCount={stats?.totalSellers} />
             </div>
-          )}
+
+            {/* Live "indexed now" panel */}
+            <div className="hidden lg:flex justify-end">
+              <div className="relative w-full max-w-sm">
+                <div className="rounded-3xl bg-surface/85 backdrop-blur border border-line p-6 shadow-[var(--shadow-soft)]">
+                  <div className="font-mono text-[11px] uppercase tracking-wider text-gray mb-3">Indexed right now</div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <StatTile value={fmtNum(stats?.totalProducts)} label="products" />
+                    <StatTile value={fmtNum(stats?.totalSellers ?? stats?.totalSites)} label="shops" />
+                    <StatTile value={fmtNum(stats?.totalPricePoints)} label="prices" />
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-line flex items-center gap-2 text-[12px] text-gray">
+                    <span className="w-2 h-2 rounded-full bg-green animate-pulse-dot" />
+                    {live ? <>{fmtNum(live.searchesToday)} searches today · {fmtNum(live.viewsToday)} views</> : 'Live across BD shops'}
+                  </div>
+                </div>
+                <div className="absolute -top-3 -left-3 bg-white py-1.5 px-3 rounded-full shadow-[var(--shadow-soft)] border border-line inline-flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-green" />
+                  <span className="text-[11px] font-mono font-bold text-ink">Verified trust</span>
+                </div>
+                <div className="absolute -bottom-3 -right-3 bg-ink text-cream py-1.5 px-3 rounded-full shadow-[var(--shadow-soft)] inline-flex items-center gap-1.5">
+                  <Crown className="w-3.5 h-3.5 text-yellow" />
+                  <span className="text-[11px] font-mono font-bold">Cheapest wins</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <TrendingStrip />
-
-      <RecentlyViewedRail />
-
-      <WorldCupRail />
-
-      <HotDropsRail />
-
-      {trending.length > 0 && (
-        <section className="container-tight py-10 sm:py-14 lg:py-16">
-          <div className="flex items-end justify-between mb-5 sm:mb-7">
-            <div>
-              <div className="tag-bar mb-2">From the catalog</div>
-              <h2 className="font-serif font-semibold text-[clamp(1.5rem,3.5vw,2.25rem)] leading-tight">
-                Recently <em className="text-red">indexed</em>
-              </h2>
-            </div>
-            <Link to="/browse" className="text-sm font-semibold text-ink/70 hover:text-ink inline-flex items-center gap-1.5">
-              Browse all <ArrowRight className="w-4 h-4" />
-            </Link>
+      {/* ── Trending now (real search signal) ──────────────────── */}
+      {trending.length >= 3 && (
+        <section className="container-tight pt-6 sm:pt-8">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="w-2 h-2 rounded-full bg-red animate-pulse-dot" />
+            <span className="font-mono text-[11px] uppercase tracking-wider text-gray">Trending now</span>
+            {live?.searchesToday > 0 && (
+              <span className="text-[11px] text-gray-soft">· {fmtNum(live.searchesToday)} searches today</span>
+            )}
           </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-4">
-            {trending.map((p) => {
-              const sellers = p.prices || [];
-              const cheapest = sellers.slice().sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity))[0];
-              return (
-                <Link
-                  key={p.id}
-                  to={`/product/${p.id || p.slug}`}
-                  state={{ product: p }}
-                  className="card-soft overflow-hidden flex flex-col hover:shadow-[var(--shadow-card)] transition-shadow group"
-                >
-                  <div className="aspect-[4/3] bg-cream-soft flex items-center justify-center overflow-hidden">
-                    {p.imageUrl ? (
-                      <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover transition-transform group-hover:scale-[1.03]" onError={(e)=>{e.target.style.display='none'}} />
-                    ) : (
-                      <span className="font-serif text-5xl italic text-ink/15">{(p.category || 'P')[0]}</span>
-                    )}
-                  </div>
-                  <div className="p-3 sm:p-4 flex-1 flex flex-col">
-                    {p.category && (
-                      <span className="font-mono text-[10px] uppercase tracking-wider text-gray mb-1">{p.category}</span>
-                    )}
-                    <h3 className="font-serif text-sm sm:text-[15px] font-semibold text-ink leading-snug line-clamp-2 mb-2">
-                      {p.name}
-                    </h3>
-                    <div className="mt-auto flex items-baseline justify-between gap-2">
-                      <span className="font-mono text-base sm:text-lg font-bold text-ink">{fmt(p.lowestPrice)}</span>
-                      {sellers.length > 1 ? (
-                        <span className="text-[10px] sm:text-[11px] font-mono text-green inline-flex items-center gap-0.5">
-                          <Crown className="w-3 h-3" /> {sellers.length} sellers
-                        </span>
-                      ) : (
-                        <span className="text-[10px] sm:text-[11px] font-mono text-gray inline-flex items-center gap-0.5">
-                          <Store className="w-3 h-3" /> {cheapest?.siteName?.slice(0,18) || ''}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
+          <div className="flex gap-2.5 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 pb-1">
+            {trending.map((t, i) => (
+              <Link
+                key={t.query}
+                to={`/search?q=${encodeURIComponent(t.query)}`}
+                className="shrink-0 inline-flex items-center gap-2 bg-white border border-line rounded-2xl px-3.5 py-2.5 hover:border-ink hover:shadow-[var(--shadow-soft)] transition-all group"
+              >
+                <span className="font-mono text-[11px] text-gray-soft">{String(i + 1).padStart(2, '0')}</span>
+                <span className="text-sm font-semibold text-ink capitalize group-hover:text-red transition-colors truncate max-w-[170px]">{t.query}</span>
+                <span className="font-mono text-[10px] text-gray bg-cream-soft rounded-full px-1.5 py-0.5">{t.hits}</span>
+              </Link>
+            ))}
           </div>
         </section>
       )}
 
-      {/* Damkemon Protect — buyer-trust spotlight (animated).
-          See components/ProtectShowcase.jsx */}
+      {/* ── Top deals + trusted-shops sidebar ──────────────────── */}
+      <section className="container-tight py-8 sm:py-12 lg:py-14">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+          {/* Deals grid */}
+          <div className="lg:col-span-2">
+            <div className="flex items-end justify-between mb-4 sm:mb-5">
+              <div>
+                <div className="tag-bar mb-2 inline-flex items-center gap-1.5 text-red">
+                  <Flame className="w-3.5 h-3.5" /> Top deals right now
+                </div>
+                <h2 className="font-serif font-semibold text-[clamp(1.5rem,3.5vw,2.25rem)] leading-tight">
+                  Where you <em className="text-red">save most</em>
+                </h2>
+              </div>
+              <Link to="/browse" className="text-sm font-semibold text-ink/70 hover:text-ink inline-flex items-center gap-1.5 shrink-0">
+                Browse all <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+              {deals.map((d) => (
+                <Link
+                  key={d.id}
+                  to={`/product/${d.id || d.slug}`}
+                  state={d.product ? { product: d.product } : undefined}
+                  className="card-soft overflow-hidden flex flex-col group hover:shadow-[var(--shadow-lift)] hover:border-line-strong transition-all"
+                >
+                  <div className="relative h-44 sm:h-48 bg-cream-soft flex items-center justify-center overflow-hidden">
+                    {d.imageUrl ? (
+                      <img src={d.imageUrl} alt={d.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" onError={(e) => { e.target.style.display = 'none'; }} />
+                    ) : (
+                      <span className="font-serif text-5xl italic text-ink/15">{(d.category || 'P')[0]}</span>
+                    )}
+                    {d.pct > 0 && (
+                      <span className={`absolute top-2.5 left-2.5 inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-1 rounded-full ${
+                        d.kind === 'drop' ? 'bg-red text-white' : 'bg-lime text-ink'
+                      }`}>
+                        <TrendingDown className="w-3 h-3" /> {d.kind === 'drop' ? `${d.pct}% drop` : `save ${d.pct}%`}
+                      </span>
+                    )}
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col">
+                    {d.category && <span className="font-mono text-[10px] uppercase tracking-wider text-gray mb-1">{d.category}</span>}
+                    <h3 className="font-serif text-[15px] sm:text-base font-semibold text-ink leading-snug line-clamp-2 group-hover:text-red transition-colors">{d.name}</h3>
+                    <div className="mt-3 flex items-baseline gap-2">
+                      <span className="font-mono text-lg sm:text-xl font-bold text-ink">{fmt(d.price)}</span>
+                      {d.oldPrice && <span className="font-mono text-xs text-gray-soft line-through">{fmt(d.oldPrice)}</span>}
+                    </div>
+                    <div className="mt-3 pt-3 border-t border-line flex items-center justify-between text-[12px] text-gray">
+                      {d.sellers > 1 ? (
+                        <span className="inline-flex items-center gap-1 text-green font-semibold"><Crown className="w-3.5 h-3.5" /> {d.sellers} sellers</span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1"><Store className="w-3.5 h-3.5" /> compare sellers</span>
+                      )}
+                      <span className="inline-flex items-center gap-1 font-semibold text-ink/70 group-hover:text-red transition-colors">
+                        Compare <ArrowRight className="w-3.5 h-3.5" />
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <aside className="space-y-5 sm:space-y-6">
+            {shops.length > 0 && (
+              <div className="card-soft p-5 sm:p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <ShieldCheck className="w-5 h-5 text-green" />
+                  <h3 className="font-serif text-lg font-bold italic text-ink">Most trusted shops</h3>
+                </div>
+                <div className="space-y-3.5">
+                  {shops.map((s, i) => (
+                    <Link key={s.slug} to={`/browse`} className="flex items-center gap-3 group">
+                      <span className="font-serif text-lg font-bold italic text-ink/25 w-5 shrink-0">{i + 1}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-semibold text-ink truncate group-hover:text-red transition-colors">{s.name}</div>
+                        <div className="text-[11px] text-gray inline-flex items-center gap-2">
+                          <span className="font-mono">{fmtNum(s.productCount)} products</span>
+                          {s.trust && deliveryText(s.trust) && (
+                            <span className="inline-flex items-center gap-0.5"><Truck className="w-3 h-3" /> {deliveryText(s.trust)}</span>
+                          )}
+                        </div>
+                      </div>
+                      {s.trust?.trustScore != null && <TrustScore score={s.trust.trustScore} size="sm" showLabel={false} />}
+                    </Link>
+                  ))}
+                </div>
+                <Link to="/sellers" className="mt-5 w-full inline-flex items-center justify-center gap-1.5 py-2 px-4 rounded-xl border border-line-strong text-ink/70 font-medium text-sm hover:bg-cream-soft transition-colors">
+                  All shops <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            )}
+
+            {/* Protect CTA — real Damkemon feature */}
+            <div className="rounded-2xl bg-green-soft border border-line p-6 text-center">
+              <div className="w-14 h-14 bg-surface rounded-2xl mx-auto flex items-center justify-center mb-3 shadow-[var(--shadow-soft)]">
+                <ShieldCheck className="w-7 h-7 text-green" />
+              </div>
+              <h3 className="font-serif text-lg font-bold italic text-ink">Buying from an unknown seller?</h3>
+              <p className="text-sm text-ink/70 mt-1.5 mb-4">Check the scam risk and open a protected order before you pay.</p>
+              <Link to="/protect" className="btn-primary w-full justify-center">
+                <ShieldCheck className="w-4 h-4" /> Try Damkemon Protect
+              </Link>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      {/* Damkemon Protect — buyer-trust spotlight (animated). */}
       <ProtectShowcase />
 
-      {/* Saathi cross-sell — primary funnel for the seller side of the
-          two-sided marketplace. Placed after "why us" so visitors who came
-          for shopping see we also serve them as sellers. */}
+      {/* Saathi cross-sell — the seller side of the two-sided marketplace. */}
       <section className="relative overflow-hidden">
         <div className="container-tight py-10 sm:py-14 lg:py-18">
           <div className="rounded-3xl bg-gradient-to-br from-yellow-soft via-cream-soft to-lime-soft border border-line-strong p-6 sm:p-10 lg:p-14 relative overflow-hidden">
@@ -171,18 +299,12 @@ export default function Home() {
                   Run an FB shop?<br />
                   Meet your <span className="text-red">Saathi</span>.
                 </h2>
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/55 mb-4">
-                  A seller's companion
-                </p>
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/55 mb-4">A seller's companion</p>
                 <p className="text-ink/75 text-sm sm:text-[15px] leading-relaxed max-w-md mb-5">
-                  Quote smart prices on FB Live. Auto-reply to "দাম কত?" in
-                  Messenger. Earn the verified badge that builds buyer trust.
-                  ৳999/mo. 14 days free.
+                  Quote smart prices on FB Live. Auto-reply to "দাম কত?" in Messenger. Earn the verified badge that builds buyer trust. ৳999/mo. 14 days free.
                 </p>
                 <div className="flex flex-wrap gap-3">
-                  <Link to="/saathi" className="btn-primary">
-                    Open my Saathi shop <ArrowRight className="w-4 h-4" />
-                  </Link>
+                  <Link to="/saathi" className="btn-primary">Open my Saathi shop <ArrowRight className="w-4 h-4" /></Link>
                   <Link to="/saathi#how" className="btn-ghost">See how it works</Link>
                 </div>
               </div>
@@ -198,6 +320,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* How it works */}
       <section className="bg-ink text-cream py-14 sm:py-20 lg:py-28 relative overflow-hidden">
         <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-red/20 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-20 -left-20 w-96 h-96 rounded-full bg-lime/10 blur-3xl pointer-events-none" />
@@ -234,11 +357,11 @@ export default function Home() {
   );
 }
 
-function Stat({ value, label }) {
+function StatTile({ value, label }) {
   return (
-    <div className="text-center">
-      <div className="font-serif text-lg sm:text-xl font-bold italic text-ink">{value}</div>
-      <div className="font-mono text-[10px] sm:text-[11px] uppercase tracking-wider text-gray">{label}</div>
+    <div className="text-center rounded-xl bg-cream-soft/70 py-2.5">
+      <div className="font-serif text-base sm:text-lg font-bold italic text-ink leading-none">{value}</div>
+      <div className="font-mono text-[9px] uppercase tracking-wider text-gray mt-1">{label}</div>
     </div>
   );
 }

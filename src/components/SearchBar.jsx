@@ -8,7 +8,7 @@ function fmt(p) {
   return '৳' + Number(p).toLocaleString('en-IN');
 }
 
-export default function SearchBar({ large = false, onSearch, placeholder }) {
+export default function SearchBar({ large = false, onSearch, placeholder, sellerCount }) {
   const [query, setQuery] = useState('');
   const [focused, setFocused] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
@@ -167,7 +167,7 @@ export default function SearchBar({ large = false, onSearch, placeholder }) {
       {large && !showDropdown && (
         <p className="mt-3 text-xs sm:text-sm text-gray flex items-center justify-center gap-1.5">
           <Sparkles className="w-3.5 h-3.5 text-yellow" />
-          60+ BD shops indexed nightly · Type 2+ chars for suggestions
+          {sellerCount ? `${Number(sellerCount).toLocaleString('en-IN')} BD shops indexed nightly` : '60+ BD shops indexed nightly'} · Type 2+ chars for suggestions
         </p>
       )}
     </div>
