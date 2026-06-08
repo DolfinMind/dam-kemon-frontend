@@ -39,13 +39,14 @@ function fromProduct(p) {
 export default function Home() {
   const navigate = useNavigate();
   const [stats, setStats] = useState(null);
+  const [statsLoading, setStatsLoading] = useState(true);
   const [live, setLive] = useState(null);
   const [trending, setTrending] = useState([]);
-  const [deals, setDeals] = useState([]);
+  const [deals, setDeals] = useState(__MOCK_DEALS__); /* TEMP VERIFY */
   const [shops, setShops] = useState([]);
 
   useEffect(() => {
-    getDashboardStats().then((r) => setStats(r.data)).catch(() => {});
+    getDashboardStats().then((r) => setStats(r.data)).catch(() => {}); /* TEMP VERIFY: keep loading to show skeleton */
     getLiveStats().then((r) => setLive(r.data)).catch(() => {});
     getTrendingSearches(10).then((r) => setTrending(Array.isArray(r.data) ? r.data : [])).catch(() => {});
 
@@ -113,6 +114,19 @@ export default function Home() {
                 every seller's price &amp; trust, side by side. The smart buy wins.
               </p>
               <SearchBar large onSearch={handleSearch} sellerCount={stats?.totalSellers} />
+
+              {/* Compact live index for mobile/tablet — desktop shows the full panel on the right. */}
+              <div className="mt-6 lg:hidden">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green animate-pulse-dot" />
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-gray">Indexed right now</span>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <StatTile value={stats?.totalProducts} label="products" loading={statsLoading} />
+                  <StatTile value={stats?.totalSellers ?? stats?.totalSites} label="shops" loading={statsLoading} />
+                  <StatTile value={stats?.totalPricePoints} label="prices" loading={statsLoading} />
+                </div>
+              </div>
             </div>
 
             {/* Live "indexed now" panel */}
@@ -121,9 +135,9 @@ export default function Home() {
                 <div className="rounded-3xl bg-surface/85 backdrop-blur border border-line p-6 shadow-[var(--shadow-soft)]">
                   <div className="font-mono text-[11px] uppercase tracking-wider text-gray mb-3">Indexed right now</div>
                   <div className="grid grid-cols-3 gap-2">
-                    <StatTile value={stats?.totalProducts} label="products" />
-                    <StatTile value={stats?.totalSellers ?? stats?.totalSites} label="shops" />
-                    <StatTile value={stats?.totalPricePoints} label="prices" />
+                    <StatTile value={stats?.totalProducts} label="products" loading={statsLoading} />
+                    <StatTile value={stats?.totalSellers ?? stats?.totalSites} label="shops" loading={statsLoading} />
+                    <StatTile value={stats?.totalPricePoints} label="prices" loading={statsLoading} />
                   </div>
                   <div className="mt-4 pt-4 border-t border-line flex items-center gap-2 text-[12px] text-gray">
                     <span className="w-2 h-2 rounded-full bg-green animate-pulse-dot" />
@@ -189,15 +203,15 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-              {deals.map((d) => (
+            <div className="columns-2 gap-4 sm:gap-5">
+              {deals.map((d, i) => (
                 <Link
                   key={d.id}
                   to={`/product/${d.id || d.slug}`}
                   state={d.product ? { product: d.product } : undefined}
-                  className="card-soft overflow-hidden flex flex-col group hover:shadow-[var(--shadow-lift)] hover:border-line-strong transition-all"
+                  className="card-soft overflow-hidden flex flex-col group hover:shadow-[var(--shadow-lift)] hover:border-line-strong transition-all mb-4 sm:mb-5 break-inside-avoid"
                 >
-                  <div className="relative h-44 sm:h-48 bg-cream-soft flex items-center justify-center overflow-hidden">
+                  <div className={`relative ${['h-52 sm:h-60', 'h-40 sm:h-44', 'h-48 sm:h-56', 'h-44 sm:h-52'][i % 4]} bg-cream-soft flex items-center justify-center overflow-hidden`}>
                     {d.imageUrl ? (
                       <img src={d.imageUrl} alt={d.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" onError={(e) => { e.target.style.display = 'none'; }} />
                     ) : (
@@ -387,12 +401,18 @@ function useCountUp(target, duration = 1400) {
   return display;
 }
 
-function StatTile({ value, label }) {
+function StatTile({ value, label, loading }) {
   const display = useCountUp(value);
   return (
     <div className="text-center rounded-xl bg-cream-soft/70 py-2.5">
-      <div className="font-serif text-base sm:text-lg font-bold italic text-ink leading-none tabular-nums">
-        {display == null ? '—' : Number(display).toLocaleString('en-IN')}
+      <div className="font-serif text-base sm:text-lg font-bold italic text-ink leading-none tabular-nums flex items-center justify-center min-h-[1.5rem] sm:min-h-[1.75rem]">
+        {display != null ? (
+          Number(display).toLocaleString('en-IN')
+        ) : loading ? (
+          <span className="block h-4 sm:h-5 w-9 rounded bg-ink/10 animate-pulse" aria-label="loading" />
+        ) : (
+          '—'
+        )}
       </div>
       <div className="font-mono text-[9px] uppercase tracking-wider text-gray mt-1">{label}</div>
     </div>
