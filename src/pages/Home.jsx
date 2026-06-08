@@ -260,7 +260,7 @@ export default function Home() {
                   ))}
                 </div>
                 <Link to="/sellers" className="mt-5 w-full inline-flex items-center justify-center gap-1.5 py-2 px-4 rounded-xl border border-line-strong text-ink/70 font-medium text-sm hover:bg-cream-soft transition-colors">
-                  All shops <ArrowRight className="w-4 h-4" />
+                  All sellers <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
             )}
