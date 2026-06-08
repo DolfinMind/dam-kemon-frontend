@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   getDashboardStats, getHotDrops, getAllProducts, getTrendingSearches, getLiveStats,
@@ -121,9 +121,9 @@ export default function Home() {
                 <div className="rounded-3xl bg-surface/85 backdrop-blur border border-line p-6 shadow-[var(--shadow-soft)]">
                   <div className="font-mono text-[11px] uppercase tracking-wider text-gray mb-3">Indexed right now</div>
                   <div className="grid grid-cols-3 gap-2">
-                    <StatTile value={fmtNum(stats?.totalProducts)} label="products" />
-                    <StatTile value={fmtNum(stats?.totalSellers ?? stats?.totalSites)} label="shops" />
-                    <StatTile value={fmtNum(stats?.totalPricePoints)} label="prices" />
+                    <StatTile value={stats?.totalProducts} label="products" />
+                    <StatTile value={stats?.totalSellers ?? stats?.totalSites} label="shops" />
+                    <StatTile value={stats?.totalPricePoints} label="prices" />
                   </div>
                   <div className="mt-4 pt-4 border-t border-line flex items-center gap-2 text-[12px] text-gray">
                     <span className="w-2 h-2 rounded-full bg-green animate-pulse-dot" />
@@ -357,10 +357,43 @@ export default function Home() {
   );
 }
 
+// Count a number up from 0 → target once the value arrives (easeOutCubic).
+// Honours prefers-reduced-motion, and re-animates if the target later changes.
+function useCountUp(target, duration = 1400) {
+  const [display, setDisplay] = useState(null);
+  const fromRef = useRef(0);
+  const rafRef = useRef(0);
+
+  useEffect(() => {
+    if (target == null) { setDisplay(null); return; }
+
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+    if (reduce) { setDisplay(target); fromRef.current = target; return; }
+
+    const from = fromRef.current;
+    const start = performance.now();
+    const ease = (t) => 1 - Math.pow(1 - t, 3);
+
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / duration);
+      setDisplay(Math.round(from + (target - from) * ease(t)));
+      if (t < 1) rafRef.current = requestAnimationFrame(tick);
+      else fromRef.current = target;
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [target, duration]);
+
+  return display;
+}
+
 function StatTile({ value, label }) {
+  const display = useCountUp(value);
   return (
     <div className="text-center rounded-xl bg-cream-soft/70 py-2.5">
-      <div className="font-serif text-base sm:text-lg font-bold italic text-ink leading-none">{value}</div>
+      <div className="font-serif text-base sm:text-lg font-bold italic text-ink leading-none tabular-nums">
+        {display == null ? '—' : Number(display).toLocaleString('en-IN')}
+      </div>
       <div className="font-mono text-[9px] uppercase tracking-wider text-gray mt-1">{label}</div>
     </div>
   );
