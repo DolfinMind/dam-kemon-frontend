@@ -42,11 +42,11 @@ export default function Home() {
   const [statsLoading, setStatsLoading] = useState(true);
   const [live, setLive] = useState(null);
   const [trending, setTrending] = useState([]);
-  const [deals, setDeals] = useState(__MOCK_DEALS__); /* TEMP VERIFY */
+  const [deals, setDeals] = useState([]);
   const [shops, setShops] = useState([]);
 
   useEffect(() => {
-    getDashboardStats().then((r) => setStats(r.data)).catch(() => {}); /* TEMP VERIFY: keep loading to show skeleton */
+    getDashboardStats().then((r) => setStats(r.data)).catch(() => {}).finally(() => setStatsLoading(false));
     getLiveStats().then((r) => setLive(r.data)).catch(() => {});
     getTrendingSearches(10).then((r) => setTrending(Array.isArray(r.data) ? r.data : [])).catch(() => {});
 
