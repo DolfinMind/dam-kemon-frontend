@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { recentSearches, searchLatency } from '../../api/api';
+import { recentSearches, searchLatency } from '../../api/admin';
 import { Search as SearchIcon, Zap } from 'lucide-react';
 
 function relative(ts) {

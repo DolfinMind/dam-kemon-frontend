@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { adminFlaggedReviews, adminSetReviewStatus } from '../../api/api';
+import { adminFlaggedReviews, adminSetReviewStatus } from '../../api/admin';
 import { Check, EyeOff, Loader2, ShieldAlert, RefreshCw, Star } from 'lucide-react';
 
 function fmtDate(v) {

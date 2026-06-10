@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { adminListCatalog, adminEditProduct, adminDeleteProduct, adminMergeProducts } from '../../api/api';
+import { adminListCatalog, adminEditProduct, adminDeleteProduct, adminMergeProducts } from '../../api/admin';
 import { Search as SearchIcon, Edit2, Trash2, Merge, X, Check } from 'lucide-react';
 
 function fmt(p) { if (p == null) return 'N/A'; return '৳' + Number(p).toLocaleString('en-IN'); }

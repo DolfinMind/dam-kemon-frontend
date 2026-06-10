@@ -1,12 +1,9 @@
 import axios from 'axios';
 import { getAnonId } from './analytics';
+import { API_BASE } from './config';
 
-// VITE_API_URL — leave blank for dev (Vite proxies /api) or same-origin prod
-// (reverse-proxy /api → backend). Set to e.g. https://api.example.com if the
-// backend lives on a different domain.
-const baseURL = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api`
-  : '/api';
+// Where every request goes. Cloaked/same-origin config lives in ./config.
+const baseURL = API_BASE;
 
 const api = axios.create({
   baseURL,
@@ -38,18 +35,6 @@ export const searchProducts = (query, page = 0, size = 20) =>
 /** Autocomplete dropdown — returns up to N matching products by prefix. */
 export const suggestProducts = (prefix, limit = 8) =>
   api.get('/search/suggest', { params: { q: prefix, limit } });
-
-/** Trigger the nightly catalog reindex on demand. */
-export const triggerReindex = () => api.post('/admin/index/run');
-export const indexStatus = () => api.get('/admin/index/status');
-export const listShops = () => api.get('/admin/shops');
-export const retryFailedShops = () => api.post('/admin/index/retry');
-export const reindexShop = (slug) => api.post(`/admin/index/shop/${encodeURIComponent(slug)}`);
-export const setShopStatus = (slug, status) =>
-  api.post(`/admin/shops/${encodeURIComponent(slug)}/status`, { status });
-export const listPendingShops = () => api.get('/admin/pending-shops');
-export const approvePendingShop = (id) => api.post(`/admin/pending-shops/${id}/approve`);
-export const rejectPendingShop = (id, note) => api.post(`/admin/pending-shops/${id}/reject`, { note });
 
 export const getProduct = (id) =>
   api.get(`/products/${id}`);
@@ -148,11 +133,6 @@ export const protectConfirmOrder = (code) => api.post(`/protect/orders/${encodeU
 export const protectDisputeOrder = (code, reason) =>
   api.post(`/protect/orders/${encodeURIComponent(code)}/dispute`, { reason });
 
-// Admin: review moderation queue
-export const adminFlaggedReviews = () => api.get('/admin/reviews/flagged');
-export const adminSetReviewStatus = (id, status) =>
-  api.post(`/admin/reviews/${id}/status`, { status });
-
 /** Hydrate a list of product ids — used by the recently-viewed rail. */
 export const getProductsByIds = (ids) =>
   api.get('/products/by-ids', { params: { ids: Array.isArray(ids) ? ids.join(',') : ids } });
@@ -160,41 +140,6 @@ export const getProductsByIds = (ids) =>
 /** Daily-bucketed price history series for the price-history chart. */
 export const getDailyPriceHistory = (id, days = 30) =>
   api.get(`/products/${id}/history/daily`, { params: { days } });
-
-// ─── Admin: indexer history ───
-export const getIndexerHistory = (limit = 30) =>
-  api.get('/admin/index/history', { params: { limit } });
-
-// ─── Admin: shop edit ───
-export const editShop = (slug, patch) =>
-  api.patch(`/admin/shops/${encodeURIComponent(slug)}`, patch);
-export const bulkSetShopStatus = (slugs, status) =>
-  api.post('/admin/shops/bulk-status', { slugs, status });
-
-// ─── Admin: catalog ───
-export const adminListCatalog = (params = {}) =>
-  api.get('/admin/catalog', { params });
-export const adminEditProduct = (id, patch) =>
-  api.patch(`/admin/catalog/${id}`, patch);
-export const adminDeleteProduct = (id) =>
-  api.delete(`/admin/catalog/${id}`);
-export const adminMergeProducts = (toId, fromId) =>
-  api.post(`/admin/catalog/${toId}/merge`, { from: fromId });
-
-// ─── Admin: cache ───
-export const listCaches = () => api.get('/admin/cache');
-export const flushCache = (name) => api.post(`/admin/cache/${name}/flush`);
-export const flushAllCaches = () => api.post('/admin/cache/flush-all');
-
-// ─── Admin: jobs ───
-export const listJobs = () => api.get('/admin/jobs');
-export const runJob = (id) => api.post(`/admin/jobs/${id}/run`);
-export const jobRuns = (id) => api.get(`/admin/jobs/${id}/runs`);
-
-// ─── Admin: search log + latency ───
-export const recentSearches = (limit = 200) =>
-  api.get('/admin/stats/recent-searches', { params: { limit } });
-export const searchLatency = () => api.get('/admin/stats/latency');
 
 // ─── Account: per-user search history ───
 export const accountSearchHistory = () => api.get('/account/search-history');

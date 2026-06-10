@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { triggerReindex, indexStatus, retryFailedShops, getIndexerHistory } from '../../api/api';
+import { triggerReindex, indexStatus, retryFailedShops, getIndexerHistory } from '../../api/admin';
 import api from '../../api/api';
 import { Play, RotateCcw, Search as SearchIcon, AlertTriangle, CheckCircle2 } from 'lucide-react';
 

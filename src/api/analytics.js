@@ -6,6 +6,8 @@
 // navigation. We fall back to fetch(..., {keepalive: true}) when sendBeacon
 // is unavailable (older browsers, locked-down environments).
 
+import { API_BASE } from './config';
+
 const ANON_KEY = 'dk_anon_id';
 
 export function getAnonId() {
@@ -23,12 +25,8 @@ export function getAnonId() {
   }
 }
 
-const baseURL = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api`
-  : '/api';
-
 function fireBeacon(path, payload) {
-  const url = `${baseURL}${path}`;
+  const url = `${API_BASE}${path}`;
   const body = JSON.stringify({ ...payload, anonId: getAnonId() });
   try {
     if (navigator.sendBeacon) {

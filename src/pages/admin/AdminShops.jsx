@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { listShops, reindexShop, setShopStatus, editShop, bulkSetShopStatus } from '../../api/api';
+import { listShops, reindexShop, setShopStatus, editShop, bulkSetShopStatus } from '../../api/admin';
 import { RotateCcw, Power, AlertTriangle, CheckCircle2, Clock, Edit2, X, Check } from 'lucide-react';
 
 const HEALTH_BADGE = {

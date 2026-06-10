@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { listCaches, flushCache, flushAllCaches } from '../../api/api';
+import { listCaches, flushCache, flushAllCaches } from '../../api/admin';
 import { Database, Trash2, RotateCcw } from 'lucide-react';
 
 export default function AdminCache() {

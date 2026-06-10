@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
-import { triggerReindex, indexStatus } from '../../api/api';
+import { triggerReindex, indexStatus } from '../../api/admin';
 import {
   Shield, Database, Store, Inbox, BarChart3, FileText, LogOut, Package,
   Search as SearchIcon, Clock, HardDrive, Play, Loader2, CheckCircle2, ShieldAlert,

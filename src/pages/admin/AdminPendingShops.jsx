@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { listPendingShops, approvePendingShop, rejectPendingShop } from '../../api/api';
+import { listPendingShops, approvePendingShop, rejectPendingShop } from '../../api/admin';
 import { Check, X, ExternalLink } from 'lucide-react';
 
 export default function AdminPendingShops() {
