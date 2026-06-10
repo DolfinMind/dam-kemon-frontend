@@ -40,15 +40,23 @@ export default function SearchResults() {
   const [showSort, setShowSort] = useState(false);
   const [searchInput, setSearchInput] = useState(query);
   const [trust, setTrust] = useState({});
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const PAGE_SIZE = 30;
 
   const runSearch = (q) => {
     if (!q) { setLoading(false); setError(null); return; }
     setLoading(true);
     setError(null);
-    searchProducts(q)
+    setPage(0);
+    setHasMore(false);
+    searchProducts(q, 0, PAGE_SIZE)
       .then((res) => {
         const data = res.data || {};
         setProducts(Array.isArray(data.products) ? data.products : []);
+        setHasMore(!!data.hasMore);
         setMeta({
           totalResults: data.totalResults ?? 0,
           sitesSearched: data.sitesSearched ?? [],
@@ -65,6 +73,26 @@ export default function SearchResults() {
         setProducts([]);
       })
       .finally(() => setLoading(false));
+  };
+
+  // Append the next ranked page; dedupe by id so a product can't show twice.
+  const loadMore = () => {
+    if (loadingMore || !hasMore || !query) return;
+    const next = page + 1;
+    setLoadingMore(true);
+    searchProducts(query, next, PAGE_SIZE)
+      .then((res) => {
+        const data = res.data || {};
+        const more = Array.isArray(data.products) ? data.products : [];
+        setProducts((prev) => {
+          const seen = new Set(prev.map((p) => p.id));
+          return [...prev, ...more.filter((p) => p.id && !seen.has(p.id))];
+        });
+        setHasMore(!!data.hasMore);
+        setPage(next);
+      })
+      .catch(() => { /* keep what we have; Load more can be retried */ })
+      .finally(() => setLoadingMore(false));
   };
 
   useEffect(() => {
@@ -331,19 +359,41 @@ export default function SearchResults() {
           </p>
         </div>
       ) : (
-        <div className="space-y-3 sm:space-y-4">
-          {sorted.map((p, i) => (
-            <SearchProductCard
-              key={p.id || p.slug || i}
-              product={p}
-              rank={i + 1}
-              query={query}
-              sponsored={!!meta?.sponsoredProductIds?.includes(p.id)}
-              trust={trust}
-              smartPick={!!smartPickId && p.id === smartPickId}
-            />
-          ))}
-        </div>
+        <>
+          <div className="space-y-3 sm:space-y-4">
+            {sorted.map((p, i) => (
+              <SearchProductCard
+                key={p.id || p.slug || i}
+                product={p}
+                rank={i + 1}
+                query={query}
+                sponsored={!!meta?.sponsoredProductIds?.includes(p.id)}
+                trust={trust}
+                smartPick={!!smartPickId && p.id === smartPickId}
+              />
+            ))}
+          </div>
+          {hasMore && (
+            <div className="mt-5 sm:mt-6 flex flex-col items-center gap-2">
+              <button
+                onClick={loadMore}
+                disabled={loadingMore}
+                className="btn-ghost inline-flex disabled:opacity-60"
+              >
+                {loadingMore ? (
+                  <><RefreshCw className="w-4 h-4 animate-spin" /> Loading…</>
+                ) : (
+                  <>Load more products</>
+                )}
+              </button>
+              {meta?.totalResults > sorted.length && (
+                <span className="font-mono text-[11px] text-gray">
+                  showing {sorted.length} of {meta.totalResults}
+                </span>
+              )}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
