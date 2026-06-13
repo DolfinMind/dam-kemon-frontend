@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import BottomNav from './components/BottomNav';
 import AssistantWidget from './components/AssistantWidget';
+import ScrollToTop from './components/ScrollToTop';
 import { AuthProvider } from './auth/AuthContext';
 import LoadingSpinner from './components/LoadingSpinner';
 
@@ -49,6 +50,7 @@ function PageFallback() {
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <AuthProvider>
         <div className="min-h-screen flex flex-col bg-cream">
           <Navbar />
