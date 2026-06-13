@@ -5,6 +5,7 @@ import {
   getShops, getShopTrust,
 } from '../api/api';
 import SearchBar from '../components/SearchBar';
+import AlphaBadge from '../components/AlphaBadge';
 import ProtectShowcase from '../components/ProtectShowcase';
 import { TrustScore, deliveryText } from '../components/TrustBadge';
 import {
@@ -105,7 +106,10 @@ export default function Home() {
 
           <div className="relative grid lg:grid-cols-2 gap-8 lg:gap-10 items-center">
             <div>
-              <div className="tag-bar mb-3"><Store className="w-3.5 h-3.5" /> Bangladesh price comparison</div>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="tag-bar"><Store className="w-3.5 h-3.5" /> Bangladesh price comparison</div>
+                <AlphaBadge />
+              </div>
               <h1 className="font-serif font-semibold leading-[0.95] tracking-[-0.03em] text-[clamp(2.4rem,6.5vw,4.5rem)] text-ink">
                 <em className="text-red font-medium">Dam kemon,</em><br />really?
               </h1>

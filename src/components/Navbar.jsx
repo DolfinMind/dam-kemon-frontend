@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, Menu, X, BarChart3, Sparkles, User as UserIcon, Shield } from 'lucide-react';
 import { useAuth } from '../auth/AuthContext';
+import AlphaBadge from './AlphaBadge';
 // THEME_TOGGLE_DISABLED: dark mode is paused. See src/api/theme.js for the
 // re-enable recipe. We keep the import-less component so the layout stays
 // pixel-identical when we flip dark back on.
@@ -73,6 +74,7 @@ export default function Navbar() {
               <span className="font-serif text-xl sm:text-[22px] font-bold italic tracking-tight text-ink hidden xs:inline sm:inline">
                 dam<span className="text-red">.</span>kemon
               </span>
+              <AlphaBadge className="ml-0.5" />
             </Link>
 
             {/* Center nav (desktop) — surface bg + line-strong border auto-flip

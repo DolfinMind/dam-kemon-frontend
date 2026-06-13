@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Sparkles } from 'lucide-react';
+import AlphaBadge from './AlphaBadge';
 
 export default function Footer() {
   return (
@@ -17,6 +18,7 @@ export default function Footer() {
               <span className="font-serif text-xl sm:text-[22px] font-bold italic text-cream">
                 dam<span className="text-red">.</span>kemon
               </span>
+              <AlphaBadge className="ml-0.5 !bg-cream/15 !text-cream !border-cream/25" />
             </Link>
             <p className="text-cream/55 text-sm leading-relaxed max-w-xs">
               Bangladesh price comparison. Searches live BD shops, never shows fake prices.
