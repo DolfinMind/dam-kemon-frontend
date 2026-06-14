@@ -11,6 +11,7 @@ import SmartVerdict from '../components/SmartVerdict';
 import ReviewsPanel from '../components/ReviewsPanel';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ProductSEO from '../components/ProductSEO';
+import ServiceUnavailable from '../components/ServiceUnavailable';
 import {
   ArrowLeft, Star, Share2, Bell, ShieldCheck, Store, AlertTriangle, Heart,
 } from 'lucide-react';
@@ -33,6 +34,7 @@ export default function ProductDetail() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(!seedProduct);
   const [error, setError] = useState(null);
+  const [retryTick, setRetryTick] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -56,7 +58,7 @@ export default function ProductDetail() {
     });
 
     return () => { cancelled = true; };
-  }, [id, seedProduct]);
+  }, [id, seedProduct, retryTick]);
 
   useEffect(() => {
     const pid = product?.id || id;
@@ -181,18 +183,25 @@ export default function ProductDetail() {
 
   if (!product) {
     const isNetwork = error?.kind === 'network';
+    if (isNetwork) {
+      return (
+        <div className="container-tight py-16 sm:py-24">
+          <ServiceUnavailable onRetry={() => setRetryTick((t) => t + 1)}>
+            <Link to="/" className="btn-ghost inline-flex">
+              <ArrowLeft className="w-4 h-4" /> Back to home
+            </Link>
+          </ServiceUnavailable>
+        </div>
+      );
+    }
     return (
       <div className="container-tight py-16 sm:py-24 text-center">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-red-soft mb-4">
           <AlertTriangle className="w-8 h-8 text-red" />
         </div>
-        <h2 className="font-serif text-2xl sm:text-3xl font-bold italic text-ink mb-2">
-          {isNetwork ? 'Backend unreachable' : 'Product not found'}
-        </h2>
+        <h2 className="font-serif text-2xl sm:text-3xl font-bold italic text-ink mb-2">Product not found</h2>
         <p className="text-gray text-sm mb-6 max-w-md mx-auto">
-          {isNetwork
-            ? <>Backend at <code className="font-mono text-ink bg-cream-soft px-1.5 py-0.5 rounded">/api</code> isn't responding. Start the Spring Boot server with <code className="font-mono text-ink bg-cream-soft px-1.5 py-0.5 rounded">./gradlew bootRun</code>.</>
-            : <>We can't find this product. Start a new search from the home page.</>}
+          We can't find this product. Start a new search from the home page.
         </p>
         <Link to="/" className="btn-primary inline-flex">
           <ArrowLeft className="w-4 h-4" /> Back to home

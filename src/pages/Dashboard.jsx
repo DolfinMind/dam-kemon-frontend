@@ -4,6 +4,7 @@ import {
   getDashboardStats, getLiveStats, getTrendingSearches, getHotDrops,
 } from '../api/api';
 import LoadingSpinner from '../components/LoadingSpinner';
+import ServiceUnavailable from '../components/ServiceUnavailable';
 import {
   Activity, TrendingDown, Search, RefreshCw, AlertTriangle, ArrowRight,
   Store, Flame, ShieldCheck, Eye, Users,
@@ -56,7 +57,7 @@ export default function Dashboard() {
     ])
       .then(([s, l, t, h]) => {
         if (s.status === 'fulfilled') setStats(s.value.data);
-        else if (!silent) setError(s.reason?.message || 'Backend unreachable');
+        else if (!silent) setError(true);
         if (l.status === 'fulfilled') setLive(l.value.data);
         if (t.status === 'fulfilled') setTrending(Array.isArray(t.value.data) ? t.value.data : []);
         if (h.status === 'fulfilled') setHotDrops(Array.isArray(h.value.data) ? h.value.data : []);
@@ -80,19 +81,7 @@ export default function Dashboard() {
   if (error || !stats) {
     return (
       <div className="container-tight py-12">
-        <div className="card-soft p-8 sm:p-10 text-center max-w-lg mx-auto">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-red-soft mb-4">
-            <AlertTriangle className="w-8 h-8 text-red" />
-          </div>
-          <h2 className="font-serif text-xl sm:text-2xl font-bold italic text-ink mb-2">Backend unreachable</h2>
-          <p className="text-gray text-sm mb-5">
-            The Spring Boot server didn't respond. Start it with{' '}
-            <code className="font-mono text-ink bg-cream-soft px-1.5 py-0.5 rounded">./gradlew bootRun</code> and refresh.
-          </p>
-          <button onClick={() => loadAll()} className="btn-ghost inline-flex">
-            <RefreshCw className="w-4 h-4" /> Retry
-          </button>
-        </div>
+        <ServiceUnavailable onRetry={() => loadAll(true)} retrying={refreshing} />
       </div>
     );
   }

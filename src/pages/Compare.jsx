@@ -2,9 +2,10 @@ import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { getShops, getShopTrust } from '../api/api';
 import LoadingSpinner from '../components/LoadingSpinner';
+import ServiceUnavailable from '../components/ServiceUnavailable';
 import { TrustScore, deliveryText, returnText, authenticityMeta } from '../components/TrustBadge';
 import {
-  ArrowLeft, Plus, X, Crown, Star, Store, AlertTriangle, Search, Check,
+  ArrowLeft, Plus, X, Crown, Star, Store, Search, Check,
 } from 'lucide-react';
 
 const AVATAR_COLORS = ['#1877F2', '#FF4521', '#0F4D2A', '#FFD23F', '#7B61FF', '#15131A'];
@@ -61,6 +62,7 @@ export default function Compare() {
   const [trust, setTrust] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [retryTick, setRetryTick] = useState(0);
   const [picker, setPicker] = useState(false);
   const [pickerQuery, setPickerQuery] = useState('');
 
@@ -88,7 +90,7 @@ export default function Compare() {
       .catch(() => setError('network'))
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slugsParam]);
+  }, [slugsParam, retryTick]);
 
   const addShop = (slug) => {
     if (!slug || slugs.includes(slug)) return;
@@ -240,13 +242,11 @@ export default function Compare() {
 
       {/* Error */}
       {error && hasData && !loading && (
-        <div className="card-soft p-8 sm:p-10 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-red-soft mb-4">
-            <AlertTriangle className="w-8 h-8 text-red" />
-          </div>
-          <h2 className="font-serif text-xl sm:text-2xl font-bold italic text-ink mb-2">Unable to load shop data</h2>
-          <p className="text-gray text-sm">Make sure the Spring Boot server is running on port 8080.</p>
-        </div>
+        <ServiceUnavailable
+          compact
+          title="Unable to load shop data"
+          onRetry={() => setRetryTick((t) => t + 1)}
+        />
       )}
 
       {/* Seller scorecard */}

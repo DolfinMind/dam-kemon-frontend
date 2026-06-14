@@ -3,7 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import { getAllProducts, getShopTrust, getCategories } from '../api/api';
 import SearchProductCard from '../components/SearchProductCard';
 import SearchProductCardSkeleton from '../components/SearchProductCardSkeleton';
-import { LayoutGrid, ArrowUpDown, PackageSearch, AlertTriangle, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react';
+import ServiceUnavailable from '../components/ServiceUnavailable';
+import { LayoutGrid, ArrowUpDown, PackageSearch, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react';
 
 // Collapsed chip rail height — roughly two rows of py-2 chips + the gap.
 const CHIPS_COLLAPSED = '4.75rem';
@@ -175,18 +176,10 @@ export default function Browse() {
           {[...Array(5)].map((_, i) => <SearchProductCardSkeleton key={i} />)}
         </div>
       ) : error ? (
-        <div className="card-soft p-8 sm:p-10 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-red-soft mb-4">
-            <AlertTriangle className="w-8 h-8 text-red" />
-          </div>
-          <h2 className="font-serif text-xl sm:text-2xl font-bold italic text-ink mb-2">Couldn't load the catalog</h2>
-          <p className="text-gray text-sm max-w-md mx-auto mb-5">
-            The backend at <code className="font-mono text-ink bg-cream-soft px-1.5 py-0.5 rounded">/api</code> isn't responding. Start it with <code className="font-mono text-ink bg-cream-soft px-1.5 py-0.5 rounded">./gradlew bootRun</code>.
-          </p>
-          <button onClick={() => loadPage(0, category, true)} className="btn-ghost inline-flex">
-            <RefreshCw className="w-4 h-4" /> Retry
-          </button>
-        </div>
+        <ServiceUnavailable
+          title="Couldn’t load the catalog"
+          onRetry={() => loadPage(0, category, true)}
+        />
       ) : sorted.length === 0 ? (
         <div className="card-soft p-8 sm:p-12 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-cream-soft mb-4">

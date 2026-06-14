@@ -4,6 +4,7 @@ import { searchProducts, getShopTrust } from '../api/api';
 import SearchProductCard from '../components/SearchProductCard';
 import { SkeletonRow } from '../components/LoadingSpinner';
 import SearchProductCardSkeleton from '../components/SearchProductCardSkeleton';
+import ServiceUnavailable from '../components/ServiceUnavailable';
 import {
   Search, ArrowUpDown, ArrowLeft, Sparkles, TrendingDown,
   TrendingUp, Equal, AlertTriangle, RefreshCw, Lightbulb,
@@ -330,22 +331,22 @@ export default function SearchResults() {
           {[...Array(4)].map((_, i) => <SearchProductCardSkeleton key={i} />)}
         </div>
       ) : error ? (
-        <div className="card-soft p-8 sm:p-10 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-red-soft mb-4">
-            <AlertTriangle className="w-8 h-8 text-red" />
+        (error.kind === 'network' || error.status >= 500) ? (
+          <ServiceUnavailable onRetry={() => runSearch(query)} />
+        ) : (
+          <div className="card-soft p-8 sm:p-10 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-red-soft mb-4">
+              <AlertTriangle className="w-8 h-8 text-red" />
+            </div>
+            <h2 className="font-serif text-xl sm:text-2xl font-bold italic text-ink mb-2">Search failed</h2>
+            <p className="text-gray text-sm max-w-md mx-auto mb-5">
+              {error.message || 'Try again in a moment.'}
+            </p>
+            <button onClick={() => runSearch(query)} className="btn-ghost inline-flex">
+              <RefreshCw className="w-4 h-4" /> Retry
+            </button>
           </div>
-          <h2 className="font-serif text-xl sm:text-2xl font-bold italic text-ink mb-2">
-            {error.kind === 'network' ? 'Backend unreachable' : 'Search failed'}
-          </h2>
-          <p className="text-gray text-sm max-w-md mx-auto mb-5">
-            {error.kind === 'network'
-              ? <>The backend at <code className="font-mono text-ink bg-cream-soft px-1.5 py-0.5 rounded">/api</code> isn't responding. Start it with <code className="font-mono text-ink bg-cream-soft px-1.5 py-0.5 rounded">./gradlew bootRun</code>.</>
-              : error.message || 'Try again in a moment.'}
-          </p>
-          <button onClick={() => runSearch(query)} className="btn-ghost inline-flex">
-            <RefreshCw className="w-4 h-4" /> Retry
-          </button>
-        </div>
+        )
       ) : sorted.length === 0 ? (
         <div className="card-soft p-8 sm:p-12 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-cream-soft mb-4">
