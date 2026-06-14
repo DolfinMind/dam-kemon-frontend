@@ -7,6 +7,7 @@ import {
 import SearchBar from '../components/SearchBar';
 import AlphaBadge from '../components/AlphaBadge';
 import ProtectShowcase from '../components/ProtectShowcase';
+import { SHOW_SAATHI } from '../config/features';
 import { TrustScore, deliveryText } from '../components/TrustBadge';
 import {
   Sparkles, Database, ShieldCheck, Store, ArrowRight, Crown, Flame, Truck,
@@ -302,6 +303,7 @@ export default function Home() {
       <ProtectShowcase />
 
       {/* Saathi cross-sell — the seller side of the two-sided marketplace. */}
+      {SHOW_SAATHI && (
       <section className="relative overflow-hidden">
         <div className="container-tight py-10 sm:py-14 lg:py-18">
           <div className="rounded-3xl bg-gradient-to-br from-yellow-soft via-cream-soft to-lime-soft border border-line-strong p-6 sm:p-10 lg:p-14 relative overflow-hidden">
@@ -337,6 +339,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      )}
 
       {/* How it works */}
       <section className="bg-ink text-cream py-14 sm:py-20 lg:py-28 relative overflow-hidden">

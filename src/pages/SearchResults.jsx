@@ -355,8 +355,7 @@ export default function SearchResults() {
           <h2 className="font-serif text-xl sm:text-2xl font-bold italic text-ink mb-2">No results yet</h2>
           <p className="text-gray text-sm max-w-md mx-auto">
             Our catalog doesn't have anything matching <b>"{query}"</b> yet.
-            The indexer crawls 60+ BD shops nightly at 3 AM — try a broader term, or trigger a reindex
-            from <Link to="/dashboard" className="text-ink underline">Dashboard → Quick scrape</Link>.
+            We crawl 60+ BD shops every night — try a broader term, or check back soon.
           </p>
         </div>
       ) : (

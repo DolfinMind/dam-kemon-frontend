@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Search, Menu, X, BarChart3, Sparkles, User as UserIcon, Shield } from 'lucide-react';
 import { useAuth } from '../auth/AuthContext';
 import AlphaBadge from './AlphaBadge';
+import { SHOW_SAATHI, SHOW_PUBLIC_DASHBOARD } from '../config/features';
 // THEME_TOGGLE_DISABLED: dark mode is paused. See src/api/theme.js for the
 // re-enable recipe. We keep the import-less component so the layout stays
 // pixel-identical when we flip dark back on.
@@ -49,7 +50,7 @@ export default function Navbar() {
     { to: '/protect',   label: 'Protect' },
     { to: '/compare',   label: 'Compare' },
     { to: '/sellers',   label: 'Shops' },
-    { to: '/saathi',    label: 'Sell with us' },
+    ...(SHOW_SAATHI ? [{ to: '/saathi', label: 'Sell with us' }] : []),
   ];
 
   const handleNavClick = (to) => {
@@ -115,10 +116,12 @@ export default function Navbar() {
                   Sign in
                 </Link>
               )}
-              <Link to="/dashboard" className="btn-accent shrink-0 !text-sm !px-4 !py-2.5">
-                <BarChart3 className="w-4 h-4" />
-                <span className="hidden lg:inline">Dashboard</span>
-              </Link>
+              {SHOW_PUBLIC_DASHBOARD && (
+                <Link to="/dashboard" className="btn-accent shrink-0 !text-sm !px-4 !py-2.5">
+                  <BarChart3 className="w-4 h-4" />
+                  <span className="hidden lg:inline">Dashboard</span>
+                </Link>
+              )}
             </div>
 
             {/* Mobile hamburger */}
@@ -195,14 +198,16 @@ export default function Navbar() {
               )}
               {/* THEME_TOGGLE_DISABLED: dark mode is paused. */}
             </div>
-            <Link
-              to="/dashboard"
-              onClick={() => setMobileOpen(false)}
-              className="btn-accent w-full !py-3.5"
-            >
-              <Sparkles className="w-4 h-4" />
-              Open Dashboard
-            </Link>
+            {SHOW_PUBLIC_DASHBOARD && (
+              <Link
+                to="/dashboard"
+                onClick={() => setMobileOpen(false)}
+                className="btn-accent w-full !py-3.5"
+              >
+                <Sparkles className="w-4 h-4" />
+                Open Dashboard
+              </Link>
+            )}
           </div>
         </div>
       </div>

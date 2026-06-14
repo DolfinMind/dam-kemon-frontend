@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import BottomNav from './components/BottomNav';
@@ -7,6 +7,7 @@ import AssistantWidget from './components/AssistantWidget';
 import ScrollToTop from './components/ScrollToTop';
 import { AuthProvider } from './auth/AuthContext';
 import LoadingSpinner from './components/LoadingSpinner';
+import { SHOW_SAATHI, SHOW_PUBLIC_DASHBOARD } from './config/features';
 
 // Eager: the landing page + search are the hot path.
 import Home from './pages/Home';
@@ -18,15 +19,17 @@ const Browse = lazy(() => import('./pages/Browse'));
 const Protect = lazy(() => import('./pages/Protect'));
 const Compare = lazy(() => import('./pages/Compare'));
 const Sellers = lazy(() => import('./pages/Sellers'));
-const Dashboard = lazy(() => import('./pages/Dashboard'));
+// Gated by feature flags so the bundler drops these chunks entirely when the
+// feature is hidden — the page code never ships, not just unlinked.
+const Dashboard = SHOW_PUBLIC_DASHBOARD ? lazy(() => import('./pages/Dashboard')) : null;
 const SubmitShop = lazy(() => import('./pages/SubmitShop'));
 const SignIn = lazy(() => import('./pages/SignIn'));
 const Account = lazy(() => import('./pages/Account'));
-const FcommerceSignup = lazy(() => import('./pages/FcommerceSignup'));
-const Saathi = lazy(() => import('./pages/Saathi'));
-const SaathiSignup = lazy(() => import('./pages/SaathiSignup'));
-const SaathiDashboard = lazy(() => import('./pages/SaathiDashboard'));
-const SaathiProfile = lazy(() => import('./pages/SaathiProfile'));
+const FcommerceSignup = SHOW_SAATHI ? lazy(() => import('./pages/FcommerceSignup')) : null;
+const Saathi = SHOW_SAATHI ? lazy(() => import('./pages/Saathi')) : null;
+const SaathiSignup = SHOW_SAATHI ? lazy(() => import('./pages/SaathiSignup')) : null;
+const SaathiDashboard = SHOW_SAATHI ? lazy(() => import('./pages/SaathiDashboard')) : null;
+const SaathiProfile = SHOW_SAATHI ? lazy(() => import('./pages/SaathiProfile')) : null;
 const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'));
 const AdminIndexer = lazy(() => import('./pages/admin/AdminIndexer'));
 const AdminShops = lazy(() => import('./pages/admin/AdminShops'));
@@ -65,14 +68,18 @@ function App() {
                 <Route path="/compare" element={<Compare />} />
                 <Route path="/sellers" element={<Sellers />} />
                 <Route path="/submit-shop" element={<SubmitShop />} />
-                <Route path="/fcommerce/signup" element={<FcommerceSignup />} />
-                <Route path="/saathi" element={<Saathi />} />
-                <Route path="/saathi/signup" element={<SaathiSignup />} />
-                <Route path="/saathi/dashboard" element={<SaathiDashboard />} />
-                <Route path="/p/:slug" element={<SaathiProfile />} />
+                {SHOW_SAATHI && (
+                  <>
+                    <Route path="/fcommerce/signup" element={<FcommerceSignup />} />
+                    <Route path="/saathi" element={<Saathi />} />
+                    <Route path="/saathi/signup" element={<SaathiSignup />} />
+                    <Route path="/saathi/dashboard" element={<SaathiDashboard />} />
+                    <Route path="/p/:slug" element={<SaathiProfile />} />
+                  </>
+                )}
                 <Route path="/sign-in" element={<SignIn />} />
                 <Route path="/account" element={<Account />} />
-                <Route path="/dashboard" element={<Dashboard />} />
+                {SHOW_PUBLIC_DASHBOARD && <Route path="/dashboard" element={<Dashboard />} />}
                 <Route path="/admin" element={<AdminLayout />}>
                   <Route index element={<AdminIndexer />} />
                   <Route path="indexer" element={<AdminIndexer />} />
@@ -86,6 +93,8 @@ function App() {
                   <Route path="jobs" element={<AdminJobs />} />
                   <Route path="audit" element={<AdminAuditLog />} />
                 </Route>
+                {/* Hidden/unknown paths (incl. gated Saathi & dashboard) → home. */}
+                <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </Suspense>
           </main>

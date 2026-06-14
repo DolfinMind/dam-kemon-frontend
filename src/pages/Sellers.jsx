@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { getSellers } from '../api/api';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { SHOW_SAATHI } from '../config/features';
 import {
   ArrowLeft, BadgeCheck, MessageCircle, MapPin, Clock, Store, Search,
   ExternalLink, Sparkles, AlertTriangle, Globe, ShoppingBag,
@@ -121,9 +122,11 @@ export default function Sellers() {
           )}
         </p>
         <div className="mt-4 inline-flex flex-wrap gap-2">
-          <Link to="/fcommerce/signup" className="btn-primary text-sm">
-            <BadgeCheck className="w-4 h-4" /> List my F-commerce shop
-          </Link>
+          {SHOW_SAATHI && (
+            <Link to="/fcommerce/signup" className="btn-primary text-sm">
+              <BadgeCheck className="w-4 h-4" /> List my F-commerce shop
+            </Link>
+          )}
           <Link to="/submit-shop" className="btn-ghost text-sm">
             <Store className="w-4 h-4" /> Submit a website shop
           </Link>

@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Search, GitCompare, MessageCircle, BarChart3 } from 'lucide-react';
+import { SHOW_PUBLIC_DASHBOARD } from '../config/features';
 
 const tabs = [
   { to: '/',          icon: Home,          label: 'Home' },
   { to: '/search',    icon: Search,        label: 'Search' },
   { to: '/compare',   icon: GitCompare,    label: 'Compare' },
   { to: '/sellers',   icon: MessageCircle, label: 'Sellers' },
-  { to: '/dashboard', icon: BarChart3,     label: 'Dash' },
+  ...(SHOW_PUBLIC_DASHBOARD ? [{ to: '/dashboard', icon: BarChart3, label: 'Dash' }] : []),
 ];
 
 export default function BottomNav() {

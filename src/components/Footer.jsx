@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Sparkles } from 'lucide-react';
 import AlphaBadge from './AlphaBadge';
+import { SHOW_SAATHI, SHOW_PUBLIC_DASHBOARD } from '../config/features';
 
 export default function Footer() {
   return (
@@ -29,9 +30,9 @@ export default function Footer() {
             <Link to="/" className="text-cream/70 hover:text-cream text-sm transition-colors">Home</Link>
             <Link to="/compare" className="text-cream/70 hover:text-cream text-sm transition-colors">Compare</Link>
             <Link to="/sellers" className="text-cream/70 hover:text-cream text-sm transition-colors">Shops</Link>
-            <Link to="/saathi" className="text-cream/70 hover:text-cream text-sm transition-colors">Sell with us</Link>
+            {SHOW_SAATHI && <Link to="/saathi" className="text-cream/70 hover:text-cream text-sm transition-colors">Sell with us</Link>}
             <Link to="/submit-shop" className="text-cream/70 hover:text-cream text-sm transition-colors">Submit shop</Link>
-            <Link to="/dashboard" className="text-cream/70 hover:text-cream text-sm transition-colors">Dashboard</Link>
+            {SHOW_PUBLIC_DASHBOARD && <Link to="/dashboard" className="text-cream/70 hover:text-cream text-sm transition-colors">Dashboard</Link>}
           </nav>
         </div>
 
