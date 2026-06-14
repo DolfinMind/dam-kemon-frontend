@@ -26,6 +26,10 @@ jobs:
         run: npm run build
         env:
           VITE_API_URL: ${{ vars.VITE_API_URL }}
+          # Opaque API prefix. Unset → falls back to /api (no-op). Set the repo
+          # variable VITE_API_BASE=/_dk to switch the bundle to the cloaked path
+          # — only AFTER nginx maps /_dk/ → backend /api/ (deploy/nginx.conf.example).
+          VITE_API_BASE: ${{ vars.VITE_API_BASE }}
           VITE_ENV_LABEL: production
 
       - name: Copy build to temporary directory on server
