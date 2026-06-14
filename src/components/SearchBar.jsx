@@ -167,7 +167,7 @@ export default function SearchBar({ large = false, onSearch, placeholder, seller
       {large && !showDropdown && (
         <p className="mt-3 text-xs sm:text-sm text-gray flex items-center justify-center gap-1.5">
           <Sparkles className="w-3.5 h-3.5 text-yellow" />
-          {sellerCount ? `${Number(sellerCount).toLocaleString('en-IN')} BD shops indexed nightly` : '60+ BD shops indexed nightly'} · Type 2+ chars for suggestions
+          {sellerCount ? `Compare ${Number(sellerCount).toLocaleString('en-IN')} BD shops in one search` : 'Compare 60+ BD shops in one search'} · Type 2+ chars for suggestions
         </p>
       )}
     </div>

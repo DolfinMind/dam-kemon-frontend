@@ -354,8 +354,8 @@ export default function SearchResults() {
           </div>
           <h2 className="font-serif text-xl sm:text-2xl font-bold italic text-ink mb-2">No results yet</h2>
           <p className="text-gray text-sm max-w-md mx-auto">
-            Our catalog doesn't have anything matching <b>"{query}"</b> yet.
-            We crawl 60+ BD shops every night — try a broader term, or check back soon.
+            Our catalog doesn't have anything matching <b>"{query}"</b> yet —
+            try a broader term, or check back soon as we add more every day.
           </p>
         </div>
       ) : (

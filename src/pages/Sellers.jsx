@@ -29,7 +29,7 @@ const CATEGORY_FILTERS = [
 ];
 
 const PAGE_SIZE = 60;
-const avatarColors = ['#1877F2', '#FF4521', '#0F4D2A', '#FFD23F', '#7B61FF', '#15131A'];
+const avatarColors = ['#2563EB', '#4F46E5', '#047857', '#F59E0B', '#7C3AED', '#0F172A'];
 
 function formatFollowers(n) {
   if (n == null) return null;
@@ -115,7 +115,7 @@ export default function Sellers() {
           {loading ? 'Loading the seller directory…' : (
             <>
               <span className="font-mono font-bold text-ink">{sellers.length.toLocaleString('en-IN')}</span> sellers —{' '}
-              {typeCounts.website.toLocaleString('en-IN')} indexed shops,{' '}
+              {typeCounts.website.toLocaleString('en-IN')} online shops,{' '}
               {typeCounts.marketplace.toLocaleString('en-IN')} marketplace storefronts,{' '}
               {typeCounts.facebook.toLocaleString('en-IN')} F-commerce pages. Every one carries real prices we compare side by side.
             </>
@@ -220,7 +220,7 @@ export default function Sellers() {
               return (
                 <div key={s.id} className="card-soft p-4 sm:p-5 flex flex-col gap-3">
                   <div className="flex items-start gap-3">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center font-serif font-bold italic text-base sm:text-lg shrink-0" style={{ backgroundColor: avatarColor, color: avatarColor === '#FFD23F' ? '#15131A' : 'white' }}>
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center font-serif font-bold italic text-base sm:text-lg shrink-0" style={{ backgroundColor: avatarColor, color: avatarColor === '#F59E0B' ? '#0F172A' : 'white' }}>
                       {initials}
                     </div>
                     <div className="flex-1 min-w-0">

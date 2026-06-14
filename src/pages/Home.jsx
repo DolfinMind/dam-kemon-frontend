@@ -10,7 +10,7 @@ import ProtectShowcase from '../components/ProtectShowcase';
 import { SHOW_SAATHI } from '../config/features';
 import { TrustScore, deliveryText } from '../components/TrustBadge';
 import {
-  Sparkles, Database, ShieldCheck, Store, ArrowRight, Crown, Flame, Truck,
+  Sparkles, ShieldCheck, Store, ArrowRight, Crown, Flame, Truck,
   Radio, MessageSquare, BadgeCheck, ShoppingBag, TrendingDown,
 } from 'lucide-react';
 
@@ -92,16 +92,16 @@ export default function Home() {
   };
 
   const steps = [
-    { num: '01', title: 'Nightly index', desc: 'Every night at 3 AM we crawl Bangladesh shops and refresh prices into our catalog.', icon: Database },
-    { num: '02', title: 'Cross-shop merge', desc: 'When the same product is sold by multiple shops, we merge them so you see every seller in one row.', icon: ShieldCheck },
-    { num: '03', title: 'You search, instantly', desc: 'No live scraping at search time. The DB serves a complete comparison the moment you hit Enter.', icon: Sparkles },
+    { num: '01', title: 'Search once', desc: 'Type any product and see every shop that sells it — no more juggling a dozen browser tabs.', icon: Sparkles },
+    { num: '02', title: 'Compare side by side', desc: 'Every seller’s price, trust score and delivery promise lined up in a single, honest row.', icon: Store },
+    { num: '03', title: 'Buy with confidence', desc: 'Pick the lowest price from a seller you can trust — and never quietly overpay again.', icon: ShieldCheck },
   ];
 
   return (
     <div className="overflow-x-hidden">
       {/* ── Hero ───────────────────────────────────────────────── */}
       <section className="container-tight pt-5 sm:pt-7 lg:pt-9">
-        <div className="relative rounded-[1.75rem] sm:rounded-[2rem] overflow-hidden border border-line-strong bg-gradient-to-br from-lime-soft via-cream-soft to-yellow-soft p-6 sm:p-10 lg:p-14">
+        <div className="relative rounded-[1.75rem] sm:rounded-[2rem] overflow-hidden border border-line-strong bg-gradient-to-br from-lime-soft via-cream-soft to-blue-soft p-6 sm:p-10 lg:p-14">
           <div className="absolute -top-16 -right-16 w-72 h-72 rounded-full bg-red/10 blur-3xl pointer-events-none" />
           <div className="absolute -bottom-20 -left-12 w-80 h-80 rounded-full bg-lime/20 blur-3xl pointer-events-none" />
 
@@ -124,7 +124,7 @@ export default function Home() {
               <div className="mt-6 lg:hidden">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-green animate-pulse-dot" />
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-gray">Indexed right now</span>
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-gray">Right now on Damkemon</span>
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                   <StatTile value={stats?.totalProducts} label="products" loading={statsLoading} />
@@ -138,7 +138,7 @@ export default function Home() {
             <div className="hidden lg:flex justify-end">
               <div className="relative w-full max-w-sm">
                 <div className="rounded-3xl bg-surface/85 backdrop-blur border border-line p-6 shadow-[var(--shadow-soft)]">
-                  <div className="font-mono text-[11px] uppercase tracking-wider text-gray mb-3">Indexed right now</div>
+                  <div className="font-mono text-[11px] uppercase tracking-wider text-gray mb-3">Right now on Damkemon</div>
                   <div className="grid grid-cols-3 gap-2">
                     <StatTile value={stats?.totalProducts} label="products" loading={statsLoading} />
                     <StatTile value={stats?.totalSellers ?? stats?.totalSites} label="shops" loading={statsLoading} />
@@ -146,7 +146,7 @@ export default function Home() {
                   </div>
                   <div className="mt-4 pt-4 border-t border-line flex items-center gap-2 text-[12px] text-gray">
                     <span className="w-2 h-2 rounded-full bg-green animate-pulse-dot" />
-                    {live ? <>{fmtNum(live.searchesToday)} searches today · {fmtNum(live.viewsToday)} views</> : 'Live across BD shops'}
+                    {live ? <>{fmtNum(live.searchesToday)} searches today · {fmtNum(live.viewsToday)} views</> : 'Real prices, compared live'}
                   </div>
                 </div>
                 <div className="absolute -top-3 -left-3 bg-white py-1.5 px-3 rounded-full shadow-[var(--shadow-soft)] border border-line inline-flex items-center gap-1.5">
@@ -306,7 +306,7 @@ export default function Home() {
       {SHOW_SAATHI && (
       <section className="relative overflow-hidden">
         <div className="container-tight py-10 sm:py-14 lg:py-18">
-          <div className="rounded-3xl bg-gradient-to-br from-yellow-soft via-cream-soft to-lime-soft border border-line-strong p-6 sm:p-10 lg:p-14 relative overflow-hidden">
+          <div className="rounded-3xl bg-gradient-to-br from-blue-soft via-cream-soft to-lime-soft border border-line-strong p-6 sm:p-10 lg:p-14 relative overflow-hidden">
             <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-red/15 blur-3xl pointer-events-none" />
             <div className="absolute -bottom-20 -left-12 w-72 h-72 rounded-full bg-lime/20 blur-3xl pointer-events-none" />
 
@@ -347,12 +347,12 @@ export default function Home() {
         <div className="absolute -bottom-20 -left-20 w-96 h-96 rounded-full bg-lime/10 blur-3xl pointer-events-none" />
         <div className="container-tight relative">
           <div className="max-w-2xl mb-10 sm:mb-14">
-            <div className="tag-bar text-lime mb-3 sm:mb-4">How it works</div>
+            <div className="tag-bar text-lime mb-3 sm:mb-4">Why Damkemon</div>
             <h2 className="font-serif font-semibold leading-[1.02] tracking-[-0.025em] text-[clamp(1.85rem,5vw,3.5rem)]">
-              Pre-indexed. <em className="text-lime">Instant.</em>
+              Buy smarter. <em className="text-lime">Pay less.</em>
             </h2>
             <p className="text-cream/55 text-sm sm:text-base mt-3 max-w-xl">
-              No live scraping at search time. We do the slow, expensive work overnight so you get the cheapest BD seller in milliseconds.
+              Every shop in Bangladesh, every price, every trust signal — together in one place, so the smartest buy is always just one search away.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">

@@ -118,7 +118,7 @@ export default function Browse() {
           <p className="text-gray text-sm mt-1">
             {total != null
               ? <><span className="font-mono text-ink">{total.toLocaleString('en-IN')}</span> products{category ? ` in ${category}` : ' across every shop'} — cheapest seller, trust &amp; delivery on each.</>
-              : 'Every product we index, with the smart-buy signals on each.'}
+              : 'Every product on Damkemon, with the smart-buy signals on each.'}
           </p>
         </div>
 
@@ -188,8 +188,8 @@ export default function Browse() {
           <h2 className="font-serif text-xl sm:text-2xl font-bold italic text-ink mb-2">Nothing here yet</h2>
           <p className="text-gray text-sm max-w-md mx-auto">
             {category
-              ? <>No <b>{category}</b> products are indexed yet. Try another category or browse <button onClick={() => setCategory('')} className="text-ink underline">everything</button>.</>
-              : 'The catalog is empty. The indexer crawls 80+ BD shops nightly at 3 AM.'}
+              ? <>No <b>{category}</b> products here yet. Try another category or browse <button onClick={() => setCategory('')} className="text-ink underline">everything</button>.</>
+              : 'Nothing to show here yet — check back soon, we add new products every day.'}
           </p>
         </div>
       ) : (
