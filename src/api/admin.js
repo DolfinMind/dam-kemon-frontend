@@ -62,3 +62,18 @@ export const jobRuns = (id) => api.get(`/admin/jobs/${id}/runs`);
 export const recentSearches = (limit = 200) =>
   api.get('/admin/stats/recent-searches', { params: { limit } });
 export const searchLatency = () => api.get('/admin/stats/latency');
+
+// ─── Traffic analytics (full-funnel logging) ───
+export const analyticsOverview = () => api.get('/admin/analytics/overview');
+export const analyticsTopSearches = (days = 7, limit = 25) =>
+  api.get('/admin/analytics/top-searches', { params: { days, limit } });
+export const analyticsHourly = (days = 7) =>
+  api.get('/admin/analytics/hourly', { params: { days } });
+export const analyticsDailyUsers = (days = 14) =>
+  api.get('/admin/analytics/daily-users', { params: { days } });
+export const analyticsTopIps = (days = 7, limit = 25) =>
+  api.get('/admin/analytics/top-ips', { params: { days, limit } });
+export const analyticsTopPaths = (days = 7, limit = 25) =>
+  api.get('/admin/analytics/top-paths', { params: { days, limit } });
+export const analyticsRequests = (limit = 100) =>
+  api.get('/admin/analytics/requests', { params: { limit } });

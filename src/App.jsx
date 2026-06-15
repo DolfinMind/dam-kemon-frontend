@@ -1,5 +1,6 @@
-import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { lazy, Suspense, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { trackPageView } from './api/analytics';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import BottomNav from './components/BottomNav';
@@ -36,6 +37,7 @@ const AdminShops = lazy(() => import('./pages/admin/AdminShops'));
 const AdminPendingShops = lazy(() => import('./pages/admin/AdminPendingShops'));
 const AdminAuditLog = lazy(() => import('./pages/admin/AdminAuditLog'));
 const AdminStats = lazy(() => import('./pages/admin/AdminStats'));
+const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'));
 const AdminCatalog = lazy(() => import('./pages/admin/AdminCatalog'));
 const AdminReviews = lazy(() => import('./pages/admin/AdminReviews'));
 const AdminSearchLog = lazy(() => import('./pages/admin/AdminSearchLog'));
@@ -50,10 +52,21 @@ function PageFallback() {
   );
 }
 
+// Fires a page-view beacon on every SPA route change so the backend records the
+// full navigation journey, not just API calls. Renders nothing.
+function PageTracker() {
+  const location = useLocation();
+  useEffect(() => {
+    trackPageView(`${location.pathname}${location.search}`);
+  }, [location.pathname, location.search]);
+  return null;
+}
+
 function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <PageTracker />
       <AuthProvider>
         <div className="min-h-screen flex flex-col bg-cream">
           <Navbar />
@@ -88,6 +101,7 @@ function App() {
                   <Route path="catalog" element={<AdminCatalog />} />
                   <Route path="reviews" element={<AdminReviews />} />
                   <Route path="search-log" element={<AdminSearchLog />} />
+                  <Route path="traffic" element={<AdminAnalytics />} />
                   <Route path="stats" element={<AdminStats />} />
                   <Route path="cache" element={<AdminCache />} />
                   <Route path="jobs" element={<AdminJobs />} />

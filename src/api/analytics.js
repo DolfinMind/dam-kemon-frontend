@@ -58,3 +58,20 @@ export const trackClick = (productId, sellerSlug) => {
   if (!productId && !sellerSlug) return;
   fireBeacon('/events/click', { productId, sellerSlug });
 };
+
+// A single-page-app route change. Fired on every navigation so the backend sees
+// the full page-by-page journey, not just API calls. The referrer is the
+// browser's document.referrer (external entry) — internal hops are reconstructed
+// server-side from the sequence of page views per anon id.
+export const trackPageView = (path) => {
+  let p = path;
+  try {
+    if (!p) p = `${location.pathname}${location.search}`;
+  } catch {
+    /* no window */
+  }
+  if (!p) return;
+  let referer = null;
+  try { referer = document.referrer || null; } catch { /* ignore */ }
+  fireBeacon('/events/pageview', { path: p, referer });
+};
