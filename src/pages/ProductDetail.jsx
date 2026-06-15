@@ -267,86 +267,83 @@ export default function ProductDetail() {
       </button>
 
       {/* ── HERO: who/what (left) + the answer, "best deal" (right) ─────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 mb-6 sm:mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 mb-6 sm:mb-8 items-stretch">
         {/* Identity */}
-        <div className="lg:col-span-7 card-elev p-5 sm:p-6 flex flex-col">
-          <div className="flex items-start gap-4 sm:gap-5">
-            <div className="relative w-20 h-20 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-cream-soft to-cream flex items-center justify-center shrink-0 overflow-hidden ring-1 ring-line">
-              {product.imageUrl ? (
-                <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" onError={(e) => { e.target.style.display = 'none'; }} />
+        <div className="lg:col-span-7 card-elev overflow-hidden flex flex-col sm:flex-row">
+          {/* Product image — fills the panel so the card never reads as empty */}
+          <div className="relative sm:w-[42%] shrink-0 bg-surface-alt flex items-center justify-center p-6 sm:p-8 min-h-[200px]">
+            {product.imageUrl ? (
+              <img src={product.imageUrl} alt={product.name} className="max-w-full max-h-full object-contain" onError={(e) => { e.target.style.display = 'none'; }} />
+            ) : (
+              <span className="font-sans text-6xl font-extrabold text-ink/15">{(product.category || 'P')[0]}</span>
+            )}
+            {product.category && (
+              <span className="absolute top-4 left-4 chip chip-ghost !text-[10px] !py-0.5 capitalize">{product.category}</span>
+            )}
+          </div>
+
+          {/* Identity + actions, vertically centred */}
+          <div className="flex-1 min-w-0 p-5 sm:p-7 flex flex-col justify-center">
+            <span className={`self-start inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold mb-3 ${
+              sellerCount > 1 ? 'bg-acid-soft text-acid-deep' : 'bg-cream-soft text-ink/60'
+            }`}>
+              <Store className="w-3 h-3" />
+              {sellerCount === 0 ? 'No sellers' : sellerCount === 1 ? '1 seller' : `${sellerCount} sellers`}
+            </span>
+
+            <h1 className="font-sans text-2xl lg:text-[30px] font-extrabold text-ink leading-[1.1] tracking-[-0.025em]">
+              {product.name}
+            </h1>
+
+            <div className="flex items-center gap-2 mt-3 flex-wrap">
+              {product.averageRating > 0 ? (
+                <>
+                  <div className="flex items-center gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className={`w-4 h-4 ${i < Math.round(product.averageRating || 0) ? 'text-yellow fill-yellow' : 'text-line-strong'}`} />
+                    ))}
+                  </div>
+                  <span className="text-ink font-bold text-sm">{Number(product.averageRating).toFixed(1)}</span>
+                  {product.totalReviews > 0 && (
+                    <span className="text-gray text-xs">
+                      ({Number(product.totalReviews).toLocaleString('en-IN')} {product.totalReviews === 1 ? 'review' : 'reviews'})
+                    </span>
+                  )}
+                </>
               ) : (
-                <span className="font-sans text-4xl font-extrabold text-ink/15">{(product.category || 'P')[0]}</span>
+                <span className="text-gray text-xs">No reviews aggregated yet</span>
               )}
             </div>
 
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1.5 flex-wrap mb-2">
-                {product.category && (
-                  <span className="chip chip-ghost !text-[10px] !py-0.5 capitalize">{product.category}</span>
-                )}
-                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
-                  sellerCount > 1 ? 'bg-green text-cream' : 'bg-cream-soft text-ink/60'
-                }`}>
-                  <Store className="w-3 h-3" />
-                  {sellerCount === 0 ? 'No sellers' : sellerCount === 1 ? '1 seller' : `${sellerCount} sellers`}
-                </span>
-              </div>
-
-              <h1 className="font-sans text-xl sm:text-2xl lg:text-[28px] font-extrabold text-ink leading-[1.12] tracking-[-0.02em]">
-                {product.name}
-              </h1>
-
-              <div className="flex items-center gap-2 mt-2 flex-wrap">
-                {product.averageRating > 0 ? (
-                  <>
-                    <div className="flex items-center gap-0.5">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className={`w-4 h-4 ${i < Math.round(product.averageRating || 0) ? 'text-yellow fill-yellow' : 'text-line-strong'}`} />
-                      ))}
-                    </div>
-                    <span className="text-ink font-bold text-sm">{Number(product.averageRating).toFixed(1)}</span>
-                    {product.totalReviews > 0 && (
-                      <span className="text-gray text-xs">
-                        ({Number(product.totalReviews).toLocaleString('en-IN')} {product.totalReviews === 1 ? 'review' : 'reviews'})
-                      </span>
-                    )}
-                  </>
-                ) : (
-                  <span className="text-gray text-xs">No reviews aggregated yet</span>
-                )}
-              </div>
+            <div className="flex flex-wrap gap-2 mt-6">
+              <button
+                onClick={toggleWishlist}
+                disabled={wishlistBusy}
+                className={`btn-ghost ${inWishlist ? 'text-red' : ''}`}
+                title={user ? (inWishlist ? 'Remove from wishlist' : 'Add to wishlist') : 'Sign in to save'}
+              >
+                <Heart className={`w-4 h-4 ${inWishlist ? 'fill-red' : ''}`} />
+                {inWishlist ? 'Saved' : 'Wishlist'}
+              </button>
+              <button
+                onClick={openTrackPrice}
+                className={`btn-ghost ${alertSettings.alertsEnabled ? 'text-green' : ''}`}
+                title={alertSettings.alertsEnabled ? 'Edit price drop alert' : 'Notify me when price drops'}
+              >
+                <Bell className={`w-4 h-4 ${alertSettings.alertsEnabled ? 'fill-green/30' : ''}`} />
+                {alertSettings.alertsEnabled ? 'Tracking' : 'Track price'}
+              </button>
+              <button
+                onClick={() => {
+                  const url = window.location.href;
+                  if (navigator.share) navigator.share({ title: product.name, url }).catch(() => {});
+                  else navigator.clipboard?.writeText(url);
+                }}
+                className="btn-ghost"
+              >
+                <Share2 className="w-4 h-4" /> Share
+              </button>
             </div>
-          </div>
-
-          {/* Secondary actions — buying happens in the deal card / seller rows */}
-          <div className="flex flex-wrap gap-2 mt-auto pt-5 sm:pt-6 border-t border-line">
-            <button
-              onClick={toggleWishlist}
-              disabled={wishlistBusy}
-              className={`btn-ghost ${inWishlist ? 'text-red' : ''}`}
-              title={user ? (inWishlist ? 'Remove from wishlist' : 'Add to wishlist') : 'Sign in to save'}
-            >
-              <Heart className={`w-4 h-4 ${inWishlist ? 'fill-red' : ''}`} />
-              {inWishlist ? 'Saved' : 'Wishlist'}
-            </button>
-            <button
-              onClick={openTrackPrice}
-              className={`btn-ghost ${alertSettings.alertsEnabled ? 'text-green' : ''}`}
-              title={alertSettings.alertsEnabled ? 'Edit price drop alert' : 'Notify me when price drops'}
-            >
-              <Bell className={`w-4 h-4 ${alertSettings.alertsEnabled ? 'fill-green/30' : ''}`} />
-              {alertSettings.alertsEnabled ? 'Tracking' : 'Track price'}
-            </button>
-            <button
-              onClick={() => {
-                const url = window.location.href;
-                if (navigator.share) navigator.share({ title: product.name, url }).catch(() => {});
-                else navigator.clipboard?.writeText(url);
-              }}
-              className="btn-ghost"
-            >
-              <Share2 className="w-4 h-4" /> Share
-            </button>
           </div>
         </div>
 

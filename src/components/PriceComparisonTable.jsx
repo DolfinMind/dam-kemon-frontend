@@ -32,11 +32,13 @@ const slugOf = (it) => it.siteSlug || it.siteName;
 const offerKey = (it, i) => it.productUrl || `${slugOf(it)}#${it.sellerId || i}`;
 
 /** A small, consistent signal chip so every seller card reads the same way. */
-function Signal({ Icon, tone = 'text-gray', children, title }) {
+function Signal({ Icon, tone, children, title, dark }) {
   return (
     <span
       title={title}
-      className={`inline-flex items-center gap-1 rounded-md bg-cream-soft px-1.5 py-0.5 text-[11px] font-mono font-medium ${tone}`}
+      className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-mono font-medium ${
+        dark ? 'bg-cream/10' : 'bg-cream-soft'
+      } ${tone || (dark ? 'text-cream/85' : 'text-gray')}`}
     >
       {Icon && <Icon className="w-3 h-3 shrink-0" />}
       {children}
@@ -108,7 +110,7 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
                   sortMode === id ? 'bg-ink text-cream shadow-sm' : 'text-gray hover:text-ink'
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 ${sortMode === id ? 'text-lime' : ''}`} /> {label}
+                <Icon className={`w-3.5 h-3.5 ${sortMode === id ? 'text-acid' : ''}`} /> {label}
               </button>
             ))}
           </div>
@@ -146,7 +148,7 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
               onClick={() => trackClick(productId, it.siteSlug || it.siteName)}
               className={`group relative flex flex-col rounded-2xl p-4 sm:p-5 transition-all ${
                 isTop
-                  ? 'bg-green text-cream shadow-[var(--shadow-lift)] ring-1 ring-green'
+                  ? 'bg-ink text-cream shadow-[var(--shadow-lift)] ring-1 ring-ink/80'
                   : isFb
                   ? 'bg-white border border-blue/25 hover:border-blue/45 hover:shadow-[var(--shadow-soft)]'
                   : 'bg-white border border-line hover:border-line-strong hover:shadow-[var(--shadow-soft)]'
@@ -154,7 +156,7 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
             >
               {/* Rank ribbon (winner) or rank number */}
               {isTop ? (
-                <span className="self-start inline-flex items-center gap-1.5 bg-lime text-ink text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-2.5">
+                <span className="self-start inline-flex items-center gap-1.5 bg-acid text-ink text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-2.5">
                   {topIsValue ? <Award className="w-3 h-3" /> : <Crown className="w-3 h-3" />}
                   {topIsValue ? 'Best value' : 'Cheapest'}
                 </span>
@@ -166,7 +168,7 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
 
               {/* Seller identity */}
               <div className="pr-8">
-                <h4 className={`font-serif text-lg sm:text-xl font-bold leading-tight ${isTop ? 'text-cream' : 'text-ink'}`}>
+                <h4 className={`font-sans text-lg sm:text-xl font-extrabold tracking-tight leading-tight ${isTop ? 'text-cream' : 'text-ink'}`}>
                   {name}
                 </h4>
                 <div className="mt-1">
@@ -187,6 +189,7 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
                 {tier && (
                   <Signal
                     Icon={ShieldCheck}
+                    dark={isTop}
                     tone={isTop ? 'text-cream' : tier.text}
                     title={`${st ? 'Seller' : 'Shop'} trust ${score}/100 · ${tier.label}`}
                   >
@@ -195,28 +198,28 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
                   </Signal>
                 )}
                 {it.rating != null && it.rating > 0 && (
-                  <span className={`inline-flex items-center gap-1 rounded-md bg-cream-soft px-1.5 py-0.5 text-[11px] font-mono font-medium ${isTop ? 'text-cream' : 'text-ink'}`}>
-                    <Star className={`w-3 h-3 shrink-0 ${isTop ? 'text-lime fill-lime' : 'text-yellow fill-yellow'}`} />
+                  <span className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-mono font-medium ${isTop ? 'bg-cream/10 text-cream' : 'bg-cream-soft text-ink'}`}>
+                    <Star className={`w-3 h-3 shrink-0 ${isTop ? 'text-acid fill-acid' : 'text-yellow fill-yellow'}`} />
                     {Number(it.rating).toFixed(1)}
                     {it.reviewCount > 0 && <span className={isTop ? 'text-cream/60' : 'text-gray-soft'}>({it.reviewCount})</span>}
                     {it.soldCount > 0 && <span className={isTop ? 'text-cream/60' : 'text-gray-soft'}>· {fmtSold(it.soldCount)} sold</span>}
                   </span>
                 )}
                 {dtext && (
-                  <Signal Icon={Truck} tone={isTop ? 'text-cream' : 'text-gray'}>{dtext}</Signal>
+                  <Signal Icon={Truck} dark={isTop} tone={isTop ? 'text-cream' : 'text-gray'}>{dtext}</Signal>
                 )}
                 {mt?.codAvailable && (
-                  <Signal Icon={Banknote} tone={isTop ? 'text-cream' : 'text-gray'}>COD</Signal>
+                  <Signal Icon={Banknote} dark={isTop} tone={isTop ? 'text-cream' : 'text-gray'}>COD</Signal>
                 )}
                 {it.inStock === false && (
-                  <Signal tone={isTop ? 'text-cream' : 'text-red'}>Out of stock</Signal>
+                  <Signal dark={isTop} tone={isTop ? 'text-cream' : 'text-red'}>Out of stock</Signal>
                 )}
               </div>
 
               {/* Price + visit */}
               <div className={`mt-4 pt-3 border-t flex items-end justify-between gap-2 ${isTop ? 'border-cream/20' : 'border-line'}`}>
                 <div>
-                  <div className={`font-mono text-[26px] font-bold leading-none ${isTop ? 'text-lime' : 'text-ink'}`}>
+                  <div className={`font-mono text-[26px] font-bold leading-none ${isTop ? 'text-acid' : 'text-ink'}`}>
                     {formatPrice(it.price)}
                   </div>
                   <div className="mt-1.5 flex items-center gap-2 text-[11px] font-mono">
@@ -233,7 +236,7 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
                 <span
                   className={`inline-flex items-center gap-1.5 shrink-0 rounded-full px-3 py-2 text-xs font-bold transition-colors ${
                     isTop
-                      ? 'bg-lime text-ink'
+                      ? 'bg-acid text-ink'
                       : 'bg-cream-soft text-ink group-hover:bg-ink group-hover:text-cream'
                   }`}
                 >
