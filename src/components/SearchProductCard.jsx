@@ -60,15 +60,15 @@ export default function SearchProductCard({ product, rank, sponsored = false, qu
               onError={(e) => { e.target.style.display = 'none'; }}
             />
           ) : (
-            <span className="font-serif text-5xl italic text-ink/15">{(product.category || 'P')[0]}</span>
+            <span className="font-sans text-5xl font-extrabold text-ink/15">{(product.category || 'P')[0]}</span>
           )}
           {sponsored ? (
             <div className="absolute top-2 left-2 inline-flex items-center gap-1 bg-yellow text-ink px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider shadow-[0_4px_12px_-2px_rgba(0,0,0,0.18)]">
               <Megaphone className="w-3 h-3" /> Sponsored
             </div>
           ) : smartPick ? (
-            <div className="absolute top-2 left-2 inline-flex items-center gap-1 bg-lime text-ink px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider shadow-[0_4px_12px_-2px_rgba(190,242,100,0.6)]">
-              <Sparkles className="w-3 h-3" /> Smart pick
+            <div className="absolute top-2 left-2 inline-flex items-center gap-1 bg-acid text-ink px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider shadow-[0_4px_12px_-2px_rgba(159,226,49,0.6)]">
+              <Sparkles className="w-3 h-3" /> Smart pick{/* acid */}
             </div>
           ) : rank === 1 && (
             <div className="absolute top-2 left-2 inline-flex items-center gap-1 bg-ink text-cream px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider">
@@ -92,7 +92,7 @@ export default function SearchProductCard({ product, rank, sponsored = false, qu
             {product.category && (
               <span className="font-mono text-[10px] uppercase tracking-wider text-gray">{product.category}</span>
             )}
-            <h3 className="font-serif text-base sm:text-lg lg:text-xl font-semibold text-ink leading-snug group-hover:text-red transition-colors line-clamp-2">
+            <h3 className="font-sans text-base sm:text-lg lg:text-xl font-bold text-ink leading-snug group-hover:text-acid-deep transition-colors line-clamp-2">
               {product.name}
             </h3>
           </div>
@@ -128,7 +128,7 @@ export default function SearchProductCard({ product, rank, sponsored = false, qu
                   {isMulti ? `Compare ${sellerCount} sellers` : '1 seller'}
                 </span>
                 {isMulti && savingsPct >= 5 && (
-                  <span className="inline-flex items-center gap-0.5 bg-lime/30 text-green text-[11px] font-mono font-bold px-2 py-0.5 rounded-full">
+                  <span className="inline-flex items-center gap-0.5 bg-acid-soft text-acid-deep text-[11px] font-mono font-bold px-2 py-0.5 rounded-full">
                     <TrendingDown className="w-3 h-3" /> save {savingsPct}%
                   </span>
                 )}
@@ -148,7 +148,7 @@ export default function SearchProductCard({ product, rank, sponsored = false, qu
                       onClick={(e) => { e.stopPropagation(); trackClick(product.id, sp.siteSlug || sp.siteName); }}
                       className={`group/seller flex items-center gap-2 rounded-xl px-2.5 py-2 border transition-colors ${
                         isCheapest
-                          ? 'bg-lime/20 border-lime/50 hover:bg-lime/30'
+                          ? 'bg-acid-soft border-acid/40 hover:bg-acid/20'
                           : 'bg-white border-line hover:border-line-strong'
                       }`}
                     >
@@ -194,7 +194,7 @@ export default function SearchProductCard({ product, rank, sponsored = false, qu
                     ? <>Cheapest at <span className="font-semibold text-ink">{cheapest.siteName}</span></>
                     : <>Only on <span className="font-semibold text-ink">{cheapest.siteName}</span></>}
                 </span>
-                <span className="inline-flex items-center gap-1 text-xs font-semibold text-ink/80 group-hover:text-red transition-colors shrink-0">
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-ink/80 group-hover:text-acid-deep transition-colors shrink-0">
                   {isMulti ? `Compare ${sellerCount} prices` : 'View details'}
                   <ChevronRight className="w-4 h-4" />
                 </span>

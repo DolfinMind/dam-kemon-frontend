@@ -112,8 +112,8 @@ export default function Browse() {
           <div className="tag-bar mb-2 inline-flex items-center gap-1.5">
             <LayoutGrid className="w-3.5 h-3.5" /> Catalog
           </div>
-          <h1 className="font-serif font-semibold text-[clamp(1.6rem,4vw,2.5rem)] leading-tight tracking-tight">
-            Browse <em className="text-red">{category ? category : 'everything'}</em>
+          <h1 className="font-sans font-extrabold text-[clamp(1.6rem,4vw,2.5rem)] leading-tight tracking-[-0.02em]">
+            Browse <em className="text-acid-deep not-italic">{category ? category : 'everything'}</em>
           </h1>
           <p className="text-gray text-sm mt-1">
             {total != null

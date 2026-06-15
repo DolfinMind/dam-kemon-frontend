@@ -175,7 +175,7 @@ export default function SearchResults() {
         <div className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-cream-soft mb-6">
           <Search className="w-10 h-10 sm:w-12 sm:h-12 text-ink/30" />
         </div>
-        <h2 className="font-serif text-2xl sm:text-3xl font-bold italic text-ink mb-2">Search for products</h2>
+        <h2 className="font-sans text-2xl sm:text-3xl font-extrabold tracking-[-0.02em] text-ink mb-2">Search for products</h2>
         <p className="text-gray text-sm sm:text-base">Enter a product name to compare prices across sellers</p>
       </div>
     );
@@ -197,7 +197,7 @@ export default function SearchResults() {
             className="w-full pl-10 pr-24 py-3 bg-white border border-line-strong rounded-2xl text-sm sm:text-[15px] text-ink placeholder-gray-soft focus:outline-none focus:border-ink/40 focus:shadow-[0_0_0_4px_rgba(21,19,26,0.04)] transition-all"
             placeholder="Search again…"
           />
-          <button type="submit" className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-ink hover:bg-red text-cream text-xs font-semibold px-3.5 py-2 rounded-xl transition-colors">
+          <button type="submit" className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-acid hover:brightness-95 text-ink text-xs font-bold px-3.5 py-2 rounded-xl transition-all">
             Search
           </button>
         </form>
@@ -208,12 +208,12 @@ export default function SearchResults() {
       {!loading && !error && meta?.didYouMean && meta.didYouMean !== query && (
         <button
           onClick={() => setSearchParams({ q: meta.didYouMean })}
-          className="w-full mb-3 inline-flex items-center justify-between gap-3 px-4 py-3 rounded-2xl bg-yellow-soft border border-yellow text-left hover:bg-yellow/50 transition-colors group"
+          className="w-full mb-3 inline-flex items-center justify-between gap-3 px-4 py-3 rounded-2xl bg-acid-soft border border-acid/50 text-left hover:bg-acid/20 transition-colors group"
         >
           <span className="inline-flex items-center gap-2 text-sm">
-            <Lightbulb className="w-4 h-4 text-yellow shrink-0" />
+            <Lightbulb className="w-4 h-4 text-acid-deep shrink-0" />
             <span className="text-gray">Did you mean</span>
-            <span className="font-serif italic font-semibold text-ink truncate">{meta.didYouMean}</span>
+            <span className="font-sans font-bold text-ink truncate">{meta.didYouMean}</span>
             <span className="text-gray">?</span>
           </span>
           <span className="text-xs font-mono text-ink group-hover:underline shrink-0">Search this</span>
@@ -232,14 +232,14 @@ export default function SearchResults() {
               ) : (
                 <>
                   <span className="font-mono text-base sm:text-lg">{sorted.length}</span> {sorted.length === 1 ? 'product' : 'products'} for{' '}
-                  <span className="font-serif italic text-red">"{query}"</span>
+                  <span className="font-sans font-bold text-acid-deep">"{query}"</span>
                 </>
               )}
             </h1>
             {!loading && !error && meta?.detectedCategory && (
               <div className="flex flex-wrap items-center gap-2 mt-2">
                 <span className="chip chip-ghost !text-[10px] !py-1 !px-2.5">
-                  <Sparkles className="w-3 h-3 text-yellow" />
+                  <Sparkles className="w-3 h-3 text-acid-deep" />
                   Category: <b className="ml-1 capitalize">{meta.detectedCategory}</b>
                 </span>
                 {meta?.brands?.length > 0 && (
@@ -271,11 +271,11 @@ export default function SearchResults() {
             )}
           </div>
           {!loading && !error && stats && stats.savings > 0 && (
-            <div className="inline-flex items-center gap-2 bg-lime/30 border border-green/20 text-green px-3 py-2 rounded-xl shrink-0 self-start">
+            <div className="inline-flex items-center gap-2 bg-acid-soft border border-acid/50 text-acid-deep px-3 py-2 rounded-xl shrink-0 self-start">
               <Sparkles className="w-4 h-4" />
               <div className="text-[11px] sm:text-xs font-mono leading-tight">
                 <div className="font-bold">Save {formatPrice(stats.savings)}</div>
-                <div className="text-green/70 text-[10px]">cheapest vs priciest</div>
+                <div className="text-acid-deep/70 text-[10px]">cheapest vs priciest</div>
               </div>
             </div>
           )}
@@ -292,7 +292,7 @@ export default function SearchResults() {
                 onClick={() => setActiveFilter(chip.id)}
                 className={`shrink-0 font-mono text-[11px] sm:text-xs px-3 sm:px-3.5 py-2 rounded-full border transition-all whitespace-nowrap ${
                   activeFilter === chip.id
-                    ? 'bg-ink text-cream border-ink'
+                    ? 'bg-acid text-ink border-acid'
                     : 'bg-white text-ink/70 border-line hover:border-line-strong hover:text-ink'
                 }`}
               >
@@ -338,7 +338,7 @@ export default function SearchResults() {
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-red-soft mb-4">
               <AlertTriangle className="w-8 h-8 text-red" />
             </div>
-            <h2 className="font-serif text-xl sm:text-2xl font-bold italic text-ink mb-2">Search failed</h2>
+            <h2 className="font-sans text-xl sm:text-2xl font-extrabold tracking-[-0.02em] text-ink mb-2">Search failed</h2>
             <p className="text-gray text-sm max-w-md mx-auto mb-5">
               {error.message || 'Try again in a moment.'}
             </p>
@@ -352,7 +352,7 @@ export default function SearchResults() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-cream-soft mb-4">
             <Search className="w-8 h-8 text-ink/30" />
           </div>
-          <h2 className="font-serif text-xl sm:text-2xl font-bold italic text-ink mb-2">No results yet</h2>
+          <h2 className="font-sans text-xl sm:text-2xl font-extrabold tracking-[-0.02em] text-ink mb-2">No results yet</h2>
           <p className="text-gray text-sm max-w-md mx-auto">
             Our catalog doesn't have anything matching <b>"{query}"</b> yet —
             try a broader term, or check back soon as we add more every day.

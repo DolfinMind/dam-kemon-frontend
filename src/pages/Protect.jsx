@@ -126,8 +126,8 @@ export default function Protect() {
         <div className="tag-bar mb-2 mx-auto inline-flex items-center gap-1.5">
           <ShieldCheck className="w-3.5 h-3.5 text-green" /> Damkemon Protect
         </div>
-        <h1 className="font-serif font-semibold text-[clamp(1.8rem,5vw,3rem)] leading-[1.05] tracking-tight">
-          Buy from anyone.<br /><em className="text-red">Without the fear.</em>
+        <h1 className="font-sans font-extrabold text-[clamp(1.8rem,5vw,3rem)] leading-[1.02] tracking-[-0.03em]">
+          Buy from anyone.<br /><em className="text-acid-deep not-italic">Without the fear.</em>
         </h1>
         <p className="text-gray text-sm sm:text-base mt-3 max-w-xl mx-auto">
           Before you pay — even a Facebook page — tell us who, how much, and how you're paying.
@@ -299,7 +299,7 @@ function Verdict({ verdict, onOpen, canOpen, creating, created }) {
 
         {!created && (
           <button onClick={onOpen} disabled={!canOpen || creating}
-            className="btn-accent w-full disabled:opacity-50"
+            className="btn-acid w-full disabled:opacity-50"
             title={canOpen ? 'Open a protected order' : 'Add who you\'re buying from and what you\'re buying'}>
             {creating ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening…</> : <><Sparkles className="w-4 h-4" /> Open a Protected Order</>}
           </button>
@@ -317,8 +317,8 @@ function CreatedCard({ order, copied, onCopy }) {
       </div>
       <h3 className="font-serif text-xl font-bold text-ink">You're protected</h3>
       <p className="text-gray text-sm mb-3">Keep this code. When your order arrives, come back to confirm — or open a dispute if something's wrong.</p>
-      <button onClick={onCopy} className="inline-flex items-center gap-2 font-mono text-2xl font-bold tracking-wider bg-ink text-cream px-5 py-3 rounded-2xl hover:bg-red transition-colors">
-        {order.protectionCode} {copied ? <Check className="w-5 h-5 text-lime" /> : <Copy className="w-4 h-4 opacity-70" />}
+      <button onClick={onCopy} className="inline-flex items-center gap-2 font-mono text-2xl font-bold tracking-wider bg-ink text-cream px-5 py-3 rounded-2xl hover:bg-acid hover:text-ink transition-colors">
+        {order.protectionCode} {copied ? <Check className="w-5 h-5 text-acid" /> : <Copy className="w-4 h-4 opacity-70" />}
       </button>
       <p className="text-[11px] text-gray mt-3">Track or resolve it anytime below using this code.</p>
     </div>

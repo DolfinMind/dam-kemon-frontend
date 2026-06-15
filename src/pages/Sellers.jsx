@@ -108,8 +108,8 @@ export default function Sellers() {
       {/* Header */}
       <div className="mb-6 sm:mb-8">
         <div className="tag-bar mb-2 sm:mb-3"><Store className="w-4 h-4" /> Every seller on Damkemon</div>
-        <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold italic text-ink tracking-tight leading-[1.05]">
-          All <em className="text-red">sellers</em> across Bangladesh
+        <h1 className="font-sans text-3xl sm:text-4xl lg:text-5xl font-extrabold text-ink tracking-[-0.03em] leading-[1.02]">
+          All <em className="text-acid-deep not-italic">sellers</em> across Bangladesh
         </h1>
         <p className="text-gray text-sm sm:text-base mt-2 max-w-2xl">
           {loading ? 'Loading the seller directory…' : (

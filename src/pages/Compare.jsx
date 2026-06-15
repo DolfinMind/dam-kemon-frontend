@@ -167,8 +167,8 @@ export default function Compare() {
 
       <div className="mb-6 sm:mb-8">
         <div className="tag-bar mb-2 sm:mb-3"><Store className="w-4 h-4" /> Seller showdown</div>
-        <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold italic text-ink tracking-tight leading-[1.05]">
-          Compare <em className="text-red">shops side by side</em>
+        <h1 className="font-sans text-3xl sm:text-4xl lg:text-5xl font-extrabold text-ink tracking-[-0.03em] leading-[1.02]">
+          Compare <em className="text-acid-deep not-italic">shops side by side</em>
         </h1>
         <p className="text-gray text-sm sm:text-base mt-2">
           Stack up to 4 sellers on trust, catalog size, delivery, returns &amp; genuineness — here the seller wins, not the product.
@@ -231,7 +231,7 @@ export default function Compare() {
           <p className="text-gray text-sm max-w-md mx-auto mb-5">
             Add 2–4 sellers and see them stacked side by side: trust, catalog size, delivery speed, returns, COD &amp; genuineness.
           </p>
-          <button onClick={() => setPicker(true)} className="btn-accent inline-flex">
+          <button onClick={() => setPicker(true)} className="btn-acid inline-flex">
             <Plus className="w-4 h-4" /> Add your first shop
           </button>
         </div>
@@ -280,7 +280,7 @@ export default function Compare() {
                       {slugs.map((slug, i) => {
                         const isWin = crown === i;
                         return (
-                          <td key={slug} className={`px-4 sm:px-5 py-3 align-top ${isWin ? 'bg-lime/30' : ''}`}>
+                          <td key={slug} className={`px-4 sm:px-5 py-3 align-top ${isWin ? 'bg-acid-soft' : ''}`}>
                             <div className="flex items-center gap-1.5">
                               {isWin && <Crown className="w-3.5 h-3.5 text-yellow shrink-0" />}
                               <span className={isWin ? 'font-semibold text-green' : 'text-ink'}>

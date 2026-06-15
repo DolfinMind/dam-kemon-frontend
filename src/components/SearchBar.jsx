@@ -83,7 +83,7 @@ export default function SearchBar({ large = false, onSearch, placeholder, seller
     <div ref={containerRef} className="w-full max-w-2xl mx-auto relative">
       <form onSubmit={handleSubmit}>
         <div
-          className={`relative flex items-center bg-white rounded-2xl border transition-all duration-300 ${
+          className={`relative flex items-center bg-white rounded-full border transition-all duration-300 ${
             large ? 'p-1.5 pl-4 sm:pl-5 sm:p-2' : 'p-1 pl-3 sm:p-1.5 sm:pl-4'
           } ${
             focused
@@ -105,12 +105,12 @@ export default function SearchBar({ large = false, onSearch, placeholder, seller
           />
           <button
             type="submit"
-            className={`bg-ink text-cream font-semibold rounded-xl shrink-0 hover:bg-red active:scale-95 transition-all flex items-center gap-1.5 group ${
-              large ? 'px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-[15px]' : 'px-3.5 sm:px-5 py-2 text-sm'
+            aria-label="Search"
+            className={`bg-ink text-cream rounded-full shrink-0 hover:bg-acid hover:text-ink active:scale-95 transition-all flex items-center justify-center group ${
+              large ? 'w-11 h-11 sm:w-[52px] sm:h-[52px]' : 'w-9 h-9 sm:w-10 sm:h-10'
             }`}
           >
-            <span className={large ? 'hidden sm:inline' : 'hidden xs:inline'}>Compare</span>
-            <ArrowRight className={`${large ? 'w-4 h-4 sm:w-[18px] sm:h-[18px]' : 'w-4 h-4'} transition-transform group-hover:translate-x-0.5`} />
+            <ArrowRight className={`${large ? 'w-5 h-5' : 'w-4 h-4'} transition-transform group-hover:translate-x-0.5`} />
           </button>
         </div>
 

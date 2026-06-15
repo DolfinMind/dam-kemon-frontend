@@ -152,7 +152,7 @@ function SavedSearchesTab() {
               <Link to={`/search?q=${encodeURIComponent(s.query)}`} className="flex-1 min-w-0 group">
                 <div className="inline-flex items-center gap-1.5">
                   <SearchIcon className="w-3.5 h-3.5 text-gray" />
-                  <span className="font-semibold text-sm truncate group-hover:text-red transition-colors">{s.query}</span>
+                  <span className="font-semibold text-sm truncate group-hover:text-acid-deep transition-colors">{s.query}</span>
                 </div>
                 {s.lastSeenLowest && (
                   <span className="block text-[11px] text-gray mt-0.5">cheapest seen ৳{Number(s.lastSeenLowest).toLocaleString('en-IN')}</span>
@@ -198,7 +198,7 @@ function HistoryTab() {
     <ul className="space-y-1">
       {items.map((h, i) => (
         <li key={i} className="flex items-center justify-between py-2 border-b border-line/50">
-          <Link to={`/search?q=${encodeURIComponent(h.query)}`} className="text-sm hover:text-red truncate">{h.query}</Link>
+          <Link to={`/search?q=${encodeURIComponent(h.query)}`} className="text-sm hover:text-acid-deep truncate">{h.query}</Link>
           <span className="text-[11px] text-gray font-mono ml-2 whitespace-nowrap">
             {h.resultCount ?? 0} results · {new Date(h.ts).toLocaleDateString()}
           </span>
@@ -257,7 +257,7 @@ function WishlistTab() {
               {w.product ? (
                 <>
                   <Link to={`/product/${w.product.id || w.product.slug}`} className="block">
-                    <span className="font-serif text-sm font-semibold line-clamp-2 hover:text-red transition-colors">{w.product.name}</span>
+                    <span className="font-serif text-sm font-semibold line-clamp-2 hover:text-acid-deep transition-colors">{w.product.name}</span>
                   </Link>
                   <div className="mt-1 inline-flex items-baseline gap-2">
                     <span className="font-mono text-base font-bold">{fmt(w.product.lowestPrice)}</span>
@@ -338,7 +338,7 @@ function NotificationsTab() {
       {unread > 0 && (
         <div className="flex items-center justify-between mb-3 px-1">
           <span className="text-[12px] text-gray font-mono">{unread} unread</span>
-          <button onClick={markRead} className="text-[12px] font-semibold text-ink hover:text-red transition-colors">Mark all read</button>
+          <button onClick={markRead} className="text-[12px] font-semibold text-ink hover:text-acid-deep transition-colors">Mark all read</button>
         </div>
       )}
       <ul className="space-y-2">
@@ -347,7 +347,7 @@ function NotificationsTab() {
             {n.productImageUrl && <img src={n.productImageUrl} alt="" className="w-14 h-14 rounded-lg object-cover shrink-0" />}
             <div className="flex-1 min-w-0">
               <Link to={`/product/${n.productId}`} className="block">
-                <span className="font-serif text-sm font-semibold line-clamp-1 hover:text-red transition-colors">{n.productName}</span>
+                <span className="font-serif text-sm font-semibold line-clamp-1 hover:text-acid-deep transition-colors">{n.productName}</span>
               </Link>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
                 <span className="inline-flex items-center gap-1 text-[11px] font-mono text-green font-bold">

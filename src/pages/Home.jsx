@@ -1,18 +1,24 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   getDashboardStats, getHotDrops, getAllProducts, getTrendingSearches, getLiveStats,
   getShops, getShopTrust,
 } from '../api/api';
+import { BarChart, Bar, ResponsiveContainer, Cell } from 'recharts';
 import SearchBar from '../components/SearchBar';
 import AlphaBadge from '../components/AlphaBadge';
-import ProtectShowcase from '../components/ProtectShowcase';
-import { SHOW_SAATHI } from '../config/features';
 import { TrustScore, deliveryText } from '../components/TrustBadge';
 import {
-  Sparkles, ShieldCheck, Store, ArrowRight, Crown, Flame, Truck,
-  Radio, MessageSquare, BadgeCheck, ShoppingBag, TrendingDown,
+  ArrowRight, ArrowUpRight, Play, Sparkles, ShieldCheck, Store, Crown, Flame,
+  TrendingDown, TrendingUp, Search, Plus, Minus, Database, Layers, Zap, Star,
+  BadgeCheck, Truck,
 } from 'lucide-react';
+// Phosphor duotone for the landing's feature icons — adds a premium, two-tone
+// weight where Lucide's flat line look is more utilitarian.
+import {
+  MagnifyingGlass as PhSearch, Storefront as PhStore,
+  ShieldCheck as PhShieldCheck, SealCheck as PhSealCheck,
+} from '@phosphor-icons/react';
 
 function fmt(p) {
   if (p == null) return 'N/A';
@@ -46,31 +52,32 @@ export default function Home() {
   const [trending, setTrending] = useState([]);
   const [deals, setDeals] = useState([]);
   const [shops, setShops] = useState([]);
+  const [tab, setTab] = useState('All');
 
   useEffect(() => {
     getDashboardStats().then((r) => setStats(r.data)).catch(() => {}).finally(() => setStatsLoading(false));
     getLiveStats().then((r) => setLive(r.data)).catch(() => {});
     getTrendingSearches(10).then((r) => setTrending(Array.isArray(r.data) ? r.data : [])).catch(() => {});
 
-    // Top-deals grid: prefer real hot-drops; fall back to featured catalog with
+    // Examples grid: prefer real hot-drops; fall back to featured catalog with
     // cross-seller savings so the grid is never empty.
-    getHotDrops(8)
+    getHotDrops(10)
       .then((r) => {
         const drops = Array.isArray(r.data) ? r.data : [];
-        if (drops.length >= 4) { setDeals(drops.slice(0, 8).map(fromDrop)); return; }
-        return getAllProducts(0, 12).then((res) => {
+        if (drops.length >= 4) { setDeals(drops.slice(0, 10).map(fromDrop)); return; }
+        return getAllProducts(0, 14).then((res) => {
           const ps = (res.data?.content || []).filter((p) => p.lowestPrice != null && p.imageUrl);
-          setDeals(ps.slice(0, 8).map(fromProduct));
+          setDeals(ps.slice(0, 10).map(fromProduct));
         });
       })
       .catch(() => {
-        getAllProducts(0, 12).then((res) => {
+        getAllProducts(0, 14).then((res) => {
           const ps = (res.data?.content || []).filter((p) => p.lowestPrice != null && p.imageUrl);
-          setDeals(ps.slice(0, 8).map(fromProduct));
+          setDeals(ps.slice(0, 10).map(fromProduct));
         }).catch(() => {});
       });
 
-    // Sidebar: most-trusted well-stocked shops (real trust scores).
+    // Most-trusted well-stocked shops (real trust scores).
     getShops().then((r) => {
       const dir = (Array.isArray(r.data) ? r.data : []).filter((s) => s.productCount > 0).slice(0, 14);
       if (!dir.length) return;
@@ -91,286 +98,396 @@ export default function Home() {
     if (query.trim()) navigate(`/search?q=${encodeURIComponent(query.trim())}`);
   };
 
-  const steps = [
-    { num: '01', title: 'Search once', desc: 'Type any product and see every shop that sells it — no more juggling a dozen browser tabs.', icon: Sparkles },
-    { num: '02', title: 'Compare side by side', desc: 'Every seller’s price, trust score and delivery promise lined up in a single, honest row.', icon: Store },
-    { num: '03', title: 'Buy with confidence', desc: 'Pick the lowest price from a seller you can trust — and never quietly overpay again.', icon: ShieldCheck },
-  ];
+  // Category tabs for the "examples" band, with live counts (MAC: "All Work [20]").
+  const tabs = useMemo(() => {
+    const counts = deals.reduce((m, d) => {
+      const c = (d.category || '').trim();
+      if (c) m[c] = (m[c] || 0) + 1;
+      return m;
+    }, {});
+    const top = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([c]) => c);
+    return ['All', ...top];
+  }, [deals]);
+
+  const shownDeals = useMemo(
+    () => (tab === 'All' ? deals : deals.filter((d) => (d.category || '') === tab)),
+    [deals, tab],
+  );
 
   return (
     <div className="overflow-x-hidden">
-      {/* ── Hero ───────────────────────────────────────────────── */}
-      <section className="container-tight pt-5 sm:pt-7 lg:pt-9">
-        <div className="relative rounded-[1.75rem] sm:rounded-[2rem] overflow-hidden border border-line-strong bg-gradient-to-br from-lime-soft via-cream-soft to-blue-soft p-6 sm:p-10 lg:p-14">
-          <div className="absolute -top-16 -right-16 w-72 h-72 rounded-full bg-red/10 blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-20 -left-12 w-80 h-80 rounded-full bg-lime/20 blur-3xl pointer-events-none" />
+      {/* ── Hero ─────────────────────────────────────────────────── */}
+      <section className="container-tight pt-6 sm:pt-10 lg:pt-14">
+        <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-12 items-center">
+          {/* Left — headline + search */}
+          <div>
+            <div className="flex items-center gap-2 mb-5">
+              <span className="chip chip-ghost !text-ink/70">
+                <Store className="w-3.5 h-3.5 text-acid-deep" /> Bangladesh price comparison
+              </span>
+              <AlphaBadge />
+            </div>
+            <h1 className="font-sans font-extrabold leading-[0.98] tracking-[-0.035em] text-[clamp(2.6rem,7vw,5rem)] text-ink">
+              The real price,<br />
+              across <span className="relative inline-block">all of
+                <span className="absolute left-0 -bottom-1 w-full h-[0.18em] bg-acid rounded-full" />
+              </span> Bangladesh.
+            </h1>
+            <p className="text-[15px] sm:text-lg text-ink/65 max-w-lg mt-6 mb-7 leading-relaxed">
+              One search compares every seller's price <span className="font-semibold text-ink">and</span> trust score,
+              side by side. The cheapest, safest buy wins — across{' '}
+              <span className="font-semibold text-ink">{stats?.totalSellers ? fmtNum(stats.totalSellers) : (stats?.totalSites ?? '2,000+')} BD shops</span>.
+            </p>
 
-          <div className="relative grid lg:grid-cols-2 gap-8 lg:gap-10 items-center">
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <div className="tag-bar"><Store className="w-3.5 h-3.5" /> Bangladesh price comparison</div>
-                <AlphaBadge />
-              </div>
-              <h1 className="font-serif font-semibold leading-[0.95] tracking-[-0.03em] text-[clamp(2.4rem,6.5vw,4.5rem)] text-ink">
-                <em className="text-red font-medium">Dam kemon,</em><br />really?
-              </h1>
-              <p className="text-[15px] sm:text-lg text-ink/70 max-w-xl mt-4 mb-6 leading-relaxed">
-                One search across <span className="font-semibold text-ink">{stats?.totalSellers ? fmtNum(stats.totalSellers) : (stats?.totalSites ?? '2,000+')} Bangladesh shops</span> —
-                every seller's price &amp; trust, side by side. The smart buy wins.
-              </p>
+            <div className="max-w-lg">
               <SearchBar large onSearch={handleSearch} sellerCount={stats?.totalSellers} />
+            </div>
 
-              {/* Compact live index for mobile/tablet — desktop shows the full panel on the right. */}
-              <div className="mt-6 lg:hidden">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green animate-pulse-dot" />
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-gray">Right now on Damkemon</span>
+            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
+              <a href="#how" className="btn-ghost group">
+                <Play className="w-3.5 h-3.5 fill-current" /> See how it works
+              </a>
+              <div className="flex items-center gap-2 text-[13px] text-ink/55">
+                <span className="w-2 h-2 rounded-full bg-acid animate-pulse-dot" />
+                {live ? <>{fmtNum(live.searchesToday)} searches today</> : 'Live across BD shops'}
+              </div>
+            </div>
+          </div>
+
+          {/* Right — stat block + green growth graph (MAC's 230+ card + bar chart) */}
+          <div className="relative">
+            <div className="grid grid-cols-2 gap-4 sm:gap-5">
+              <StatBlock
+                value={stats?.totalProducts}
+                loading={statsLoading}
+                label="products compared across Bangladesh's shops"
+              />
+              <StatBlock
+                value={stats?.totalSellers ?? stats?.totalSites}
+                loading={statsLoading}
+                label="shops compared, with live prices side by side"
+                tone="acid"
+              />
+            </div>
+
+            <div className="mt-4 sm:mt-5 rounded-[1.75rem] bg-ink text-cream p-6 sm:p-7 relative overflow-hidden">
+              <div className="absolute -top-10 -right-8 w-44 h-44 rounded-full bg-acid/15 blur-3xl pointer-events-none" />
+              <div className="relative flex items-start justify-between gap-4 mb-5">
+                <div>
+                  <div className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-cream/60 mb-2">
+                    <span className="w-5 h-px bg-acid" /> Real prices, tracked
+                  </div>
+                  <h3 className="font-sans font-bold text-xl sm:text-2xl leading-snug max-w-[15ch]">
+                    Watch real BD prices &amp; savings
+                  </h3>
                 </div>
-                <div className="grid grid-cols-3 gap-2">
-                  <StatTile value={stats?.totalProducts} label="products" loading={statsLoading} />
-                  <StatTile value={stats?.totalSellers ?? stats?.totalSites} label="shops" loading={statsLoading} />
-                  <StatTile value={stats?.totalPricePoints} label="prices" loading={statsLoading} />
-                </div>
+                <span className="inline-flex items-center gap-1 text-[12px] font-bold text-ink bg-acid rounded-full px-2.5 py-1 shrink-0">
+                  <TrendingUp className="w-3.5 h-3.5" /> live
+                </span>
+              </div>
+              <GrowthBars total={stats?.totalPricePoints} />
+              <div className="relative mt-4 flex items-baseline gap-2">
+                <span className="font-sans text-3xl sm:text-4xl font-extrabold tabular-nums">
+                  <CountUp value={stats?.totalPricePoints} />
+                </span>
+                <span className="text-cream/55 text-sm">price points and climbing</span>
               </div>
             </div>
 
-            {/* Live "indexed now" panel */}
-            <div className="hidden lg:flex justify-end">
-              <div className="relative w-full max-w-sm">
-                <div className="rounded-3xl bg-surface/85 backdrop-blur border border-line p-6 shadow-[var(--shadow-soft)]">
-                  <div className="font-mono text-[11px] uppercase tracking-wider text-gray mb-3">Right now on Damkemon</div>
-                  <div className="grid grid-cols-3 gap-2">
-                    <StatTile value={stats?.totalProducts} label="products" loading={statsLoading} />
-                    <StatTile value={stats?.totalSellers ?? stats?.totalSites} label="shops" loading={statsLoading} />
-                    <StatTile value={stats?.totalPricePoints} label="prices" loading={statsLoading} />
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-line flex items-center gap-2 text-[12px] text-gray">
-                    <span className="w-2 h-2 rounded-full bg-green animate-pulse-dot" />
-                    {live ? <>{fmtNum(live.searchesToday)} searches today · {fmtNum(live.viewsToday)} views</> : 'Real prices, compared live'}
-                  </div>
-                </div>
-                <div className="absolute -top-3 -left-3 bg-white py-1.5 px-3 rounded-full shadow-[var(--shadow-soft)] border border-line inline-flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-green" />
-                  <span className="text-[11px] font-mono font-bold text-ink">Verified trust</span>
-                </div>
-                <div className="absolute -bottom-3 -right-3 bg-ink text-cream py-1.5 px-3 rounded-full shadow-[var(--shadow-soft)] inline-flex items-center gap-1.5">
-                  <Crown className="w-3.5 h-3.5 text-yellow" />
-                  <span className="text-[11px] font-mono font-bold">Cheapest wins</span>
-                </div>
-              </div>
+            <div className="absolute -bottom-3 -left-3 bg-surface py-1.5 px-3 rounded-full shadow-[var(--shadow-lift)] border border-line inline-flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-acid-deep" />
+              <span className="text-[11px] font-mono font-bold text-ink">No fake prices</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Trending now (real search signal) ──────────────────── */}
-      {trending.length >= 3 && (
-        <section className="container-tight pt-6 sm:pt-8">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="w-2 h-2 rounded-full bg-red animate-pulse-dot" />
-            <span className="font-mono text-[11px] uppercase tracking-wider text-gray">Trending now</span>
-            {live?.searchesToday > 0 && (
-              <span className="text-[11px] text-gray-soft">· {fmtNum(live.searchesToday)} searches today</span>
-            )}
+      {/* ── Trust marquee ────────────────────────────────────────── */}
+      <section className="container-tight pt-12 sm:pt-16">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-gray shrink-0 max-w-[10rem] leading-relaxed">
+            Comparing Bangladesh's biggest shops
+          </p>
+          <div className="relative flex-1 overflow-hidden mask-fade">
+            <div className="flex items-center gap-8 sm:gap-12 animate-scroll w-max">
+              {[...MARQUEE, ...MARQUEE].map((name, i) => (
+                <span key={i} className="font-sans font-bold text-lg sm:text-xl text-ink/35 whitespace-nowrap">
+                  {name}
+                </span>
+              ))}
+            </div>
           </div>
-          <div className="flex gap-2.5 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 pb-1">
-            {trending.map((t, i) => (
-              <Link
-                key={t.query}
-                to={`/search?q=${encodeURIComponent(t.query)}`}
-                className="shrink-0 inline-flex items-center gap-2 bg-white border border-line rounded-2xl px-3.5 py-2.5 hover:border-ink hover:shadow-[var(--shadow-soft)] transition-all group"
-              >
-                <span className="font-mono text-[11px] text-gray-soft">{String(i + 1).padStart(2, '0')}</span>
-                <span className="text-sm font-semibold text-ink capitalize group-hover:text-red transition-colors truncate max-w-[170px]">{t.query}</span>
-                <span className="font-mono text-[10px] text-gray bg-cream-soft rounded-full px-1.5 py-0.5">{t.hits}</span>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
+        </div>
+      </section>
 
-      {/* ── Top deals + trusted-shops sidebar ──────────────────── */}
-      <section className="container-tight py-8 sm:py-12 lg:py-14">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-          {/* Deals grid */}
-          <div className="lg:col-span-2">
-            <div className="flex items-end justify-between mb-4 sm:mb-5">
-              <div>
-                <div className="tag-bar mb-2 inline-flex items-center gap-1.5 text-red">
-                  <Flame className="w-3.5 h-3.5" /> Top deals right now
-                </div>
-                <h2 className="font-serif font-semibold text-[clamp(1.5rem,3.5vw,2.25rem)] leading-tight">
-                  Where you <em className="text-red">save most</em>
-                </h2>
+      {/* ── "Out of the box" intro + feature cards ───────────────── */}
+      <section className="container-tight pt-16 sm:pt-24">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-16 items-start">
+          <h2 className="font-sans font-extrabold text-[clamp(1.8rem,4.5vw,3rem)] leading-[1.05] tracking-[-0.03em] text-ink">
+            One search, every seller — no spreadsheets, no scams.
+          </h2>
+          <p className="text-ink/65 text-[15px] sm:text-lg leading-relaxed lg:pt-2">
+            We bring every shop in Bangladesh together in one place, line up the same product across every
+            seller, and score each shop for trust. So the moment you search, the cheapest and safest seller
+            is already waiting — real prices, never made-up ones.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-5 mt-10">
+          {/* Stat card (MAC's 920+) */}
+          <div className="rounded-[1.75rem] bg-ink text-cream p-7 sm:p-9 relative overflow-hidden min-h-[260px] flex flex-col justify-between">
+            <div className="absolute -bottom-12 -left-10 w-56 h-56 rounded-full bg-acid/10 blur-3xl pointer-events-none" />
+            <div className="relative">
+              <div className="font-sans text-[clamp(3rem,7vw,4.5rem)] font-extrabold leading-none tracking-tight">
+                <CountUp value={stats?.totalPricePoints} />
+                <span className="text-acid">+</span>
               </div>
-              <Link to="/browse" className="text-sm font-semibold text-ink/70 hover:text-ink inline-flex items-center gap-1.5 shrink-0">
-                Browse all <ArrowRight className="w-4 h-4" />
-              </Link>
+              <p className="text-cream/60 text-sm mt-2 max-w-[24ch]">prices compared so far — and growing every day</p>
+            </div>
+            <div className="relative flex items-center gap-2.5 mt-6">
+              {[PhStore, PhSearch, PhShieldCheck, PhSealCheck].map((Icon, i) => (
+                <span key={i} className="w-11 h-11 rounded-2xl bg-cream/10 flex items-center justify-center">
+                  <Icon className="w-5 h-5 text-acid" weight="duotone" />
+                </span>
+              ))}
+              <span className="w-11 h-11 rounded-2xl bg-acid text-ink flex items-center justify-center font-bold">
+                <Plus className="w-5 h-5" />
+              </span>
+            </div>
+          </div>
+
+          {/* HOW WE WORK card */}
+          <a href="#how" className="group rounded-[1.75rem] bg-neutral-bg border border-line p-7 sm:p-9 relative overflow-hidden min-h-[260px] flex flex-col justify-between hover:border-line-strong transition-colors">
+            <div className="flex items-center justify-between">
+              <span className="font-sans font-extrabold text-[clamp(1.4rem,3.5vw,2.25rem)] tracking-[0.12em] text-ink/85 leading-none">
+                HOW&nbsp;WE&nbsp;WORK
+              </span>
+            </div>
+            <p className="text-ink/55 text-sm max-w-[34ch]">
+              Search, compare, and buy with confidence — the three steps that put every BD seller in one honest row.
+            </p>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold text-ink inline-flex items-center gap-1.5">
+                Watch the flow <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </span>
+              <span className="w-16 h-16 rounded-full bg-acid flex items-center justify-center shadow-[0_10px_30px_-8px_rgba(159,226,49,0.6)] group-hover:scale-105 transition-transform">
+                <Play className="w-6 h-6 text-ink fill-ink ml-0.5" />
+              </span>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      {/* ── Real-world examples (dark band) ──────────────────────── */}
+      <section className="container-tight pt-16 sm:pt-24">
+        <div className="rounded-[2rem] bg-ink text-cream p-6 sm:p-10 lg:p-14 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-[40rem] h-[40rem] rounded-full bg-acid/[0.07] blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-32 -left-20 w-96 h-96 rounded-full bg-red/10 blur-3xl pointer-events-none" />
+
+          <div className="relative">
+            <h2 className="font-sans font-extrabold text-center text-[clamp(1.6rem,4vw,3rem)] leading-[1.08] tracking-[-0.025em] max-w-3xl mx-auto">
+              Real deals shoppers are <span className="text-acid">saving on</span> right now.
+            </h2>
+
+            {/* Pill tabs */}
+            <div className="flex flex-wrap items-center justify-center gap-2.5 mt-7 mb-9">
+              {tabs.map((t) => {
+                const count = t === 'All' ? deals.length : deals.filter((d) => (d.category || '') === t).length;
+                const active = tab === t;
+                return (
+                  <button
+                    key={t}
+                    onClick={() => setTab(t)}
+                    className={`pill-tab ${active ? 'bg-acid text-ink' : 'bg-cream/[0.08] text-cream/70 hover:bg-cream/[0.14]'}`}
+                  >
+                    {t} <span className={active ? 'text-ink/55' : 'text-cream/40'}>[{count}]</span>
+                  </button>
+                );
+              })}
             </div>
 
-            <div className="columns-2 gap-4 sm:gap-5">
-              {deals.map((d, i) => (
+            {/* Example cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              {shownDeals.slice(0, 8).map((d) => (
                 <Link
                   key={d.id}
                   to={`/product/${d.id || d.slug}`}
                   state={d.product ? { product: d.product } : undefined}
-                  className="card-soft overflow-hidden flex flex-col group hover:shadow-[var(--shadow-lift)] hover:border-line-strong transition-all mb-4 sm:mb-5 break-inside-avoid"
+                  className="group rounded-2xl bg-cream/[0.05] border border-cream/10 overflow-hidden hover:border-acid/40 hover:bg-cream/[0.08] transition-all"
                 >
-                  <div className={`relative ${['h-52 sm:h-60', 'h-40 sm:h-44', 'h-48 sm:h-56', 'h-44 sm:h-52'][i % 4]} bg-cream-soft flex items-center justify-center overflow-hidden`}>
+                  <div className="relative aspect-square bg-cream/[0.04] flex items-center justify-center overflow-hidden">
                     {d.imageUrl ? (
-                      <img src={d.imageUrl} alt={d.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" onError={(e) => { e.target.style.display = 'none'; }} />
+                      <img src={d.imageUrl} alt={d.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.05]" onError={(e) => { e.target.style.display = 'none'; }} />
                     ) : (
-                      <span className="font-serif text-5xl italic text-ink/15">{(d.category || 'P')[0]}</span>
+                      <span className="font-sans text-5xl font-bold text-cream/15">{(d.category || 'P')[0]}</span>
                     )}
                     {d.pct > 0 && (
-                      <span className={`absolute top-2.5 left-2.5 inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-1 rounded-full ${
-                        d.kind === 'drop' ? 'bg-red text-white' : 'bg-lime text-ink'
-                      }`}>
-                        <TrendingDown className="w-3 h-3" /> {d.kind === 'drop' ? `${d.pct}% drop` : `save ${d.pct}%`}
+                      <span className="absolute top-2 left-2 inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-1 rounded-full bg-acid text-ink">
+                        <TrendingDown className="w-3 h-3" /> {d.kind === 'drop' ? `${d.pct}%` : `save ${d.pct}%`}
                       </span>
                     )}
                   </div>
-                  <div className="p-4 flex-1 flex flex-col">
-                    {d.category && <span className="font-mono text-[10px] uppercase tracking-wider text-gray mb-1">{d.category}</span>}
-                    <h3 className="font-serif text-[15px] sm:text-base font-semibold text-ink leading-snug line-clamp-2 group-hover:text-red transition-colors">{d.name}</h3>
-                    <div className="mt-3 flex items-baseline gap-2">
-                      <span className="font-mono text-lg sm:text-xl font-bold text-ink">{fmt(d.price)}</span>
-                      {d.oldPrice && <span className="font-mono text-xs text-gray-soft line-through">{fmt(d.oldPrice)}</span>}
-                    </div>
-                    <div className="mt-3 pt-3 border-t border-line flex items-center justify-between text-[12px] text-gray">
-                      {d.sellers > 1 ? (
-                        <span className="inline-flex items-center gap-1 text-green font-semibold"><Crown className="w-3.5 h-3.5" /> {d.sellers} sellers</span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1"><Store className="w-3.5 h-3.5" /> compare sellers</span>
-                      )}
-                      <span className="inline-flex items-center gap-1 font-semibold text-ink/70 group-hover:text-red transition-colors">
-                        Compare <ArrowRight className="w-3.5 h-3.5" />
-                      </span>
+                  <div className="p-3.5">
+                    {d.category && <span className="font-mono text-[9px] uppercase tracking-wider text-cream/40">{d.category}</span>}
+                    <h3 className="font-sans text-sm font-semibold text-cream leading-snug line-clamp-2 mt-0.5 group-hover:text-acid transition-colors">{d.name}</h3>
+                    <div className="mt-2.5 flex items-center justify-between">
+                      <span className="font-sans text-base font-bold text-cream">{fmt(d.price)}</span>
+                      <ArrowUpRight className="w-4 h-4 text-cream/40 group-hover:text-acid group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                     </div>
                   </div>
                 </Link>
               ))}
+              {shownDeals.length === 0 && (
+                <div className="col-span-2 lg:col-span-4 py-12 text-center text-cream/40 text-sm">Loading live deals…</div>
+              )}
             </div>
-          </div>
 
-          {/* Sidebar */}
-          <aside className="space-y-5 sm:space-y-6">
-            {shops.length > 0 && (
-              <div className="card-soft p-5 sm:p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <ShieldCheck className="w-5 h-5 text-green" />
-                  <h3 className="font-serif text-lg font-bold italic text-ink">Most trusted shops</h3>
-                </div>
-                <div className="space-y-3.5">
-                  {shops.map((s, i) => (
-                    <Link key={s.slug} to={`/browse`} className="flex items-center gap-3 group">
-                      <span className="font-serif text-lg font-bold italic text-ink/25 w-5 shrink-0">{i + 1}</span>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm font-semibold text-ink truncate group-hover:text-red transition-colors">{s.name}</div>
-                        <div className="text-[11px] text-gray inline-flex items-center gap-2">
-                          <span className="font-mono">{fmtNum(s.productCount)} products</span>
-                          {s.trust && deliveryText(s.trust) && (
-                            <span className="inline-flex items-center gap-0.5"><Truck className="w-3 h-3" /> {deliveryText(s.trust)}</span>
-                          )}
-                        </div>
-                      </div>
-                      {s.trust?.trustScore != null && <TrustScore score={s.trust.trustScore} size="sm" showLabel={false} />}
-                    </Link>
-                  ))}
-                </div>
-                <Link to="/sellers" className="mt-5 w-full inline-flex items-center justify-center gap-1.5 py-2 px-4 rounded-xl border border-line-strong text-ink/70 font-medium text-sm hover:bg-cream-soft transition-colors">
-                  All sellers <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            )}
-
-            {/* Protect CTA — real Damkemon feature */}
-            <div className="rounded-2xl bg-green-soft border border-line p-6 text-center">
-              <div className="w-14 h-14 bg-surface rounded-2xl mx-auto flex items-center justify-center mb-3 shadow-[var(--shadow-soft)]">
-                <ShieldCheck className="w-7 h-7 text-green" />
-              </div>
-              <h3 className="font-serif text-lg font-bold italic text-ink">Buying from an unknown seller?</h3>
-              <p className="text-sm text-ink/70 mt-1.5 mb-4">Check the scam risk and open a protected order before you pay.</p>
-              <Link to="/protect" className="btn-primary w-full justify-center">
-                <ShieldCheck className="w-4 h-4" /> Try Damkemon Protect
+            <div className="flex justify-center mt-9">
+              <Link to="/browse" className="btn-acid">
+                Browse every deal <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
-          </aside>
+          </div>
         </div>
       </section>
 
-      {/* Damkemon Protect — buyer-trust spotlight (animated). */}
-      <ProtectShowcase />
+      {/* ── Most-trusted shops + Testimonial ─────────────────────── */}
+      <section className="container-tight pt-16 sm:pt-24">
+        <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-8 lg:gap-12 items-stretch">
+          {/* Trusted shops */}
+          <div className="rounded-[1.75rem] bg-neutral-bg border border-line p-6 sm:p-8">
+            <div className="flex items-center gap-2 mb-5">
+              <ShieldCheck className="w-5 h-5 text-acid-deep" />
+              <h3 className="font-sans text-lg font-bold text-ink">Most-trusted shops</h3>
+            </div>
+            <div className="space-y-4">
+              {(shops.length ? shops : Array.from({ length: 5 })).map((s, i) => (
+                s ? (
+                  <Link key={s.slug} to="/sellers" className="flex items-center gap-3 group">
+                    <span className="font-sans text-lg font-extrabold text-ink/20 w-6 shrink-0 tabular-nums">{String(i + 1).padStart(2, '0')}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-semibold text-ink truncate group-hover:text-acid-deep transition-colors">{s.name}</div>
+                      <div className="text-[11px] text-gray inline-flex items-center gap-2">
+                        <span className="font-mono">{fmtNum(s.productCount)} products</span>
+                        {s.trust && deliveryText(s.trust) && (
+                          <span className="inline-flex items-center gap-0.5"><Truck className="w-3 h-3" /> {deliveryText(s.trust)}</span>
+                        )}
+                      </div>
+                    </div>
+                    {s.trust?.trustScore != null && <TrustScore score={s.trust.trustScore} size="sm" showLabel={false} />}
+                  </Link>
+                ) : (
+                  <div key={i} className="flex items-center gap-3">
+                    <span className="font-sans text-lg font-extrabold text-ink/15 w-6 tabular-nums">{String(i + 1).padStart(2, '0')}</span>
+                    <div className="flex-1 h-8 rounded-lg bg-ink/[0.04] animate-pulse" />
+                  </div>
+                )
+              ))}
+            </div>
+            <Link to="/sellers" className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-ink hover:text-acid-deep transition-colors">
+              All sellers <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
 
-      {/* Saathi cross-sell — the seller side of the two-sided marketplace. */}
-      {SHOW_SAATHI && (
-      <section className="relative overflow-hidden">
-        <div className="container-tight py-10 sm:py-14 lg:py-18">
-          <div className="rounded-3xl bg-gradient-to-br from-blue-soft via-cream-soft to-lime-soft border border-line-strong p-6 sm:p-10 lg:p-14 relative overflow-hidden">
-            <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-red/15 blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-20 -left-12 w-72 h-72 rounded-full bg-lime/20 blur-3xl pointer-events-none" />
+          {/* Testimonial carousel */}
+          <Testimonials />
+        </div>
+      </section>
 
-            <div className="relative grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10 items-center">
-              <div>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-ink text-cream text-[10px] font-mono font-bold uppercase tracking-wider mb-3">
-                  <Sparkles className="w-3 h-3 text-yellow" /> New
-                </span>
-                <h2 className="font-serif text-[clamp(1.6rem,4.2vw,2.75rem)] font-bold italic leading-[1.05] tracking-tight text-ink mb-2">
-                  Run an FB shop?<br />
-                  Meet your <span className="text-red">Saathi</span>.
-                </h2>
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/55 mb-4">A seller's companion</p>
-                <p className="text-ink/75 text-sm sm:text-[15px] leading-relaxed max-w-md mb-5">
-                  Quote smart prices on FB Live. Auto-reply to "দাম কত?" in Messenger. Earn the verified badge that builds buyer trust. ৳999/mo. 14 days free.
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  <Link to="/saathi" className="btn-primary">Open my Saathi shop <ArrowRight className="w-4 h-4" /></Link>
-                  <Link to="/saathi#how" className="btn-ghost">See how it works</Link>
+      {/* ── How it works (steps) ─────────────────────────────────── */}
+      <section id="how" className="container-tight pt-16 sm:pt-24 scroll-mt-24">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="w-7 h-px bg-acid-deep" />
+          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-gray">How it works</span>
+        </div>
+        <h2 className="font-sans font-extrabold text-[clamp(1.8rem,4.5vw,3rem)] leading-[1.05] tracking-[-0.03em] text-ink max-w-2xl mb-10">
+          The whole market, <span className="text-acid-deep">one search.</span>
+        </h2>
+        <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+          {STEPS.map((s, i) => {
+            const Icon = s.icon;
+            return (
+              <div key={s.num} className="group rounded-[1.5rem] bg-surface border border-line p-7 hover:shadow-[var(--shadow-lift)] hover:border-line-strong transition-all relative">
+                <div className="flex items-center justify-between mb-6">
+                  <span className="font-sans text-5xl font-extrabold text-ink/10 leading-none tabular-nums">{s.num}</span>
+                  <span className="w-12 h-12 rounded-2xl bg-acid-soft text-acid-deep flex items-center justify-center group-hover:bg-acid group-hover:text-ink transition-colors">
+                    <Icon className="w-5 h-5" weight="duotone" />
+                  </span>
                 </div>
+                <h3 className="font-sans text-lg font-bold text-ink mb-2">{s.title}</h3>
+                <p className="text-ink/60 text-sm leading-relaxed">{s.desc}</p>
+                {i < STEPS.length - 1 && (
+                  <ArrowRight className="hidden md:block absolute top-1/2 -right-4 w-6 h-6 text-ink/15" />
+                )}
               </div>
+            );
+          })}
+        </div>
+      </section>
 
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <SaathiFeatureChip icon={Radio} title="Live price assist" tone="bg-red-soft text-red" />
-                <SaathiFeatureChip icon={MessageSquare} title="Messenger auto-reply" tone="bg-blue-soft text-blue" />
-                <SaathiFeatureChip icon={BadgeCheck} title="Verified badge" tone="bg-lime-soft text-green" />
-                <SaathiFeatureChip icon={ShoppingBag} title="Public storefront" tone="bg-yellow-soft text-ink" />
-              </ul>
+      {/* ── FAQ ──────────────────────────────────────────────────── */}
+      <section className="container-tight pt-16 sm:pt-24">
+        <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-8 lg:gap-14">
+          <div>
+            <h2 className="font-sans font-extrabold text-[clamp(1.8rem,4.5vw,2.75rem)] leading-[1.05] tracking-[-0.03em] text-ink">
+              Price-comparison FAQs
+            </h2>
+            <p className="text-ink/60 text-[15px] mt-4 mb-7 leading-relaxed max-w-sm">
+              Everything about how damkemon gathers prices, scores trust, and keeps shopping in Bangladesh safe.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link to="/browse" className="btn-primary">Browse products</Link>
+              <Link to="/protect" className="btn-ghost">Try Protect</Link>
             </div>
           </div>
+          <Faq />
         </div>
       </section>
-      )}
 
-      {/* How it works */}
-      <section className="bg-ink text-cream py-14 sm:py-20 lg:py-28 relative overflow-hidden">
-        <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-red/20 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-20 -left-20 w-96 h-96 rounded-full bg-lime/10 blur-3xl pointer-events-none" />
-        <div className="container-tight relative">
-          <div className="max-w-2xl mb-10 sm:mb-14">
-            <div className="tag-bar text-lime mb-3 sm:mb-4">Why Damkemon</div>
-            <h2 className="font-serif font-semibold leading-[1.02] tracking-[-0.025em] text-[clamp(1.85rem,5vw,3.5rem)]">
-              Buy smarter. <em className="text-lime">Pay less.</em>
+      {/* ── Guides & insights ────────────────────────────────────── */}
+      <section className="container-tight pt-16 sm:pt-24">
+        <div className="flex items-end justify-between mb-8 gap-4">
+          <h2 className="font-sans font-extrabold text-[clamp(1.6rem,4vw,2.5rem)] leading-[1.05] tracking-[-0.03em] text-ink max-w-xl">
+            Guides that help you buy smarter in Bangladesh.
+          </h2>
+          <Link to="/browse" className="text-sm font-semibold text-ink/70 hover:text-ink inline-flex items-center gap-1.5 shrink-0">
+            See more <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <div className="grid md:grid-cols-3 gap-5">
+          {INSIGHTS.map((p) => (
+            <Link key={p.title} to={p.to} className="group card-soft p-6 flex flex-col">
+              <span className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-5 ${p.tone}`}>
+                <p.icon className="w-5 h-5" weight="duotone" />
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-wider text-gray mb-2">{p.read} min read</span>
+              <h3 className="font-sans text-lg font-bold text-ink leading-snug group-hover:text-acid-deep transition-colors">{p.title}</h3>
+              <p className="text-ink/60 text-sm mt-2 leading-relaxed flex-1">{p.desc}</p>
+              <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-ink">
+                Read guide <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Big CTA (dark band) ──────────────────────────────────── */}
+      <section className="container-tight pt-16 sm:pt-24 pb-4">
+        <div className="rounded-[2rem] bg-ink text-cream px-6 sm:px-10 lg:px-16 py-14 sm:py-20 relative overflow-hidden">
+          <div className="absolute -top-24 right-10 w-96 h-96 rounded-full bg-acid/15 blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 -left-10 w-96 h-96 rounded-full bg-red/10 blur-3xl pointer-events-none" />
+          <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+            <h2 className="font-sans font-extrabold text-[clamp(2rem,5.5vw,4rem)] leading-[1.0] tracking-[-0.03em] max-w-2xl">
+              Ready to find the<br />best price?
             </h2>
-            <p className="text-cream/55 text-sm sm:text-base mt-3 max-w-xl">
-              Every shop in Bangladesh, every price, every trust signal — together in one place, so the smartest buy is always just one search away.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
-            {steps.map((s) => {
-              const Icon = s.icon;
-              return (
-                <div key={s.num} className="relative pt-12 sm:pt-14 group">
-                  <div className="absolute top-0 left-0 flex items-center gap-3">
-                    <span className="font-serif text-4xl sm:text-5xl font-bold italic text-lime/80 leading-none">{s.num}</span>
-                    <div className="w-10 h-10 rounded-2xl bg-cream/10 flex items-center justify-center group-hover:bg-lime group-hover:text-ink transition-colors">
-                      <Icon className="w-4 h-4" />
-                    </div>
-                  </div>
-                  <h3 className="font-serif text-lg sm:text-xl lg:text-2xl font-semibold mb-2 sm:mb-3 tracking-tight">{s.title}</h3>
-                  <p className="text-cream/55 text-sm sm:text-[15px] leading-relaxed">{s.desc}</p>
-                </div>
-              );
-            })}
+            <div className="shrink-0">
+              <button onClick={() => document.querySelector('input')?.focus()} className="btn-acid !text-base !px-7 !py-4">
+                Search a product <ArrowRight className="w-5 h-5" />
+              </button>
+              <p className="text-cream/50 text-[13px] mt-3 inline-flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-acid" /> Free for shoppers, always.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -378,23 +495,43 @@ export default function Home() {
   );
 }
 
-// Count a number up from 0 → target once the value arrives (easeOutCubic).
-// Honours prefers-reduced-motion, and re-animates if the target later changes.
+/* ───────────────────────── data ───────────────────────── */
+
+const MARQUEE = ['StarTech', 'Daraz', 'Ryans', 'Pickaboo', 'TechLand', 'Othoba', 'Gadget & Gear', 'Computer Source', 'AjkerDeal', 'Diamu'];
+
+const STEPS = [
+  { num: '01', title: 'Search once', desc: 'Type any product and see every shop in Bangladesh that sells it — no more juggling a dozen browser tabs.', icon: PhSearch },
+  { num: '02', title: 'Compare side by side', desc: 'Every seller’s price, trust score and delivery promise lined up in a single, honest row.', icon: PhStore },
+  { num: '03', title: 'Buy with confidence', desc: 'Pick the lowest price from a seller you can trust — and never quietly overpay again.', icon: PhShieldCheck },
+];
+
+// NOTE: placeholder testimonials — swap in real shopper quotes when you have them.
+const QUOTES = [
+  { text: 'I used to open six tabs to check one phone price. Now it’s a single search and I can see who’s actually cheapest — and who I can trust to deliver.', name: 'Rafa H.', role: 'Shopper · Dhaka' },
+  { text: 'The trust score flagged a seller with a suspiciously low price. Damkemon basically saved me from a scam before I paid a taka.', name: 'Tanvir A.', role: 'Shopper · Chattogram' },
+  { text: 'Finally, a Bangladesh price comparison that doesn’t show made-up prices. What it says is the price, is the price.', name: 'Nusrat J.', role: 'Shopper · Sylhet' },
+];
+
+const INSIGHTS = [
+  { title: 'Why one search beats ten browser tabs', desc: 'See every shop that sells your product — price, trust and delivery, side by side.', read: 4, to: '/browse', icon: PhSearch, tone: 'bg-acid-soft text-acid-deep' },
+  { title: 'Buying from an unknown seller? Use Protect', desc: 'Check the scam risk and open a protected order before you hand over money.', read: 3, to: '/protect', icon: PhShieldCheck, tone: 'bg-green-soft text-green' },
+  { title: 'How our trust score spots fake low prices', desc: 'Delivery signals, review history and stock depth — combined into one number.', read: 5, to: '/sellers', icon: PhSealCheck, tone: 'bg-yellow-soft text-ink' },
+];
+
+/* ───────────────────────── pieces ───────────────────────── */
+
+// Count a number up from 0 → target once it arrives (easeOutCubic).
 function useCountUp(target, duration = 1400) {
   const [display, setDisplay] = useState(null);
   const fromRef = useRef(0);
   const rafRef = useRef(0);
-
   useEffect(() => {
     if (target == null) { setDisplay(null); return; }
-
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
     if (reduce) { setDisplay(target); fromRef.current = target; return; }
-
     const from = fromRef.current;
     const start = performance.now();
     const ease = (t) => 1 - Math.pow(1 - t, 3);
-
     const tick = (now) => {
       const t = Math.min(1, (now - start) / duration);
       setDisplay(Math.round(from + (target - from) * ease(t)));
@@ -404,35 +541,120 @@ function useCountUp(target, duration = 1400) {
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
   }, [target, duration]);
-
   return display;
 }
 
-function StatTile({ value, label, loading }) {
+function CountUp({ value }) {
+  const d = useCountUp(value);
+  return d != null ? Number(d).toLocaleString('en-IN') : '—';
+}
+
+// MAC-style stat block: big number + plus + caption.
+function StatBlock({ value, label, loading, tone }) {
   const display = useCountUp(value);
+  const acid = tone === 'acid';
   return (
-    <div className="text-center rounded-xl bg-cream-soft/70 py-2.5">
-      <div className="font-serif text-base sm:text-lg font-bold italic text-ink leading-none tabular-nums flex items-center justify-center min-h-[1.5rem] sm:min-h-[1.75rem]">
-        {display != null ? (
-          Number(display).toLocaleString('en-IN')
-        ) : loading ? (
-          <span className="block h-4 sm:h-5 w-9 rounded bg-ink/10 animate-pulse" aria-label="loading" />
-        ) : (
-          '—'
-        )}
+    <div className={`rounded-[1.5rem] p-5 sm:p-6 border ${acid ? 'bg-acid border-acid' : 'bg-surface border-line'} min-h-[150px] flex flex-col justify-between`}>
+      <div className={`font-sans text-[clamp(2rem,5vw,3.25rem)] font-extrabold leading-none tracking-tight tabular-nums ${acid ? 'text-ink' : 'text-ink'}`}>
+        {display != null ? Number(display).toLocaleString('en-IN') : (loading ? <span className="inline-block h-8 w-16 rounded bg-ink/10 animate-pulse" /> : '—')}
+        <span className={acid ? 'text-ink/70' : 'text-acid-deep'}>+</span>
       </div>
-      <div className="font-mono text-[9px] uppercase tracking-wider text-gray mt-1">{label}</div>
+      <p className={`text-[12.5px] leading-snug mt-3 ${acid ? 'text-ink/70' : 'text-ink/55'}`}>{label}</p>
     </div>
   );
 }
 
-function SaathiFeatureChip({ icon: Icon, title, tone }) {
+// Green growth bars (recharts) — a stylized rising trend ending near the real total.
+function GrowthBars({ total }) {
+  const data = useMemo(() => {
+    const end = total && total > 0 ? total : 100;
+    const f = [0.16, 0.27, 0.36, 0.5, 0.62, 0.78, 0.9, 1];
+    return f.map((x, i) => ({ name: i, v: Math.round(end * x) }));
+  }, [total]);
   return (
-    <li className="bg-surface/85 backdrop-blur border border-line rounded-2xl p-3 flex items-center gap-2.5">
-      <div className={`inline-flex items-center justify-center w-9 h-9 rounded-xl shrink-0 ${tone}`}>
-        <Icon className="w-4 h-4" />
+    <div className="relative h-28 -mx-1">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: 4 }} barCategoryGap="22%">
+          <Bar dataKey="v" radius={[5, 5, 0, 0]} isAnimationActive>
+            {data.map((_, i) => (
+              <Cell key={i} fill={i === data.length - 1 ? '#9FE231' : i >= data.length - 3 ? 'rgba(159,226,49,0.65)' : 'rgba(159,226,49,0.28)'} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+function Testimonials() {
+  const [i, setI] = useState(0);
+  const q = QUOTES[i];
+  const go = (d) => setI((p) => (p + d + QUOTES.length) % QUOTES.length);
+  return (
+    <div className="rounded-[1.75rem] bg-acid p-7 sm:p-10 flex flex-col justify-between min-h-[260px]">
+      <div>
+        <div className="flex gap-0.5 mb-5">
+          {Array.from({ length: 5 }).map((_, k) => <Star key={k} className="w-4 h-4 text-ink fill-ink" />)}
+        </div>
+        <blockquote className="font-sans text-ink text-xl sm:text-[1.7rem] font-semibold leading-snug tracking-[-0.01em]">
+          “{q.text}”
+        </blockquote>
       </div>
-      <span className="font-serif text-[15px] font-semibold text-ink">{title}</span>
-    </li>
+      <div className="flex items-center justify-between mt-8">
+        <div className="flex items-center gap-3">
+          <span className="w-11 h-11 rounded-full bg-ink text-acid flex items-center justify-center font-sans font-bold">
+            {q.name[0]}
+          </span>
+          <div>
+            <div className="font-sans font-bold text-ink text-sm">{q.name}</div>
+            <div className="text-ink/60 text-xs">{q.role}</div>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-ink/60 text-xs tabular-nums mr-1">{String(i + 1).padStart(2, '0')}/{String(QUOTES.length).padStart(2, '0')}</span>
+          <button onClick={() => go(-1)} aria-label="Previous" className="w-9 h-9 rounded-full border border-ink/20 text-ink flex items-center justify-center hover:bg-ink hover:text-acid transition-colors">
+            <ArrowRight className="w-4 h-4 rotate-180" />
+          </button>
+          <button onClick={() => go(1)} aria-label="Next" className="w-9 h-9 rounded-full bg-ink text-acid flex items-center justify-center hover:opacity-90 transition-opacity">
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const FAQS = [
+  { q: 'Where do the prices come from?', a: 'We bring together prices from shops right across Bangladesh and keep them updated, so a single search shows you a complete, side-by-side comparison in an instant.' },
+  { q: 'Are the prices accurate and live?', a: 'We show real prices straight from each shop and keep them fresh — never fabricated numbers. If a listing goes stale we flag it rather than guess.' },
+  { q: 'How does the trust score work?', a: 'Each shop is scored on real signals — delivery reliability, review history, how long it’s been active and how deep its stock is — combined into one number so you can spot a risky seller at a glance.' },
+  { q: 'What is Damkemon Protect?', a: 'Buying from an unknown seller? Protect lets you check the scam risk and open a protected order before you pay, so your money isn’t gone if the deal goes wrong.' },
+  { q: 'Is damkemon free to use?', a: 'Yes — searching and comparing prices is completely free for shoppers, always.' },
+];
+
+function Faq() {
+  const [open, setOpen] = useState(0);
+  return (
+    <div className="divide-y divide-line border-t border-line">
+      {FAQS.map((f, i) => {
+        const isOpen = open === i;
+        return (
+          <div key={i}>
+            <button
+              onClick={() => setOpen(isOpen ? -1 : i)}
+              className="w-full flex items-center justify-between gap-4 py-5 text-left group"
+            >
+              <span className={`font-sans font-bold text-[15px] sm:text-base transition-colors ${isOpen ? 'text-ink' : 'text-ink/80 group-hover:text-ink'}`}>{f.q}</span>
+              <span className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-colors ${isOpen ? 'bg-acid text-ink' : 'bg-ink/[0.06] text-ink/60'}`}>
+                {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+              </span>
+            </button>
+            <div className={`grid transition-all duration-300 ${isOpen ? 'grid-rows-[1fr] opacity-100 pb-5' : 'grid-rows-[0fr] opacity-0'}`}>
+              <p className="overflow-hidden text-ink/65 text-sm leading-relaxed max-w-xl">{f.a}</p>
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
