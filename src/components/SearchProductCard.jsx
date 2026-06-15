@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { ExternalLink, Crown, Store, Star, TrendingDown, ChevronRight, Megaphone, Sparkles } from 'lucide-react';
 import { trackClick } from '../api/analytics';
 import { affiliateUrl } from '../api/api';
+import { CategoryIcon } from '../lib/categoryIcon';
 import TrustBadge from './TrustBadge';
 
 function fmt(p) {
@@ -58,7 +59,7 @@ export default function SearchProductCard({ product, rank, sponsored = false, qu
               onError={(e) => { e.target.style.display = 'none'; }}
             />
           ) : (
-            <span className="font-sans text-3xl font-extrabold text-ink/15">{(product.category || 'P')[0]}</span>
+            <CategoryIcon category={product.category} className="w-9 h-9 text-ink/25" />
           )}
           {sponsored ? (
             <span className="absolute -top-1.5 -left-1.5 inline-flex items-center justify-center w-6 h-6 rounded-full bg-yellow text-ink shadow-[var(--shadow-soft)]" title="Sponsored">

@@ -172,8 +172,8 @@ export default function Browse() {
 
       {/* Content */}
       {initialLoading ? (
-        <div className="space-y-2.5 sm:space-y-3">
-          {[...Array(5)].map((_, i) => <SearchProductCardSkeleton key={i} />)}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 items-start">
+          {[...Array(6)].map((_, i) => <SearchProductCardSkeleton key={i} />)}
         </div>
       ) : error ? (
         <ServiceUnavailable
@@ -194,7 +194,7 @@ export default function Browse() {
         </div>
       ) : (
         <>
-          <div className="space-y-3 sm:space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 items-start">
             {sorted.map((p, i) => (
               <SearchProductCard key={p.id || p.slug || i} product={p} trust={trust} />
             ))}

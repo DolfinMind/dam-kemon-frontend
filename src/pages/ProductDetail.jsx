@@ -17,6 +17,7 @@ import {
   ArrowLeft, Star, Share2, Bell, ShieldCheck, Store, AlertTriangle, Heart,
   Crown, ExternalLink, Truck, Banknote, ArrowDown,
 } from 'lucide-react';
+import { CategoryIcon } from '../lib/categoryIcon';
 
 function formatPrice(price) {
   if (!price && price !== 0) return 'N/A';
@@ -275,7 +276,7 @@ export default function ProductDetail() {
             {product.imageUrl ? (
               <img src={product.imageUrl} alt={product.name} className="max-w-full max-h-full object-contain" onError={(e) => { e.target.style.display = 'none'; }} />
             ) : (
-              <span className="font-sans text-6xl font-extrabold text-ink/15">{(product.category || 'P')[0]}</span>
+              <CategoryIcon category={product.category} className="w-16 h-16 text-ink/20" />
             )}
             {product.category && (
               <span className="absolute top-4 left-4 chip chip-ghost !text-[10px] !py-0.5 capitalize">{product.category}</span>

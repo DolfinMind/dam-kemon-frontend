@@ -1,25 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { TrendingDown, Store } from 'lucide-react';
+import { CategoryIcon } from '../lib/categoryIcon';
 
 function formatPrice(price) {
   if (!price && price !== 0) return 'N/A';
   return '৳' + Number(price).toLocaleString('en-IN');
 }
-
-const categoryEmoji = {
-  Electronics: '🔌',
-  Fashion: '👗',
-  'Home & Kitchen': '🍳',
-  'Beauty & Care': '✨',
-  Mobiles: '📱',
-  'Baby & Toys': '🧸',
-  Books: '📚',
-  Groceries: '🛒',
-  Smartphones: '📱',
-  Laptops: '💻',
-  Headphones: '🎧',
-  Accessories: '🎒',
-};
 
 const gradientByCategory = {
   Electronics: 'from-blue-soft to-cream',
@@ -52,7 +38,6 @@ export default function ProductCard({ product }) {
   const discountPct = hasDiscount
     ? Math.round(((highestPrice - lowestPrice) / highestPrice) * 100)
     : 0;
-  const emoji = categoryEmoji[category] || '🎁';
   const grad = gradientByCategory[category] || 'from-cream-soft to-cream';
 
   return (
@@ -73,7 +58,7 @@ export default function ProductCard({ product }) {
           />
         ) : null}
         <div className={`${imageUrl ? 'hidden' : 'flex'} absolute inset-0 items-center justify-center`}>
-          <span className="text-5xl sm:text-6xl opacity-60 group-hover:scale-110 transition-transform duration-500">{emoji}</span>
+          <CategoryIcon category={category} className="w-14 h-14 sm:w-16 sm:h-16 text-ink/25 group-hover:scale-110 transition-transform duration-500" />
         </div>
 
         {hasDiscount && (

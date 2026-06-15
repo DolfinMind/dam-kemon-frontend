@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Flame, ArrowRight } from 'lucide-react';
 import { getHotDrops } from '../api/api';
+import { CategoryIcon } from '../lib/categoryIcon';
 
 function fmt(p) {
   if (p == null) return 'N/A';
@@ -59,7 +60,7 @@ export default function HotDropsRail() {
                   onError={(e) => { e.target.style.display = 'none'; }}
                 />
               ) : (
-                <span className="font-serif text-5xl italic text-ink/15">{(p.category || 'P')[0]}</span>
+                <CategoryIcon category={p.category} className="w-10 h-10 text-ink/20" />
               )}
               <div className="absolute top-2 right-2 inline-flex items-center gap-1 bg-red text-white px-2 py-0.5 rounded-full text-[10px] font-mono font-bold">
                 -{p.dropPct}%

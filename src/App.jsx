@@ -8,7 +8,7 @@ import AssistantWidget from './components/AssistantWidget';
 import ScrollToTop from './components/ScrollToTop';
 import { AuthProvider } from './auth/AuthContext';
 import LoadingSpinner from './components/LoadingSpinner';
-import { SHOW_SAATHI, SHOW_PUBLIC_DASHBOARD } from './config/features';
+import { SHOW_SAATHI, SHOW_PUBLIC_DASHBOARD, SHOW_ASSISTANT } from './config/features';
 
 // Eager: the landing page + search are the hot path.
 import Home from './pages/Home';
@@ -114,7 +114,7 @@ function App() {
           </main>
           <Footer />
           <BottomNav />
-          <AssistantWidget />
+          {SHOW_ASSISTANT && <AssistantWidget />}
         </div>
       </AuthProvider>
     </BrowserRouter>

@@ -5,7 +5,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import { SHOW_SAATHI } from '../config/features';
 import {
   ArrowLeft, BadgeCheck, MessageCircle, MapPin, Clock, Store, Search,
-  ExternalLink, Sparkles, AlertTriangle, Globe, ShoppingBag,
+  ExternalLink, Sparkles, AlertTriangle, Globe, ShoppingBag, Star,
 } from 'lucide-react';
 
 // Seller types in the directory: indexed storefronts (website), marketplace
@@ -242,7 +242,7 @@ export default function Sellers() {
                   {/* Inline meta — only renders the signals this seller actually has */}
                   {(s.rating || s.reviewCount || followers || s.codAvailable || s.sameDayDelivery || s.avgReplyTime) && (
                     <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-gray">
-                      {s.rating ? <span className="font-semibold text-yellow">{s.rating.toFixed(1)}★</span> : null}
+                      {s.rating ? <span className="inline-flex items-center gap-0.5 font-semibold text-yellow"><Star className="w-3 h-3 fill-current" />{s.rating.toFixed(1)}</span> : null}
                       {s.reviewCount ? <span>{s.reviewCount.toLocaleString('en-IN')} reviews</span> : null}
                       {followers ? <span>{followers} followers</span> : null}
                       {s.codAvailable && <span className="inline-flex items-center gap-1"><Sparkles className="w-3 h-3 text-green" /> COD</span>}

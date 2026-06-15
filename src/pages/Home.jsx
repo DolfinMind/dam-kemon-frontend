@@ -8,8 +8,9 @@ import { BarChart, Bar, ResponsiveContainer, Cell } from 'recharts';
 import SearchBar from '../components/SearchBar';
 import AlphaBadge from '../components/AlphaBadge';
 import { TrustScore, deliveryText } from '../components/TrustBadge';
+import { CategoryIcon } from '../lib/categoryIcon';
 import {
-  ArrowRight, ArrowUpRight, Play, Sparkles, ShieldCheck, Store, Crown, Flame,
+  ArrowRight, Play, Sparkles, ShieldCheck, Store, Crown, Flame,
   TrendingDown, TrendingUp, Search, Plus, Minus, Database, Layers, Zap, Star,
   BadgeCheck, Truck,
 } from 'lucide-react';
@@ -52,7 +53,6 @@ export default function Home() {
   const [trending, setTrending] = useState([]);
   const [deals, setDeals] = useState([]);
   const [shops, setShops] = useState([]);
-  const [tab, setTab] = useState('All');
 
   useEffect(() => {
     getDashboardStats().then((r) => setStats(r.data)).catch(() => {}).finally(() => setStatsLoading(false));
@@ -97,22 +97,6 @@ export default function Home() {
   const handleSearch = (query) => {
     if (query.trim()) navigate(`/search?q=${encodeURIComponent(query.trim())}`);
   };
-
-  // Category tabs for the "examples" band, with live counts (MAC: "All Work [20]").
-  const tabs = useMemo(() => {
-    const counts = deals.reduce((m, d) => {
-      const c = (d.category || '').trim();
-      if (c) m[c] = (m[c] || 0) + 1;
-      return m;
-    }, {});
-    const top = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([c]) => c);
-    return ['All', ...top];
-  }, [deals]);
-
-  const shownDeals = useMemo(
-    () => (tab === 'All' ? deals : deals.filter((d) => (d.category || '') === tab)),
-    [deals, tab],
-  );
 
   return (
     <div className="overflow-x-hidden">
@@ -160,12 +144,12 @@ export default function Home() {
               <StatBlock
                 value={stats?.totalProducts}
                 loading={statsLoading}
-                label="products compared across Bangladesh's shops"
+                label="Products"
               />
               <StatBlock
                 value={stats?.totalSellers ?? stats?.totalSites}
                 loading={statsLoading}
-                label="shops compared, with live prices side by side"
+                label="Sellers"
                 tone="acid"
               />
             </div>
@@ -199,6 +183,66 @@ export default function Home() {
               <span className="text-[11px] font-mono font-bold text-ink">No fake prices</span>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── Today's deals (scroll rail) ──────────────────────────── */}
+      <section className="container-tight pt-12 sm:pt-16">
+        <div className="flex items-end justify-between gap-3 mb-5 sm:mb-6">
+          <div>
+            <div className="chip chip-ghost !text-red mb-2 inline-flex items-center gap-1.5">
+              <Flame className="w-3.5 h-3.5" /> Today's deals
+              <span className="w-1.5 h-1.5 rounded-full bg-red animate-pulse-dot ml-0.5" />
+            </div>
+            <h2 className="font-sans font-extrabold text-[clamp(1.5rem,3.5vw,2.25rem)] leading-tight tracking-[-0.025em] text-ink">
+              Biggest price drops <span className="text-acid-deep">right now</span>
+            </h2>
+          </div>
+          <Link to="/browse" className="text-sm font-semibold text-ink/70 hover:text-ink inline-flex items-center gap-1.5 shrink-0">
+            See all <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 pb-1">
+          {(deals.length ? deals : Array.from({ length: 6 })).slice(0, 10).map((d, i) => (
+            d ? (
+              <Link
+                key={d.id}
+                to={`/product/${d.id || d.slug}`}
+                state={d.product ? { product: d.product } : undefined}
+                className="group snap-start shrink-0 w-[158px] sm:w-[208px] card-soft overflow-hidden flex flex-col hover:shadow-[var(--shadow-card)] hover:border-line-strong transition-all"
+              >
+                <div className="relative aspect-square bg-cream-soft flex items-center justify-center overflow-hidden">
+                  {d.imageUrl ? (
+                    <img src={d.imageUrl} alt={d.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.05]" onError={(e) => { e.target.style.display = 'none'; }} />
+                  ) : (
+                    <CategoryIcon category={d.category} className="w-10 h-10 text-ink/20" />
+                  )}
+                  {d.pct > 0 && (
+                    <span className="absolute top-2 left-2 inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-1 rounded-full bg-red text-white shadow-[var(--shadow-soft)]">
+                      <TrendingDown className="w-3 h-3" /> {d.kind === 'drop' ? `${d.pct}%` : `save ${d.pct}%`}
+                    </span>
+                  )}
+                </div>
+                <div className="p-3 sm:p-3.5 flex-1 flex flex-col">
+                  {d.category && <span className="font-mono text-[9px] uppercase tracking-wider text-gray">{d.category}</span>}
+                  <h3 className="font-sans text-sm font-semibold text-ink leading-snug line-clamp-2 mt-0.5 group-hover:text-acid-deep transition-colors">{d.name}</h3>
+                  <div className="mt-auto pt-2.5 flex items-baseline gap-2">
+                    <span className="font-sans text-base font-bold text-ink">{fmt(d.price)}</span>
+                    {d.oldPrice && <span className="font-mono text-[11px] text-gray-soft line-through">{fmt(d.oldPrice)}</span>}
+                  </div>
+                </div>
+              </Link>
+            ) : (
+              <div key={i} className="snap-start shrink-0 w-[158px] sm:w-[208px] card-soft overflow-hidden">
+                <div className="aspect-square bg-cream-soft animate-pulse" />
+                <div className="p-3.5 space-y-2">
+                  <div className="h-3 rounded bg-ink/5 animate-pulse" />
+                  <div className="h-3 w-2/3 rounded bg-ink/5 animate-pulse" />
+                </div>
+              </div>
+            )
+          ))}
         </div>
       </section>
 
@@ -275,79 +319,6 @@ export default function Home() {
               </span>
             </div>
           </a>
-        </div>
-      </section>
-
-      {/* ── Real-world examples (dark band) ──────────────────────── */}
-      <section className="container-tight pt-16 sm:pt-24">
-        <div className="rounded-[2rem] bg-ink text-cream p-6 sm:p-10 lg:p-14 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-[40rem] h-[40rem] rounded-full bg-acid/[0.07] blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-32 -left-20 w-96 h-96 rounded-full bg-red/10 blur-3xl pointer-events-none" />
-
-          <div className="relative">
-            <h2 className="font-sans font-extrabold text-center text-[clamp(1.6rem,4vw,3rem)] leading-[1.08] tracking-[-0.025em] max-w-3xl mx-auto">
-              Real deals shoppers are <span className="text-acid">saving on</span> right now.
-            </h2>
-
-            {/* Pill tabs */}
-            <div className="flex flex-wrap items-center justify-center gap-2.5 mt-7 mb-9">
-              {tabs.map((t) => {
-                const count = t === 'All' ? deals.length : deals.filter((d) => (d.category || '') === t).length;
-                const active = tab === t;
-                return (
-                  <button
-                    key={t}
-                    onClick={() => setTab(t)}
-                    className={`pill-tab ${active ? 'bg-acid text-ink' : 'bg-cream/[0.08] text-cream/70 hover:bg-cream/[0.14]'}`}
-                  >
-                    {t} <span className={active ? 'text-ink/55' : 'text-cream/40'}>[{count}]</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Example cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-              {shownDeals.slice(0, 8).map((d) => (
-                <Link
-                  key={d.id}
-                  to={`/product/${d.id || d.slug}`}
-                  state={d.product ? { product: d.product } : undefined}
-                  className="group rounded-2xl bg-cream/[0.05] border border-cream/10 overflow-hidden hover:border-acid/40 hover:bg-cream/[0.08] transition-all"
-                >
-                  <div className="relative aspect-square bg-cream/[0.04] flex items-center justify-center overflow-hidden">
-                    {d.imageUrl ? (
-                      <img src={d.imageUrl} alt={d.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.05]" onError={(e) => { e.target.style.display = 'none'; }} />
-                    ) : (
-                      <span className="font-sans text-5xl font-bold text-cream/15">{(d.category || 'P')[0]}</span>
-                    )}
-                    {d.pct > 0 && (
-                      <span className="absolute top-2 left-2 inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-1 rounded-full bg-acid text-ink">
-                        <TrendingDown className="w-3 h-3" /> {d.kind === 'drop' ? `${d.pct}%` : `save ${d.pct}%`}
-                      </span>
-                    )}
-                  </div>
-                  <div className="p-3.5">
-                    {d.category && <span className="font-mono text-[9px] uppercase tracking-wider text-cream/40">{d.category}</span>}
-                    <h3 className="font-sans text-sm font-semibold text-cream leading-snug line-clamp-2 mt-0.5 group-hover:text-acid transition-colors">{d.name}</h3>
-                    <div className="mt-2.5 flex items-center justify-between">
-                      <span className="font-sans text-base font-bold text-cream">{fmt(d.price)}</span>
-                      <ArrowUpRight className="w-4 h-4 text-cream/40 group-hover:text-acid group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-                    </div>
-                  </div>
-                </Link>
-              ))}
-              {shownDeals.length === 0 && (
-                <div className="col-span-2 lg:col-span-4 py-12 text-center text-cream/40 text-sm">Loading live deals…</div>
-              )}
-            </div>
-
-            <div className="flex justify-center mt-9">
-              <Link to="/browse" className="btn-acid">
-                Browse every deal <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -554,12 +525,12 @@ function StatBlock({ value, label, loading, tone }) {
   const display = useCountUp(value);
   const acid = tone === 'acid';
   return (
-    <div className={`rounded-[1.5rem] p-5 sm:p-6 border ${acid ? 'bg-acid border-acid' : 'bg-surface border-line'} min-h-[150px] flex flex-col justify-between`}>
+    <div className={`rounded-[1.5rem] p-5 sm:p-6 border ${acid ? 'bg-acid border-acid' : 'bg-surface border-line'} min-h-[140px] flex flex-col justify-between`}>
       <div className={`font-sans text-[clamp(2rem,5vw,3.25rem)] font-extrabold leading-none tracking-tight tabular-nums ${acid ? 'text-ink' : 'text-ink'}`}>
         {display != null ? Number(display).toLocaleString('en-IN') : (loading ? <span className="inline-block h-8 w-16 rounded bg-ink/10 animate-pulse" /> : '—')}
         <span className={acid ? 'text-ink/70' : 'text-acid-deep'}>+</span>
       </div>
-      <p className={`text-[12.5px] leading-snug mt-3 ${acid ? 'text-ink/70' : 'text-ink/55'}`}>{label}</p>
+      <p className={`font-sans font-bold text-lg sm:text-xl tracking-[-0.01em] mt-3 ${acid ? 'text-ink' : 'text-ink/85'}`}>{label}</p>
     </div>
   );
 }

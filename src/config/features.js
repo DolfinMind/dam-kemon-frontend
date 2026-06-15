@@ -15,3 +15,8 @@ export const SHOW_SAATHI = false;
 
 // The public live stats page at /dashboard. Hidden from the public site for now.
 export const SHOW_PUBLIC_DASHBOARD = false;
+
+// The floating "দরদাম" shopping-assistant chatbot (AssistantWidget). Hidden
+// from the public site for now — flip to true to re-expose the launcher + panel
+// (mounted in App.jsx). Kept in source so re-enabling is a one-line change.
+export const SHOW_ASSISTANT = false;
