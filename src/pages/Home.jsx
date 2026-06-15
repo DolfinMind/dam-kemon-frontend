@@ -525,12 +525,12 @@ function StatBlock({ value, label, loading, tone }) {
   const display = useCountUp(value);
   const acid = tone === 'acid';
   return (
-    <div className={`rounded-[1.5rem] p-5 sm:p-6 border ${acid ? 'bg-acid border-acid' : 'bg-surface border-line'} min-h-[140px] flex flex-col justify-between`}>
-      <div className={`font-sans text-[clamp(2rem,5vw,3.25rem)] font-extrabold leading-none tracking-tight tabular-nums ${acid ? 'text-ink' : 'text-ink'}`}>
-        {display != null ? Number(display).toLocaleString('en-IN') : (loading ? <span className="inline-block h-8 w-16 rounded bg-ink/10 animate-pulse" /> : '—')}
+    <div className={`rounded-[1.25rem] px-5 py-4 sm:py-[1.15rem] border ${acid ? 'bg-acid border-acid' : 'bg-surface border-line'} flex flex-col justify-center`}>
+      <div className={`font-sans text-[clamp(1.85rem,4.4vw,2.9rem)] font-extrabold leading-none tracking-tight tabular-nums text-ink`}>
+        {display != null ? Number(display).toLocaleString('en-IN') : (loading ? <span className="inline-block h-7 w-14 rounded bg-ink/10 animate-pulse" /> : '—')}
         <span className={acid ? 'text-ink/70' : 'text-acid-deep'}>+</span>
       </div>
-      <p className={`font-sans font-bold text-lg sm:text-xl tracking-[-0.01em] mt-3 ${acid ? 'text-ink' : 'text-ink/85'}`}>{label}</p>
+      <p className={`font-sans font-bold text-base sm:text-lg tracking-[-0.01em] mt-1.5 ${acid ? 'text-ink' : 'text-ink/85'}`}>{label}</p>
     </div>
   );
 }

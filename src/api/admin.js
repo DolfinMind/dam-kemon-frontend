@@ -77,3 +77,15 @@ export const analyticsTopPaths = (days = 7, limit = 25) =>
   api.get('/admin/analytics/top-paths', { params: { days, limit } });
 export const analyticsRequests = (limit = 100) =>
   api.get('/admin/analytics/requests', { params: { limit } });
+
+// ─── Outbound-click intelligence (which shop wins which category, etc.) ───
+export const analyticsFunnel = (days = 7) =>
+  api.get('/admin/analytics/funnel', { params: { days } });
+export const analyticsShopClicksByCategory = (days = 7, categories = 12, shops = 5) =>
+  api.get('/admin/analytics/shop-clicks-by-category', { params: { days, categories, shops } });
+export const analyticsTopShops = (days = 7, limit = 25) =>
+  api.get('/admin/analytics/top-shops', { params: { days, limit } });
+export const analyticsTopProducts = (days = 7, limit = 25) =>
+  api.get('/admin/analytics/top-products', { params: { days, limit } });
+export const analyticsTopConvertingSearches = (days = 7, limit = 25) =>
+  api.get('/admin/analytics/top-converting-searches', { params: { days, limit } });

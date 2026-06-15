@@ -7,10 +7,13 @@ import {
 import {
   Radio, Users, Activity, Eye, Search as SearchIcon, MousePointerClick,
   Globe, Server, Clock, TrendingUp, Map as MapIcon,
+  Store, Package, Layers, Crown, Filter,
 } from 'lucide-react';
 import {
   analyticsOverview, analyticsHourly, analyticsDailyUsers,
   analyticsTopSearches, analyticsTopIps, analyticsTopPaths, analyticsRequests,
+  analyticsFunnel, analyticsShopClicksByCategory, analyticsTopShops,
+  analyticsTopProducts, analyticsTopConvertingSearches,
 } from '../../api/admin';
 
 const num = (n) => (n == null ? '—' : Number(n).toLocaleString());
@@ -35,6 +38,11 @@ export default function AdminAnalytics() {
   const [topIps, setTopIps] = useState([]);
   const [topPaths, setTopPaths] = useState([]);
   const [requests, setRequests] = useState([]);
+  const [funnel, setFunnel] = useState(null);
+  const [shopCat, setShopCat] = useState([]);
+  const [topShops, setTopShops] = useState([]);
+  const [topProducts, setTopProducts] = useState([]);
+  const [convSearches, setConvSearches] = useState([]);
   const [windowDays, setWindowDays] = useState(7);
   const [dailyDays, setDailyDays] = useState(14);
   const [live, setLive] = useState(true);
@@ -47,6 +55,11 @@ export default function AdminAnalytics() {
     analyticsTopSearches(windowDays, 25).then((r) => setTopSearches(r.data || [])).catch(() => {});
     analyticsTopIps(windowDays, 25).then((r) => setTopIps(r.data || [])).catch(() => {});
     analyticsTopPaths(windowDays, 12).then((r) => setTopPaths(r.data || [])).catch(() => {});
+    analyticsFunnel(windowDays).then((r) => setFunnel(r.data)).catch(() => {});
+    analyticsShopClicksByCategory(windowDays, 12, 5).then((r) => setShopCat(r.data || [])).catch(() => {});
+    analyticsTopShops(windowDays, 15).then((r) => setTopShops(r.data || [])).catch(() => {});
+    analyticsTopProducts(windowDays, 15).then((r) => setTopProducts(r.data || [])).catch(() => {});
+    analyticsTopConvertingSearches(windowDays, 15).then((r) => setConvSearches(r.data || [])).catch(() => {});
   }, [windowDays]);
 
   useEffect(() => {
@@ -198,6 +211,172 @@ export default function AdminAnalytics() {
         )}
       </section>
 
+      {/* ════════ Outbound clicks & conversion ════════ */}
+      <div className="pt-2 border-t border-line">
+        <h3 className="font-serif text-lg font-semibold inline-flex items-center gap-2">
+          <MousePointerClick className="w-5 h-5 text-red" /> Outbound clicks &amp; conversion
+        </h3>
+        <p className="text-xs text-gray mt-0.5">
+          Where the traffic we send actually goes — by shop, category and product. Window: last {windowDays}d.
+        </p>
+      </div>
+
+      {/* ── funnel ── */}
+      <section className="card-soft p-5">
+        <h3 className="font-serif text-base font-semibold mb-4 inline-flex items-center gap-2">
+          <Filter className="w-4 h-4" /> Search → view → click funnel
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <FunnelStage icon={SearchIcon} label="Searches" value={funnel?.searches} />
+          <FunnelStage icon={Eye} label="Product views" value={funnel?.productViews} rate={funnel?.searchToView} rateLabel="of searches" />
+          <FunnelStage icon={MousePointerClick} label="Outbound clicks" value={funnel?.outboundClicks} rate={funnel?.viewToClick} rateLabel="of views" accent />
+        </div>
+        {funnel?.searchToClick != null && (
+          <p className="text-xs text-gray mt-3">
+            End-to-end: <span className="font-mono font-bold text-ink">{funnel.searchToClick}%</span> of searches turn into an outbound click.
+          </p>
+        )}
+      </section>
+
+      {/* ── which shop wins which category ── */}
+      <section>
+        <h3 className="font-serif text-lg font-semibold mb-3 inline-flex items-center gap-2">
+          <Layers className="w-4 h-4" /> Which shop wins which category
+        </h3>
+        {shopCat.length === 0 ? (
+          <Empty>No outbound clicks recorded in this window yet — this fills in as shoppers click through to shops.</Empty>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {shopCat.map((c) => {
+              const max = c.shops?.[0]?.clicks || 1;
+              return (
+                <div key={c.category} className="card-soft p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-semibold capitalize">{c.category}</span>
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-gray">{num(c.totalClicks)} clicks</span>
+                  </div>
+                  <div className="space-y-2">
+                    {c.shops.map((s, i) => (
+                      <div key={s.siteSlug} className="flex items-center gap-2">
+                        <span className="w-4 text-[10px] font-mono text-gray text-right">{i + 1}</span>
+                        <span className="w-28 truncate text-sm capitalize inline-flex items-center gap-1" title={s.siteSlug}>
+                          {i === 0 && <Crown className="w-3 h-3 text-yellow shrink-0" />}{s.siteSlug}
+                        </span>
+                        <div className="flex-1 h-2 rounded-full bg-cream-soft overflow-hidden">
+                          <div className="h-full bg-red rounded-full" style={{ width: `${Math.max(6, (s.clicks / max) * 100)}%` }} />
+                        </div>
+                        <span className="w-8 text-right font-mono text-xs font-bold">{num(s.clicks)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      {/* ── top shops + most-clicked products ── */}
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div>
+          <h3 className="font-serif text-lg font-semibold mb-3 inline-flex items-center gap-2">
+            <Store className="w-4 h-4" /> Top shops by outbound clicks
+          </h3>
+          {topShops.length === 0 ? <Empty>No outbound clicks yet.</Empty> : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-[10px] font-mono uppercase tracking-wider text-gray border-b border-line">
+                    <th className="py-2 pr-3">Shop</th>
+                    <th className="py-2 pr-3 text-right">Clicks</th>
+                    <th className="py-2 pr-3 text-right">Products</th>
+                    <th className="py-2 pr-3 text-right">Cats</th>
+                    <th className="py-2 pr-3">Last</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {topShops.map((s) => (
+                    <tr key={s.siteSlug} className="border-b border-line/50">
+                      <td className="py-2 pr-3 capitalize font-medium">{s.siteSlug}</td>
+                      <td className="py-2 pr-3 text-right font-mono font-bold">{num(s.clicks)}</td>
+                      <td className="py-2 pr-3 text-right font-mono text-gray">{num(s.distinctProducts)}</td>
+                      <td className="py-2 pr-3 text-right font-mono text-gray">{num(s.distinctCategories)}</td>
+                      <td className="py-2 pr-3 text-gray text-xs whitespace-nowrap">{timeAgo(s.lastSeen)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        <div>
+          <h3 className="font-serif text-lg font-semibold mb-3 inline-flex items-center gap-2">
+            <Package className="w-4 h-4" /> Most-clicked products
+          </h3>
+          {topProducts.length === 0 ? <Empty>No outbound clicks yet.</Empty> : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-[10px] font-mono uppercase tracking-wider text-gray border-b border-line">
+                    <th className="py-2 pr-3">Product</th>
+                    <th className="py-2 pr-3 text-right">Clicks</th>
+                    <th className="py-2 pr-3 text-right">Shops</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {topProducts.map((p) => (
+                    <tr key={p.productId} className="border-b border-line/50">
+                      <td className="py-2 pr-3 max-w-[18rem]">
+                        <Link to={`/product/${p.productId}`} className="hover:text-red line-clamp-1" title={p.name}>
+                          {p.name || p.productId}
+                        </Link>
+                        {p.category && <span className="text-[10px] font-mono uppercase tracking-wider text-gray">{p.category}</span>}
+                      </td>
+                      <td className="py-2 pr-3 text-right font-mono font-bold align-top">{num(p.clicks)}</td>
+                      <td className="py-2 pr-3 text-right font-mono text-gray align-top">{num(p.distinctShops)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ── searches that convert to clicks ── */}
+      <section>
+        <h3 className="font-serif text-lg font-semibold mb-3 inline-flex items-center gap-2">
+          <TrendingUp className="w-4 h-4" /> Searches that convert to clicks
+        </h3>
+        {convSearches.length === 0 ? <Empty>No search-attributed clicks in this window yet.</Empty> : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-[10px] font-mono uppercase tracking-wider text-gray border-b border-line">
+                  <th className="py-2 pr-3">Search</th>
+                  <th className="py-2 pr-3 text-right">Clicks</th>
+                  <th className="py-2 pr-3 text-right">Products</th>
+                  <th className="py-2 pr-3 text-right">Shops</th>
+                </tr>
+              </thead>
+              <tbody>
+                {convSearches.map((s) => (
+                  <tr key={s.query} className="border-b border-line/50">
+                    <td className="py-2 pr-3">
+                      <Link to={`/search?q=${encodeURIComponent(s.query)}`} className="hover:text-red">{s.query}</Link>
+                    </td>
+                    <td className="py-2 pr-3 text-right font-mono font-bold">{num(s.clicks)}</td>
+                    <td className="py-2 pr-3 text-right font-mono text-gray">{num(s.distinctProducts)}</td>
+                    <td className="py-2 pr-3 text-right font-mono text-gray">{num(s.distinctShops)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
       {/* ── most searched + top IPs ── */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div>
@@ -346,6 +525,18 @@ function Kpi({ icon: Icon, label, value, hint, accent }) {
       </div>
       <div className="font-serif text-2xl font-bold mt-1 leading-none">{value}</div>
       {hint && <div className="text-[10px] text-gray font-mono mt-1">{hint}</div>}
+    </div>
+  );
+}
+
+function FunnelStage({ icon: Icon, label, value, rate, rateLabel, accent }) {
+  return (
+    <div className={`rounded-2xl border p-4 ${accent ? 'bg-red/5 border-red/30' : 'bg-cream-soft border-line'}`}>
+      <div className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-wider text-gray mb-1">
+        <Icon className={`w-3 h-3 ${accent ? 'text-red' : ''}`} /> {label}
+      </div>
+      <div className="font-serif text-2xl font-bold leading-none">{num(value)}</div>
+      {rate != null && <div className="text-[10px] text-gray font-mono mt-1">{rate}% {rateLabel}</div>}
     </div>
   );
 }
