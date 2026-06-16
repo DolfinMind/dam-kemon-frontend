@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import {
   ShieldCheck, Search, Truck, ArrowRight, ShieldAlert, Check, Loader2, Sparkles, Copy, Lock
 } from 'lucide-react';
-import { protectGetOrder, protectConfirmOrder, protectDisputeOrder } from '../api/api';
+import { protectAssess, protectCreateOrder, protectGetOrder, protectConfirmOrder, protectDisputeOrder } from '../api/api';
 
 const PAYMENTS = [
   { v: 'cod', label: 'Cash on Delivery (COD)' },
