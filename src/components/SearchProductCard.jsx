@@ -168,9 +168,9 @@ export default function SearchProductCard({ product, rank, sponsored = false, qu
                 ? <>Cheapest at <span className="font-semibold text-ink">{cheapest.siteName}</span></>
                 : <>Only on <span className="font-semibold text-ink">{cheapest.siteName}</span></>}
             </span>
-            <span className="inline-flex items-center gap-1 text-xs font-semibold text-ink/80 group-hover:text-acid-deep transition-colors shrink-0">
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-ink bg-acid px-3.5 py-1.5 rounded-full hover:brightness-95 hover:-translate-y-0.5 transition-all shrink-0 shadow-sm">
               {isMulti ? `Compare ${sellerCount} prices` : 'View details'}
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-3.5 h-3.5" />
             </span>
           </div>
         </div>
