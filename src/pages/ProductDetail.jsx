@@ -37,9 +37,15 @@ export default function ProductDetail() {
 
   const [product, setProduct] = useState(seedProduct);
   const [history, setHistory] = useState([]);
+  const [ourReviews, setOurReviews] = useState(null);
   const [loading, setLoading] = useState(!seedProduct);
   const [error, setError] = useState(null);
   const [retryTick, setRetryTick] = useState(0);
+
+  const ratedReviews = ourReviews ? ourReviews.filter((r) => r.rating != null) : [];
+  const avgOurRating = ratedReviews.length
+    ? ratedReviews.reduce((s, r) => s + r.rating, 0) / ratedReviews.length
+    : null;
 
   useEffect(() => {
     let cancelled = false;
@@ -267,202 +273,211 @@ export default function ProductDetail() {
         <ArrowLeft className="w-4 h-4" /> Back to results
       </button>
 
-      {/* ── HERO: who/what (left) + the answer, "best deal" (right) ─────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 mb-6 sm:mb-8 items-stretch">
-        {/* Identity */}
-        <div className="lg:col-span-7 card-elev overflow-hidden flex flex-col sm:flex-row">
-          {/* Product image — fills the panel so the card never reads as empty */}
-          <div className="relative sm:w-[42%] shrink-0 bg-surface-alt flex items-center justify-center p-6 sm:p-8 min-h-[200px]">
+      {/* ── HERO: Sleek Product Overview ──────────────────────────────────────── */}
+      <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 mb-8 sm:mb-12">
+        {/* Product Image — Large, edge-to-edge subtle background */}
+        <div className="lg:w-5/12 shrink-0">
+          <div className="relative w-full aspect-square rounded-[2rem] bg-surface-alt flex items-center justify-center p-8 sm:p-12 overflow-hidden border border-line-strong/50">
             {product.imageUrl ? (
-              <img src={product.imageUrl} alt={product.name} className="max-w-full max-h-full object-contain" onError={(e) => { e.target.style.display = 'none'; }} />
+              <img src={product.imageUrl} alt={product.name} className="max-w-full max-h-full object-contain mix-blend-multiply" onError={(e) => { e.target.style.display = 'none'; }} />
             ) : (
-              <CategoryIcon category={product.category} className="w-16 h-16 text-ink/20" />
+              <CategoryIcon category={product.category} className="w-24 h-24 text-ink/10" />
             )}
             {product.category && (
-              <span className="absolute top-4 left-4 chip chip-ghost !text-[10px] !py-0.5 capitalize">{product.category}</span>
+              <span className="absolute top-5 left-5 chip chip-ghost !text-[11px] !py-1 capitalize bg-white/80 backdrop-blur-md">{product.category}</span>
             )}
-          </div>
-
-          {/* Identity + actions, vertically centred */}
-          <div className="flex-1 min-w-0 p-5 sm:p-7 flex flex-col justify-center">
-            <span className={`self-start inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold mb-3 ${
-              sellerCount > 1 ? 'bg-acid-soft text-acid-deep' : 'bg-cream-soft text-ink/60'
-            }`}>
-              <Store className="w-3 h-3" />
-              {sellerCount === 0 ? 'No sellers' : sellerCount === 1 ? '1 seller' : `${sellerCount} sellers`}
-            </span>
-
-            <h1 className="font-sans text-2xl lg:text-[30px] font-extrabold text-ink leading-[1.1] tracking-[-0.025em]">
-              {product.name}
-            </h1>
-
-            <div className="flex items-center gap-2 mt-3 flex-wrap">
-              {product.averageRating > 0 ? (
-                <>
-                  <div className="flex items-center gap-0.5">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className={`w-4 h-4 ${i < Math.round(product.averageRating || 0) ? 'text-yellow fill-yellow' : 'text-line-strong'}`} />
-                    ))}
-                  </div>
-                  <span className="text-ink font-bold text-sm">{Number(product.averageRating).toFixed(1)}</span>
-                  {product.totalReviews > 0 && (
-                    <span className="text-gray text-xs">
-                      ({Number(product.totalReviews).toLocaleString('en-IN')} {product.totalReviews === 1 ? 'review' : 'reviews'})
-                    </span>
-                  )}
-                </>
-              ) : (
-                <span className="text-gray text-xs">No reviews aggregated yet</span>
-              )}
-            </div>
-
-            <div className="flex flex-wrap gap-2 mt-6">
-              <button
-                onClick={toggleWishlist}
-                disabled={wishlistBusy}
-                className={`btn-ghost ${inWishlist ? 'text-red' : ''}`}
-                title={user ? (inWishlist ? 'Remove from wishlist' : 'Add to wishlist') : 'Sign in to save'}
-              >
-                <Heart className={`w-4 h-4 ${inWishlist ? 'fill-red' : ''}`} />
-                {inWishlist ? 'Saved' : 'Wishlist'}
-              </button>
-              <button
-                onClick={openTrackPrice}
-                className={`btn-ghost ${alertSettings.alertsEnabled ? 'text-green' : ''}`}
-                title={alertSettings.alertsEnabled ? 'Edit price drop alert' : 'Notify me when price drops'}
-              >
-                <Bell className={`w-4 h-4 ${alertSettings.alertsEnabled ? 'fill-green/30' : ''}`} />
-                {alertSettings.alertsEnabled ? 'Tracking' : 'Track price'}
-              </button>
-              <button
-                onClick={() => {
-                  const url = window.location.href;
-                  if (navigator.share) navigator.share({ title: product.name, url }).catch(() => {});
-                  else navigator.clipboard?.writeText(url);
-                }}
-                className="btn-ghost"
-              >
-                <Share2 className="w-4 h-4" /> Share
-              </button>
-            </div>
           </div>
         </div>
 
-        {/* Best deal — the answer, big and unmissable */}
-        <div className="lg:col-span-5">
-          {cheapest ? (
-            <div className="overflow-hidden bg-ink text-cream h-full flex flex-col p-5 sm:p-6 rounded-[20px] border border-cream/10 shadow-[var(--shadow-card)]">
-              <div className="flex items-center justify-between gap-2 mb-3">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-acid text-ink px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider">
-                  <Crown className="w-3 h-3" /> Best deal
-                </span>
-                {champTier && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-cream/15 px-2.5 py-1 text-[11px] font-mono font-bold text-cream">
-                    <ShieldCheck className="w-3.5 h-3.5" /> {champScore} {champTier.label.toLowerCase()}
+        {/* Product Details & Best Deal */}
+        <div className="flex-1 min-w-0 flex flex-col justify-center">
+          <div className="mb-6">
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono font-bold mb-4 ${
+              sellerCount > 1 ? 'bg-acid-soft text-acid-deep' : 'bg-cream-soft text-ink/60'
+            }`}>
+              <Store className="w-3.5 h-3.5" />
+              {sellerCount === 0 ? 'No sellers' : sellerCount === 1 ? '1 seller tracked' : `${sellerCount} sellers tracked`}
+            </span>
+
+            <h1 className="font-sans text-3xl sm:text-4xl lg:text-5xl font-extrabold text-ink leading-[1.05] tracking-[-0.03em] mb-4">
+              {product.name}
+            </h1>
+
+            <div className="flex flex-wrap items-center gap-4">
+              {avgOurRating != null ? (
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className={`w-4 h-4 ${i < Math.round(avgOurRating) ? 'text-yellow fill-yellow' : 'text-line-strong'}`} />
+                    ))}
+                  </div>
+                  <span className="text-ink font-bold text-sm">{avgOurRating.toFixed(1)}</span>
+                  <span className="text-gray text-xs">
+                    ({ratedReviews.length} {ratedReviews.length === 1 ? 'review' : 'reviews'})
                   </span>
-                )}
-              </div>
-
-              <div className="text-[11px] font-mono uppercase tracking-wider text-cream/60">Lowest of {sellerCount} {sellerCount === 1 ? 'seller' : 'sellers'}</div>
-              <h2 className="font-sans text-2xl sm:text-[28px] font-extrabold tracking-tight leading-tight mt-0.5">{cheapestName}</h2>
-              {cheapestVia && <div className="text-[12px] font-mono text-cream/60 mt-0.5">via {cheapestVia}</div>}
-
-              <div className="flex items-end gap-3 mt-4">
-                <div className="font-mono text-[40px] sm:text-5xl font-bold text-acid leading-none">{formatPrice(lowestPrice)}</div>
-                <div className="pb-1 flex flex-col gap-0.5">
-                  {cheapest.originalPrice && cheapest.originalPrice > lowestPrice && (
-                    <s className="font-mono text-xs text-cream/50">{formatPrice(cheapest.originalPrice)}</s>
-                  )}
-                  {champDiscount > 0 && (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold bg-acid/20 text-acid rounded-md px-1.5 py-0.5 w-fit">−{champDiscount}%</span>
-                  )}
                 </div>
-              </div>
-              {savings > 0 && (
-                <div className="text-[12px] font-mono text-cream/70 mt-1.5">save {formatPrice(savings)} vs the priciest seller</div>
+              ) : ourReviews === null ? (
+                <span className="text-gray text-xs animate-pulse">Loading reviews...</span>
+              ) : (
+                <button
+                  onClick={() => document.getElementById('reviews-section')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="text-gray hover:text-ink text-xs transition-colors flex items-center gap-1.5"
+                >
+                  <Star className="w-3.5 h-3.5 text-yellow fill-yellow/20" /> Be the first to review
+                </button>
               )}
 
-              {/* Trust signals */}
-              <div className="flex flex-wrap gap-1.5 mt-4">
-                {champDelivery && (
-                  <span className="inline-flex items-center gap-1 rounded-md bg-cream/12 px-2 py-1 text-[11px] font-mono text-cream"><Truck className="w-3 h-3" /> {champDelivery}</span>
-                )}
-                {champShopT?.codAvailable && (
-                  <span className="inline-flex items-center gap-1 rounded-md bg-cream/12 px-2 py-1 text-[11px] font-mono text-cream"><Banknote className="w-3 h-3" /> COD</span>
-                )}
-                {cheapest.rating != null && cheapest.rating > 0 && (
-                  <span className="inline-flex items-center gap-1 rounded-md bg-cream/12 px-2 py-1 text-[11px] font-mono text-cream"><Star className="w-3 h-3 text-acid fill-acid" /> {Number(cheapest.rating).toFixed(1)}</span>
-                )}
-              </div>
+              <div className="w-px h-4 bg-line-strong hidden sm:block" />
 
-              {/* Primary + protected CTAs */}
-              <div className="mt-auto pt-5 flex flex-col gap-2">
-                <a
-                  href={champHref}
-                  target="_blank"
-                  rel="noopener noreferrer sponsored"
-                  onClick={() => trackClick(pid, cheapest.siteSlug || cheapest.siteName)}
-                  className="inline-flex items-center justify-center gap-2 bg-acid text-ink font-bold text-sm rounded-full px-5 py-3.5 hover:brightness-95 active:scale-[0.98] transition-all"
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={toggleWishlist}
+                  disabled={wishlistBusy}
+                  className={`text-sm font-medium flex items-center gap-1.5 hover:text-ink transition-colors ${inWishlist ? 'text-red' : 'text-gray'}`}
                 >
-                  Visit {cheapest.siteName} <ExternalLink className="w-4 h-4" />
-                </a>
-                <Link
-                  to={`/protect?productId=${encodeURIComponent(pid)}&shopSlug=${encodeURIComponent(cheapest.siteSlug || cheapest.siteName || '')}&itemName=${encodeURIComponent(product.name || '')}&amount=${lowestPrice || ''}`}
-                  className="inline-flex items-center justify-center gap-2 bg-cream/12 text-cream font-semibold text-sm rounded-full px-5 py-2.5 hover:bg-cream/20 transition-colors"
-                  title="Check scam risk & open a protected order"
+                  <Heart className={`w-4 h-4 ${inWishlist ? 'fill-red' : ''}`} />
+                  {inWishlist ? 'Saved' : 'Save'}
+                </button>
+                <button
+                  onClick={openTrackPrice}
+                  className={`text-sm font-medium flex items-center gap-1.5 hover:text-ink transition-colors ${alertSettings.alertsEnabled ? 'text-green' : 'text-gray'}`}
                 >
-                  <ShieldCheck className="w-4 h-4" /> Buy Protected
-                </Link>
+                  <Bell className={`w-4 h-4 ${alertSettings.alertsEnabled ? 'fill-green/30' : ''}`} />
+                  {alertSettings.alertsEnabled ? 'Tracking' : 'Track drops'}
+                </button>
+                <button
+                  onClick={() => {
+                    const url = window.location.href;
+                    if (navigator.share) navigator.share({ title: product.name, url }).catch(() => {});
+                    else navigator.clipboard?.writeText(url);
+                  }}
+                  className="text-sm font-medium text-gray hover:text-ink flex items-center gap-1.5 transition-colors"
+                >
+                  <Share2 className="w-4 h-4" /> Share
+                </button>
               </div>
+            </div>
+          </div>
 
-              {/* Cheapest-vs-smartest hint, mirroring the Smart verdict below */}
-              {sellerCount > 1 && (
-                <div className="mt-3 pt-3 border-t border-cream/15 text-[12px] text-cream/75 flex items-start gap-1.5">
-                  {sameAsCheapest ? (
-                    <><ShieldCheck className="w-3.5 h-3.5 text-acid shrink-0 mt-0.5" /> Also our smartest buy — best trust for the price.</>
-                  ) : (
-                    <><ArrowDown className="w-3.5 h-3.5 text-acid shrink-0 mt-0.5" /> A smarter pick — <b className="text-cream">{bestValueName}</b> for {formatPrice(Math.abs(bestValueDiff))} more — is in the Smart verdict.</>
+          <hr className="border-line-strong/50 mb-6" />
+
+          {/* Seamless Best Deal Block */}
+          {cheapest ? (
+            <div className="flex flex-col gap-5">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[11px] font-mono uppercase tracking-wider text-gray font-bold">Lowest price available</span>
+                  {savings > 0 && (
+                    <span className="inline-flex items-center gap-1 bg-green/10 text-green px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider">
+                      Save {formatPrice(savings)}
+                    </span>
                   )}
                 </div>
-              )}
+                <div className="flex items-end gap-3">
+                  <div className="font-mono text-4xl sm:text-[44px] font-bold text-ink leading-none">{formatPrice(lowestPrice)}</div>
+                  <div className="pb-1 flex flex-col gap-0.5">
+                    {cheapest.originalPrice && cheapest.originalPrice > lowestPrice && (
+                      <s className="font-mono text-sm text-gray-soft">{formatPrice(cheapest.originalPrice)}</s>
+                    )}
+                    {champDiscount > 0 && (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-red">−{champDiscount}%</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-cream-soft rounded-[1.25rem] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-line">
+                <div>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="inline-flex items-center gap-1.5 rounded-md bg-acid text-ink px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider">
+                      <Crown className="w-3 h-3" /> Best value
+                    </span>
+                    <span className="font-sans font-bold text-ink text-base">{cheapestName}</span>
+                    {cheapestVia && <span className="text-[11px] font-mono text-gray">via {cheapestVia}</span>}
+                  </div>
+                  
+                  <div className="flex flex-wrap items-center gap-2">
+                    {champTier && (
+                      <span className={`inline-flex items-center gap-1 text-[11px] font-mono font-medium ${champTier.text}`}>
+                        <ShieldCheck className="w-3.5 h-3.5" /> {champScore}/100 DamKemon score
+                      </span>
+                    )}
+                    {champDelivery && (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-mono text-gray">
+                        <Truck className="w-3 h-3" /> {champDelivery}
+                      </span>
+                    )}
+                    {champShopT?.codAvailable && (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-mono text-gray">
+                        <Banknote className="w-3 h-3" /> COD
+                      </span>
+                    )}
+                  </div>
+
+                  {sellerCount > 1 && !sameAsCheapest && bestValueName && (
+                    <div className="mt-2 text-[11px] text-gray/80 flex items-start gap-1">
+                      <ArrowDown className="w-3.5 h-3.5 text-gray shrink-0" />
+                      <span>Note: <b className="text-ink">{bestValueName}</b> is a smarter pick for {formatPrice(Math.abs(bestValueDiff))} more (see Smart Verdict).</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-col sm:items-end gap-2 shrink-0">
+                  <a
+                    href={champHref}
+                    target="_blank"
+                    rel="noopener noreferrer sponsored"
+                    onClick={() => trackClick(pid, cheapest.siteSlug || cheapest.siteName)}
+                    className="btn-primary !px-6 !py-3 w-full sm:w-auto text-center"
+                  >
+                    Visit store <ExternalLink className="w-4 h-4" />
+                  </a>
+                  <Link
+                    to={`/protect?productId=${encodeURIComponent(pid)}&shopSlug=${encodeURIComponent(cheapest.siteSlug || cheapest.siteName || '')}&itemName=${encodeURIComponent(product.name || '')}&amount=${lowestPrice || ''}`}
+                    className="text-[11px] font-mono font-medium text-gray hover:text-ink transition-colors inline-flex items-center justify-center gap-1 w-full sm:w-auto"
+                  >
+                    <ShieldCheck className="w-3 h-3" /> Buy Protected
+                  </Link>
+                </div>
+              </div>
             </div>
           ) : (
-            <div className="card-elev h-full flex flex-col items-center justify-center text-center p-6 bg-cream-soft/40">
-              <Store className="w-8 h-8 text-ink/20 mb-2" />
-              <p className="font-sans text-lg font-extrabold text-ink">No sellers yet</p>
-              <p className="text-xs text-gray mt-1">We're still tracking prices for this product.</p>
+            <div className="bg-cream-soft rounded-[1.25rem] border border-line p-8 flex flex-col items-center justify-center text-center">
+              <Store className="w-8 h-8 text-ink/20 mb-3" />
+              <p className="font-sans text-lg font-extrabold text-ink">No sellers found yet</p>
+              <p className="text-sm text-gray mt-1">We're actively scanning the market for this product.</p>
             </div>
           )}
         </div>
       </div>
 
-      {/* Every seller, ranked — with the Smart verdict as a sticky sidebar so it
-          sits beside the shops grid instead of eating a full-width band. */}
-      <div className="grid lg:grid-cols-3 gap-5 lg:gap-6 mb-6 sm:mb-8 items-start">
-        <section className="lg:col-span-2 min-w-0">
-          <div className="flex items-end justify-between gap-3 flex-wrap mb-4">
+      {/* ── Compare & Verdict ─────────────────────────────────────────────────── */}
+      <div className="flex flex-col gap-8 mb-8 sm:mb-12">
+        <section>
+          <div className="mb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
             <div>
-              <h2 className="font-sans text-xl sm:text-2xl font-extrabold tracking-[-0.02em] text-ink leading-tight">Compare all sellers</h2>
-              <p className="text-[11px] sm:text-xs text-gray font-mono mt-0.5">
-                {sellerCount} {sellerCount === 1 ? 'seller' : 'sellers'} · lowest {formatPrice(lowestPrice)}
-                {savings > 0 && <> · save {formatPrice(savings)} vs highest</>}
+              <h2 className="font-sans text-2xl sm:text-3xl font-extrabold tracking-[-0.02em] text-ink leading-tight mb-1">Compare all sellers</h2>
+              <p className="text-[12px] text-gray font-mono">
+                {sellerCount} {sellerCount === 1 ? 'seller' : 'sellers'} · Lowest: <span className="font-bold">{formatPrice(lowestPrice)}</span>
+                {savings > 0 && <> · Save up to {formatPrice(savings)} vs highest</>}
               </p>
             </div>
           </div>
           <PriceComparisonTable prices={prices} productId={pid} trust={trust} sellerTrust={sellerTrust} />
         </section>
-        <aside className="lg:col-span-1 lg:sticky lg:top-20 self-start">
+
+        <section>
           <SmartVerdict product={product} trust={trust} />
-        </aside>
+        </section>
       </div>
 
-      {/* 3 — Reviews & trust */}
-      <section className="mb-6 sm:mb-8">
-        <div className="mb-4">
-          <h2 className="font-sans text-xl sm:text-2xl font-extrabold tracking-[-0.02em] text-ink leading-tight">Reviews &amp; trust</h2>
-          <p className="text-[11px] sm:text-xs text-gray font-mono mt-0.5">What buyers say across every seller</p>
+      {/* ── Reviews & trust ────────────────────────────────────────────────── */}
+      <section id="reviews-section" className="mb-8 sm:mb-12">
+        <div className="mb-5">
+          <h2 className="font-sans text-2xl sm:text-3xl font-extrabold tracking-[-0.02em] text-ink leading-tight mb-1">Reviews &amp; Trust</h2>
+          <p className="text-sm text-gray">What buyers say across every seller.</p>
         </div>
-        <ReviewsPanel productId={pid} product={product} onTrustUpdated={onTrustUpdated} />
+        <ReviewsPanel productId={pid} product={product} onTrustUpdated={onTrustUpdated} onReviewsLoaded={setOurReviews} />
       </section>
 
       {/* 4 — Price history */}

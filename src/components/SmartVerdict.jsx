@@ -58,23 +58,23 @@ export default function SmartVerdict({ product, trust = {} }) {
     <section>
       <div className="card-elev overflow-hidden">
         {/* Header + plain-language verdict on the forest-green "smart" surface */}
-        <div className="bg-green text-cream px-5 sm:px-7 py-5 sm:py-6">
-          <div className="flex items-center gap-2.5 mb-3">
-            <span className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-acid text-ink shrink-0">
-              <Sparkles className="w-4 h-4" />
+        <div className="bg-green text-cream px-4 sm:px-5 py-4">
+          <div className="flex items-center gap-2.5 mb-2">
+            <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-acid text-ink shrink-0">
+              <Sparkles className="w-3.5 h-3.5" />
             </span>
             <div>
-              <h2 className="font-sans text-lg font-extrabold tracking-tight leading-none">Smart verdict</h2>
-              <p className="text-[11px] text-cream/60 font-mono mt-1 uppercase tracking-wider">Beyond price — trust, genuineness &amp; delivery</p>
+              <h2 className="font-sans text-base font-extrabold tracking-tight leading-none">Smart verdict</h2>
+              <p className="text-[10px] text-cream/70 font-mono mt-0.5 uppercase tracking-wider">Beyond price — trust &amp; delivery</p>
             </div>
           </div>
-          <p className="font-sans text-base sm:text-lg font-bold leading-snug text-cream/95">
+          <p className="font-sans text-sm sm:text-base font-bold leading-snug text-cream/95">
             {bottomLine}
           </p>
         </div>
 
         {/* The six questions, as a scannable evidence grid */}
-        <div className="grid grid-cols-1 gap-px bg-line">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-px bg-line">
           <Cell
             icon={TrendingDown}
             tone="text-green"
@@ -83,18 +83,9 @@ export default function SmartVerdict({ product, trust = {} }) {
             sub={<>on <b className="text-ink">{sellerLabel(cheapest)}</b>{multi ? ` · ${prices.length} sellers compared` : ''}</>}
           />
           <Cell
-            icon={Award}
-            tone="text-green"
-            q="What's the smart buy?"
-            a={sameAsCheapest ? 'Cheapest = best value' : sellerLabel(recommended)}
-            sub={sameAsCheapest
-              ? <>the lowest price is also the most trustworthy here</>
-              : <>just <b className="text-ink">{fmt(Math.abs(diff))}</b> more for {tier ? `${tier.label.toLowerCase()} trust` : 'a safer buy'}{dtext ? ` · ${dtext}` : ''}</>}
-          />
-          <Cell
             icon={ShieldCheck}
             tone={tier ? tier.text : 'text-gray'}
-            q="Is the seller trustworthy?"
+            q="DamKemon score"
             a={recT ? `${recT.trustScore}/100 · ${tier.label}` : 'Not yet rated'}
             sub={recT
               ? <>{recT.ratingCount > 0 ? `${recT.ratingCount} buyer review${recT.ratingCount === 1 ? '' : 's'}` : 'baseline reputation'}{recT.recommendRate != null ? ` · ${recT.recommendRate}% recommend` : ''}</>
@@ -127,10 +118,10 @@ export default function SmartVerdict({ product, trust = {} }) {
         {product?.category && (
           <Link
             to={`/browse?category=${encodeURIComponent(product.category)}`}
-            className="flex items-center justify-between gap-2 px-5 sm:px-7 py-3.5 bg-cream-soft/60 border-t border-line hover:bg-cream-soft transition-colors group"
+            className="flex items-center justify-between gap-2 px-4 sm:px-5 py-3 bg-cream-soft/60 border-t border-line hover:bg-cream-soft transition-colors group"
           >
             <span className="text-sm text-ink/80">
-              Is there a better alternative for similar money? <span className="text-gray">Compare other <b className="capitalize text-ink">{product.category}</b>.</span>
+              Is there a better alternative? <span className="text-gray">Compare other <b className="capitalize text-ink">{product.category}</b>.</span>
             </span>
             <ArrowRight className="w-4 h-4 text-ink/60 group-hover:translate-x-0.5 group-hover:text-ink transition-transform shrink-0" />
           </Link>
@@ -142,14 +133,14 @@ export default function SmartVerdict({ product, trust = {} }) {
 
 function Cell({ icon: Icon, tone, q, a, sub }) {
   return (
-    <div className="flex items-start gap-3 px-4 sm:px-5 py-4 bg-surface">
-      <span className={`mt-0.5 inline-flex items-center justify-center w-9 h-9 rounded-xl bg-cream-soft shrink-0 ${tone}`}>
-        <Icon className="w-4 h-4" />
+    <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3 px-3 sm:px-4 py-3 sm:py-4 bg-surface">
+      <span className={`inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-[10px] sm:rounded-xl bg-cream-soft shrink-0 ${tone}`}>
+        <Icon className="w-3.5 h-3.5" />
       </span>
       <div className="min-w-0">
-        <div className="text-[11px] font-mono uppercase tracking-wider text-gray">{q}</div>
-        <div className={`font-sans text-[15px] sm:text-base font-extrabold mt-0.5 ${tone}`}>{a}</div>
-        <div className="text-[12px] text-gray leading-snug mt-1">{sub}</div>
+        <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-gray leading-tight mb-0.5">{q}</div>
+        <div className={`font-sans text-[13px] sm:text-[15px] font-extrabold ${tone} leading-[1.15]`}>{a}</div>
+        <div className="text-[10px] sm:text-[11px] text-gray leading-snug mt-1">{sub}</div>
       </div>
     </div>
   );

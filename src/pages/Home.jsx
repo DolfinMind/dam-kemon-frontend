@@ -102,54 +102,41 @@ export default function Home() {
   return (
     <div className="overflow-x-hidden">
       {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="container-tight pt-6 sm:pt-10 lg:pt-14">
-        <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-12 items-center">
-          {/* Left — headline + search */}
-          <div>
-            <div className="flex items-center gap-2 mb-5">
-              <span className="chip chip-ghost !text-ink/70">
-                <Store className="w-3.5 h-3.5 text-acid-deep" /> Bangladesh price comparison
-              </span>
-              <AlphaBadge />
-            </div>
-            <h1 className="font-sans font-extrabold leading-[1.0] tracking-[-0.035em] text-[clamp(2.6rem,7vw,5rem)] text-ink">
-              Compare prices across <span className="text-acid-deep">every online shop</span> in Bangladesh.
-            </h1>
-            <p className="text-[15px] sm:text-lg text-ink/65 max-w-lg mt-6 mb-7 leading-relaxed">
-              Stop guessing if you are getting a good deal. Search for mobile phones, laptops, electronics, and more to instantly compare prices from trusted BD e-commerce sites. We check the scam risk, track price drops, and show you the best genuine offers across <span className="font-semibold text-ink">{stats?.totalSellers ? fmtNum(stats.totalSellers) : (stats?.totalSites ?? '2,000+')} shops</span>.
-            </p>
+      <section className="container-tight pt-4 sm:pt-6 lg:pt-8 pb-6 text-center flex flex-col items-center">
+        <div className="flex items-center justify-center gap-2 mb-6">
+          <span className="chip chip-ghost !text-ink/70">
+            <Store className="w-3.5 h-3.5 text-acid-deep" /> Bangladesh price comparison
+          </span>
+          <AlphaBadge />
+        </div>
 
-            <div className="max-w-lg">
-              <SearchBar large onSearch={handleSearch} sellerCount={stats?.totalSellers} />
-            </div>
+        <h1 className="font-sans font-extrabold leading-[0.95] tracking-[-0.04em] text-[clamp(2.5rem,5vw,4.5rem)] text-ink max-w-4xl mx-auto">
+          <span className="bg-acid px-3 py-1 -ml-3 mr-1 inline-block">Compare</span> prices across <span className="text-acid-deep">every online shop</span> in Bangladesh.
+        </h1>
+        
+        <p className="text-[15px] sm:text-lg text-ink/65 max-w-2xl mx-auto mt-6 mb-10 leading-relaxed">
+          Stop guessing if you are getting a good deal. Instantly compare prices from trusted BD e-commerce sites, check scam risks, and track price drops.
+        </p>
 
-            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
-              <a href="#how" className="btn-ghost group">
-                <Play className="w-3.5 h-3.5 fill-current" /> See how it works
-              </a>
-              <div className="flex items-center gap-2 text-[13px] text-ink/55">
-                <span className="w-2 h-2 rounded-full bg-acid animate-pulse-dot" />
-                {live ? <>{fmtNum(live.searchesToday)} searches today</> : 'Live across BD shops'}
-              </div>
-            </div>
-
-            {/* Trust micro-proofs — put the anti-scam value right at the point
-                of action; trust is the #1 reason BD shoppers hesitate post-Evaly. */}
-            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12.5px] text-ink/65">
-              <span className="inline-flex items-center gap-1.5"><BadgeCheck className="w-4 h-4 text-acid-deep" /> Real prices, never fake</span>
-              <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-acid-deep" /> Scam-risk checked</span>
-              <span className="inline-flex items-center gap-1.5"><Sparkles className="w-4 h-4 text-acid-deep" /> Free for shoppers</span>
-            </div>
-          </div>
-
-          {/* Right — stat block + green growth graph (MAC's 230+ card + bar chart) */}
-          <div className="relative">
-            <div className="grid grid-cols-2 gap-4 sm:gap-5">
+        {/* Search & Stats Row */}
+        <div className="w-full max-w-5xl mx-auto">
+          <div className="flex flex-col md:flex-row items-stretch justify-center gap-4 lg:gap-6">
+            {/* Products Stat (Left) */}
+            <div className="hidden md:flex shrink-0 w-44 lg:w-52 text-left">
               <StatBlock
                 value={stats?.totalProducts}
                 loading={statsLoading}
                 label="Products"
               />
+            </div>
+
+            {/* Search Bar (Center Focus) */}
+            <div className="w-full max-w-2xl flex-1 relative z-10 flex flex-col justify-center text-left">
+              <SearchBar large onSearch={handleSearch} sellerCount={stats?.totalSellers} />
+            </div>
+
+            {/* Sellers Stat (Right) */}
+            <div className="hidden md:flex shrink-0 w-44 lg:w-52 text-left">
               <StatBlock
                 value={stats?.totalSellers ?? stats?.totalSites}
                 loading={statsLoading}
@@ -157,92 +144,97 @@ export default function Home() {
                 tone="acid"
               />
             </div>
+          </div>
 
-            <div className="mt-4 sm:mt-5 rounded-[1.75rem] bg-ink text-cream p-6 sm:p-7 relative overflow-hidden">
-              <div className="absolute -top-10 -right-8 w-44 h-44 rounded-full bg-acid/15 blur-3xl pointer-events-none" />
-              <div className="relative flex items-start justify-between gap-4 mb-5">
-                <div>
-                  <div className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-cream/60 mb-2">
-                    <span className="w-5 h-px bg-acid" /> Real prices, tracked
-                  </div>
-                  <h3 className="font-sans font-bold text-xl sm:text-2xl leading-snug max-w-[15ch]">
-                    Watch real BD prices &amp; savings
-                  </h3>
-                </div>
-                <span className="inline-flex items-center gap-1 text-[12px] font-bold text-ink bg-acid rounded-full px-2.5 py-1 shrink-0">
-                  <TrendingUp className="w-3.5 h-3.5" /> live
-                </span>
-              </div>
-              <GrowthBars total={stats?.totalPricePoints} />
-              <div className="relative mt-4 flex items-baseline gap-2">
-                <span className="font-sans text-3xl sm:text-4xl font-extrabold tabular-nums">
-                  <CountUp value={stats?.totalPricePoints} />
-                </span>
-                <span className="text-cream/55 text-sm">price points and climbing</span>
-              </div>
-            </div>
+          {/* Mobile-only stats row (below search) */}
+          <div className="md:hidden grid grid-cols-2 gap-4 mt-6 text-left">
+             <StatBlock
+               value={stats?.totalProducts}
+               loading={statsLoading}
+               label="Products"
+             />
+             <StatBlock
+               value={stats?.totalSellers ?? stats?.totalSites}
+               loading={statsLoading}
+               label="Sellers"
+               tone="acid"
+             />
+          </div>
+        </div>
 
-            <div className="absolute -bottom-3 -left-3 bg-surface py-1.5 px-3 rounded-full shadow-[var(--shadow-lift)] border border-line inline-flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-acid-deep" />
-              <span className="text-[11px] font-mono font-bold text-ink">No fake prices</span>
-            </div>
+        {/* Trust micro-proofs below search */}
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[12.5px] text-ink/65">
+          <span className="inline-flex items-center gap-1.5"><BadgeCheck className="w-4 h-4 text-acid-deep" /> Real prices, never fake</span>
+          <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-acid-deep" /> Scam-risk checked</span>
+          <span className="inline-flex items-center gap-1.5"><Sparkles className="w-4 h-4 text-acid-deep" /> Free for shoppers</span>
+        </div>
+
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+          <a href="#how" className="btn-ghost group">
+            <Play className="w-3.5 h-3.5 fill-current" /> See how it works
+          </a>
+          <div className="flex items-center gap-2 text-[13px] text-ink/55">
+            <span className="w-2 h-2 rounded-full bg-acid animate-pulse-dot" />
+            {live ? <>{fmtNum(live.searchesToday)} searches today</> : 'Live across BD shops'}
           </div>
         </div>
       </section>
 
       {/* ── Today's deals (scroll rail) ──────────────────────────── */}
-      <section className="container-tight pt-12 sm:pt-16">
-        <div className="flex items-end justify-between gap-3 mb-5 sm:mb-6">
+      <section className="container-tight pt-6 sm:pt-8">
+        <div className="flex items-end justify-between gap-3 mb-6 sm:mb-8">
           <div>
-            <div className="chip chip-ghost !text-red mb-2 inline-flex items-center gap-1.5">
-              <Flame className="w-3.5 h-3.5" /> Today's deals
-              <span className="w-1.5 h-1.5 rounded-full bg-red animate-pulse-dot ml-0.5" />
+            <div className="inline-flex items-center gap-1.5 bg-[#FFECE8] text-[#FF4A2A] px-2.5 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase mb-3">
+              <Flame className="w-3 h-3" /> Today's deals
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF4A2A] animate-pulse-dot ml-0.5" />
             </div>
-            <h2 className="font-sans font-extrabold text-[clamp(1.5rem,3.5vw,2.25rem)] leading-tight tracking-[-0.025em] text-ink">
+            <h2 className="font-sans font-extrabold text-[clamp(1.5rem,3.5vw,2.5rem)] leading-tight tracking-tight text-[#2A2A2A]">
               Biggest price drops <span className="text-acid-deep">right now</span>
             </h2>
           </div>
-          <Link to="/browse" className="text-sm font-semibold text-ink/70 hover:text-ink inline-flex items-center gap-1.5 shrink-0">
+          <Link to="/browse" className="text-[13px] font-bold text-[#A3A3A3] hover:text-[#2A2A2A] transition-colors inline-flex items-center gap-1.5 shrink-0 uppercase tracking-widest">
             See all <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
-        <div className="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 pb-1">
+        <div className="flex gap-4 sm:gap-5 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 pb-4">
           {(deals.length ? deals : Array.from({ length: 6 })).slice(0, 10).map((d, i) => (
             d ? (
               <Link
                 key={d.id}
                 to={`/product/${d.id || d.slug}`}
                 state={d.product ? { product: d.product } : undefined}
-                className="group snap-start shrink-0 w-[158px] sm:w-[208px] card-soft overflow-hidden flex flex-col hover:shadow-[var(--shadow-card)] hover:border-line-strong transition-all"
+                className="group snap-start shrink-0 w-[170px] sm:w-[220px] bg-white rounded-[1.25rem] overflow-hidden flex flex-col shadow-[0_4px_20px_rgb(0,0,0,0.04)] border border-black/[0.03] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300"
               >
-                <div className="relative aspect-square bg-cream-soft flex items-center justify-center overflow-hidden">
+                <div className="relative aspect-square bg-[#F8F8F6] flex items-center justify-center p-5 overflow-hidden">
                   {d.imageUrl ? (
-                    <img src={d.imageUrl} alt={d.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.05]" onError={(e) => { e.target.style.display = 'none'; }} />
+                    <img src={d.imageUrl} alt={d.name} className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-110" onError={(e) => { e.target.style.display = 'none'; }} />
                   ) : (
-                    <CategoryIcon category={d.category} className="w-10 h-10 text-ink/20" />
+                    <CategoryIcon category={d.category} className="w-10 h-10 text-black/10" />
                   )}
                   {d.pct > 0 && (
-                    <span className="absolute top-2 left-2 inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-1 rounded-full bg-red text-white shadow-[var(--shadow-soft)]">
+                    <span className="absolute top-3 left-3 inline-flex items-center gap-1 text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded-md bg-[#FF4A2A] text-white shadow-sm">
                       <TrendingDown className="w-3 h-3" /> {d.kind === 'drop' ? `${d.pct}%` : `save ${d.pct}%`}
                     </span>
                   )}
                 </div>
-                <div className="p-3 sm:p-3.5 flex-1 flex flex-col">
-                  {d.category && <span className="font-mono text-[9px] uppercase tracking-wider text-gray">{d.category}</span>}
-                  <h3 className="font-sans text-sm font-semibold text-ink leading-snug line-clamp-2 mt-0.5 group-hover:text-acid-deep transition-colors">{d.name}</h3>
-                  <div className="mt-auto pt-2.5 flex items-baseline gap-2">
-                    <span className="font-sans text-base font-bold text-ink">{fmt(d.price)}</span>
-                    {d.oldPrice && <span className="font-mono text-[11px] text-gray-soft line-through">{fmt(d.oldPrice)}</span>}
+                <div className="p-4 sm:p-5 flex-1 flex flex-col bg-white">
+                  {d.category && <span className="text-[9px] uppercase tracking-widest text-[#8C8C8C] font-bold mb-1.5">{d.category}</span>}
+                  <h3 className="font-sans text-[14px] font-bold text-[#2A2A2A] leading-[1.3] line-clamp-2 group-hover:text-acid-deep transition-colors">{d.name}</h3>
+                  <div className="mt-auto pt-4 flex items-baseline flex-wrap gap-x-2 gap-y-1">
+                    <span className="font-sans text-[1.15rem] font-extrabold text-[#2A2A2A] tracking-tight">{fmt(d.price)}</span>
+                    {d.oldPrice && <span className="text-[12px] font-semibold text-[#A3A3A3] line-through">{fmt(d.oldPrice)}</span>}
                   </div>
                 </div>
               </Link>
             ) : (
-              <div key={i} className="snap-start shrink-0 w-[158px] sm:w-[208px] card-soft overflow-hidden">
-                <div className="aspect-square bg-cream-soft animate-pulse" />
-                <div className="p-3.5 space-y-2">
-                  <div className="h-3 rounded bg-ink/5 animate-pulse" />
-                  <div className="h-3 w-2/3 rounded bg-ink/5 animate-pulse" />
+              <div key={i} className="snap-start shrink-0 w-[170px] sm:w-[220px] bg-white rounded-[1.25rem] overflow-hidden border border-black/[0.03] shadow-[0_4px_20px_rgb(0,0,0,0.04)]">
+                <div className="aspect-square bg-[#F8F8F6] animate-pulse" />
+                <div className="p-5 space-y-3">
+                  <div className="h-2 w-1/3 rounded bg-black/5 animate-pulse" />
+                  <div className="h-4 rounded bg-black/5 animate-pulse" />
+                  <div className="h-4 w-2/3 rounded bg-black/5 animate-pulse" />
+                  <div className="h-5 w-1/2 rounded bg-black/5 animate-pulse mt-4" />
                 </div>
               </div>
             )
@@ -251,7 +243,7 @@ export default function Home() {
       </section>
 
       {/* ── Trust marquee ────────────────────────────────────────── */}
-      <section className="container-tight pt-12 sm:pt-16">
+      <section className="container-tight pt-6 sm:pt-8">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-gray shrink-0 max-w-[10rem] leading-relaxed">
             Comparing Bangladesh's biggest shops
@@ -278,7 +270,7 @@ export default function Home() {
       <ProtectShowcase />
 
       {/* ── "Out of the box" intro + feature cards ───────────────── */}
-      <section className="container-tight pt-16 sm:pt-24">
+      <section className="container-tight pt-8 sm:pt-12">
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-16 items-start">
           <h2 className="font-sans font-extrabold text-[clamp(1.8rem,4.5vw,3rem)] leading-[1.05] tracking-[-0.03em] text-ink">
             The ultimate price comparison engine for Bangladesh
@@ -334,7 +326,7 @@ export default function Home() {
       </section>
 
       {/* ── Most-trusted shops + Testimonial ─────────────────────── */}
-      <section className="container-tight pt-16 sm:pt-24">
+      <section className="container-tight pt-8 sm:pt-12">
         <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-8 lg:gap-12 items-stretch">
           {/* Trusted shops */}
           <div className="rounded-[1.75rem] bg-neutral-bg border border-line p-6 sm:p-8">
@@ -377,7 +369,7 @@ export default function Home() {
       </section>
 
       {/* ── How it works (steps) ─────────────────────────────────── */}
-      <section id="how" className="container-tight pt-16 sm:pt-24 scroll-mt-24">
+      <section id="how" className="container-tight pt-8 sm:pt-12 scroll-mt-24">
         <div className="flex items-center gap-2 mb-3">
           <span className="w-7 h-px bg-acid-deep" />
           <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-gray">How it works</span>
@@ -399,7 +391,7 @@ export default function Home() {
                 <h3 className="font-sans text-lg font-bold text-ink mb-2">{s.title}</h3>
                 <p className="text-ink/60 text-sm leading-relaxed">{s.desc}</p>
                 {i < STEPS.length - 1 && (
-                  <ArrowRight className="hidden md:block absolute top-1/2 -right-4 w-6 h-6 text-ink/15" />
+                  <ArrowRight className="hidden md:block absolute top-1/2 -translate-y-1/2 -right-4 lg:-right-5 w-6 h-6 text-ink/15 z-10" />
                 )}
               </div>
             );
@@ -408,7 +400,7 @@ export default function Home() {
       </section>
 
       {/* ── FAQ ──────────────────────────────────────────────────── */}
-      <section className="container-tight pt-16 sm:pt-24">
+      <section className="container-tight pt-8 sm:pt-12">
         <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-8 lg:gap-14">
           <div>
             <h2 className="font-sans font-extrabold text-[clamp(1.8rem,4.5vw,2.75rem)] leading-[1.05] tracking-[-0.03em] text-ink">
@@ -427,7 +419,7 @@ export default function Home() {
       </section>
 
       {/* ── Guides & insights ────────────────────────────────────── */}
-      <section className="container-tight pt-16 sm:pt-24">
+      <section className="container-tight pt-8 sm:pt-12">
         <div className="flex items-end justify-between mb-8 gap-4">
           <h2 className="font-sans font-extrabold text-[clamp(1.6rem,4vw,2.5rem)] leading-[1.05] tracking-[-0.03em] text-ink max-w-xl">
             Guides that help you buy smarter in Bangladesh.
@@ -454,7 +446,7 @@ export default function Home() {
       </section>
 
       {/* ── Big CTA (dark band) ──────────────────────────────────── */}
-      <section className="container-tight pt-16 sm:pt-24 pb-4">
+      <section className="container-tight pt-6 sm:pt-8 pb-4">
         <div className="rounded-[2rem] bg-ink text-cream px-6 sm:px-10 lg:px-16 py-14 sm:py-20 relative overflow-hidden">
           <div className="absolute -top-24 right-10 w-96 h-96 rounded-full bg-acid/15 blur-3xl pointer-events-none" />
           <div className="absolute -bottom-24 -left-10 w-96 h-96 rounded-full bg-red/10 blur-3xl pointer-events-none" />
@@ -462,12 +454,12 @@ export default function Home() {
             <h2 className="font-sans font-extrabold text-[clamp(2rem,5.5vw,4rem)] leading-[1.0] tracking-[-0.03em] max-w-2xl">
               Ready to find the<br />best price?
             </h2>
-            <div className="shrink-0">
-              <button onClick={() => document.querySelector('input')?.focus()} className="btn-acid !text-base !px-7 !py-4">
+            <div className="shrink-0 flex flex-col sm:flex-row items-center gap-4">
+              <button onClick={() => document.querySelector('input')?.focus()} className="btn-acid shrink-0 !text-base !px-7 !py-4">
                 Search a product <ArrowRight className="w-5 h-5" />
               </button>
-              <p className="text-cream/50 text-[13px] mt-3 inline-flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-acid" /> Free for shoppers, always.
+              <p className="text-cream/50 text-[13px] inline-flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-acid shrink-0" /> Free for shoppers, always.
               </p>
             </div>
           </div>

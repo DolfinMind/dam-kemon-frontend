@@ -25,7 +25,7 @@ const emptyForm = {
  * just free text. On success we hand the updated trust profile back up so the
  * comparison table + verdict refresh live.
  */
-export default function ReviewsPanel({ productId, product, onTrustUpdated }) {
+export default function ReviewsPanel({ productId, product, onTrustUpdated, onReviewsLoaded }) {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -43,8 +43,19 @@ export default function ReviewsPanel({ productId, product, onTrustUpdated }) {
     let alive = true;
     setLoading(true);
     getProductReviews(productId)
-      .then((r) => { if (alive) setReviews(Array.isArray(r.data) ? r.data : []); })
-      .catch(() => { if (alive) setReviews([]); })
+      .then((r) => {
+        if (alive) {
+          const data = Array.isArray(r.data) ? r.data : [];
+          setReviews(data);
+          if (onReviewsLoaded) onReviewsLoaded(data);
+        }
+      })
+      .catch(() => {
+        if (alive) {
+          setReviews([]);
+          if (onReviewsLoaded) onReviewsLoaded([]);
+        }
+      })
       .finally(() => { if (alive) setLoading(false); });
     return () => { alive = false; };
   }, [productId]);
@@ -73,7 +84,13 @@ export default function ReviewsPanel({ productId, product, onTrustUpdated }) {
       };
       const res = await postProductReview(productId, payload);
       const newReview = res.data?.review;
-      if (newReview) setReviews((rs) => [newReview, ...rs]);
+      if (newReview) {
+        setReviews((rs) => {
+          const next = [newReview, ...rs];
+          if (onReviewsLoaded) onReviewsLoaded(next);
+          return next;
+        });
+      }
       if (res.data?.trust && onTrustUpdated) onTrustUpdated(res.data.trust);
       setForm(emptyForm);
       setShowForm(false);

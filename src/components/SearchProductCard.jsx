@@ -87,14 +87,16 @@ export default function SearchProductCard({ product, rank, sponsored = false, qu
             {product.name}
           </h3>
           <div className="mt-1.5 flex items-center gap-2.5 flex-wrap text-[13px]">
-            {rating != null && rating > 0 ? (
+            {product.damkemonRating != null && product.damkemonRating > 0 ? (
               <span className="inline-flex items-center gap-1">
                 <Star className="w-3.5 h-3.5 text-yellow fill-yellow" />
-                <span className="font-semibold text-ink">{Number(rating).toFixed(1)}</span>
-                {totalReviews > 0 && <span className="text-gray-soft text-xs">({totalReviews.toLocaleString('en-IN')})</span>}
+                <span className="font-semibold text-ink">{Number(product.damkemonRating).toFixed(1)}</span>
+                {product.damkemonReviews > 0 && <span className="text-gray-soft text-xs">({product.damkemonReviews.toLocaleString('en-IN')})</span>}
               </span>
             ) : (
-              <span className="text-gray-soft text-xs">No reviews yet</span>
+              <span className="text-gray-soft text-[11px] flex items-center gap-1">
+                <Star className="w-3 h-3 text-yellow fill-yellow/20" /> No reviews yet
+              </span>
             )}
             {isMulti && savingsPct >= 5 && (
               <span className="inline-flex items-center gap-0.5 bg-acid-soft text-acid-deep text-[11px] font-mono font-bold px-2 py-0.5 rounded-full">

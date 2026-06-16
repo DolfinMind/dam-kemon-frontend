@@ -28,7 +28,7 @@ export default function ProtectShowcase() {
   };
 
   return (
-    <section className="py-16 sm:py-24 lg:py-32 px-4 sm:px-6 relative overflow-hidden bg-cream">
+    <section className="py-6 sm:py-8 lg:py-10 px-4 sm:px-6 relative overflow-hidden bg-cream">
       {/* Background ambient glows */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-tr from-lime/20 via-acid/10 to-transparent rounded-full blur-3xl pointer-events-none" />
       

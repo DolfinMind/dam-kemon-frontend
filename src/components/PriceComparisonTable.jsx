@@ -191,10 +191,10 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
                     Icon={ShieldCheck}
                     dark={isTop}
                     tone={isTop ? 'text-cream' : tier.text}
-                    title={`${st ? 'Seller' : 'Shop'} trust ${score}/100 · ${tier.label}`}
+                    title={`DamKemon score: ${score}/100`}
                   >
-                    <span className={isTop ? 'text-cream' : ''}>{score}</span>
-                    <span className={isTop ? 'text-cream/70 font-sans font-normal' : 'text-gray font-sans font-normal'}>{tier.label.toLowerCase()}</span>
+                    <span className={isTop ? 'text-cream' : ''}>{score}/100</span>
+                    <span className={isTop ? 'text-cream/70 font-sans font-normal' : 'text-gray font-sans font-normal'}>DamKemon score</span>
                   </Signal>
                 )}
                 {it.rating != null && it.rating > 0 && (
@@ -217,24 +217,24 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
               </div>
 
               {/* Price + visit */}
-              <div className={`mt-4 pt-3 border-t flex items-end justify-between gap-2 ${isTop ? 'border-cream/20' : 'border-line'}`}>
-                <div>
-                  <div className={`font-mono text-[26px] font-bold leading-none ${isTop ? 'text-acid' : 'text-ink'}`}>
+              <div className={`mt-auto pt-4 border-t flex items-center justify-between gap-3 ${isTop ? 'border-cream/20' : 'border-line'}`}>
+                <div className="min-w-0">
+                  <div className={`font-mono text-[24px] sm:text-[26px] font-bold leading-none ${isTop ? 'text-acid' : 'text-ink'}`}>
                     {formatPrice(it.price)}
                   </div>
-                  <div className="mt-1.5 flex items-center gap-2 text-[11px] font-mono">
+                  <div className="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-[11px] font-mono leading-tight">
                     {it.originalPrice && it.originalPrice > it.price && (
                       <s className={isTop ? 'text-cream/50' : 'text-gray-soft'}>{formatPrice(it.originalPrice)}</s>
                     )}
                     {isCheapest ? (
                       <span className={`font-bold ${isTop ? 'text-cream' : 'text-green'}`}>Lowest price</span>
                     ) : delta != null && delta > 0 ? (
-                      <span className="text-gray">+{formatPrice(delta)} vs lowest</span>
+                      <span className="text-gray truncate">+{formatPrice(delta)} vs lowest</span>
                     ) : null}
                   </div>
                 </div>
                 <span
-                  className={`inline-flex items-center gap-1.5 shrink-0 rounded-full px-3 py-2 text-xs font-bold transition-colors ${
+                  className={`inline-flex items-center gap-1.5 shrink-0 rounded-full px-4 py-2 text-xs font-bold transition-colors whitespace-nowrap ${
                     isTop
                       ? 'bg-acid text-ink'
                       : 'bg-cream-soft text-ink group-hover:bg-ink group-hover:text-cream'
