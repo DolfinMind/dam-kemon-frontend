@@ -38,6 +38,9 @@
   --shadow-pop: 0 20px 60px -20px rgba(255, 69, 33, 0.35);
 }
 
+/* Completely disable system dark mode override by requiring a manual class */
+@custom-variant dark (&:where(.dark, .dark *));
+
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
