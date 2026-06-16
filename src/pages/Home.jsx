@@ -113,16 +113,10 @@ export default function Home() {
               <AlphaBadge />
             </div>
             <h1 className="font-sans font-extrabold leading-[1.0] tracking-[-0.035em] text-[clamp(2.6rem,7vw,5rem)] text-ink">
-              <span lang="bn">দাম কেমন?</span> — The question{' '}
-              <span className="relative inline-block">we answer
-                <span className="absolute left-0 -bottom-1 w-full h-[0.18em] bg-acid rounded-full" />
-              </span>{' '}
-              for every shop in Bangladesh.
+              Compare prices across <span className="text-acid-deep">every online shop</span> in Bangladesh.
             </h1>
             <p className="text-[15px] sm:text-lg text-ink/65 max-w-lg mt-6 mb-7 leading-relaxed">
-              One search compares every seller's price <span className="font-semibold text-ink">and</span> trust score,
-              side by side. The cheapest, safest buy wins — across{' '}
-              <span className="font-semibold text-ink">{stats?.totalSellers ? fmtNum(stats.totalSellers) : (stats?.totalSites ?? '2,000+')} BD shops</span>.
+              Stop guessing if you are getting a good deal. Search for mobile phones, laptops, electronics, and more to instantly compare prices from trusted BD e-commerce sites. We check the scam risk, track price drops, and show you the best genuine offers across <span className="font-semibold text-ink">{stats?.totalSellers ? fmtNum(stats.totalSellers) : (stats?.totalSites ?? '2,000+')} shops</span>.
             </p>
 
             <div className="max-w-lg">
@@ -282,12 +276,10 @@ export default function Home() {
       <section className="container-tight pt-16 sm:pt-24">
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-16 items-start">
           <h2 className="font-sans font-extrabold text-[clamp(1.8rem,4.5vw,3rem)] leading-[1.05] tracking-[-0.03em] text-ink">
-            One search, every seller — no spreadsheets, no scams.
+            The ultimate price comparison engine for Bangladesh
           </h2>
           <p className="text-ink/65 text-[15px] sm:text-lg leading-relaxed lg:pt-2">
-            We bring every shop in Bangladesh together in one place, line up the same product across every
-            seller, and score each shop for trust. So the moment you search, the cheapest and safest seller
-            is already waiting — real prices, never made-up ones.
+            Whether you are looking for the lowest iPhone price in BD, the best laptop deals, or verified authentic electronics, we bring every shop together in one place. Line up the exact product across major platforms and hundreds of other sellers. We score each shop for trust, so you can buy safely with real prices—never fake discounts.
           </p>
         </div>
 
@@ -418,7 +410,7 @@ export default function Home() {
               Price-comparison FAQs
             </h2>
             <p className="text-ink/60 text-[15px] mt-4 mb-7 leading-relaxed max-w-sm">
-              Everything about how damkemon gathers prices, scores trust, and keeps shopping in Bangladesh safe.
+              Learn how Damkemon gathers live prices, scores seller trust, and protects your online shopping in Bangladesh from advance payment scams.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link to="/browse" className="btn-primary">Browse products</Link>
