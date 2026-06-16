@@ -41,93 +41,59 @@ export default function Protect() {
     }
   }, [params]);
 
-  const handleAnalyze = (e) => {
+  const handleAnalyze = async (e) => {
     e.preventDefault();
     if (!query.trim()) return;
     setStep('analyzing');
     setScanText('Detecting platform...');
     
     const steps = [
-      { t: 600, text: 'Querying scam reports database...' },
-      { t: 1200, text: 'Analyzing seller history & signals...' },
-      { t: 1800, text: 'Finalizing trust score...' }
+      { t: 400, text: 'Querying scam reports database...' },
+      { t: 800, text: 'Analyzing seller history & signals...' },
+      { t: 1200, text: 'Finalizing trust score...' }
     ];
     
     steps.forEach(({ t, text }) => {
       setTimeout(() => setScanText(text), t);
     });
 
-    // Mock Result Data
-    setTimeout(() => {
-      const q = query.toLowerCase();
-      const isFb = q.includes('facebook') || q.includes('fb.com');
-      const isDaraz = q.includes('daraz');
-      const isPhone = /^[0-9+]+$/.test(q);
-
-      let finalScore = 58;
-      let name = q.replace(/^https?:\/\/(www\.)?/, '').split('/')[0];
-      let type = 'Unknown Link';
-      let flags = [];
-      let status = 'medium';
-
-      if (isDaraz) {
-        finalScore = 12;
-        name = 'Daraz.com.bd';
-        type = 'Verified Marketplace';
-        status = 'low';
-        flags = [
-          { text: 'Verified merchant platform', bad: false },
-          { text: 'Escrow and return policies detected', bad: false }
-        ];
-      } else if (isFb) {
-        finalScore = 88;
-        name = 'Facebook Seller';
-        type = 'Social Media Page';
-        status = 'high';
-        flags = [
-          { text: 'Social seller (no physical verification)', bad: true },
-          { text: 'High risk of advance payment scams', bad: true },
-          { text: 'This type of link is frequently reported', bad: true }
-        ];
-      } else if (isPhone) {
-        finalScore = 95;
-        name = q;
-        type = 'Personal Phone Number';
-        status = 'high';
-        flags = [
-          { text: 'Personal bKash/Nagad numbers offer ZERO buyer protection', bad: true },
-          { text: 'Highly linked to recent scam reports', bad: true }
-        ];
-      } else {
-        finalScore = 42;
-        name = name;
-        type = 'External Website';
-        status = 'medium';
-        flags = [
-          { text: 'Standard payment gateway detected', bad: false },
-          { text: 'Domain registered recently', bad: true }
-        ];
-      }
-
-      setResultData({ name, type, flags, finalScore, status });
-      setStep('result');
-    }, 2400);
+    try {
+      const res = await protectAssess({ query });
+      // Keep analyzing state for at least 1.5s to show animation
+      setTimeout(() => {
+        setResultData(res.data);
+        setStep('result');
+      }, 1500);
+    } catch (error) {
+      setTimeout(() => {
+        setResultData({
+          name: 'Unknown',
+          type: 'Error Analysis',
+          flags: [{ text: 'Could not connect to Damkemon Escrow', bad: true }],
+          finalScore: 50,
+          status: 'medium'
+        });
+        setStep('result');
+      }, 1500);
+    }
   };
 
-  const handleProtectOrder = (e) => {
+  const handleProtectOrder = async (e) => {
     e.preventDefault();
     if (!orderForm.itemName) return;
     setBusy(true);
-    // Mock API call to create order
-    setTimeout(() => {
-      setBusy(false);
-      setCreatedOrder({
-        protectionCode: 'DK-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
-        ...orderForm,
-        seller: resultData.name
+    try {
+      const res = await protectCreateOrder({
+        query,
+        ...orderForm
       });
+      setCreatedOrder(res.data.order);
       setStep('protected');
-    }, 1000);
+    } catch (error) {
+      alert("Failed to create protected order.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   const loadTrack = async (e) => {
