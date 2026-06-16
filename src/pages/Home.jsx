@@ -120,12 +120,12 @@ export default function Home() {
 
         {/* Search & Stats Row */}
         <div className="w-full max-w-5xl mx-auto">
-          <div className="flex flex-col md:flex-row items-stretch justify-center gap-4 lg:gap-6">
+          <div className="flex flex-col md:flex-row items-start justify-center gap-4 lg:gap-6">
             {/* Products Stat (Left) */}
-            <div className="hidden md:flex shrink-0 w-44 lg:w-52 text-left">
+            <div className="hidden md:flex shrink-0 w-44 lg:w-52 text-center">
               <StatBlock
                 value={stats?.totalProducts}
-                loading={statsLoading}
+                fallback={50000}
                 label="Products"
               />
             </div>
@@ -136,10 +136,10 @@ export default function Home() {
             </div>
 
             {/* Sellers Stat (Right) */}
-            <div className="hidden md:flex shrink-0 w-44 lg:w-52 text-left">
+            <div className="hidden md:flex shrink-0 w-44 lg:w-52 text-center">
               <StatBlock
                 value={stats?.totalSellers ?? stats?.totalSites}
-                loading={statsLoading}
+                fallback={2000}
                 label="Sellers"
                 tone="acid"
               />
@@ -147,15 +147,15 @@ export default function Home() {
           </div>
 
           {/* Mobile-only stats row (below search) */}
-          <div className="md:hidden grid grid-cols-2 gap-4 mt-6 text-left">
+          <div className="md:hidden grid grid-cols-2 gap-4 mt-6 text-center">
              <StatBlock
                value={stats?.totalProducts}
-               loading={statsLoading}
+               fallback={50000}
                label="Products"
              />
              <StatBlock
                value={stats?.totalSellers ?? stats?.totalSites}
-               loading={statsLoading}
+               fallback={2000}
                label="Sellers"
                tone="acid"
              />
@@ -506,12 +506,12 @@ const INSIGHTS = [
 /* ───────────────────────── pieces ───────────────────────── */
 
 // Count a number up from 0 → target once it arrives (easeOutCubic).
-function useCountUp(target, duration = 1400) {
-  const [display, setDisplay] = useState(null);
-  const fromRef = useRef(0);
+function useCountUp(target, fallback = 0, duration = 1400) {
+  const [display, setDisplay] = useState(fallback);
+  const fromRef = useRef(fallback);
   const rafRef = useRef(0);
   useEffect(() => {
-    if (target == null) { setDisplay(null); return; }
+    if (target == null) return;
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
     if (reduce) { setDisplay(target); fromRef.current = target; return; }
     const from = fromRef.current;
@@ -530,18 +530,18 @@ function useCountUp(target, duration = 1400) {
 }
 
 function CountUp({ value }) {
-  const d = useCountUp(value);
+  const d = useCountUp(value, 0);
   return d != null ? Number(d).toLocaleString('en-IN') : '—';
 }
 
 // MAC-style stat block: big number + plus + caption.
-function StatBlock({ value, label, loading, tone }) {
-  const display = useCountUp(value);
+function StatBlock({ value, label, fallback = 0, tone }) {
+  const display = useCountUp(value, fallback);
   const acid = tone === 'acid';
   return (
-    <div className={`rounded-[1.25rem] px-5 py-4 sm:py-[1.15rem] border ${acid ? 'bg-acid border-acid' : 'bg-surface border-line'} flex flex-col justify-center`}>
+    <div className={`rounded-[1.25rem] px-5 py-4 sm:py-[1.15rem] border ${acid ? 'bg-acid border-acid' : 'bg-surface border-line'} flex flex-col items-center justify-center text-center`}>
       <div className={`font-sans text-[clamp(1.85rem,4.4vw,2.9rem)] font-extrabold leading-none tracking-tight tabular-nums text-ink`}>
-        {display != null ? Number(display).toLocaleString('en-IN') : (loading ? <span className="inline-block h-7 w-14 rounded bg-ink/10 animate-pulse" /> : '—')}
+        {Number(display).toLocaleString('en-IN')}
         <span className={acid ? 'text-ink/70' : 'text-acid-deep'}>+</span>
       </div>
       <p className={`font-sans font-bold text-base sm:text-lg tracking-[-0.01em] mt-1.5 ${acid ? 'text-ink' : 'text-ink/85'}`}>{label}</p>
