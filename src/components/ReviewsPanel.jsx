@@ -375,7 +375,14 @@ function ReviewCard({ r }) {
                 </span>
               )}
             </div>
-            <div className="text-[11px] text-gray">{fmtDate(r.reviewDate)}{r.siteName ? ` · bought from ${r.siteName}` : ''}</div>
+            <div className="text-[11px] text-gray mt-0.5 flex items-center flex-wrap gap-1.5">
+              {fmtDate(r.reviewDate)}
+              {r.siteName && (
+                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-acid-soft text-acid-deep font-bold text-[10px] uppercase tracking-wider">
+                  Bought from {r.siteName}
+                </span>
+              )}
+            </div>
           </div>
         </div>
         {r.rating != null && (
@@ -386,9 +393,9 @@ function ReviewCard({ r }) {
           </div>
         )}
       </div>
-      {r.title && <h5 className="font-semibold text-ink text-sm mb-0.5">{r.title}</h5>}
-      {r.content && <p className="text-gray text-[13px] leading-relaxed">{r.content}</p>}
-      <div className="flex flex-wrap items-center gap-1.5 mt-2">
+      {r.title && <h5 className="font-semibold text-ink text-[15px] mb-1">{r.title}</h5>}
+      {r.content && <p className="text-ink/90 font-medium text-[14px] leading-relaxed mt-1">{r.content}</p>}
+      <div className="flex flex-wrap items-center gap-1.5 mt-3">
         {isCommunity && (
           <span className="text-[9px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-lime-soft text-green">Community</span>
         )}

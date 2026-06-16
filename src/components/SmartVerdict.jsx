@@ -45,46 +45,54 @@ export default function SmartVerdict({ product, trust = {} }) {
   const dtext = recT ? deliveryText(recT) : null;
   const multi = prices.length > 1;
 
-  // Bottom line — the verdict as a single, plain-English sentence.
   const bottomLine = !multi ? (
-    <>Only one seller here: <b className="text-cream">{sellerLabel(cheapest)}</b> at <b className="text-acid">{fmt(lowest)}</b>.</>
+    <>Only one seller here: <b className="text-ink">{sellerLabel(cheapest)}</b> at <b className="text-acid-deep">{fmt(lowest)}</b>.</>
   ) : sameAsCheapest ? (
-    <>Buy from <b className="text-cream">{sellerLabel(cheapest)}</b> at <b className="text-acid">{fmt(lowest)}</b> — it's the cheapest <i>and</i> the most trustworthy of {prices.length} sellers.</>
+    <>Buy from <b className="text-ink">{sellerLabel(cheapest)}</b> at <b className="text-acid-deep">{fmt(lowest)}</b> — it's the cheapest <i>and</i> the most trustworthy of {prices.length} sellers.</>
   ) : (
-    <>Cheapest is <b className="text-cream">{sellerLabel(cheapest)}</b> at <b className="text-acid">{fmt(lowest)}</b>, but <b className="text-cream">{sellerLabel(recommended)}</b> is the smarter buy for just <b className="text-acid">{fmt(Math.abs(diff))}</b> more.</>
+    <>Cheapest is <b className="text-ink">{sellerLabel(cheapest)}</b> at <b className="text-acid-deep">{fmt(lowest)}</b>, but <b className="text-ink">{sellerLabel(recommended)}</b> is the smarter buy for just <b className="text-acid-deep">{fmt(Math.abs(diff))}</b> more.</>
   );
 
   return (
-    <section>
-      <div className="card-elev overflow-hidden">
-        {/* Header + plain-language verdict on the forest-green "smart" surface */}
-        <div className="bg-green text-cream px-4 sm:px-5 py-4">
-          <div className="flex items-center gap-2.5 mb-2">
-            <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-acid text-ink shrink-0">
-              <Sparkles className="w-3.5 h-3.5" />
+    <section className="mb-4">
+      <div className="rounded-[1.5rem] bg-surface border border-line shadow-sm overflow-hidden flex flex-col">
+        {/* Sleek, dynamic header */}
+        <div className="relative bg-gradient-to-r from-acid-soft/80 via-surface to-surface border-b border-line px-5 sm:px-6 py-4 overflow-hidden">
+          {/* Subtle background glow */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-acid/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+          
+          <div className="relative flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+            <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-acid shadow-[0_4px_12px_rgba(159,226,49,0.3)] text-ink shrink-0">
+              <Sparkles className="w-5 h-5" />
             </span>
             <div>
-              <h2 className="font-sans text-base font-extrabold tracking-tight leading-none">Smart verdict</h2>
-              <p className="text-[10px] text-cream/70 font-mono mt-0.5 uppercase tracking-wider">Beyond price — trust &amp; delivery</p>
+              <div className="flex items-center gap-2 mb-0.5">
+                <h2 className="font-sans text-[17px] font-extrabold tracking-tight text-ink">Smart verdict</h2>
+                <span className="text-[10px] text-gray font-mono uppercase tracking-widest px-2 py-0.5 rounded bg-black/[0.03]">Trust &amp; Delivery</span>
+              </div>
+              <p className="font-sans text-[14px] font-medium leading-snug text-ink/80">
+                {bottomLine}
+              </p>
             </div>
           </div>
-          <p className="font-sans text-sm sm:text-base font-bold leading-snug text-cream/95">
-            {bottomLine}
-          </p>
         </div>
 
-        {/* The six questions, as a scannable evidence grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-px bg-line">
+        {/* 5-item asymmetrical grid to eliminate holes (6 cols on lg, 2 on sm) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-px bg-line">
           <Cell
+            spanClass="lg:col-span-2 sm:col-span-1"
             icon={TrendingDown}
             tone="text-green"
+            bgTone="bg-green-soft/50 group-hover:bg-green-soft"
             q="Where is it cheapest?"
             a={fmt(lowest)}
             sub={<>on <b className="text-ink">{sellerLabel(cheapest)}</b>{multi ? ` · ${prices.length} sellers compared` : ''}</>}
           />
           <Cell
+            spanClass="lg:col-span-2 sm:col-span-1"
             icon={ShieldCheck}
             tone={tier ? tier.text : 'text-gray'}
+            bgTone={tier ? 'bg-acid-soft/50 group-hover:bg-acid-soft' : 'bg-cream-soft'}
             q="DamKemon score"
             a={recT ? `${recT.trustScore}/100 · ${tier.label}` : 'Not yet rated'}
             sub={recT
@@ -92,22 +100,28 @@ export default function SmartVerdict({ product, trust = {} }) {
               : <>be the first to review this seller</>}
           />
           <Cell
+            spanClass="lg:col-span-2 sm:col-span-1"
             icon={BadgeCheck}
             tone={auth ? auth.tone : 'text-gray'}
+            bgTone="bg-blue-50/50 group-hover:bg-blue-50"
             q="Is the product genuine?"
             a={auth ? auth.label : 'Unverified'}
             sub={recT?.warranty ? <>{recT.warranty}</> : <>warranty varies by seller</>}
           />
           <Cell
+            spanClass="lg:col-span-3 sm:col-span-1"
             icon={Truck}
             tone="text-ink"
+            bgTone="bg-orange-50/50 group-hover:bg-orange-50"
             q="How long will delivery take?"
             a={dtext || 'Varies'}
             sub={recT ? <>{recT.codAvailable ? 'Cash on delivery available' : 'Prepaid only'}{recT.avgReportedDelivery != null ? ' · buyer-reported' : ''}</> : <>add a review with your delivery time</>}
           />
           <Cell
+            spanClass="lg:col-span-3 sm:col-span-2"
             icon={RotateCcw}
             tone="text-ink"
+            bgTone="bg-purple-50/50 group-hover:bg-purple-50"
             q="What if I need to return it?"
             a={recT ? returnText(recT) : '—'}
             sub={recT ? <>at {sellerLabel(recommended)}</> : <>check the seller's policy</>}
@@ -118,12 +132,14 @@ export default function SmartVerdict({ product, trust = {} }) {
         {product?.category && (
           <Link
             to={`/browse?category=${encodeURIComponent(product.category)}`}
-            className="flex items-center justify-between gap-2 px-4 sm:px-5 py-3 bg-cream-soft/60 border-t border-line hover:bg-cream-soft transition-colors group"
+            className="flex items-center justify-between gap-2 px-5 py-3.5 bg-neutral-bg hover:bg-cream transition-colors group border-t border-line"
           >
-            <span className="text-sm text-ink/80">
-              Is there a better alternative? <span className="text-gray">Compare other <b className="capitalize text-ink">{product.category}</b>.</span>
+            <span className="text-sm font-medium text-ink/70">
+              Looking for alternatives? <span className="text-ink">Compare other <b className="capitalize font-bold text-acid-deep">{product.category}</b>.</span>
             </span>
-            <ArrowRight className="w-4 h-4 text-ink/60 group-hover:translate-x-0.5 group-hover:text-ink transition-transform shrink-0" />
+            <span className="w-8 h-8 rounded-full bg-line flex items-center justify-center group-hover:bg-acid transition-colors shrink-0">
+              <ArrowRight className="w-4 h-4 text-ink" />
+            </span>
           </Link>
         )}
       </div>
@@ -131,16 +147,16 @@ export default function SmartVerdict({ product, trust = {} }) {
   );
 }
 
-function Cell({ icon: Icon, tone, q, a, sub }) {
+function Cell({ spanClass, icon: Icon, tone, bgTone, q, a, sub }) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3 px-3 sm:px-4 py-3 sm:py-4 bg-surface">
-      <span className={`inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-[10px] sm:rounded-xl bg-cream-soft shrink-0 ${tone}`}>
-        <Icon className="w-3.5 h-3.5" />
+    <div className={`group flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4 px-4 sm:px-5 py-4 sm:py-5 bg-surface hover:bg-surface-hover transition-colors ${spanClass}`}>
+      <span className={`inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-[10px] sm:rounded-[12px] shrink-0 transition-colors ${bgTone || 'bg-cream-soft'} ${tone}`}>
+        <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
       </span>
-      <div className="min-w-0">
-        <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-gray leading-tight mb-0.5">{q}</div>
-        <div className={`font-sans text-[13px] sm:text-[15px] font-extrabold ${tone} leading-[1.15]`}>{a}</div>
-        <div className="text-[10px] sm:text-[11px] text-gray leading-snug mt-1">{sub}</div>
+      <div className="min-w-0 flex-1">
+        <div className="text-[10px] font-mono uppercase tracking-wider text-gray leading-tight mb-1">{q}</div>
+        <div className={`font-sans text-[14px] sm:text-[16px] font-extrabold ${tone} leading-[1.2]`}>{a}</div>
+        <div className="text-[11px] text-gray leading-snug mt-1.5">{sub}</div>
       </div>
     </div>
   );
