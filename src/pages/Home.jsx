@@ -258,9 +258,14 @@ export default function Home() {
           </p>
           <div className="relative flex-1 overflow-hidden mask-fade">
             <div className="flex items-center gap-8 sm:gap-12 animate-scroll w-max">
-              {[...MARQUEE, ...MARQUEE].map((name, i) => (
-                <span key={i} className="font-sans font-bold text-lg sm:text-xl text-ink/35 whitespace-nowrap">
-                  {name}
+              {[...MARQUEE_SHOPS, ...MARQUEE_SHOPS].map((shop, i) => (
+                <span key={i} className="flex items-center gap-3 font-sans font-bold text-lg sm:text-xl text-ink/40 whitespace-nowrap">
+                  <img 
+                    src={`https://www.google.com/s2/favicons?domain=${shop.domain}&sz=128`} 
+                    alt={shop.name} 
+                    className="w-7 h-7 sm:w-8 sm:h-8 object-contain mix-blend-multiply opacity-60 grayscale" 
+                  />
+                  {shop.name}
                 </span>
               ))}
             </div>
@@ -474,7 +479,18 @@ export default function Home() {
 
 /* ───────────────────────── data ───────────────────────── */
 
-const MARQUEE = ['StarTech', 'Daraz', 'Ryans', 'Pickaboo', 'TechLand', 'Othoba', 'Gadget & Gear', 'Computer Source', 'AjkerDeal', 'Diamu'];
+const MARQUEE_SHOPS = [
+  { name: 'StarTech', domain: 'startech.com.bd' },
+  { name: 'Daraz', domain: 'daraz.com.bd' },
+  { name: 'Ryans', domain: 'ryanscomputers.com' },
+  { name: 'Pickaboo', domain: 'pickaboo.com' },
+  { name: 'TechLand', domain: 'techlandbd.com' },
+  { name: 'Othoba', domain: 'othoba.com' },
+  { name: 'Gadget & Gear', domain: 'gadgetandgear.com' },
+  { name: 'Computer Source', domain: 'computersourcebd.com' },
+  { name: 'AjkerDeal', domain: 'ajkerdeal.com' },
+  { name: 'Diamu', domain: 'diamu.com.bd' }
+];
 
 const STEPS = [
   { num: '01', title: 'Search once', desc: 'Type any product and see every shop in Bangladesh that sells it — no more juggling a dozen browser tabs.', icon: PhSearch },
