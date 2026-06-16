@@ -20,6 +20,8 @@ const Browse = lazy(() => import('./pages/Browse'));
 const Protect = lazy(() => import('./pages/Protect'));
 const Compare = lazy(() => import('./pages/Compare'));
 const Sellers = lazy(() => import('./pages/Sellers'));
+const Guides = lazy(() => import('./pages/Guides'));
+const GuideDetail = lazy(() => import('./pages/GuideDetail'));
 // Gated by feature flags so the bundler drops these chunks entirely when the
 // feature is hidden — the page code never ships, not just unlinked.
 const Dashboard = SHOW_PUBLIC_DASHBOARD ? lazy(() => import('./pages/Dashboard')) : null;
@@ -80,6 +82,8 @@ function App() {
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/compare" element={<Compare />} />
                 <Route path="/sellers" element={<Sellers />} />
+                <Route path="/guides" element={<Guides />} />
+                <Route path="/guides/:slug" element={<GuideDetail />} />
                 <Route path="/submit-shop" element={<SubmitShop />} />
                 {SHOW_SAATHI && (
                   <>

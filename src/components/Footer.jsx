@@ -28,6 +28,7 @@ export default function Footer() {
 
           <nav className="flex flex-wrap items-center gap-3 sm:gap-5">
             <Link to="/" className="text-cream/70 hover:text-cream text-sm transition-colors">Home</Link>
+            <Link to="/guides" className="text-cream/70 hover:text-cream text-sm transition-colors">Guides</Link>
             <Link to="/compare" className="text-cream/70 hover:text-cream text-sm transition-colors">Compare</Link>
             <Link to="/sellers" className="text-cream/70 hover:text-cream text-sm transition-colors">Shops</Link>
             {SHOW_SAATHI && <Link to="/saathi" className="text-cream/70 hover:text-cream text-sm transition-colors">Sell with us</Link>}

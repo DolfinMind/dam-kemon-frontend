@@ -7,6 +7,7 @@ import {
 import { BarChart, Bar, ResponsiveContainer, Cell } from 'recharts';
 import SearchBar from '../components/SearchBar';
 import AlphaBadge from '../components/AlphaBadge';
+import ProtectShowcase from '../components/ProtectShowcase';
 import { TrustScore, deliveryText } from '../components/TrustBadge';
 import { CategoryIcon } from '../lib/categoryIcon';
 import {
@@ -111,11 +112,12 @@ export default function Home() {
               </span>
               <AlphaBadge />
             </div>
-            <h1 className="font-sans font-extrabold leading-[0.98] tracking-[-0.035em] text-[clamp(2.6rem,7vw,5rem)] text-ink">
-              The real price,<br />
-              across <span className="relative inline-block">all of
+            <h1 className="font-sans font-extrabold leading-[1.0] tracking-[-0.035em] text-[clamp(2.6rem,7vw,5rem)] text-ink">
+              <span lang="bn">দাম কেমন?</span> — The question{' '}
+              <span className="relative inline-block">we answer
                 <span className="absolute left-0 -bottom-1 w-full h-[0.18em] bg-acid rounded-full" />
-              </span> Bangladesh.
+              </span>{' '}
+              for every shop in Bangladesh.
             </h1>
             <p className="text-[15px] sm:text-lg text-ink/65 max-w-lg mt-6 mb-7 leading-relaxed">
               One search compares every seller's price <span className="font-semibold text-ink">and</span> trust score,
@@ -135,6 +137,14 @@ export default function Home() {
                 <span className="w-2 h-2 rounded-full bg-acid animate-pulse-dot" />
                 {live ? <>{fmtNum(live.searchesToday)} searches today</> : 'Live across BD shops'}
               </div>
+            </div>
+
+            {/* Trust micro-proofs — put the anti-scam value right at the point
+                of action; trust is the #1 reason BD shoppers hesitate post-Evaly. */}
+            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12.5px] text-ink/65">
+              <span className="inline-flex items-center gap-1.5"><BadgeCheck className="w-4 h-4 text-acid-deep" /> Real prices, never fake</span>
+              <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-acid-deep" /> Scam-risk checked</span>
+              <span className="inline-flex items-center gap-1.5"><Sparkles className="w-4 h-4 text-acid-deep" /> Free for shoppers</span>
             </div>
           </div>
 
@@ -263,6 +273,10 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ── Damkemon Protect spotlight — the standout anti-scam differentiator.
+            This component already existed but was never rendered on the homepage. ── */}
+      <ProtectShowcase />
 
       {/* ── "Out of the box" intro + feature cards ───────────────── */}
       <section className="container-tight pt-16 sm:pt-24">
@@ -421,7 +435,7 @@ export default function Home() {
           <h2 className="font-sans font-extrabold text-[clamp(1.6rem,4vw,2.5rem)] leading-[1.05] tracking-[-0.03em] text-ink max-w-xl">
             Guides that help you buy smarter in Bangladesh.
           </h2>
-          <Link to="/browse" className="text-sm font-semibold text-ink/70 hover:text-ink inline-flex items-center gap-1.5 shrink-0">
+          <Link to="/guides" className="text-sm font-semibold text-ink/70 hover:text-ink inline-flex items-center gap-1.5 shrink-0">
             See more <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -484,9 +498,9 @@ const QUOTES = [
 ];
 
 const INSIGHTS = [
-  { title: 'Why one search beats ten browser tabs', desc: 'See every shop that sells your product — price, trust and delivery, side by side.', read: 4, to: '/browse', icon: PhSearch, tone: 'bg-acid-soft text-acid-deep' },
-  { title: 'Buying from an unknown seller? Use Protect', desc: 'Check the scam risk and open a protected order before you hand over money.', read: 3, to: '/protect', icon: PhShieldCheck, tone: 'bg-green-soft text-green' },
-  { title: 'How our trust score spots fake low prices', desc: 'Delivery signals, review history and stock depth — combined into one number.', read: 5, to: '/sellers', icon: PhSealCheck, tone: 'bg-yellow-soft text-ink' },
+  { title: 'Why one search beats ten browser tabs', desc: 'See every shop that sells your product — price, trust and delivery, side by side.', read: 4, to: '/guides/why-one-search-beats-ten-browser-tabs', icon: PhSearch, tone: 'bg-acid-soft text-acid-deep' },
+  { title: 'Buying from an unknown seller? Use Protect', desc: 'Check the scam risk and open a protected order before you hand over money.', read: 3, to: '/guides/buying-from-unknown-seller-use-protect', icon: PhShieldCheck, tone: 'bg-green-soft text-green' },
+  { title: 'How our trust score spots fake low prices', desc: 'Delivery signals, review history and stock depth — combined into one number.', read: 5, to: '/guides/how-trust-score-spots-fake-low-prices', icon: PhSealCheck, tone: 'bg-yellow-soft text-ink' },
 ];
 
 /* ───────────────────────── pieces ───────────────────────── */
