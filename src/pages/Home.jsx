@@ -9,6 +9,8 @@ import SearchBar from '../components/SearchBar';
 import AlphaBadge from '../components/AlphaBadge';
 import ProtectShowcase from '../components/ProtectShowcase';
 import { TrustScore, deliveryText } from '../components/TrustBadge';
+import NewsletterSection from '../components/NewsletterSection';
+import FeedbackSection from '../components/FeedbackSection';
 import { CategoryIcon } from '../lib/categoryIcon';
 import {
   ArrowRight, Play, Sparkles, ShieldCheck, Store, Crown, Flame,
@@ -445,24 +447,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Big CTA (dark band) ──────────────────────────────────── */}
-      <section className="container-tight pt-6 sm:pt-8 pb-4">
-        <div className="rounded-[2rem] bg-ink text-cream px-6 sm:px-10 lg:px-16 py-14 sm:py-20 relative overflow-hidden">
-          <div className="absolute -top-24 right-10 w-96 h-96 rounded-full bg-acid/15 blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-24 -left-10 w-96 h-96 rounded-full bg-red/10 blur-3xl pointer-events-none" />
-          <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-            <h2 className="font-sans font-extrabold text-[clamp(2rem,5.5vw,4rem)] leading-[1.0] tracking-[-0.03em] max-w-2xl">
-              Ready to find the<br />best price?
-            </h2>
-            <div className="shrink-0 flex flex-col sm:flex-row items-center gap-4">
-              <button onClick={() => document.querySelector('input')?.focus()} className="btn-acid shrink-0 !text-base !px-7 !py-4">
-                Search a product <ArrowRight className="w-5 h-5" />
-              </button>
-              <p className="text-cream/50 text-[13px] inline-flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-acid shrink-0" /> Free for shoppers, always.
-              </p>
-            </div>
-          </div>
+      {/* ── Feedback & Newsletter ── */}
+      <section className="container-tight pt-10 sm:pt-16 pb-12 sm:pb-20">
+        <div className="grid lg:grid-cols-2 gap-6 items-stretch">
+          <FeedbackSection />
+          <NewsletterSection />
         </div>
       </section>
     </div>

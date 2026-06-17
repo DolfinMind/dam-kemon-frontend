@@ -163,4 +163,8 @@ export const affiliateUrl = (productId, siteSlug, fromQuery, offerUrl) => {
   return qs ? `${base}?${qs}` : base;
 };
 
+// ─── Engagement: Newsletter & Feedback ───
+export const subscribeNewsletter = (email) => api.post('/newsletter', { email });
+export const submitFeedback = (data) => api.post('/feedback', data);
+
 export default api;
