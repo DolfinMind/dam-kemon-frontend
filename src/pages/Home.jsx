@@ -139,10 +139,6 @@ export default function Home() {
           <span className="bg-acid px-3 py-1 -ml-3 mr-1 inline-block">Compare</span> prices across <span className="text-acid-deep">every online shop</span> in Bangladesh.
         </h1>
         
-        <p className="text-[15px] sm:text-lg text-ink/65 max-w-2xl mx-auto mt-6 mb-10 leading-relaxed">
-          Stop guessing if you are getting a good deal. Instantly compare prices from trusted BD e-commerce sites, check scam risks, and track price drops.
-        </p>
-
         {/* Search & Stats Row */}
         <div className="w-full max-w-5xl mx-auto">
           <div className="flex flex-col md:flex-row items-start justify-center gap-4 lg:gap-6">
