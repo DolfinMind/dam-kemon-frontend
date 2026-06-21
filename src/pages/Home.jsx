@@ -135,7 +135,7 @@ export default function Home() {
           <AlphaBadge />
         </div>
 
-        <h1 className="font-sans font-extrabold leading-[0.95] tracking-[-0.04em] text-[clamp(2.5rem,5vw,4.5rem)] text-ink max-w-4xl mx-auto">
+        <h1 className="font-sans font-extrabold leading-[0.95] tracking-[-0.04em] text-[clamp(2.5rem,5vw,4.5rem)] text-ink max-w-4xl mx-auto mb-10 sm:mb-14">
           <span className="bg-acid px-3 py-1 -ml-3 mr-1 inline-block">Compare</span> prices across <span className="text-acid-deep">every online shop</span> in Bangladesh.
         </h1>
         
