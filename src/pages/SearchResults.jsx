@@ -409,8 +409,12 @@ export default function SearchResults() {
 
       {/* Content */}
       {loading ? (
-        <div className="space-y-2.5 sm:space-y-3">
-          {[...Array(4)].map((_, i) => <SearchProductCardSkeleton key={i} />)}
+        <div className="columns-1 md:columns-2 gap-3 sm:gap-4">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="mb-3 sm:mb-4 break-inside-avoid">
+              <SearchProductCardSkeleton />
+            </div>
+          ))}
         </div>
       ) : error ? (
         (error.kind === 'network' || error.status >= 500) ? (
@@ -442,17 +446,18 @@ export default function SearchResults() {
         </div>
       ) : (
         <>
-          <div className="space-y-3 sm:space-y-4">
+          <div className="columns-1 md:columns-2 gap-3 sm:gap-4">
             {sorted.map((p, i) => (
-              <SearchProductCard
-                key={p.id || p.slug || i}
-                product={p}
-                rank={i + 1}
-                query={query}
-                sponsored={!!meta?.sponsoredProductIds?.includes(p.id)}
-                trust={trust}
-                smartPick={!!smartPickId && p.id === smartPickId}
-              />
+              <div key={p.id || p.slug || i} className="mb-3 sm:mb-4 break-inside-avoid">
+                <SearchProductCard
+                  product={p}
+                  rank={i + 1}
+                  query={query}
+                  sponsored={!!meta?.sponsoredProductIds?.includes(p.id)}
+                  trust={trust}
+                  smartPick={!!smartPickId && p.id === smartPickId}
+                />
+              </div>
             ))}
           </div>
           {hasMore && (
