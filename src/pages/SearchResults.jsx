@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { searchProducts, getShopTrust } from '../api/api';
 import SearchProductCard from '../components/SearchProductCard';
@@ -44,6 +44,12 @@ export default function SearchResults() {
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  // Accessories (cases/covers/protectors) are hidden by default on device
+  // searches; this toggle re-includes them via the backend `acc` param.
+  const [showAccessories, setShowAccessories] = useState(false);
+  // Variant spec filters (item 3): { RAM, Storage, Display } -> selected value.
+  const [specFilters, setSpecFilters] = useState({});
+  const lastQueryRef = useRef(query);
 
   const PAGE_SIZE = 30;
 
@@ -53,7 +59,7 @@ export default function SearchResults() {
     setError(null);
     setPage(0);
     setHasMore(false);
-    searchProducts(q, 0, PAGE_SIZE)
+    searchProducts(q, 0, PAGE_SIZE, showAccessories, specFilters)
       .then((res) => {
         const data = res.data || {};
         setProducts(Array.isArray(data.products) ? data.products : []);
@@ -66,6 +72,7 @@ export default function SearchResults() {
           confidence: data.confidence,
           didYouMean: data.didYouMean,
           sponsoredProductIds: data.sponsoredProductIds || [],
+          facets: data.facets || {},
         });
       })
       .catch((err) => {
@@ -81,7 +88,7 @@ export default function SearchResults() {
     if (loadingMore || !hasMore || !query) return;
     const next = page + 1;
     setLoadingMore(true);
-    searchProducts(query, next, PAGE_SIZE)
+    searchProducts(query, next, PAGE_SIZE, showAccessories, specFilters)
       .then((res) => {
         const data = res.data || {};
         const more = Array.isArray(data.products) ? data.products : [];
@@ -98,8 +105,15 @@ export default function SearchResults() {
 
   useEffect(() => {
     setSearchInput(query);
+    // Reset variant filters when the search TERM changes (not on a filter/
+    // accessory toggle). The reset re-triggers this effect with an empty set.
+    if (lastQueryRef.current !== query) {
+      lastQueryRef.current = query;
+      if (Object.keys(specFilters).length) { setSpecFilters({}); return; }
+    }
     runSearch(query);
-  }, [query]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query, showAccessories, specFilters]);
 
   // Trust hint on each card uses the cheapest seller's profile; batch them.
   useEffect(() => {
@@ -119,13 +133,43 @@ export default function SearchResults() {
     if (searchInput.trim()) setSearchParams({ q: searchInput.trim() });
   };
 
-  const filtered = useMemo(() => products.filter((p) => {
+  // Single-select per spec dimension; clicking the active value clears it.
+  const toggleSpec = (dim, value) => {
+    setSpecFilters((prev) => {
+      const next = { ...prev };
+      if (next[dim] === value) delete next[dim];
+      else next[dim] = value;
+      return next;
+    });
+  };
+
+  // Collapse duplicate rows for the SAME physical product (item 1): two docs that
+  // share a non-null matchKey are the same product fragmented across rows — keep
+  // the richer one (most sellers) so we never show two comparison sets for it.
+  const deduped = useMemo(() => {
+    const byKey = new Map();
+    const out = [];
+    for (const p of products) {
+      const key = p.matchKey;
+      if (!key) { out.push(p); continue; }
+      const prev = byKey.get(key);
+      if (!prev) { byKey.set(key, p); out.push(p); continue; }
+      if ((p.prices || []).length > (prev.prices || []).length) {
+        const idx = out.indexOf(prev);
+        if (idx >= 0) out[idx] = p;
+        byKey.set(key, p);
+      }
+    }
+    return out;
+  }, [products]);
+
+  const filtered = useMemo(() => deduped.filter((p) => {
     const prices = p.prices || [];
     if (activeFilter === 'in_stock') return prices.some((sp) => sp.inStock !== false);
     if (activeFilter === 'rating')   return (p.averageRating || 0) >= 4;
     if (activeFilter === 'multi')    return prices.length >= 2;
     return true;
-  }), [products, activeFilter]);
+  }), [deduped, activeFilter]);
 
   const sorted = useMemo(() => {
     const arr = [...filtered];
@@ -299,6 +343,17 @@ export default function SearchResults() {
                 {chip.label}
               </button>
             ))}
+            <button
+              onClick={() => setShowAccessories((v) => !v)}
+              title="Show phone cases, covers, screen protectors and other accessories"
+              className={`shrink-0 font-mono text-[11px] sm:text-xs px-3 sm:px-3.5 py-2 rounded-full border transition-all whitespace-nowrap ${
+                showAccessories
+                  ? 'bg-ink text-cream border-ink'
+                  : 'bg-white text-ink/70 border-line hover:border-line-strong hover:text-ink'
+              }`}
+            >
+              {showAccessories ? '✓ Accessories' : '+ Accessories'}
+            </button>
           </div>
           <div className="relative shrink-0">
             <button
@@ -324,6 +379,33 @@ export default function SearchResults() {
           </div>
         </div>
       </div>
+
+      {/* Variant spec facets (item 3) — RAM / Storage / Display parsed from the matches */}
+      {!loading && !error && meta?.facets && Object.keys(meta.facets).length > 0 && (
+        <div className="mb-3 sm:mb-4 space-y-2">
+          {Object.entries(meta.facets).map(([dim, values]) => (
+            <div key={dim} className="flex items-start gap-2 flex-wrap">
+              <span className="text-[11px] font-mono text-gray shrink-0 w-16 pt-1.5">{dim}</span>
+              <div className="flex gap-1.5 flex-wrap flex-1">
+                {values.map((v) => {
+                  const active = specFilters[dim] === v.value;
+                  return (
+                    <button
+                      key={v.value}
+                      onClick={() => toggleSpec(dim, v.value)}
+                      className={`font-mono text-[11px] px-2.5 py-1 rounded-full border transition-all ${
+                        active ? 'bg-acid text-ink border-acid' : 'bg-white text-ink/70 border-line hover:border-line-strong'
+                      }`}
+                    >
+                      {v.value} <span className={active ? 'text-ink/50' : 'text-ink/40'}>{v.count}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Content */}
       {loading ? (

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   getDashboardStats, getHotDrops, getAllProducts, getTrendingSearches, getLiveStats,
-  getShops, getShopTrust,
+  getShops, getShopTrust, getHeadlineStats,
 } from '../api/api';
 import { BarChart, Bar, ResponsiveContainer, Cell } from 'recharts';
 import SearchBar from '../components/SearchBar';
@@ -29,6 +29,27 @@ function fmt(p) {
   return '৳' + Number(p).toLocaleString('en-IN');
 }
 const fmtNum = (n) => (n == null ? '—' : Number(n).toLocaleString('en-IN'));
+// Bangla-friendly large-number format for the "saved this month" figure.
+function fmtLakh(n) {
+  if (n == null) return '—';
+  const v = Number(n);
+  if (v >= 100000) return (v / 100000).toFixed(1).replace(/\.0$/, '') + ' lakh';
+  if (v >= 1000) return Math.round(v / 1000) + 'k';
+  return v.toLocaleString('en-IN');
+}
+
+// One social-proof figure as a compact pill.
+function HeadlinePill({ icon, value, label, tone }) {
+  return (
+    <span className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 ${
+      tone === 'acid' ? 'bg-acid-soft border-acid/50' : 'bg-white border-line'
+    }`}>
+      <span className="text-base leading-none">{icon}</span>
+      <span className="font-mono text-sm font-bold text-ink">{value}</span>
+      <span className="text-[11px] text-ink/60">{label}</span>
+    </span>
+  );
+}
 
 // Normalise a hot-drop or a catalog product into one card shape.
 function fromDrop(p) {
@@ -56,10 +77,12 @@ export default function Home() {
   const [trending, setTrending] = useState([]);
   const [deals, setDeals] = useState([]);
   const [shops, setShops] = useState([]);
+  const [headline, setHeadline] = useState(null);
 
   useEffect(() => {
     getDashboardStats().then((r) => setStats(r.data)).catch(() => {}).finally(() => setStatsLoading(false));
     getLiveStats().then((r) => setLive(r.data)).catch(() => {});
+    getHeadlineStats().then((r) => setHeadline(r.data)).catch(() => {});
     getTrendingSearches(10).then((r) => setTrending(Array.isArray(r.data) ? r.data : [])).catch(() => {});
 
     // Examples grid: prefer real hot-drops; fall back to featured catalog with
@@ -169,6 +192,22 @@ export default function Home() {
           <span className="inline-flex items-center gap-1.5"><BadgeCheck className="w-4 h-4 text-acid-deep" /> Real prices, never fake</span>
           <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-acid-deep" /> Scam-risk checked</span>
           <span className="inline-flex items-center gap-1.5"><Sparkles className="w-4 h-4 text-acid-deep" /> Free for shoppers</span>
+        </div>
+
+        {/* Live social-proof headline figures — real, baseline-floored so they always feel alive. */}
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
+          <HeadlinePill icon="💰" tone="acid"
+            value={headline ? '৳' + fmtLakh(headline.savedThisMonth) : '—'}
+            label="saved by users this month" />
+          <HeadlinePill icon="🔍"
+            value={headline ? fmtNum(headline.comparisonsToday) + '+' : '—'}
+            label="price comparisons today" />
+          <HeadlinePill icon="📉"
+            value={headline ? fmtNum(headline.dropsThisWeek) : '—'}
+            label="price drops tracked this week" />
+          <span className="inline-flex items-center gap-1.5 text-[12px] text-ink/55 font-mono">
+            <Zap className="w-3.5 h-3.5 text-acid-deep" /> Prices updated every 24h
+          </span>
         </div>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">

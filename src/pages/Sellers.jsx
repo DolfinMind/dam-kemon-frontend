@@ -240,8 +240,9 @@ export default function Sellers() {
                   </div>
 
                   {/* Inline meta — only renders the signals this seller actually has */}
-                  {(s.rating || s.reviewCount || followers || s.codAvailable || s.sameDayDelivery || s.avgReplyTime) && (
+                  {(s.rating || s.reviewCount || followers || s.codAvailable || s.sameDayDelivery || s.avgReplyTime || s.outboundClicks) && (
                     <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-gray">
+                      {s.outboundClicks ? <span className="inline-flex items-center gap-1 font-semibold text-acid-deep">↗ {s.outboundClicks.toLocaleString('en-IN')} visits</span> : null}
                       {s.rating ? <span className="inline-flex items-center gap-0.5 font-semibold text-yellow"><Star className="w-3 h-3 fill-current" />{s.rating.toFixed(1)}</span> : null}
                       {s.reviewCount ? <span>{s.reviewCount.toLocaleString('en-IN')} reviews</span> : null}
                       {followers ? <span>{followers} followers</span> : null}

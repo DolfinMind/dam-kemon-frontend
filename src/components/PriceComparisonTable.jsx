@@ -65,17 +65,33 @@ function Signal({ Icon, tone, children, title, dark }) {
 export default function PriceComparisonTable({ prices = [], productId, trust = {}, sellerTrust = {} }) {
   const [sortMode, setSortMode] = useState('price'); // 'price' | 'value'
 
-  const lowestPrice = useMemo(() => {
-    const vals = prices.map((p) => p.price).filter((v) => v != null);
-    return vals.length ? Math.min(...vals) : null;
+  // Defensive de-dup: the same seller/offer must never appear twice in one
+  // comparison set (item 1). Identity = the offer URL, else siteSlug+seller+price.
+  const offers = useMemo(() => {
+    const seen = new Set();
+    const out = [];
+    for (const it of (prices || [])) {
+      const key = it.productUrl
+        ? `u:${it.productUrl}`
+        : `s:${(it.siteSlug || it.siteName || '').toLowerCase()}|${it.sellerId || ''}|${it.price ?? ''}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(it);
+    }
+    return out;
   }, [prices]);
 
-  const enriched = useMemo(() => prices.map((it, i) => {
+  const lowestPrice = useMemo(() => {
+    const vals = offers.map((p) => p.price).filter((v) => v != null);
+    return vals.length ? Math.min(...vals) : null;
+  }, [offers]);
+
+  const enriched = useMemo(() => offers.map((it, i) => {
     const mt = trust[slugOf(it)] || null;                                   // marketplace / shop trust
     const st = it.sellerId ? (sellerTrust[it.sellerId] || null) : null;     // per-seller reputation
     const effTrust = st ? { ...(mt || {}), trustScore: st.trustScore } : mt; // blend for best-value
     return { it, mt, st, key: offerKey(it, i), value: valueScore({ price: it.price, lowestPrice, trust: effTrust }) };
-  }), [prices, trust, sellerTrust, lowestPrice]);
+  }), [offers, trust, sellerTrust, lowestPrice]);
 
   const sorted = useMemo(() => {
     const arr = [...enriched];
@@ -84,7 +100,7 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
     return arr;
   }, [enriched, sortMode]);
 
-  if (!prices.length) {
+  if (!offers.length) {
     return (
       <div className="card-soft p-8 sm:p-10 text-center">
         <p className="text-gray text-sm">No price data available</p>
@@ -98,7 +114,7 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
   return (
     <div className="space-y-4">
       {/* Sort toggle + what "best value" means */}
-      {prices.length > 1 && (
+      {offers.length > 1 && (
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="inline-flex items-center gap-1 bg-white border border-line rounded-full p-1 shadow-[var(--shadow-soft)]">
             {[['price', 'Cheapest', Crown], ['value', 'Best value', Award]].map(([id, label, Icon]) => (
@@ -125,7 +141,7 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
       {/* Seller grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         {sorted.map(({ it, mt, st, key }, idx) => {
-          const isTop = idx === 0 && prices.length > 1;
+          const isTop = idx === 0 && offers.length > 1;
           const isFb = isFacebookSeller(it.siteName);
           const discount = it.originalPrice && it.price
             ? Math.round(((it.originalPrice - it.price) / it.originalPrice) * 100) : 0;

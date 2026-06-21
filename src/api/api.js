@@ -29,8 +29,13 @@ api.interceptors.response.use(
   }
 );
 
-export const searchProducts = (query, page = 0, size = 20) =>
-  api.get('/search', { params: { q: query, page, size } });
+export const searchProducts = (query, page = 0, size = 20, includeAccessories = false, specs = {}) =>
+  api.get('/search', { params: {
+    q: query, page, size, acc: includeAccessories,
+    ...(specs.RAM ? { ram: specs.RAM } : {}),
+    ...(specs.Storage ? { storage: specs.Storage } : {}),
+    ...(specs.Display ? { display: specs.Display } : {}),
+  } });
 
 /** Autocomplete dropdown — returns up to N matching products by prefix. */
 export const suggestProducts = (prefix, limit = 8) =>
@@ -75,6 +80,8 @@ export const getSeller = (id) =>
 
 /** Public-facing live counters: active users, trending searches, hot drops. */
 export const getLiveStats = () => api.get('/stats/live');
+/** Homepage social-proof headline figures: saved this month, comparisons today, drops this week. */
+export const getHeadlineStats = () => api.get('/stats/headline');
 export const getTrendingSearches = (limit = 10) =>
   api.get('/stats/trending', { params: { limit } });
 export const getHotDrops = (limit = 12) =>
