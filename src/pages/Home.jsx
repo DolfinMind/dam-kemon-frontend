@@ -187,38 +187,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Trust micro-proofs below search */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[12.5px] text-ink/65">
-          <span className="inline-flex items-center gap-1.5"><BadgeCheck className="w-4 h-4 text-acid-deep" /> Real prices, never fake</span>
-          <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-acid-deep" /> Scam-risk checked</span>
-          <span className="inline-flex items-center gap-1.5"><Sparkles className="w-4 h-4 text-acid-deep" /> Free for shoppers</span>
-        </div>
-
-        {/* Live social-proof headline figures — real, baseline-floored so they always feel alive. */}
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
-          <HeadlinePill icon="💰" tone="acid"
-            value={headline ? '৳' + fmtLakh(headline.savedThisMonth) : '—'}
-            label="saved by users this month" />
-          <HeadlinePill icon="🔍"
-            value={headline ? fmtNum(headline.comparisonsToday) + '+' : '—'}
-            label="price comparisons today" />
-          <HeadlinePill icon="📉"
-            value={headline ? fmtNum(headline.dropsThisWeek) : '—'}
-            label="price drops tracked this week" />
-          <span className="inline-flex items-center gap-1.5 text-[12px] text-ink/55 font-mono">
-            <Zap className="w-3.5 h-3.5 text-acid-deep" /> Prices updated every 24h
-          </span>
-        </div>
-
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
-          <a href="#how" className="btn-ghost group">
-            <Play className="w-3.5 h-3.5 fill-current" /> See how it works
-          </a>
-          <div className="flex items-center gap-2 text-[13px] text-ink/55">
-            <span className="w-2 h-2 rounded-full bg-acid animate-pulse-dot" />
-            {live ? <>{fmtNum(live.searchesToday)} searches today</> : 'Live across BD shops'}
-          </div>
-        </div>
       </section>
 
       {/* ── Today's deals (scroll rail) ──────────────────────────── */}
