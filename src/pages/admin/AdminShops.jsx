@@ -17,8 +17,21 @@ export default function AdminShops() {
 
   const [diag, setDiag] = useState(null);
   const [reseeding, setReseeding] = useState(false);
+  const [loadError, setLoadError] = useState(null);
 
-  const load = () => listShops().then((r) => setShops(Array.isArray(r.data) ? r.data : [])).catch(() => setShops([]));
+  // A failed load (commonly a 401 from an expired admin session) must not look
+  // like "0 shops" — surface the real reason so the table-empty case is honest.
+  const load = () =>
+    listShops()
+      .then((r) => { setShops(Array.isArray(r.data) ? r.data : []); setLoadError(null); })
+      .catch((e) => {
+        setShops([]);
+        setLoadError(
+          e?.response?.status === 401
+            ? 'Your admin session expired — sign in again to load shops.'
+            : `Couldn't load shops (${e?.response?.status || 'network error'}).`
+        );
+      });
   const loadDiag = () => diagCollections().then((r) => setDiag(r.data)).catch(() => setDiag(null));
   useEffect(() => { load(); loadDiag(); }, []);
 
@@ -102,6 +115,12 @@ export default function AdminShops() {
 
   return (
     <div className="space-y-4">
+      {loadError && (
+        <div className="flex items-center gap-2 p-3 bg-red/10 border border-red/30 rounded-xl text-sm text-red">
+          <AlertTriangle className="w-4 h-4 shrink-0" />
+          <span>{loadError}</span>
+        </div>
+      )}
       {/* Diagnostics: live row counts + force reseed (for the "everything shows 0" bug) */}
       <div className="flex flex-wrap items-center gap-3 p-3 bg-cream-soft border border-line rounded-xl text-xs">
         {diag ? (
