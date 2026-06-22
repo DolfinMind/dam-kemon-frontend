@@ -102,6 +102,7 @@ export default function AdminLayout() {
         <Tab to="/admin/search-log" icon={SearchIcon}>Search log</Tab>
         <Tab to="/admin/traffic" icon={Activity}>Traffic</Tab>
         <Tab to="/admin/stats" icon={BarChart3}>Stats</Tab>
+        <Tab to="/admin/newsletter" icon={Inbox}>Newsletter</Tab>
         <Tab to="/admin/cache" icon={HardDrive}>Cache</Tab>
         <Tab to="/admin/jobs" icon={Clock}>Jobs</Tab>
         <Tab to="/admin/audit" icon={FileText}>Audit log</Tab>

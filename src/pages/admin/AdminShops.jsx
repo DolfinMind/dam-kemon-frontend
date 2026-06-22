@@ -154,7 +154,7 @@ export default function AdminShops() {
                   <td className="py-2 pr-3 text-right">
                     <div className="inline-flex items-center gap-1">
                       <button
-                        onClick={() => setEditing({ ...s, categories: (s.categories || []).join(', ') })}
+                        onClick={() => setEditing({ ...s, categories: (Array.isArray(s.categories) ? s.categories : []).join(', ') })}
                         className="p-1.5 rounded-full hover:bg-ink/10 text-ink"
                         title="Edit"
                       >

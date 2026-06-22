@@ -7,7 +7,7 @@ import {
 import {
   Radio, Users, Activity, Eye, Search as SearchIcon, MousePointerClick,
   Globe, Server, Clock, TrendingUp, Map as MapIcon,
-  Store, Package, Layers, Crown, Filter,
+  Store, Package, Layers, Crown, Filter, MessageSquare, AlertTriangle
 } from 'lucide-react';
 import {
   analyticsOverview, analyticsHourly, analyticsDailyUsers,
@@ -112,11 +112,11 @@ export default function AdminAnalytics() {
         <Kpi icon={Radio} label="Active now" value={num(overview?.activeNow)} accent hint="last 5 min" />
         <Kpi icon={Users} label="Visitors today" value={num(overview?.visitorsToday)} />
         <Kpi icon={Server} label="Requests today" value={num(overview?.requestsToday)} hint={`${num(overview?.requestsLastHour)} last hr`} />
-        <Kpi icon={Eye} label="Page views today" value={num(overview?.pageViewsToday)} />
         <Kpi icon={SearchIcon} label="Searches today" value={num(overview?.searchesToday)} />
-        <Kpi icon={Eye} label="Product views" value={num(overview?.productViewsToday)} />
-        <Kpi icon={MousePointerClick} label="Outbound clicks" value={num(overview?.clicksToday)} />
-        <Kpi icon={Globe} label="Unique IPs today" value={num(overview?.ipsToday)} />
+        <Kpi icon={Store} label="Total Shops" value={num(overview?.totalShops)} hint={`${num(overview?.failingShops)} failing`} />
+        <Kpi icon={MessageSquare} label="Community Reviews" value={num(overview?.totalCommunityReviews)} />
+        <Kpi icon={AlertTriangle} label="Flagged Reviews" value={num(overview?.flaggedReviews)} accent={overview?.flaggedReviews > 0} />
+        <Kpi icon={Activity} label="Search Conv. Rate" value={`${overview?.searchConversionRate || 0}%`} hint="today" />
       </section>
 
       {/* ── window selector ── */}

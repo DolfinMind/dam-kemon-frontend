@@ -85,11 +85,11 @@ export default function Sellers() {
 
   const filtered = useMemo(() => sellers.filter((s) => {
     if (type && bucket(s.type) !== type) return false;
-    if (category && !(s.categories || []).includes(category)) return false;
+    if (category && !(Array.isArray(s.categories) ? s.categories : []).includes(category)) return false;
     if (verifiedOnly && !s.verified) return false;
     if (query) {
       const q = query.toLowerCase();
-      const hay = (s.name + ' ' + (s.area || '') + ' ' + (s.city || '') + ' ' + (s.tags || []).join(' ')).toLowerCase();
+      const hay = ((s.name || '') + ' ' + (s.area || '') + ' ' + (s.city || '') + ' ' + (Array.isArray(s.tags) ? s.tags : []).join(' ')).toLowerCase();
       if (!hay.includes(q)) return false;
     }
     return true;
@@ -215,7 +215,7 @@ export default function Sellers() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {shown.map((s, i) => {
               const avatarColor = avatarColors[i % avatarColors.length];
-              const initials = (s.name || '?').split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+              const initials = (s.name || '?').split(/\s+/).filter(Boolean).map((w) => w[0]).join('').slice(0, 2).toUpperCase() || '?';
               const followers = formatFollowers(s.followers);
               return (
                 <div key={s.id} className="card-soft p-4 sm:p-5 flex flex-col gap-3">
@@ -252,10 +252,10 @@ export default function Sellers() {
                     </div>
                   )}
 
-                  {(s.categories || []).length > 0 && (
+                  {(Array.isArray(s.categories) ? s.categories : []).length > 0 && (
                     <div className="flex flex-wrap gap-1">
-                      {s.categories.slice(0, 3).map((c) => (
-                        <span key={c} className="chip chip-ghost !text-[10px] !py-0.5 !px-2 capitalize">{c.toLowerCase()}</span>
+                      {(Array.isArray(s.categories) ? s.categories : []).slice(0, 3).map((c) => (
+                        <span key={c} className="chip chip-ghost !text-[10px] !py-0.5 !px-2 capitalize">{(c || '').toLowerCase()}</span>
                       ))}
                     </div>
                   )}

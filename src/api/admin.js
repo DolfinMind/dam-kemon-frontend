@@ -89,3 +89,9 @@ export const analyticsTopProducts = (days = 7, limit = 25) =>
   api.get('/admin/analytics/top-products', { params: { days, limit } });
 export const analyticsTopConvertingSearches = (days = 7, limit = 25) =>
   api.get('/admin/analytics/top-converting-searches', { params: { days, limit } });
+
+// ─── Newsletter ───
+export const newsletterAnalytics = () => api.get('/admin/newsletter/analytics');
+export const listSubscribers = (page = 0, size = 50) =>
+  api.get('/admin/newsletter/subscribers', { params: { page, size } });
+export const triggerNewsletter = () => api.post('/admin/newsletter/send');
