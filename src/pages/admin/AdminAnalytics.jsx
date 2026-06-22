@@ -7,13 +7,15 @@ import {
 import {
   Radio, Users, Activity, Eye, Search as SearchIcon, MousePointerClick,
   Globe, Server, Clock, TrendingUp, Map as MapIcon,
-  Store, Package, Layers, Crown, Filter, MessageSquare, AlertTriangle
+  Store, Package, Layers, Crown, Filter, MessageSquare, AlertTriangle,
+  Trophy, SearchX, Award
 } from 'lucide-react';
 import {
   analyticsOverview, analyticsHourly, analyticsDailyUsers,
   analyticsTopSearches, analyticsTopIps, analyticsTopPaths, analyticsRequests,
   analyticsFunnel, analyticsShopClicksByCategory, analyticsTopShops,
   analyticsTopProducts, analyticsTopConvertingSearches,
+  analyticsResultShops, analyticsZeroResultSearches, analyticsShopPriceWins,
 } from '../../api/admin';
 
 const num = (n) => (n == null ? '—' : Number(n).toLocaleString());
@@ -43,6 +45,9 @@ export default function AdminAnalytics() {
   const [topShops, setTopShops] = useState([]);
   const [topProducts, setTopProducts] = useState([]);
   const [convSearches, setConvSearches] = useState([]);
+  const [resultShops, setResultShops] = useState([]);
+  const [zeroSearches, setZeroSearches] = useState([]);
+  const [priceWins, setPriceWins] = useState([]);
   const [windowDays, setWindowDays] = useState(7);
   const [dailyDays, setDailyDays] = useState(14);
   const [live, setLive] = useState(true);
@@ -60,6 +65,9 @@ export default function AdminAnalytics() {
     analyticsTopShops(windowDays, 15).then((r) => setTopShops(r.data || [])).catch(() => {});
     analyticsTopProducts(windowDays, 15).then((r) => setTopProducts(r.data || [])).catch(() => {});
     analyticsTopConvertingSearches(windowDays, 15).then((r) => setConvSearches(r.data || [])).catch(() => {});
+    analyticsResultShops(windowDays, 15).then((r) => setResultShops(r.data || [])).catch(() => {});
+    analyticsZeroResultSearches(windowDays, 25).then((r) => setZeroSearches(r.data || [])).catch(() => {});
+    analyticsShopPriceWins(15).then((r) => setPriceWins(r.data || [])).catch(() => {});
   }, [windowDays]);
 
   useEffect(() => {
@@ -208,6 +216,126 @@ export default function AdminAnalytics() {
               <Area type="monotone" dataKey="users" name="Visitors" stroke="var(--color-blue)" strokeWidth={2} fill="url(#gUsers)" />
             </AreaChart>
           </ResponsiveContainer>
+        )}
+      </section>
+
+      {/* ════════ Search result intelligence ════════ */}
+      <div className="pt-2 border-t border-line">
+        <h3 className="font-serif text-lg font-semibold inline-flex items-center gap-2">
+          <Trophy className="w-5 h-5 text-red" /> Search result intelligence
+        </h3>
+        <p className="text-xs text-gray mt-0.5">
+          Which shops surface first, what shoppers can&apos;t find, and who wins on price. Window: last {windowDays}d
+          {' '}(price-win is computed live over the catalog).
+        </p>
+      </div>
+
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* shops shown first in results */}
+        <div>
+          <h3 className="font-serif text-lg font-semibold mb-3 inline-flex items-center gap-2">
+            <Crown className="w-4 h-4" /> Shops shown first in results
+          </h3>
+          {resultShops.length === 0 ? (
+            <Empty>No searches with results logged in this window yet — fills in as people search.</Empty>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-[10px] font-mono uppercase tracking-wider text-gray border-b border-line">
+                    <th className="py-2 pr-3">Shop</th>
+                    <th className="py-2 pr-3 text-right">Shown 1st</th>
+                    <th className="py-2 pr-3 text-right">Share</th>
+                    <th className="py-2 pr-3 text-right">Appears</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {resultShops.map((s, i) => (
+                    <tr key={s.siteSlug} className="border-b border-line/50">
+                      <td className="py-2 pr-3 capitalize font-medium inline-flex items-center gap-1">
+                        {i === 0 && <Crown className="w-3 h-3 text-yellow shrink-0" />}{s.siteSlug}
+                      </td>
+                      <td className="py-2 pr-3 text-right font-mono font-bold">{num(s.shownFirst)}</td>
+                      <td className="py-2 pr-3 text-right font-mono text-gray">{s.shownFirstPct == null ? '—' : `${s.shownFirstPct}%`}</td>
+                      <td className="py-2 pr-3 text-right font-mono text-gray">{num(s.appears)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        {/* zero-result searches */}
+        <div>
+          <h3 className="font-serif text-lg font-semibold mb-3 inline-flex items-center gap-2">
+            <SearchX className="w-4 h-4" /> Searches with no results
+          </h3>
+          {zeroSearches.length === 0 ? (
+            <Empty>No empty searches in this window — your catalog is covering demand.</Empty>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-[10px] font-mono uppercase tracking-wider text-gray border-b border-line">
+                    <th className="py-2 pr-3">Query</th>
+                    <th className="py-2 pr-3 text-right">Searches</th>
+                    <th className="py-2 pr-3">Last</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {zeroSearches.map((s) => (
+                    <tr key={s.query} className="border-b border-line/50">
+                      <td className="py-2 pr-3">
+                        <Link to={`/search?q=${encodeURIComponent(s.query)}`} className="hover:text-red">{s.query}</Link>
+                      </td>
+                      <td className="py-2 pr-3 text-right font-mono font-bold text-red">{num(s.hits)}</td>
+                      <td className="py-2 pr-3 text-gray text-xs whitespace-nowrap">{timeAgo(s.lastSeen)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* shop price-win rate */}
+      <section>
+        <h3 className="font-serif text-lg font-semibold mb-3 inline-flex items-center gap-2">
+          <Award className="w-4 h-4" /> Shop price-win rate
+          <span className="text-[10px] font-mono normal-case tracking-normal text-gray">cheapest-offer share where the shop appears</span>
+        </h3>
+        {priceWins.length === 0 ? <Empty>No catalog price data yet.</Empty> : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-[10px] font-mono uppercase tracking-wider text-gray border-b border-line">
+                  <th className="py-2 pr-3">Shop</th>
+                  <th className="py-2 pr-3">Win rate</th>
+                  <th className="py-2 pr-3 text-right">Wins</th>
+                  <th className="py-2 pr-3 text-right">Appears on</th>
+                </tr>
+              </thead>
+              <tbody>
+                {priceWins.map((s) => (
+                  <tr key={s.siteSlug} className="border-b border-line/50">
+                    <td className="py-2 pr-3 capitalize font-medium">{s.siteSlug}</td>
+                    <td className="py-2 pr-3">
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 min-w-[5rem] h-2 rounded-full bg-cream-soft overflow-hidden">
+                          <div className="h-full bg-green rounded-full" style={{ width: `${Math.min(100, s.winRate || 0)}%` }} />
+                        </div>
+                        <span className="w-12 text-right font-mono text-xs font-bold">{s.winRate == null ? '—' : `${s.winRate}%`}</span>
+                      </div>
+                    </td>
+                    <td className="py-2 pr-3 text-right font-mono text-gray">{num(s.wins)}</td>
+                    <td className="py-2 pr-3 text-right font-mono text-gray">{num(s.appearances)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
 

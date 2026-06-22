@@ -90,6 +90,14 @@ export const analyticsTopProducts = (days = 7, limit = 25) =>
 export const analyticsTopConvertingSearches = (days = 7, limit = 25) =>
   api.get('/admin/analytics/top-converting-searches', { params: { days, limit } });
 
+// ─── Search result intelligence ───
+export const analyticsResultShops = (days = 7, limit = 15) =>
+  api.get('/admin/analytics/result-shops', { params: { days, limit } });
+export const analyticsZeroResultSearches = (days = 7, limit = 25) =>
+  api.get('/admin/analytics/zero-result-searches', { params: { days, limit } });
+export const analyticsShopPriceWins = (limit = 15) =>
+  api.get('/admin/analytics/shop-price-wins', { params: { limit } });
+
 // ─── Newsletter ───
 export const newsletterAnalytics = () => api.get('/admin/newsletter/analytics');
 export const listSubscribers = (page = 0, size = 50) =>

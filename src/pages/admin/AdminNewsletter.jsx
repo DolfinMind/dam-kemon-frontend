@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { newsletterAnalytics, listSubscribers, triggerNewsletter } from '../../api/admin';
-import { Mail, Send, Users, Activity, Loader2, CheckCircle2 } from 'lucide-react';
+import { Mail, Send, Users, Activity, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import LoadingSpinner from '../../components/LoadingSpinner';
 
 export default function AdminNewsletter() {
@@ -9,6 +9,7 @@ export default function AdminNewsletter() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [sentMessage, setSentMessage] = useState('');
+  const [sentOk, setSentOk] = useState(false);
   const [page, setPage] = useState(0);
 
   const load = async (pageNumber = 0) => {
@@ -36,8 +37,11 @@ export default function AdminNewsletter() {
     setSentMessage('');
     try {
       const res = await triggerNewsletter();
-      setSentMessage(res.data.message || 'Newsletter triggered successfully.');
+      setSentOk(!!res.data.success);
+      setSentMessage(res.data.message || (res.data.success ? 'Newsletter sent.' : 'Nothing was sent.'));
+      if (res.data.success) load(page);   // refresh stats after a real send
     } catch (err) {
+      setSentOk(false);
       setSentMessage('Failed to trigger newsletter.');
     } finally {
       setSending(false);
@@ -64,8 +68,8 @@ export default function AdminNewsletter() {
       </div>
 
       {sentMessage && (
-        <div className={`p-4 rounded-xl flex items-center gap-2 ${sentMessage.includes('Failed') ? 'bg-red-soft text-red' : 'bg-green/10 text-green'}`}>
-          <CheckCircle2 className="w-5 h-5" /> {sentMessage}
+        <div className={`p-4 rounded-xl flex items-center gap-2 ${sentOk ? 'bg-green/10 text-green' : 'bg-red-soft text-red'}`}>
+          {sentOk ? <CheckCircle2 className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />} {sentMessage}
         </div>
       )}
 

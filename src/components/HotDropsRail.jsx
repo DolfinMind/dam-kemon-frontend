@@ -62,9 +62,11 @@ export default function HotDropsRail() {
               ) : (
                 <CategoryIcon category={p.category} className="w-10 h-10 text-ink/20" />
               )}
-              <div className="absolute top-2 right-2 inline-flex items-center gap-1 bg-red text-white px-2 py-0.5 rounded-full text-[10px] font-mono font-bold">
-                -{p.dropPct}%
-              </div>
+              {p.dropPct > 0 && (
+                <div className="absolute top-2 right-2 inline-flex items-center gap-1 bg-red text-white px-2 py-0.5 rounded-full text-[10px] font-mono font-bold">
+                  -{p.dropPct}%
+                </div>
+              )}
             </div>
             <div className="p-3 sm:p-4 flex-1 flex flex-col">
               {p.category && (
@@ -75,7 +77,9 @@ export default function HotDropsRail() {
               </h3>
               <div className="mt-auto flex items-baseline justify-between gap-2">
                 <span className="font-mono text-base sm:text-lg font-bold text-ink">{fmt(p.currentPrice)}</span>
-                <span className="font-mono text-[11px] text-gray line-through">{fmt(p.peakPrice)}</span>
+                {p.peakPrice > p.currentPrice && (
+                  <span className="font-mono text-[11px] text-gray line-through">{fmt(p.peakPrice)}</span>
+                )}
               </div>
             </div>
           </Link>
