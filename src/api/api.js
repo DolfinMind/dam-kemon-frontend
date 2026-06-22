@@ -170,6 +170,10 @@ export const affiliateUrl = (productId, siteSlug, fromQuery, offerUrl) => {
   return qs ? `${base}?${qs}` : base;
 };
 
+// ─── Community offers: "I sell this for ৳X here" (moderated → comparison row) ───
+export const submitOffer = (productId, payload) =>
+  api.post(`/products/${encodeURIComponent(productId)}/offers`, payload);
+
 // ─── Engagement: Newsletter & Feedback ───
 export const subscribeNewsletter = (email) => api.post('/newsletter', { email });
 export const submitFeedback = (data) => api.post('/feedback', data);

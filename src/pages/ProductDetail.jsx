@@ -9,6 +9,7 @@ import PriceComparisonTable from '../components/PriceComparisonTable';
 import PriceHistoryChart from '../components/PriceHistoryChart';
 import SmartVerdict from '../components/SmartVerdict';
 import ReviewsPanel from '../components/ReviewsPanel';
+import AddOffer from '../components/AddOffer';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ProductSEO from '../components/ProductSEO';
 import ServiceUnavailable from '../components/ServiceUnavailable';
@@ -464,6 +465,7 @@ export default function ProductDetail() {
             </div>
           </div>
           <PriceComparisonTable prices={prices} productId={pid} trust={trust} sellerTrust={sellerTrust} />
+          <AddOffer productId={pid} />
         </section>
 
         <section>

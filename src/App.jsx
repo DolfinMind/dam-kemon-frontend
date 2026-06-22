@@ -37,6 +37,7 @@ const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'));
 const AdminIndexer = lazy(() => import('./pages/admin/AdminIndexer'));
 const AdminShops = lazy(() => import('./pages/admin/AdminShops'));
 const AdminPendingShops = lazy(() => import('./pages/admin/AdminPendingShops'));
+const AdminOffers = lazy(() => import('./pages/admin/AdminOffers'));
 const AdminAuditLog = lazy(() => import('./pages/admin/AdminAuditLog'));
 const AdminStats = lazy(() => import('./pages/admin/AdminStats'));
 const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'));
@@ -103,6 +104,7 @@ function App() {
                   <Route path="indexer" element={<AdminIndexer />} />
                   <Route path="shops" element={<AdminShops />} />
                   <Route path="pending-shops" element={<AdminPendingShops />} />
+                  <Route path="offers" element={<AdminOffers />} />
                   <Route path="catalog" element={<AdminCatalog />} />
                   <Route path="reviews" element={<AdminReviews />} />
                   <Route path="search-log" element={<AdminSearchLog />} />
