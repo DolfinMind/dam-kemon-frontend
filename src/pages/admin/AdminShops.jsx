@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { listShops, reindexShop, setShopStatus, editShop, bulkSetShopStatus } from '../../api/admin';
-import { RotateCcw, Power, AlertTriangle, CheckCircle2, Clock, Edit2, X, Check } from 'lucide-react';
+import { listShops, reindexShop, setShopStatus, editShop, bulkSetShopStatus, diagCollections, reseedDirectories } from '../../api/admin';
+import { RotateCcw, Power, AlertTriangle, CheckCircle2, Clock, Edit2, X, Check, DatabaseZap } from 'lucide-react';
 
 const HEALTH_BADGE = {
   active: { color: 'bg-green/15 text-green', icon: CheckCircle2 },
@@ -15,8 +15,21 @@ export default function AdminShops() {
   const [selected, setSelected] = useState(new Set());
   const [editing, setEditing] = useState(null);
 
+  const [diag, setDiag] = useState(null);
+  const [reseeding, setReseeding] = useState(false);
+
   const load = () => listShops().then((r) => setShops(Array.isArray(r.data) ? r.data : [])).catch(() => setShops([]));
-  useEffect(() => { load(); }, []);
+  const loadDiag = () => diagCollections().then((r) => setDiag(r.data)).catch(() => setDiag(null));
+  useEffect(() => { load(); loadDiag(); }, []);
+
+  const reseed = async () => {
+    setReseeding(true);
+    try {
+      const { data } = await reseedDirectories();
+      setDiag(data);
+      await load();
+    } finally { setReseeding(false); }
+  };
 
   const filtered = shops.filter((s) => {
     if (filter === 'all') return true;
@@ -79,6 +92,26 @@ export default function AdminShops() {
 
   return (
     <div className="space-y-4">
+      {/* Diagnostics: live row counts + force reseed (for the "everything shows 0" bug) */}
+      <div className="flex flex-wrap items-center gap-3 p-3 bg-cream-soft border border-line rounded-xl text-xs">
+        {diag ? (
+          <span className="font-mono text-ink/80">
+            shops: <b>{String(diag.shops)}</b> · sellers: <b>{String(diag.sellers)}</b> · products: <b>{String(diag.products)}</b>
+            {diag.shopSeed && <> · seed: {String(diag.shopSeed)}/{String(diag.sellerSeed)}</>}
+          </span>
+        ) : (
+          <span className="text-gray">DB counts unavailable</span>
+        )}
+        <button
+          onClick={reseed}
+          disabled={reseeding}
+          className="ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-ink text-cream font-semibold hover:bg-ink/90 disabled:opacity-50"
+          title="Re-run the shops/sellers/trust seeders now"
+        >
+          <DatabaseZap className={`w-3.5 h-3.5 ${reseeding ? 'animate-pulse' : ''}`} /> {reseeding ? 'Reseeding…' : 'Reseed directories'}
+        </button>
+      </div>
+
       <div className="flex flex-wrap items-center gap-2">
         {['all', 'active', 'degraded', 'dormant', 'failing'].map((f) => (
           <button

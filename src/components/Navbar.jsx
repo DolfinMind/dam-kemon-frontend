@@ -49,7 +49,9 @@ export default function Navbar() {
     { to: '/browse',    label: 'Browse' },
     { to: '/protect',   label: 'Protect' },
     { to: '/compare',   label: 'Compare' },
-    { to: '/sellers',   label: 'Shops' },
+    // ponytail: Shops (/sellers) hidden until the sellers directory is populated —
+    // it was showing 0 / stuck loading. Restore this line once seeding is verified.
+    // { to: '/sellers',   label: 'Shops' },
     ...(SHOW_SAATHI ? [{ to: '/saathi', label: 'Sell with us' }] : []),
   ];
 

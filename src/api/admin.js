@@ -33,6 +33,10 @@ export const listPendingShops = () => api.get('/admin/pending-shops');
 export const approvePendingShop = (id) => api.post(`/admin/pending-shops/${id}/approve`);
 export const rejectPendingShop = (id, note) => api.post(`/admin/pending-shops/${id}/reject`, { note });
 
+// ─── Diagnostics: collection counts + force reseed ───
+export const diagCollections = () => api.get('/admin/diag/collections');
+export const reseedDirectories = () => api.post('/admin/diag/reseed');
+
 // ─── Community offers (moderation) ───
 export const listOffers = () => api.get('/admin/offers');
 export const approveOffer = (id) => api.post(`/admin/offers/${id}/approve`);
