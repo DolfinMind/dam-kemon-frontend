@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { listShops, reindexShop, setShopStatus, editShop, bulkSetShopStatus, diagCollections, reseedDirectories } from '../../api/admin';
-import { RotateCcw, Power, AlertTriangle, CheckCircle2, Clock, Edit2, X, Check, DatabaseZap } from 'lucide-react';
+import { listShops, reindexShop, setShopStatus, editShop, bulkSetShopStatus, diagCollections, reseedDirectories, syncShopFeed } from '../../api/admin';
+import { RotateCcw, Power, AlertTriangle, CheckCircle2, Clock, Edit2, X, Check, DatabaseZap, DownloadCloud } from 'lucide-react';
 
 const HEALTH_BADGE = {
   active: { color: 'bg-green/15 text-green', icon: CheckCircle2 },
@@ -43,6 +43,16 @@ export default function AdminShops() {
     finally { setBusy(null); }
   };
 
+  const syncFeed = async (slug) => {
+    setBusy('feed:' + slug);
+    try {
+      const { data } = await syncShopFeed(slug);
+      alert(data.error ? `Feed sync: ${data.error}` : `Feed sync: ${data.persisted ?? 0} items merged`);
+      await load();
+      loadDiag();
+    } finally { setBusy(null); }
+  };
+
   const flipStatus = async (slug, current) => {
     const next = current === 'active' ? 'blocked' : 'active';
     setBusy('status:' + slug);
@@ -82,7 +92,7 @@ export default function AdminShops() {
     try {
       await editShop(editing.slug, {
         name: editing.name, baseUrl: editing.baseUrl, sitemapUrl: editing.sitemapUrl,
-        platform: editing.platform, requiresJs: !!editing.requiresJs,
+        feedUrl: editing.feedUrl, platform: editing.platform, requiresJs: !!editing.requiresJs,
         categories: editing.categories ? (Array.isArray(editing.categories) ? editing.categories : String(editing.categories).split(',').map(s => s.trim())) : [],
       });
       setEditing(null);
@@ -201,6 +211,16 @@ export default function AdminShops() {
                       >
                         <RotateCcw className="w-3.5 h-3.5" />
                       </button>
+                      {s.feedUrl && (
+                        <button
+                          onClick={() => syncFeed(s.slug)}
+                          disabled={busy === 'feed:' + s.slug}
+                          className="p-1.5 rounded-full hover:bg-green/15 text-green disabled:opacity-50"
+                          title="Pull this shop's product feed now"
+                        >
+                          <DownloadCloud className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                       <button
                         onClick={() => flipStatus(s.slug, s.status)}
                         disabled={busy === 'status:' + s.slug}
@@ -231,6 +251,7 @@ export default function AdminShops() {
               <Field label="Name" value={editing.name} onChange={(v) => setEditing({ ...editing, name: v })} />
               <Field label="Base URL" value={editing.baseUrl} onChange={(v) => setEditing({ ...editing, baseUrl: v })} />
               <Field label="Sitemap URL" value={editing.sitemapUrl || ''} onChange={(v) => setEditing({ ...editing, sitemapUrl: v })} />
+              <Field label="Feed URL (Shopify products.json / Google Merchant XML)" value={editing.feedUrl || ''} onChange={(v) => setEditing({ ...editing, feedUrl: v })} />
               <Field label="Platform" value={editing.platform || ''} onChange={(v) => setEditing({ ...editing, platform: v })} />
               <Field label="Categories (comma-sep)" value={editing.categories} onChange={(v) => setEditing({ ...editing, categories: v })} />
               <label className="inline-flex items-center gap-2 text-sm">

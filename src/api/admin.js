@@ -33,6 +33,9 @@ export const listPendingShops = () => api.get('/admin/pending-shops');
 export const approvePendingShop = (id) => api.post(`/admin/pending-shops/${id}/approve`);
 export const rejectPendingShop = (id, note) => api.post(`/admin/pending-shops/${id}/reject`, { note });
 
+// ─── Merchant feed sync (pull a shop's published catalog) ───
+export const syncShopFeed = (slug) => api.post(`/admin/feeds/sync/${encodeURIComponent(slug)}`);
+
 // ─── Diagnostics: collection counts + force reseed ───
 export const diagCollections = () => api.get('/admin/diag/collections');
 export const reseedDirectories = () => api.post('/admin/diag/reseed');
