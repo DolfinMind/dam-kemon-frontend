@@ -229,7 +229,7 @@ export default function Home() {
                   <h3 className="font-sans text-[14px] font-bold text-[#2A2A2A] leading-[1.3] line-clamp-2 group-hover:text-acid-deep transition-colors">{d.name}</h3>
                   <div className="mt-auto pt-4 flex items-baseline flex-wrap gap-x-2 gap-y-1">
                     <span className="font-sans text-[1.15rem] font-extrabold text-[#2A2A2A] tracking-tight">{fmt(d.price)}</span>
-                    {d.oldPrice && <span className="text-[12px] font-semibold text-[#A3A3A3] line-through">{fmt(d.oldPrice)}</span>}
+                    {/* ponytail: cut price hidden per request — only show the live price. */}
                   </div>
                 </div>
               </Link>
