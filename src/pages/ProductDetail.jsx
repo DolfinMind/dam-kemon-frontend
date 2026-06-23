@@ -433,12 +433,7 @@ export default function ProductDetail() {
                   >
                     Visit store <ExternalLink className="w-4 h-4" />
                   </a>
-                  <Link
-                    to={`/protect?productId=${encodeURIComponent(pid)}&shopSlug=${encodeURIComponent(cheapest.siteSlug || cheapest.siteName || '')}&itemName=${encodeURIComponent(product.name || '')}&amount=${lowestPrice || ''}`}
-                    className="text-[11px] font-mono font-medium text-gray hover:text-ink transition-colors inline-flex items-center justify-center gap-1 w-full sm:w-auto"
-                  >
-                    <ShieldCheck className="w-3 h-3" /> Buy Protected
-                  </Link>
+                  {/* ponytail: "Buy Protected" hidden from frontend per request. Restore to bring it back. */}
                 </div>
               </div>
             </div>

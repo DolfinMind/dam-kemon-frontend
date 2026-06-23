@@ -47,7 +47,8 @@ export default function Navbar() {
   const navLinks = [
     { to: '/',          label: 'Home' },
     { to: '/browse',    label: 'Browse' },
-    { to: '/protect',   label: 'Protect' },
+    // ponytail: Protect hidden from frontend per request. Restore this line to bring it back.
+    // { to: '/protect',   label: 'Protect' },
     { to: '/compare',   label: 'Compare' },
     // ponytail: Shops (/sellers) hidden until the sellers directory is populated —
     // it was showing 0 / stuck loading. Restore this line once seeding is verified.

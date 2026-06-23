@@ -7,7 +7,8 @@ import {
 import { BarChart, Bar, ResponsiveContainer, Cell } from 'recharts';
 import SearchBar from '../components/SearchBar';
 import AlphaBadge from '../components/AlphaBadge';
-import ProtectShowcase from '../components/ProtectShowcase';
+// ponytail: Protect hidden from frontend per request.
+// import ProtectShowcase from '../components/ProtectShowcase';
 import { TrustScore, deliveryText } from '../components/TrustBadge';
 import NewsletterSection from '../components/NewsletterSection';
 import FeedbackSection from '../components/FeedbackSection';
@@ -270,9 +271,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Damkemon Protect spotlight — the standout anti-scam differentiator.
-            This component already existed but was never rendered on the homepage. ── */}
-      <ProtectShowcase />
+      {/* ponytail: Protect spotlight hidden from frontend per request. Restore to bring it back. */}
+      {/* <ProtectShowcase /> */}
 
       {/* ── "Out of the box" intro + feature cards ───────────────── */}
       <section className="container-tight pt-8 sm:pt-12">
@@ -416,7 +416,7 @@ export default function Home() {
             </p>
             <div className="flex flex-wrap gap-3">
               <Link to="/browse" className="btn-primary">Browse products</Link>
-              <Link to="/protect" className="btn-ghost">Try Protect</Link>
+              {/* ponytail: "Try Protect" hidden per request. */}
             </div>
           </div>
           <Faq />
@@ -491,7 +491,6 @@ const QUOTES = [
 
 const INSIGHTS = [
   { title: 'Why one search beats ten browser tabs', desc: 'See every shop that sells your product — price, trust and delivery, side by side.', read: 4, to: '/guides/why-one-search-beats-ten-browser-tabs', icon: PhSearch, tone: 'bg-acid-soft text-acid-deep' },
-  { title: 'Buying from an unknown seller? Use Protect', desc: 'Check the scam risk and open a protected order before you hand over money.', read: 3, to: '/guides/buying-from-unknown-seller-use-protect', icon: PhShieldCheck, tone: 'bg-green-soft text-green' },
   { title: 'How our trust score spots fake low prices', desc: 'Delivery signals, review history and stock depth — combined into one number.', read: 5, to: '/guides/how-trust-score-spots-fake-low-prices', icon: PhSealCheck, tone: 'bg-yellow-soft text-ink' },
 ];
 
@@ -605,7 +604,6 @@ const FAQS = [
   { q: 'Where do the prices come from?', a: 'We bring together prices from shops right across Bangladesh and keep them updated, so a single search shows you a complete, side-by-side comparison in an instant.' },
   { q: 'Are the prices accurate and live?', a: 'We show real prices straight from each shop and keep them fresh — never fabricated numbers. If a listing goes stale we flag it rather than guess.' },
   { q: 'How does the trust score work?', a: 'Each shop is scored on real signals — delivery reliability, review history, how long it’s been active and how deep its stock is — combined into one number so you can spot a risky seller at a glance.' },
-  { q: 'What is Damkemon Protect?', a: 'Buying from an unknown seller? Protect lets you check the scam risk and open a protected order before you pay, so your money isn’t gone if the deal goes wrong.' },
   { q: 'Is damkemon free to use?', a: 'Yes — searching and comparing prices is completely free for shoppers, always.' },
 ];
 
