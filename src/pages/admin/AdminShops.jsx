@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { listShops, reindexShop, setShopStatus, editShop, bulkSetShopStatus, diagCollections, reseedDirectories, syncShopFeed } from '../../api/admin';
-import { RotateCcw, Power, AlertTriangle, CheckCircle2, Clock, Edit2, X, Check, DatabaseZap, DownloadCloud, EyeOff } from 'lucide-react';
+import { RotateCcw, AlertTriangle, CheckCircle2, Clock, Edit2, X, Check, DatabaseZap, DownloadCloud, Eye, EyeOff } from 'lucide-react';
 
 const HEALTH_BADGE = {
   active: { color: 'bg-green/15 text-green', icon: CheckCircle2 },
@@ -255,14 +255,18 @@ export default function AdminShops() {
                       <button
                         onClick={() => flipStatus(s.slug, s.status)}
                         disabled={busy === 'status:' + s.slug}
-                        className={`p-1.5 rounded-full hover:bg-red/10 disabled:opacity-50 ${
-                          s.status === 'active' ? 'text-gray hover:text-red' : 'text-red'
+                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-colors disabled:opacity-50 ${
+                          s.status === 'active'
+                            ? 'bg-white text-red border-red/40 hover:bg-red hover:text-white'
+                            : 'bg-green text-white border-green hover:bg-green/90'
                         }`}
                         title={s.status === 'active'
-                          ? 'Hide this shop — stops crawling AND removes its products from public search'
-                          : 'Show this shop — resumes crawling and its products reappear in search'}
+                          ? 'Hide this shop — stops crawling AND removes its products from public search + homepage'
+                          : 'Show this shop — resumes crawling and its products reappear everywhere'}
                       >
-                        <Power className="w-3.5 h-3.5" />
+                        {s.status === 'active'
+                          ? <><EyeOff className="w-3 h-3" /> Hide</>
+                          : <><Eye className="w-3 h-3" /> Show</>}
                       </button>
                     </div>
                   </td>
