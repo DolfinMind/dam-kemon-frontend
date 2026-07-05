@@ -28,26 +28,30 @@ export default function AdminIndexer() {
     finally { setBusy(null); }
   };
 
-  const fmtPct = (a, b) => b ? Math.round((a / b) * 100) : 0;
-
   return (
     <div className="space-y-6">
       <section className="card-soft p-5 sm:p-6">
-        <h2 className="font-serif text-xl font-semibold mb-1">Latest run</h2>
+        <div className="flex items-center justify-between gap-3 mb-1">
+          <h2 className="font-serif text-xl font-semibold">Latest run</h2>
+          {status?.catalogSize != null && (
+            <span className="font-mono text-xs text-gray">
+              catalog: <b className="text-ink">{Number(status.catalogSize).toLocaleString()}</b> products
+            </span>
+          )}
+        </div>
         {(() => {
-          // /index/status only knows about the run in the CURRENT JVM lifetime
-          // (it's an in-memory RunSummary). After every backend restart that
-          // resets to zero — which is why "No runs yet" was showing even
-          // when Run history clearly listed 3 completed runs. Fall back to
-          // the most recent persisted IndexerRunRecord when status is empty.
-          const inMemory = status?.startedAtEpochMs > 0;
-          const persisted = (!inMemory && history.length > 0) ? history[0] : null;
+          // /index/status is now cross-process: the worker JVM heartbeats its
+          // live run into Mongo, so this shows a crawl that runs OUT of this
+          // JVM too. Fall back to the last persisted IndexerRunRecord when
+          // there's no live/heartbeat data at all.
+          const live = status?.startedAtEpochMs > 0;
+          const persisted = (!live && history.length > 0) ? history[0] : null;
 
-          if (!inMemory && !persisted) {
+          if (!live && !persisted) {
             return <p className="text-sm text-gray mt-2">No runs yet — kick one off below.</p>;
           }
 
-          const view = inMemory ? {
+          const view = live ? {
             shopsAttempted: status.shopsAttempted,
             shopsSucceeded: status.shopsSucceeded,
             shopsFailed: status.shopsFailed,
@@ -56,7 +60,8 @@ export default function AdminIndexer() {
             productsMerged: status.productsMerged,
             finishedAtMs: status.finishedAtEpochMs,
             startedAtMs: status.startedAtEpochMs,
-            source: status.inProgress ? 'running' : 'this-session',
+            source: status.inProgress ? 'running' : (status.source === 'worker' ? 'worker' : 'this-session'),
+            kind: status.kind,
           } : {
             shopsAttempted: persisted.shopsAttempted,
             shopsSucceeded: persisted.shopsSucceeded,
@@ -82,18 +87,27 @@ export default function AdminIndexer() {
               </div>
               {status?.inProgress && (
                 <div className="mt-4 text-xs font-mono inline-flex items-center gap-2 text-green">
-                  <span className="w-2 h-2 rounded-full bg-green animate-pulse" /> Running…
+                  <span className="w-2 h-2 rounded-full bg-green animate-pulse" />
+                  Running{status.currentShop ? <> — indexing <b>{status.currentShop}</b></> : '…'}
+                  {status.source === 'worker' && <span className="text-gray">(worker)</span>}
                 </div>
               )}
-              {!status?.inProgress && view.finishedAtMs > 0 && (
+              {status?.stalled && (
+                <div className="mt-4 text-xs inline-flex items-center gap-1.5 text-red">
+                  <AlertTriangle className="w-3.5 h-3.5" />
+                  Worker heartbeat stopped mid-run — the crawl likely died. Check the worker service.
+                </div>
+              )}
+              {!status?.inProgress && !status?.stalled && view.finishedAtMs > 0 && (
                 <p className="mt-3 text-[11px] text-gray">
-                  {view.source === 'persisted' && (
+                  {view.kind && (
                     <span className="inline-flex items-center gap-1 mr-2 px-1.5 py-0.5 rounded-full bg-cream-soft border border-line text-[10px] font-mono uppercase tracking-wider">
-                      {view.kind || 'past'}
+                      {view.kind}
                     </span>
                   )}
                   Finished {new Date(view.finishedAtMs).toLocaleString()}
                   {' '} · took {view.tookSeconds ?? Math.round((view.finishedAtMs - view.startedAtMs) / 1000)}s
+                  {view.source === 'worker' && ' · ran on worker'}
                 </p>
               )}
             </>

@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  getDashboardStats, getHotDrops, getAllProducts, getTrendingSearches, getLiveStats,
-  getShops, getShopTrust, getHeadlineStats,
+  getDashboardStats, getHotDrops, getAllProducts,
+  getShops, getShopTrust,
 } from '../api/api';
-import { BarChart, Bar, ResponsiveContainer, Cell } from 'recharts';
 import SearchBar from '../components/SearchBar';
 import AlphaBadge from '../components/AlphaBadge';
 // ponytail: Protect hidden from frontend per request.
@@ -14,9 +13,8 @@ import NewsletterSection from '../components/NewsletterSection';
 import FeedbackSection from '../components/FeedbackSection';
 import { CategoryIcon } from '../lib/categoryIcon';
 import {
-  ArrowRight, Play, Sparkles, ShieldCheck, Store, Crown, Flame,
-  TrendingDown, TrendingUp, Search, Plus, Minus, Database, Layers, Zap, Star,
-  BadgeCheck, Truck,
+  ArrowRight, Play, ShieldCheck, Store, Flame,
+  TrendingDown, Plus, Minus, Star, Truck,
 } from 'lucide-react';
 // Phosphor duotone for the landing's feature icons — adds a premium, two-tone
 // weight where Lucide's flat line look is more utilitarian.
@@ -30,27 +28,6 @@ function fmt(p) {
   return '৳' + Number(p).toLocaleString('en-IN');
 }
 const fmtNum = (n) => (n == null ? '—' : Number(n).toLocaleString('en-IN'));
-// Bangla-friendly large-number format for the "saved this month" figure.
-function fmtLakh(n) {
-  if (n == null) return '—';
-  const v = Number(n);
-  if (v >= 100000) return (v / 100000).toFixed(1).replace(/\.0$/, '') + ' lakh';
-  if (v >= 1000) return Math.round(v / 1000) + 'k';
-  return v.toLocaleString('en-IN');
-}
-
-// One social-proof figure as a compact pill.
-function HeadlinePill({ icon, value, label, tone }) {
-  return (
-    <span className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 ${
-      tone === 'acid' ? 'bg-acid-soft border-acid/50' : 'bg-white border-line'
-    }`}>
-      <span className="text-base leading-none">{icon}</span>
-      <span className="font-mono text-sm font-bold text-ink">{value}</span>
-      <span className="text-[11px] text-ink/60">{label}</span>
-    </span>
-  );
-}
 
 // Normalise a hot-drop or a catalog product into one card shape.
 function fromDrop(p) {
@@ -73,18 +50,11 @@ function fromProduct(p) {
 export default function Home() {
   const navigate = useNavigate();
   const [stats, setStats] = useState(null);
-  const [statsLoading, setStatsLoading] = useState(true);
-  const [live, setLive] = useState(null);
-  const [trending, setTrending] = useState([]);
   const [deals, setDeals] = useState([]);
   const [shops, setShops] = useState([]);
-  const [headline, setHeadline] = useState(null);
 
   useEffect(() => {
-    getDashboardStats().then((r) => setStats(r.data)).catch(() => {}).finally(() => setStatsLoading(false));
-    getLiveStats().then((r) => setLive(r.data)).catch(() => {});
-    getHeadlineStats().then((r) => setHeadline(r.data)).catch(() => {});
-    getTrendingSearches(10).then((r) => setTrending(Array.isArray(r.data) ? r.data : [])).catch(() => {});
+    getDashboardStats().then((r) => setStats(r.data)).catch(() => {});
 
     // Examples grid: prefer real hot-drops; fall back to featured catalog with
     // cross-seller savings so the grid is never empty.
@@ -140,48 +110,9 @@ export default function Home() {
           <span className="bg-acid px-3 py-1 -ml-3 mr-1 inline-block">Compare</span> prices across <span className="text-acid-deep">every online shop</span> in Bangladesh.
         </h1>
         
-        {/* Search & Stats Row */}
-        <div className="w-full max-w-5xl mx-auto">
-          <div className="flex flex-col md:flex-row items-start justify-center gap-4 lg:gap-6">
-            {/* Products Stat (Left) */}
-            <div className="hidden md:flex shrink-0 w-44 lg:w-52 text-center">
-              <StatBlock
-                value={stats?.totalProducts}
-                fallback={50000}
-                label="Products"
-              />
-            </div>
-
-            {/* Search Bar (Center Focus) */}
-            <div className="w-full max-w-2xl flex-1 relative z-10 flex flex-col justify-center text-left">
-              <SearchBar large onSearch={handleSearch} sellerCount={stats?.totalSellers} />
-            </div>
-
-            {/* Sellers Stat (Right) */}
-            <div className="hidden md:flex shrink-0 w-44 lg:w-52 text-center">
-              <StatBlock
-                value={stats?.totalSellers ?? stats?.totalSites}
-                fallback={2000}
-                label="Sellers"
-                tone="acid"
-              />
-            </div>
-          </div>
-
-          {/* Mobile-only stats row (below search) */}
-          <div className="md:hidden grid grid-cols-2 gap-4 mt-6 text-center">
-             <StatBlock
-               value={stats?.totalProducts}
-               fallback={50000}
-               label="Products"
-             />
-             <StatBlock
-               value={stats?.totalSellers ?? stats?.totalSites}
-               fallback={2000}
-               label="Sellers"
-               tone="acid"
-             />
-          </div>
+        {/* Search — the hero's single focus, no stat clutter */}
+        <div className="w-full max-w-2xl mx-auto relative z-10 text-left">
+          <SearchBar large onSearch={handleSearch} />
         </div>
 
       </section>
@@ -523,43 +454,6 @@ function useCountUp(target, fallback = 0, duration = 1400) {
 function CountUp({ value }) {
   const d = useCountUp(value, 0);
   return d != null ? Number(d).toLocaleString('en-IN') : '—';
-}
-
-// MAC-style stat block: big number + plus + caption.
-function StatBlock({ value, label, fallback = 0, tone }) {
-  const display = useCountUp(value, fallback);
-  const acid = tone === 'acid';
-  return (
-    <div className={`rounded-[1.25rem] px-5 py-4 sm:py-[1.15rem] border ${acid ? 'bg-acid border-acid' : 'bg-surface border-line'} flex flex-col items-center justify-center text-center`}>
-      <div className={`font-sans text-[clamp(1.85rem,4.4vw,2.9rem)] font-extrabold leading-none tracking-tight tabular-nums text-ink`}>
-        {Number(display).toLocaleString('en-IN')}
-        <span className={acid ? 'text-ink/70' : 'text-acid-deep'}>+</span>
-      </div>
-      <p className={`font-sans font-bold text-base sm:text-lg tracking-[-0.01em] mt-1.5 ${acid ? 'text-ink' : 'text-ink/85'}`}>{label}</p>
-    </div>
-  );
-}
-
-// Green growth bars (recharts) — a stylized rising trend ending near the real total.
-function GrowthBars({ total }) {
-  const data = useMemo(() => {
-    const end = total && total > 0 ? total : 100;
-    const f = [0.16, 0.27, 0.36, 0.5, 0.62, 0.78, 0.9, 1];
-    return f.map((x, i) => ({ name: i, v: Math.round(end * x) }));
-  }, [total]);
-  return (
-    <div className="relative h-28 -mx-1">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: 4 }} barCategoryGap="22%">
-          <Bar dataKey="v" radius={[5, 5, 0, 0]} isAnimationActive>
-            {data.map((_, i) => (
-              <Cell key={i} fill={i === data.length - 1 ? '#9FE231' : i >= data.length - 3 ? 'rgba(159,226,49,0.65)' : 'rgba(159,226,49,0.28)'} />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
-  );
 }
 
 function Testimonials() {

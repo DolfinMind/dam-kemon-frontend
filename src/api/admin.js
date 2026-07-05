@@ -48,6 +48,9 @@ export const rejectOffer = (id, note) => api.post(`/admin/offers/${id}/reject`, 
 // ─── Catalog ───
 export const adminListCatalog = (params = {}) =>
   api.get('/admin/catalog', { params });
+export const adminCreateProduct = (body) =>
+  api.post('/admin/catalog', body);
+export const adminSellerDepth = () => api.get('/admin/catalog/seller-depth');
 export const adminEditProduct = (id, patch) =>
   api.patch(`/admin/catalog/${id}`, patch);
 export const adminDeleteProduct = (id) =>
@@ -74,6 +77,8 @@ export const jobRuns = (id) => api.get(`/admin/jobs/${id}/runs`);
 export const recentSearches = (limit = 200) =>
   api.get('/admin/stats/recent-searches', { params: { limit } });
 export const searchLatency = () => api.get('/admin/stats/latency');
+export const recentSuggestClicks = (limit = 100) =>
+  api.get('/admin/stats/suggest-clicks', { params: { limit } });
 
 // ─── Traffic analytics (full-funnel logging) ───
 export const analyticsOverview = () => api.get('/admin/analytics/overview');
@@ -89,6 +94,10 @@ export const analyticsTopPaths = (days = 7, limit = 25) =>
   api.get('/admin/analytics/top-paths', { params: { days, limit } });
 export const analyticsRequests = (limit = 100) =>
   api.get('/admin/analytics/requests', { params: { limit } });
+export const analyticsDevices = (days = 7) =>
+  api.get('/admin/analytics/devices', { params: { days } });
+export const analyticsReferrers = (days = 7, limit = 15) =>
+  api.get('/admin/analytics/referrers', { params: { days, limit } });
 
 // ─── Outbound-click intelligence (which shop wins which category, etc.) ───
 export const analyticsFunnel = (days = 7) =>

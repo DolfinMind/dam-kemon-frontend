@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { recentSearches, searchLatency } from '../../api/admin';
-import { Search as SearchIcon, Zap } from 'lucide-react';
+import { recentSearches, searchLatency, recentSuggestClicks } from '../../api/admin';
+import { Search as SearchIcon, Zap, MousePointerClick } from 'lucide-react';
 
 function relative(ts) {
   if (!ts) return '';
@@ -15,6 +15,7 @@ function relative(ts) {
 
 export default function AdminSearchLog() {
   const [rows, setRows] = useState([]);
+  const [picks, setPicks] = useState([]);
   const [latency, setLatency] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -23,6 +24,9 @@ export default function AdminSearchLog() {
       .then(([r, l]) => { setRows(Array.isArray(r.data) ? r.data : []); setLatency(l.data); })
       .catch(() => {})
       .finally(() => setLoading(false));
+    recentSuggestClicks(100)
+      .then((r) => setPicks(Array.isArray(r.data) ? r.data : []))
+      .catch(() => {});
   }, []);
 
   if (loading) return <p className="text-sm text-gray">Loading…</p>;
@@ -34,6 +38,45 @@ export default function AdminSearchLog() {
         <LatCard label="p50" value={latency?.p50 != null ? `${latency.p50} ms` : '—'} />
         <LatCard label="p95" value={latency?.p95 != null ? `${latency.p95} ms` : '—'} />
         <LatCard label="p99" value={latency?.p99 != null ? `${latency.p99} ms` : '—'} />
+      </section>
+
+      <section>
+        <h2 className="font-serif text-lg font-semibold mb-3 inline-flex items-center gap-2">
+          <MousePointerClick className="w-4 h-4" /> Suggestion clicks
+          <span className="text-[10px] font-mono uppercase tracking-wider text-gray font-normal">typed → picked</span>
+        </h2>
+        {picks.length === 0 ? (
+          <p className="text-sm text-gray card-soft p-6 text-center">No suggestion clicks recorded yet.</p>
+        ) : (
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="text-left text-[10px] font-mono uppercase tracking-wider text-gray border-b border-line">
+                <th className="py-2 pr-3">When</th>
+                <th className="py-2 pr-3">Typed</th>
+                <th className="py-2 pr-3">Clicked suggestion</th>
+                <th className="py-2 pr-3">Actor</th>
+              </tr>
+            </thead>
+            <tbody>
+              {picks.map((p, i) => (
+                <tr key={i} className="border-b border-line/50">
+                  <td className="py-2 pr-3 text-gray whitespace-nowrap">{relative(p.ts)}</td>
+                  <td className="py-2 pr-3">
+                    {p.query ? (
+                      <Link to={`/search?q=${encodeURIComponent(p.query)}`} className="hover:text-red">{p.query}</Link>
+                    ) : '—'}
+                  </td>
+                  <td className="py-2 pr-3">
+                    {p.productId ? (
+                      <Link to={`/product/${p.productId}`} className="font-semibold hover:text-red">{p.productName || p.productId}</Link>
+                    ) : (p.productName || '—')}
+                  </td>
+                  <td className="py-2 pr-3 text-gray text-[10px]">{p.anonId ? `anon:${p.anonId.slice(0, 6)}…` : '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </section>
 
       <section>

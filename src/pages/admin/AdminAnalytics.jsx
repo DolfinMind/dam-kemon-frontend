@@ -8,7 +8,7 @@ import {
   Radio, Users, Activity, Eye, Search as SearchIcon, MousePointerClick,
   Globe, Server, Clock, TrendingUp, Map as MapIcon,
   Store, Package, Layers, Crown, Filter, MessageSquare, AlertTriangle,
-  Trophy, SearchX, Award
+  Trophy, SearchX, Award, Smartphone, ExternalLink
 } from 'lucide-react';
 import {
   analyticsOverview, analyticsHourly, analyticsDailyUsers,
@@ -16,6 +16,7 @@ import {
   analyticsFunnel, analyticsShopClicksByCategory, analyticsTopShops,
   analyticsTopProducts, analyticsTopConvertingSearches,
   analyticsResultShops, analyticsZeroResultSearches, analyticsShopPriceWins,
+  analyticsDevices, analyticsReferrers,
 } from '../../api/admin';
 
 const num = (n) => (n == null ? '—' : Number(n).toLocaleString());
@@ -48,6 +49,8 @@ export default function AdminAnalytics() {
   const [resultShops, setResultShops] = useState([]);
   const [zeroSearches, setZeroSearches] = useState([]);
   const [priceWins, setPriceWins] = useState([]);
+  const [devices, setDevices] = useState(null);
+  const [referrers, setReferrers] = useState([]);
   const [windowDays, setWindowDays] = useState(7);
   const [dailyDays, setDailyDays] = useState(14);
   const [live, setLive] = useState(true);
@@ -68,6 +71,8 @@ export default function AdminAnalytics() {
     analyticsResultShops(windowDays, 15).then((r) => setResultShops(r.data || [])).catch(() => {});
     analyticsZeroResultSearches(windowDays, 25).then((r) => setZeroSearches(r.data || [])).catch(() => {});
     analyticsShopPriceWins(15).then((r) => setPriceWins(r.data || [])).catch(() => {});
+    analyticsDevices(windowDays).then((r) => setDevices(r.data)).catch(() => {});
+    analyticsReferrers(windowDays, 15).then((r) => setReferrers(r.data || [])).catch(() => {});
   }, [windowDays]);
 
   useEffect(() => {
@@ -566,6 +571,59 @@ export default function AdminAnalytics() {
                       <td className="py-2 pr-3 text-right font-mono font-bold">{num(ip.requests)}</td>
                       <td className="py-2 pr-3 text-right font-mono text-gray">{num(ip.distinctPaths)}</td>
                       <td className="py-2 pr-3 text-gray text-xs whitespace-nowrap">{timeAgo(ip.lastSeen)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ── devices & traffic sources ── */}
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div>
+          <h3 className="font-serif text-lg font-semibold mb-3 inline-flex items-center gap-2">
+            <Smartphone className="w-4 h-4" /> Devices
+          </h3>
+          {!devices?.devices?.length ? <Empty>No page views in this window.</Empty> : (
+            <div className="space-y-2">
+              {devices.devices.map((d) => (
+                <div key={d.device} className="flex items-center gap-3">
+                  <span className="w-16 text-xs font-mono uppercase tracking-wider text-gray">{d.device}</span>
+                  <div className="flex-1 h-5 rounded-full bg-cream-soft overflow-hidden">
+                    <div className="h-full bg-acid rounded-full" style={{ width: `${Math.max(2, d.pct)}%` }} />
+                  </div>
+                  <span className="w-24 text-right text-xs font-mono">
+                    <b>{d.pct}%</b> <span className="text-gray">· {num(d.views)}</span>
+                  </span>
+                </div>
+              ))}
+              <p className="text-[11px] text-gray pt-1">{num(devices.totalViews)} page views · share of views per device class</p>
+            </div>
+          )}
+        </div>
+
+        <div>
+          <h3 className="font-serif text-lg font-semibold mb-3 inline-flex items-center gap-2">
+            <ExternalLink className="w-4 h-4" /> Traffic sources
+          </h3>
+          {referrers.length === 0 ? <Empty>No page views in this window.</Empty> : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-[10px] font-mono uppercase tracking-wider text-gray border-b border-line">
+                    <th className="py-2 pr-3">Referrer</th>
+                    <th className="py-2 pr-3 text-right">Views</th>
+                    <th className="py-2 pr-3 text-right">Visitors</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {referrers.map((r) => (
+                    <tr key={r.referrer} className="border-b border-line/50">
+                      <td className="py-2 pr-3 font-mono text-xs">{r.referrer}</td>
+                      <td className="py-2 pr-3 text-right font-mono font-bold">{num(r.views)}</td>
+                      <td className="py-2 pr-3 text-right font-mono text-gray">{num(r.visitors)}</td>
                     </tr>
                   ))}
                 </tbody>

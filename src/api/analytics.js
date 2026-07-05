@@ -59,6 +59,13 @@ export const trackClick = (productId, sellerSlug) => {
   fireBeacon('/events/click', { productId, sellerSlug });
 };
 
+// Autosuggest pick: the user typed `query` and clicked suggestion `name`.
+// Powers the admin search log's "searched X, chose Y" view.
+export const trackSuggestClick = (query, productId, productName) => {
+  if (!productId && !productName) return;
+  fireBeacon('/events/suggest-click', { query, productId, productName });
+};
+
 // A single-page-app route change. Fired on every navigation so the backend sees
 // the full page-by-page journey, not just API calls. The referrer is the
 // browser's document.referrer (external entry) — internal hops are reconstructed

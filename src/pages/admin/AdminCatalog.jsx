@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
-import { adminListCatalog, adminEditProduct, adminDeleteProduct, adminMergeProducts } from '../../api/admin';
-import { Search as SearchIcon, Edit2, Trash2, Merge, X, Check } from 'lucide-react';
+import { adminListCatalog, adminEditProduct, adminDeleteProduct, adminMergeProducts, adminCreateProduct } from '../../api/admin';
+import { Search as SearchIcon, Edit2, Trash2, Merge, X, Check, Plus } from 'lucide-react';
+
+const EMPTY_DRAFT = {
+  name: '', category: '', imageUrl: '', description: '', brands: '',
+  siteSlug: '', siteName: '', price: '', productUrl: '',
+};
 
 function fmt(p) { if (p == null) return 'N/A'; return '৳' + Number(p).toLocaleString('en-IN'); }
 
@@ -10,6 +15,8 @@ export default function AdminCatalog() {
   const [q, setQ] = useState('');
   const [page, setPage] = useState(0);
   const [editing, setEditing] = useState(null);
+  const [creating, setCreating] = useState(null); // draft form values, or null
+  const [createError, setCreateError] = useState(null);
   const [mergeMode, setMergeMode] = useState(null); // {to, search}
   const [mergeHits, setMergeHits] = useState([]);
   const [busy, setBusy] = useState(false);
@@ -47,6 +54,38 @@ export default function AdminCatalog() {
     finally { setBusy(false); }
   };
 
+  const create = async () => {
+    if (!creating?.name?.trim()) { setCreateError('Name is required.'); return; }
+    const hasOffer = creating.siteSlug.trim() || creating.price;
+    if (hasOffer && (!creating.siteSlug.trim() || !(Number(creating.price) > 0))) {
+      setCreateError('An offer needs both a shop slug and a positive price — or leave both empty.');
+      return;
+    }
+    setBusy(true);
+    setCreateError(null);
+    try {
+      await adminCreateProduct({
+        name: creating.name.trim(),
+        category: creating.category.trim() || null,
+        imageUrl: creating.imageUrl.trim() || null,
+        description: creating.description.trim() || null,
+        brands: creating.brands ? creating.brands.split(',').map((s) => s.trim()).filter(Boolean) : [],
+        offer: hasOffer ? {
+          siteSlug: creating.siteSlug.trim(),
+          siteName: creating.siteName.trim() || null,
+          price: Number(creating.price),
+          productUrl: creating.productUrl.trim() || null,
+        } : null,
+      });
+      setCreating(null);
+      setQ(creating.name.trim());
+      setPage(0);
+      load();
+    } catch (e) {
+      setCreateError(e.response?.data?.error || 'Create failed — try again.');
+    } finally { setBusy(false); }
+  };
+
   const startMerge = (to) => { setMergeMode({ to, search: '' }); setMergeHits([]); };
   const searchForMerge = () => {
     adminListCatalog({ q: mergeMode.search, size: 10 }).then((r) => setMergeHits(r.data?.content || []));
@@ -71,6 +110,13 @@ export default function AdminCatalog() {
           />
         </div>
         <button type="submit" className="px-4 py-2.5 rounded-xl bg-ink text-cream font-semibold text-sm hover:bg-red">Search</button>
+        <button
+          type="button"
+          onClick={() => { setCreating({ ...EMPTY_DRAFT }); setCreateError(null); }}
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-green text-white font-semibold text-sm hover:bg-green/90"
+        >
+          <Plus className="w-4 h-4" /> Add product
+        </button>
       </form>
 
       <div className="text-xs text-gray">{total.toLocaleString()} products · page {page + 1}</div>
@@ -129,6 +175,40 @@ export default function AdminCatalog() {
               <button onClick={() => setEditing(null)} className="px-4 py-2 rounded-full border border-line text-sm hover:border-ink">Cancel</button>
               <button onClick={save} disabled={busy} className="inline-flex items-center gap-1 px-4 py-2 rounded-full bg-ink text-cream font-semibold text-sm hover:bg-red disabled:opacity-50">
                 <Check className="w-4 h-4" /> Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {creating && (
+        <div className="fixed inset-0 z-50 bg-ink/40 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setCreating(null)}>
+          <div className="bg-cream rounded-2xl max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-serif text-xl font-semibold">Add product manually</h3>
+              <button onClick={() => setCreating(null)} className="p-1.5 rounded-full hover:bg-ink/10"><X className="w-4 h-4" /></button>
+            </div>
+            <div className="space-y-3">
+              <EditField label="Name *" value={creating.name} onChange={(v) => setCreating({ ...creating, name: v })} />
+              <EditField label="Category" value={creating.category} onChange={(v) => setCreating({ ...creating, category: v })} />
+              <EditField label="Image URL" value={creating.imageUrl} onChange={(v) => setCreating({ ...creating, imageUrl: v })} />
+              <EditField label="Description" value={creating.description} onChange={(v) => setCreating({ ...creating, description: v })} multiline />
+              <EditField label="Brands (comma-sep)" value={creating.brands} onChange={(v) => setCreating({ ...creating, brands: v })} />
+              <div className="border-t border-line pt-3">
+                <p className="text-xs text-gray mb-2">Optional first offer — makes it comparable right away.</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <EditField label="Shop slug" value={creating.siteSlug} onChange={(v) => setCreating({ ...creating, siteSlug: v })} />
+                  <EditField label="Shop name" value={creating.siteName} onChange={(v) => setCreating({ ...creating, siteName: v })} />
+                  <EditField label="Price (৳)" value={creating.price} onChange={(v) => setCreating({ ...creating, price: v })} />
+                  <EditField label="Product URL" value={creating.productUrl} onChange={(v) => setCreating({ ...creating, productUrl: v })} />
+                </div>
+              </div>
+            </div>
+            {createError && <p className="text-xs text-red mt-3">{createError}</p>}
+            <div className="flex justify-end gap-2 mt-5">
+              <button onClick={() => setCreating(null)} className="px-4 py-2 rounded-full border border-line text-sm hover:border-ink">Cancel</button>
+              <button onClick={create} disabled={busy} className="inline-flex items-center gap-1 px-4 py-2 rounded-full bg-green text-white font-semibold text-sm hover:bg-green/90 disabled:opacity-50">
+                <Plus className="w-4 h-4" /> Create
               </button>
             </div>
           </div>

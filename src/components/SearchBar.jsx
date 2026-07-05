@@ -2,13 +2,14 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, ArrowRight, Sparkles, Store } from 'lucide-react';
 import { suggestProducts } from '../api/api';
+import { trackSuggestClick } from '../api/analytics';
 
 function fmt(p) {
   if (p == null) return '';
   return '৳' + Number(p).toLocaleString('en-IN');
 }
 
-export default function SearchBar({ large = false, onSearch, placeholder, sellerCount }) {
+export default function SearchBar({ large = false, onSearch, placeholder }) {
   const [query, setQuery] = useState('');
   const [focused, setFocused] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
@@ -52,12 +53,17 @@ export default function SearchBar({ large = false, onSearch, placeholder, seller
     else navigate(`/search?q=${encodeURIComponent(term)}`);
   };
 
+  const pickSuggestion = (s) => {
+    setFocused(false);
+    trackSuggestClick(query, s.id || s.slug, s.name);
+    if (s.id || s.slug) navigate(`/product/${s.id || s.slug}`);
+    else submitQuery(s.name);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (activeIndex >= 0 && suggestions[activeIndex]) {
-      const s = suggestions[activeIndex];
-      if (s.id || s.slug) navigate(`/product/${s.id || s.slug}`);
-      else submitQuery(s.name);
+      pickSuggestion(suggestions[activeIndex]);
     } else {
       submitQuery();
     }
@@ -124,11 +130,7 @@ export default function SearchBar({ large = false, onSearch, placeholder, seller
                   key={(s.id || s.slug || s.name) + i}
                   onMouseEnter={() => setActiveIndex(i)}
                   onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => {
-                    setFocused(false);
-                    if (s.id || s.slug) navigate(`/product/${s.id || s.slug}`);
-                    else submitQuery(s.name);
-                  }}
+                  onClick={() => pickSuggestion(s)}
                   className={`w-full text-left flex items-center gap-3 px-4 py-2.5 border-t border-line first:border-t-0 ${active ? 'bg-cream-soft' : 'hover:bg-cream-soft/60'} transition-colors`}
                 >
                   <div className="w-10 h-10 rounded-xl overflow-hidden bg-cream-soft flex items-center justify-center shrink-0">

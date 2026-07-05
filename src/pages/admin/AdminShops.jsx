@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { listShops, reindexShop, setShopStatus, editShop, bulkSetShopStatus, diagCollections, reseedDirectories, syncShopFeed } from '../../api/admin';
-import { RotateCcw, Power, AlertTriangle, CheckCircle2, Clock, Edit2, X, Check, DatabaseZap, DownloadCloud } from 'lucide-react';
+import { RotateCcw, Power, AlertTriangle, CheckCircle2, Clock, Edit2, X, Check, DatabaseZap, DownloadCloud, EyeOff } from 'lucide-react';
 
 const HEALTH_BADGE = {
   active: { color: 'bg-green/15 text-green', icon: CheckCircle2 },
@@ -203,6 +203,18 @@ export default function AdminShops() {
                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-wider ${badge.color}`}>
                       <Icon className="w-3 h-3" /> {s.health || 'active'}
                     </span>
+                    {s.status && s.status !== 'active' && (
+                      <div className="mt-1">
+                        <span
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-wider bg-red/15 text-red"
+                          title={s.blockedBy === 'operator'
+                            ? 'Hidden by you — products excluded from public search until re-enabled'
+                            : 'Auto-blocked by the health rule — may self-revive when the site recovers'}
+                        >
+                          <EyeOff className="w-3 h-3" /> hidden{s.blockedBy === 'operator' ? ' · you' : s.blockedBy === 'auto' ? ' · auto' : ''}
+                        </span>
+                      </div>
+                    )}
                     {s.consecutiveFailures > 0 && (
                       <div className="text-[10px] text-red mt-1">{s.consecutiveFailures} fails</div>
                     )}
@@ -246,7 +258,9 @@ export default function AdminShops() {
                         className={`p-1.5 rounded-full hover:bg-red/10 disabled:opacity-50 ${
                           s.status === 'active' ? 'text-gray hover:text-red' : 'text-red'
                         }`}
-                        title={s.status === 'active' ? 'Disable shop' : 'Enable shop'}
+                        title={s.status === 'active'
+                          ? 'Hide this shop — stops crawling AND removes its products from public search'
+                          : 'Show this shop — resumes crawling and its products reappear in search'}
                       >
                         <Power className="w-3.5 h-3.5" />
                       </button>

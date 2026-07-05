@@ -649,7 +649,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "src_app_pagetracker",
-      "community": 0,
+      "community": 30,
       "norm_label": "pagetracker()"
     },
     {
@@ -659,7 +659,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "src_app_app",
-      "community": 1,
+      "community": 41,
       "norm_label": "app()"
     },
     {
@@ -669,7 +669,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_api_admin",
-      "community": 8,
+      "community": 5,
       "norm_label": "admin.js"
     },
     {
@@ -769,7 +769,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "src_api_admin_listpendingshops",
-      "community": 8,
+      "community": 42,
       "norm_label": "listpendingshops()"
     },
     {
@@ -779,7 +779,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "src_api_admin_approvependingshop",
-      "community": 8,
+      "community": 42,
       "norm_label": "approvependingshop()"
     },
     {
@@ -789,7 +789,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_api_admin_rejectpendingshop",
-      "community": 8,
+      "community": 42,
       "norm_label": "rejectpendingshop()"
     },
     {
@@ -863,10 +863,30 @@
       "norm_label": "adminlistcatalog()"
     },
     {
-      "label": "adminEditProduct()",
+      "label": "adminCreateProduct()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
       "source_location": "L51",
+      "_origin": "ast",
+      "id": "src_api_admin_admincreateproduct",
+      "community": 17,
+      "norm_label": "admincreateproduct()"
+    },
+    {
+      "label": "adminSellerDepth()",
+      "file_type": "code",
+      "source_file": "src/api/admin.js",
+      "source_location": "L53",
+      "_origin": "ast",
+      "id": "src_api_admin_adminsellerdepth",
+      "community": 13,
+      "norm_label": "adminsellerdepth()"
+    },
+    {
+      "label": "adminEditProduct()",
+      "file_type": "code",
+      "source_file": "src/api/admin.js",
+      "source_location": "L54",
       "_origin": "ast",
       "id": "src_api_admin_admineditproduct",
       "community": 17,
@@ -876,7 +896,7 @@
       "label": "adminDeleteProduct()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L53",
+      "source_location": "L56",
       "_origin": "ast",
       "id": "src_api_admin_admindeleteproduct",
       "community": 17,
@@ -886,7 +906,7 @@
       "label": "adminMergeProducts()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L55",
+      "source_location": "L58",
       "_origin": "ast",
       "id": "src_api_admin_adminmergeproducts",
       "community": 17,
@@ -896,7 +916,7 @@
       "label": "adminFlaggedReviews()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L59",
+      "source_location": "L62",
       "_origin": "ast",
       "id": "src_api_admin_adminflaggedreviews",
       "community": 25,
@@ -906,7 +926,7 @@
       "label": "adminSetReviewStatus()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L60",
+      "source_location": "L63",
       "_origin": "ast",
       "id": "src_api_admin_adminsetreviewstatus",
       "community": 25,
@@ -916,7 +936,7 @@
       "label": "listCaches()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L64",
+      "source_location": "L67",
       "_origin": "ast",
       "id": "src_api_admin_listcaches",
       "community": 26,
@@ -926,7 +946,7 @@
       "label": "flushCache()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L65",
+      "source_location": "L68",
       "_origin": "ast",
       "id": "src_api_admin_flushcache",
       "community": 26,
@@ -936,7 +956,7 @@
       "label": "flushAllCaches()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L66",
+      "source_location": "L69",
       "_origin": "ast",
       "id": "src_api_admin_flushallcaches",
       "community": 26,
@@ -946,7 +966,7 @@
       "label": "listJobs()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L69",
+      "source_location": "L72",
       "_origin": "ast",
       "id": "src_api_admin_listjobs",
       "community": 21,
@@ -956,7 +976,7 @@
       "label": "runJob()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L70",
+      "source_location": "L73",
       "_origin": "ast",
       "id": "src_api_admin_runjob",
       "community": 21,
@@ -966,7 +986,7 @@
       "label": "jobRuns()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L71",
+      "source_location": "L74",
       "_origin": "ast",
       "id": "src_api_admin_jobruns",
       "community": 21,
@@ -976,7 +996,7 @@
       "label": "recentSearches()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L74",
+      "source_location": "L77",
       "_origin": "ast",
       "id": "src_api_admin_recentsearches",
       "community": 22,
@@ -986,17 +1006,27 @@
       "label": "searchLatency()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L76",
+      "source_location": "L79",
       "_origin": "ast",
       "id": "src_api_admin_searchlatency",
       "community": 22,
       "norm_label": "searchlatency()"
     },
     {
+      "label": "recentSuggestClicks()",
+      "file_type": "code",
+      "source_file": "src/api/admin.js",
+      "source_location": "L80",
+      "_origin": "ast",
+      "id": "src_api_admin_recentsuggestclicks",
+      "community": 22,
+      "norm_label": "recentsuggestclicks()"
+    },
+    {
       "label": "analyticsOverview()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L79",
+      "source_location": "L84",
       "_origin": "ast",
       "id": "src_api_admin_analyticsoverview",
       "community": 5,
@@ -1006,7 +1036,7 @@
       "label": "analyticsTopSearches()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L80",
+      "source_location": "L85",
       "_origin": "ast",
       "id": "src_api_admin_analyticstopsearches",
       "community": 5,
@@ -1016,7 +1046,7 @@
       "label": "analyticsHourly()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L82",
+      "source_location": "L87",
       "_origin": "ast",
       "id": "src_api_admin_analyticshourly",
       "community": 5,
@@ -1026,7 +1056,7 @@
       "label": "analyticsDailyUsers()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L84",
+      "source_location": "L89",
       "_origin": "ast",
       "id": "src_api_admin_analyticsdailyusers",
       "community": 5,
@@ -1036,7 +1066,7 @@
       "label": "analyticsTopIps()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L86",
+      "source_location": "L91",
       "_origin": "ast",
       "id": "src_api_admin_analyticstopips",
       "community": 5,
@@ -1046,7 +1076,7 @@
       "label": "analyticsTopPaths()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L88",
+      "source_location": "L93",
       "_origin": "ast",
       "id": "src_api_admin_analyticstoppaths",
       "community": 5,
@@ -1056,17 +1086,37 @@
       "label": "analyticsRequests()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L90",
+      "source_location": "L95",
       "_origin": "ast",
       "id": "src_api_admin_analyticsrequests",
       "community": 5,
       "norm_label": "analyticsrequests()"
     },
     {
+      "label": "analyticsDevices()",
+      "file_type": "code",
+      "source_file": "src/api/admin.js",
+      "source_location": "L97",
+      "_origin": "ast",
+      "id": "src_api_admin_analyticsdevices",
+      "community": 5,
+      "norm_label": "analyticsdevices()"
+    },
+    {
+      "label": "analyticsReferrers()",
+      "file_type": "code",
+      "source_file": "src/api/admin.js",
+      "source_location": "L99",
+      "_origin": "ast",
+      "id": "src_api_admin_analyticsreferrers",
+      "community": 5,
+      "norm_label": "analyticsreferrers()"
+    },
+    {
       "label": "analyticsFunnel()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L94",
+      "source_location": "L103",
       "_origin": "ast",
       "id": "src_api_admin_analyticsfunnel",
       "community": 5,
@@ -1076,7 +1126,7 @@
       "label": "analyticsShopClicksByCategory()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L96",
+      "source_location": "L105",
       "_origin": "ast",
       "id": "src_api_admin_analyticsshopclicksbycategory",
       "community": 5,
@@ -1086,7 +1136,7 @@
       "label": "analyticsTopShops()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L98",
+      "source_location": "L107",
       "_origin": "ast",
       "id": "src_api_admin_analyticstopshops",
       "community": 5,
@@ -1096,7 +1146,7 @@
       "label": "analyticsTopProducts()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L100",
+      "source_location": "L109",
       "_origin": "ast",
       "id": "src_api_admin_analyticstopproducts",
       "community": 5,
@@ -1106,7 +1156,7 @@
       "label": "analyticsTopConvertingSearches()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L102",
+      "source_location": "L111",
       "_origin": "ast",
       "id": "src_api_admin_analyticstopconvertingsearches",
       "community": 5,
@@ -1116,7 +1166,7 @@
       "label": "analyticsResultShops()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L106",
+      "source_location": "L115",
       "_origin": "ast",
       "id": "src_api_admin_analyticsresultshops",
       "community": 5,
@@ -1126,7 +1176,7 @@
       "label": "analyticsZeroResultSearches()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L108",
+      "source_location": "L117",
       "_origin": "ast",
       "id": "src_api_admin_analyticszeroresultsearches",
       "community": 5,
@@ -1136,7 +1186,7 @@
       "label": "analyticsShopPriceWins()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L110",
+      "source_location": "L119",
       "_origin": "ast",
       "id": "src_api_admin_analyticsshoppricewins",
       "community": 5,
@@ -1146,7 +1196,7 @@
       "label": "newsletterAnalytics()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L114",
+      "source_location": "L123",
       "_origin": "ast",
       "id": "src_api_admin_newsletteranalytics",
       "community": 6,
@@ -1156,7 +1206,7 @@
       "label": "listSubscribers()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L115",
+      "source_location": "L124",
       "_origin": "ast",
       "id": "src_api_admin_listsubscribers",
       "community": 6,
@@ -1166,7 +1216,7 @@
       "label": "triggerNewsletter()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L117",
+      "source_location": "L126",
       "_origin": "ast",
       "id": "src_api_admin_triggernewsletter",
       "community": 6,
@@ -1179,7 +1229,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_api_analytics",
-      "community": 0,
+      "community": 30,
       "norm_label": "analytics.js"
     },
     {
@@ -1189,7 +1239,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_api_analytics_getanonid",
-      "community": 0,
+      "community": 30,
       "norm_label": "getanonid()"
     },
     {
@@ -1199,7 +1249,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "src_api_analytics_firebeacon",
-      "community": 0,
+      "community": 30,
       "norm_label": "firebeacon()"
     },
     {
@@ -1209,7 +1259,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "src_api_analytics_trackview",
-      "community": 0,
+      "community": 30,
       "norm_label": "trackview()"
     },
     {
@@ -1219,17 +1269,27 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "src_api_analytics_trackclick",
-      "community": 0,
+      "community": 30,
       "norm_label": "trackclick()"
+    },
+    {
+      "label": "trackSuggestClick()",
+      "file_type": "code",
+      "source_file": "src/api/analytics.js",
+      "source_location": "L64",
+      "_origin": "ast",
+      "id": "src_api_analytics_tracksuggestclick",
+      "community": 30,
+      "norm_label": "tracksuggestclick()"
     },
     {
       "label": "trackPageView()",
       "file_type": "code",
       "source_file": "src/api/analytics.js",
-      "source_location": "L66",
+      "source_location": "L73",
       "_origin": "ast",
       "id": "src_api_analytics_trackpageview",
-      "community": 0,
+      "community": 30,
       "norm_label": "trackpageview()"
     },
     {
@@ -1249,7 +1309,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_api_api_api",
-      "community": 13,
+      "community": 31,
       "norm_label": "api"
     },
     {
@@ -1269,7 +1329,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "src_api_api_suggestproducts",
-      "community": 28,
+      "community": 7,
       "norm_label": "suggestproducts()"
     },
     {
@@ -1309,7 +1369,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "src_api_api_getdashboardstats",
-      "community": 6,
+      "community": 28,
       "norm_label": "getdashboardstats()"
     },
     {
@@ -1359,7 +1419,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "src_api_api_getsellers",
-      "community": 6,
+      "community": 3,
       "norm_label": "getsellers()"
     },
     {
@@ -1369,7 +1429,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "src_api_api_getshops",
-      "community": 0,
+      "community": 3,
       "norm_label": "getshops()"
     },
     {
@@ -1389,7 +1449,7 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "src_api_api_getlivestats",
-      "community": 9,
+      "community": 28,
       "norm_label": "getlivestats()"
     },
     {
@@ -1409,7 +1469,7 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "src_api_api_gettrendingsearches",
-      "community": 30,
+      "community": 28,
       "norm_label": "gettrendingsearches()"
     },
     {
@@ -1419,7 +1479,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "src_api_api_gethotdrops",
-      "community": 3,
+      "community": 7,
       "norm_label": "gethotdrops()"
     },
     {
@@ -1509,7 +1569,7 @@
       "source_location": "L131",
       "_origin": "ast",
       "id": "src_api_api_assistantchat",
-      "community": 1,
+      "community": 40,
       "norm_label": "assistantchat()"
     },
     {
@@ -1609,7 +1669,7 @@
       "source_location": "L174",
       "_origin": "ast",
       "id": "src_api_api_submitoffer",
-      "community": 0,
+      "community": 9,
       "norm_label": "submitoffer()"
     },
     {
@@ -1619,7 +1679,7 @@
       "source_location": "L178",
       "_origin": "ast",
       "id": "src_api_api_subscribenewsletter",
-      "community": 31,
+      "community": 7,
       "norm_label": "subscribenewsletter()"
     },
     {
@@ -1669,7 +1729,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "src_api_auth_passwordlogin",
-      "community": 10,
+      "community": 12,
       "norm_label": "passwordlogin()"
     },
     {
@@ -1739,7 +1799,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "src_api_auth_addtowishlist",
-      "community": 0,
+      "community": 10,
       "norm_label": "addtowishlist()"
     },
     {
@@ -1789,7 +1849,7 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "src_api_auth_saathisignup",
-      "community": 12,
+      "community": 10,
       "norm_label": "saathisignup()"
     },
     {
@@ -1799,7 +1859,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "src_api_auth_saathime",
-      "community": 12,
+      "community": 10,
       "norm_label": "saathime()"
     },
     {
@@ -1889,7 +1949,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "src_api_auth_saathipublicprofile",
-      "community": 10,
+      "community": 43,
       "norm_label": "saathipublicprofile()"
     },
     {
@@ -1909,7 +1969,7 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "src_api_auth_saathidisconnectmessenger",
-      "community": 10,
+      "community": 4,
       "norm_label": "saathidisconnectmessenger()"
     },
     {
@@ -1929,7 +1989,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_api_config",
-      "community": 0,
+      "community": 30,
       "norm_label": "config.js"
     },
     {
@@ -1939,7 +1999,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_api_config_origin",
-      "community": 0,
+      "community": 30,
       "norm_label": "origin"
     },
     {
@@ -1989,7 +2049,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_api_theme",
-      "community": 1,
+      "community": 41,
       "norm_label": "theme.js"
     },
     {
@@ -1999,7 +2059,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_api_theme_gettheme",
-      "community": 1,
+      "community": 41,
       "norm_label": "gettheme()"
     },
     {
@@ -2009,7 +2069,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "src_api_theme_applytheme",
-      "community": 1,
+      "community": 41,
       "norm_label": "applytheme()"
     },
     {
@@ -2019,7 +2079,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "src_api_theme_toggletheme",
-      "community": 1,
+      "community": 41,
       "norm_label": "toggletheme()"
     },
     {
@@ -2069,7 +2129,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_addoffer",
-      "community": 0,
+      "community": 9,
       "norm_label": "addoffer.jsx"
     },
     {
@@ -2079,7 +2139,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_components_addoffer_addoffer",
-      "community": 0,
+      "community": 9,
       "norm_label": "addoffer()"
     },
     {
@@ -2089,7 +2149,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_alphabadge",
-      "community": 1,
+      "community": 7,
       "norm_label": "alphabadge.jsx"
     },
     {
@@ -2099,7 +2159,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_components_alphabadge_alphabadge",
-      "community": 1,
+      "community": 7,
       "norm_label": "alphabadge()"
     },
     {
@@ -2109,7 +2169,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_assistantwidget",
-      "community": 1,
+      "community": 40,
       "norm_label": "assistantwidget.jsx"
     },
     {
@@ -2119,7 +2179,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_assistantwidget_fmt",
-      "community": 1,
+      "community": 40,
       "norm_label": "fmt()"
     },
     {
@@ -2129,7 +2189,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_components_assistantwidget_cheapest",
-      "community": 1,
+      "community": 40,
       "norm_label": "cheapest()"
     },
     {
@@ -2139,7 +2199,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_assistantwidget_assistantwidget",
-      "community": 1,
+      "community": 40,
       "norm_label": "assistantwidget()"
     },
     {
@@ -2149,7 +2209,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "src_components_assistantwidget_message",
-      "community": 1,
+      "community": 40,
       "norm_label": "message()"
     },
     {
@@ -2159,7 +2219,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_bottomnav",
-      "community": 1,
+      "community": 45,
       "norm_label": "bottomnav.jsx"
     },
     {
@@ -2169,7 +2229,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_bottomnav_tabs",
-      "community": 1,
+      "community": 45,
       "norm_label": "tabs"
     },
     {
@@ -2179,7 +2239,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_components_bottomnav_bottomnav",
-      "community": 1,
+      "community": 45,
       "norm_label": "bottomnav()"
     },
     {
@@ -2209,7 +2269,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_footer",
-      "community": 1,
+      "community": 7,
       "norm_label": "footer.jsx"
     },
     {
@@ -2219,7 +2279,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_components_footer_footer",
-      "community": 1,
+      "community": 7,
       "norm_label": "footer()"
     },
     {
@@ -2249,7 +2309,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_hotdropsrail",
-      "community": 3,
+      "community": 7,
       "norm_label": "hotdropsrail.jsx"
     },
     {
@@ -2259,7 +2319,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_hotdropsrail_fmt",
-      "community": 3,
+      "community": 7,
       "norm_label": "fmt()"
     },
     {
@@ -2269,7 +2329,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_components_hotdropsrail_hotdropsrail",
-      "community": 3,
+      "community": 7,
       "norm_label": "hotdropsrail()"
     },
     {
@@ -2279,7 +2339,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_liveactivitypill",
-      "community": 9,
+      "community": 28,
       "norm_label": "liveactivitypill.jsx"
     },
     {
@@ -2289,7 +2349,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_liveactivitypill_liveactivitypill",
-      "community": 9,
+      "community": 28,
       "norm_label": "liveactivitypill()"
     },
     {
@@ -2299,7 +2359,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_loadingspinner",
-      "community": 6,
+      "community": 3,
       "norm_label": "loadingspinner.jsx"
     },
     {
@@ -2309,7 +2369,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_loadingspinner_loadingspinner",
-      "community": 6,
+      "community": 3,
       "norm_label": "loadingspinner()"
     },
     {
@@ -2319,7 +2379,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_components_loadingspinner_skeletoncard",
-      "community": 6,
+      "community": 3,
       "norm_label": "skeletoncard()"
     },
     {
@@ -2339,7 +2399,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_navbar",
-      "community": 1,
+      "community": 7,
       "norm_label": "navbar.jsx"
     },
     {
@@ -2359,7 +2419,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_newslettersection",
-      "community": 31,
+      "community": 7,
       "norm_label": "newslettersection.jsx"
     },
     {
@@ -2369,7 +2429,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_components_newslettersection_newslettersection",
-      "community": 31,
+      "community": 7,
       "norm_label": "newslettersection()"
     },
     {
@@ -2539,7 +2599,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_productcard",
-      "community": 3,
+      "community": 7,
       "norm_label": "productcard.jsx"
     },
     {
@@ -2549,7 +2609,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_components_productcard_formatprice",
-      "community": 3,
+      "community": 7,
       "norm_label": "formatprice()"
     },
     {
@@ -2559,7 +2619,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_components_productcard_gradientbycategory",
-      "community": 3,
+      "community": 7,
       "norm_label": "gradientbycategory"
     },
     {
@@ -2569,7 +2629,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_components_productcard_productcard",
-      "community": 3,
+      "community": 7,
       "norm_label": "productcard()"
     },
     {
@@ -2739,27 +2799,27 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_searchbar",
-      "community": 28,
+      "community": 7,
       "norm_label": "searchbar.jsx"
     },
     {
       "label": "fmt()",
       "file_type": "code",
       "source_file": "src/components/SearchBar.jsx",
-      "source_location": "L6",
+      "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_searchbar_fmt",
-      "community": 28,
+      "community": 7,
       "norm_label": "fmt()"
     },
     {
       "label": "SearchBar()",
       "file_type": "code",
       "source_file": "src/components/SearchBar.jsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "_origin": "ast",
       "id": "src_components_searchbar_searchbar",
-      "community": 28,
+      "community": 7,
       "norm_label": "searchbar()"
     },
     {
@@ -2919,7 +2979,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_trendingstrip",
-      "community": 30,
+      "community": 28,
       "norm_label": "trendingstrip.jsx"
     },
     {
@@ -2929,7 +2989,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_components_trendingstrip_trendingstrip",
-      "community": 30,
+      "community": 28,
       "norm_label": "trendingstrip()"
     },
     {
@@ -3089,7 +3149,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_config_features",
-      "community": 1,
+      "community": 7,
       "norm_label": "features.js"
     },
     {
@@ -3159,7 +3219,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_lib_categoryicon",
-      "community": 3,
+      "community": 7,
       "norm_label": "categoryicon.jsx"
     },
     {
@@ -3169,7 +3229,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_lib_categoryicon_rules",
-      "community": 3,
+      "community": 7,
       "norm_label": "rules"
     },
     {
@@ -3179,7 +3239,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "src_lib_categoryicon_categoryicon",
-      "community": 3,
+      "community": 7,
       "norm_label": "categoryicon"
     },
     {
@@ -3189,7 +3249,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_main",
-      "community": 1,
+      "community": 41,
       "norm_label": "main.jsx"
     },
     {
@@ -3319,7 +3379,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_pages_compare",
-      "community": 0,
+      "community": 3,
       "norm_label": "compare.jsx"
     },
     {
@@ -3329,7 +3389,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_pages_compare_avatar_colors",
-      "community": 0,
+      "community": 3,
       "norm_label": "avatar_colors"
     },
     {
@@ -3339,7 +3399,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_pages_compare_cap",
-      "community": 0,
+      "community": 3,
       "norm_label": "cap()"
     },
     {
@@ -3349,7 +3409,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_pages_compare_initialsof",
-      "community": 0,
+      "community": 3,
       "norm_label": "initialsof()"
     },
     {
@@ -3359,7 +3419,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_pages_compare_deliverydays",
-      "community": 0,
+      "community": 3,
       "norm_label": "deliverydays()"
     },
     {
@@ -3369,7 +3429,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "src_pages_compare_authrank",
-      "community": 0,
+      "community": 3,
       "norm_label": "authrank()"
     },
     {
@@ -3379,7 +3439,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "src_pages_compare_resprank",
-      "community": 0,
+      "community": 3,
       "norm_label": "resprank()"
     },
     {
@@ -3389,7 +3449,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "src_pages_compare_bestindex",
-      "community": 0,
+      "community": 3,
       "norm_label": "bestindex()"
     },
     {
@@ -3399,7 +3459,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "src_pages_compare_compare",
-      "community": 0,
+      "community": 3,
       "norm_label": "compare()"
     },
     {
@@ -3409,7 +3469,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_pages_dashboard",
-      "community": 6,
+      "community": 28,
       "norm_label": "dashboard.jsx"
     },
     {
@@ -3419,7 +3479,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_pages_dashboard_fmt",
-      "community": 6,
+      "community": 28,
       "norm_label": "fmt()"
     },
     {
@@ -3429,7 +3489,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_pages_dashboard_bdt",
-      "community": 6,
+      "community": 28,
       "norm_label": "bdt()"
     },
     {
@@ -3439,7 +3499,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "src_pages_dashboard_dashboard",
-      "community": 6,
+      "community": 28,
       "norm_label": "dashboard()"
     },
     {
@@ -3449,7 +3509,7 @@
       "source_location": "L320",
       "_origin": "ast",
       "id": "src_pages_dashboard_herostat",
-      "community": 6,
+      "community": 28,
       "norm_label": "herostat()"
     },
     {
@@ -3459,7 +3519,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_pages_fcommercesignup",
-      "community": 13,
+      "community": 31,
       "norm_label": "fcommercesignup.jsx"
     },
     {
@@ -3469,7 +3529,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_pages_fcommercesignup_categories",
-      "community": 13,
+      "community": 31,
       "norm_label": "categories"
     },
     {
@@ -3479,7 +3539,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_pages_fcommercesignup_fcommercesignup",
-      "community": 13,
+      "community": 31,
       "norm_label": "fcommercesignup()"
     },
     {
@@ -3489,7 +3549,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "src_pages_fcommercesignup_field",
-      "community": 13,
+      "community": 31,
       "norm_label": "field()"
     },
     {
@@ -3499,7 +3559,7 @@
       "source_location": "L223",
       "_origin": "ast",
       "id": "src_pages_fcommercesignup_stepper",
-      "community": 13,
+      "community": 31,
       "norm_label": "stepper()"
     },
     {
@@ -3556,7 +3616,7 @@
       "label": "fmt()",
       "file_type": "code",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L28",
+      "source_location": "L26",
       "_origin": "ast",
       "id": "src_pages_home_fmt",
       "community": 7,
@@ -3566,37 +3626,17 @@
       "label": "fmtNum()",
       "file_type": "code",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L32",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "src_pages_home_fmtnum",
       "community": 7,
       "norm_label": "fmtnum()"
     },
     {
-      "label": "fmtLakh()",
-      "file_type": "code",
-      "source_file": "src/pages/Home.jsx",
-      "source_location": "L34",
-      "_origin": "ast",
-      "id": "src_pages_home_fmtlakh",
-      "community": 7,
-      "norm_label": "fmtlakh()"
-    },
-    {
-      "label": "HeadlinePill()",
-      "file_type": "code",
-      "source_file": "src/pages/Home.jsx",
-      "source_location": "L43",
-      "_origin": "ast",
-      "id": "src_pages_home_headlinepill",
-      "community": 7,
-      "norm_label": "headlinepill()"
-    },
-    {
       "label": "fromDrop()",
       "file_type": "code",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L56",
+      "source_location": "L33",
       "_origin": "ast",
       "id": "src_pages_home_fromdrop",
       "community": 7,
@@ -3606,7 +3646,7 @@
       "label": "fromProduct()",
       "file_type": "code",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L62",
+      "source_location": "L39",
       "_origin": "ast",
       "id": "src_pages_home_fromproduct",
       "community": 7,
@@ -3616,7 +3656,7 @@
       "label": "Home()",
       "file_type": "code",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L73",
+      "source_location": "L50",
       "_origin": "ast",
       "id": "src_pages_home_home",
       "community": 7,
@@ -3626,7 +3666,7 @@
       "label": "MARQUEE_SHOPS",
       "file_type": "code",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L466",
+      "source_location": "L397",
       "_origin": "ast",
       "id": "src_pages_home_marquee_shops",
       "community": 7,
@@ -3636,7 +3676,7 @@
       "label": "STEPS",
       "file_type": "code",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L479",
+      "source_location": "L410",
       "_origin": "ast",
       "id": "src_pages_home_steps",
       "community": 7,
@@ -3646,7 +3686,7 @@
       "label": "QUOTES",
       "file_type": "code",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L486",
+      "source_location": "L417",
       "_origin": "ast",
       "id": "src_pages_home_quotes",
       "community": 7,
@@ -3656,7 +3696,7 @@
       "label": "INSIGHTS",
       "file_type": "code",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L492",
+      "source_location": "L423",
       "_origin": "ast",
       "id": "src_pages_home_insights",
       "community": 7,
@@ -3666,7 +3706,7 @@
       "label": "useCountUp()",
       "file_type": "code",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L500",
+      "source_location": "L431",
       "_origin": "ast",
       "id": "src_pages_home_usecountup",
       "community": 7,
@@ -3676,37 +3716,17 @@
       "label": "CountUp()",
       "file_type": "code",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L523",
+      "source_location": "L454",
       "_origin": "ast",
       "id": "src_pages_home_countup",
       "community": 7,
       "norm_label": "countup()"
     },
     {
-      "label": "StatBlock()",
-      "file_type": "code",
-      "source_file": "src/pages/Home.jsx",
-      "source_location": "L529",
-      "_origin": "ast",
-      "id": "src_pages_home_statblock",
-      "community": 7,
-      "norm_label": "statblock()"
-    },
-    {
-      "label": "GrowthBars()",
-      "file_type": "code",
-      "source_file": "src/pages/Home.jsx",
-      "source_location": "L544",
-      "_origin": "ast",
-      "id": "src_pages_home_growthbars",
-      "community": 7,
-      "norm_label": "growthbars()"
-    },
-    {
       "label": "Testimonials()",
       "file_type": "code",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L565",
+      "source_location": "L459",
       "_origin": "ast",
       "id": "src_pages_home_testimonials",
       "community": 7,
@@ -3716,7 +3736,7 @@
       "label": "FAQS",
       "file_type": "code",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L603",
+      "source_location": "L497",
       "_origin": "ast",
       "id": "src_pages_home_faqs",
       "community": 7,
@@ -3726,7 +3746,7 @@
       "label": "Faq()",
       "file_type": "code",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L610",
+      "source_location": "L504",
       "_origin": "ast",
       "id": "src_pages_home_faq",
       "community": 7,
@@ -4069,7 +4089,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_pages_saathiprofile",
-      "community": 10,
+      "community": 43,
       "norm_label": "saathiprofile.jsx"
     },
     {
@@ -4079,7 +4099,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_pages_saathiprofile_fmt",
-      "community": 10,
+      "community": 43,
       "norm_label": "fmt()"
     },
     {
@@ -4089,7 +4109,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_pages_saathiprofile_saathiprofile",
-      "community": 10,
+      "community": 43,
       "norm_label": "saathiprofile()"
     },
     {
@@ -4099,7 +4119,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_pages_saathisignup",
-      "community": 12,
+      "community": 10,
       "norm_label": "saathisignup.jsx"
     },
     {
@@ -4119,7 +4139,7 @@
       "source_location": "L168",
       "_origin": "ast",
       "id": "src_pages_saathisignup_field",
-      "community": 12,
+      "community": 10,
       "norm_label": "field()"
     },
     {
@@ -4129,7 +4149,7 @@
       "source_location": "L177",
       "_origin": "ast",
       "id": "src_pages_saathisignup_perk",
-      "community": 12,
+      "community": 10,
       "norm_label": "perk()"
     },
     {
@@ -4189,7 +4209,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_pages_sellers",
-      "community": 6,
+      "community": 3,
       "norm_label": "sellers.jsx"
     },
     {
@@ -4199,7 +4219,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_pages_sellers_type_filters",
-      "community": 6,
+      "community": 3,
       "norm_label": "type_filters"
     },
     {
@@ -4209,7 +4229,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_pages_sellers_category_filters",
-      "community": 6,
+      "community": 3,
       "norm_label": "category_filters"
     },
     {
@@ -4219,7 +4239,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "src_pages_sellers_avatarcolors",
-      "community": 6,
+      "community": 3,
       "norm_label": "avatarcolors"
     },
     {
@@ -4229,7 +4249,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_pages_sellers_formatfollowers",
-      "community": 6,
+      "community": 3,
       "norm_label": "formatfollowers()"
     },
     {
@@ -4239,7 +4259,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "src_pages_sellers_bucket",
-      "community": 6,
+      "community": 3,
       "norm_label": "bucket()"
     },
     {
@@ -4249,7 +4269,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "src_pages_sellers_typebadge",
-      "community": 6,
+      "community": 3,
       "norm_label": "typebadge()"
     },
     {
@@ -4259,7 +4279,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "src_pages_sellers_sellers",
-      "community": 6,
+      "community": 3,
       "norm_label": "sellers()"
     },
     {
@@ -4269,7 +4289,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_pages_signin",
-      "community": 10,
+      "community": 12,
       "norm_label": "signin.jsx"
     },
     {
@@ -4279,7 +4299,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_pages_signin_signin",
-      "community": 10,
+      "community": 12,
       "norm_label": "signin()"
     },
     {
@@ -4346,17 +4366,17 @@
       "label": "num()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L21",
+      "source_location": "L22",
       "_origin": "ast",
       "id": "src_pages_admin_adminanalytics_num",
-      "community": 5,
+      "community": 44,
       "norm_label": "num()"
     },
     {
       "label": "timeAgo()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L23",
+      "source_location": "L24",
       "_origin": "ast",
       "id": "src_pages_admin_adminanalytics_timeago",
       "community": 5,
@@ -4366,7 +4386,7 @@
       "label": "LEADERBOARD_RANGES",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L32",
+      "source_location": "L33",
       "_origin": "ast",
       "id": "src_pages_admin_adminanalytics_leaderboard_ranges",
       "community": 5,
@@ -4376,7 +4396,7 @@
       "label": "DAILY_RANGES",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L33",
+      "source_location": "L34",
       "_origin": "ast",
       "id": "src_pages_admin_adminanalytics_daily_ranges",
       "community": 5,
@@ -4386,17 +4406,17 @@
       "label": "AdminAnalytics()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L35",
+      "source_location": "L36",
       "_origin": "ast",
       "id": "src_pages_admin_adminanalytics_adminanalytics",
-      "community": 5,
+      "community": 44,
       "norm_label": "adminanalytics()"
     },
     {
       "label": "Kpi()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L648",
+      "source_location": "L706",
       "_origin": "ast",
       "id": "src_pages_admin_adminanalytics_kpi",
       "community": 5,
@@ -4406,17 +4426,17 @@
       "label": "FunnelStage()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L660",
+      "source_location": "L718",
       "_origin": "ast",
       "id": "src_pages_admin_adminanalytics_funnelstage",
-      "community": 5,
+      "community": 44,
       "norm_label": "funnelstage()"
     },
     {
       "label": "RangeToggle()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L672",
+      "source_location": "L730",
       "_origin": "ast",
       "id": "src_pages_admin_adminanalytics_rangetoggle",
       "community": 5,
@@ -4426,7 +4446,7 @@
       "label": "Empty()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L690",
+      "source_location": "L748",
       "_origin": "ast",
       "id": "src_pages_admin_adminanalytics_empty",
       "community": 5,
@@ -4436,7 +4456,7 @@
       "label": "HourTooltip()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L694",
+      "source_location": "L752",
       "_origin": "ast",
       "id": "src_pages_admin_adminanalytics_hourtooltip",
       "community": 5,
@@ -4446,7 +4466,7 @@
       "label": "DailyTooltip()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L707",
+      "source_location": "L765",
       "_origin": "ast",
       "id": "src_pages_admin_adminanalytics_dailytooltip",
       "community": 5,
@@ -4456,10 +4476,10 @@
       "label": "Row()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L717",
+      "source_location": "L775",
       "_origin": "ast",
       "id": "src_pages_admin_adminanalytics_row",
-      "community": 5,
+      "community": 44,
       "norm_label": "row()"
     },
     {
@@ -4469,7 +4489,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_pages_admin_adminauditlog",
-      "community": 13,
+      "community": 31,
       "norm_label": "adminauditlog.jsx"
     },
     {
@@ -4479,7 +4499,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_pages_admin_adminauditlog_adminauditlog",
-      "community": 13,
+      "community": 31,
       "norm_label": "adminauditlog()"
     },
     {
@@ -4513,10 +4533,20 @@
       "norm_label": "admincatalog.jsx"
     },
     {
-      "label": "fmt()",
+      "label": "EMPTY_DRAFT",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminCatalog.jsx",
       "source_location": "L5",
+      "_origin": "ast",
+      "id": "src_pages_admin_admincatalog_empty_draft",
+      "community": 17,
+      "norm_label": "empty_draft"
+    },
+    {
+      "label": "fmt()",
+      "file_type": "code",
+      "source_file": "src/pages/admin/AdminCatalog.jsx",
+      "source_location": "L10",
       "_origin": "ast",
       "id": "src_pages_admin_admincatalog_fmt",
       "community": 17,
@@ -4526,7 +4556,7 @@
       "label": "AdminCatalog()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminCatalog.jsx",
-      "source_location": "L7",
+      "source_location": "L12",
       "_origin": "ast",
       "id": "src_pages_admin_admincatalog_admincatalog",
       "community": 17,
@@ -4536,7 +4566,7 @@
       "label": "EditField()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminCatalog.jsx",
-      "source_location": "L174",
+      "source_location": "L254",
       "_origin": "ast",
       "id": "src_pages_admin_admincatalog_editfield",
       "community": 17,
@@ -4566,7 +4596,7 @@
       "label": "Stat()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminIndexer.jsx",
-      "source_location": "L192",
+      "source_location": "L206",
       "_origin": "ast",
       "id": "src_pages_admin_adminindexer_stat",
       "community": 15,
@@ -4576,7 +4606,7 @@
       "label": "ActionBtn()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminIndexer.jsx",
-      "source_location": "L202",
+      "source_location": "L216",
       "_origin": "ast",
       "id": "src_pages_admin_adminindexer_actionbtn",
       "community": 15,
@@ -4619,7 +4649,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_pages_admin_adminlayout",
-      "community": 15,
+      "community": 12,
       "norm_label": "adminlayout.jsx"
     },
     {
@@ -4629,7 +4659,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_pages_admin_adminlayout_adminlayout",
-      "community": 15,
+      "community": 12,
       "norm_label": "adminlayout()"
     },
     {
@@ -4639,7 +4669,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "src_pages_admin_adminlayout_tab",
-      "community": 15,
+      "community": 12,
       "norm_label": "tab()"
     },
     {
@@ -4709,7 +4739,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_pages_admin_adminpendingshops",
-      "community": 8,
+      "community": 42,
       "norm_label": "adminpendingshops.jsx"
     },
     {
@@ -4719,7 +4749,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_pages_admin_adminpendingshops_adminpendingshops",
-      "community": 8,
+      "community": 42,
       "norm_label": "adminpendingshops()"
     },
     {
@@ -4786,7 +4816,7 @@
       "label": "LatCard()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminSearchLog.jsx",
-      "source_location": "L76",
+      "source_location": "L119",
       "_origin": "ast",
       "id": "src_pages_admin_adminsearchlog_latcard",
       "community": 22,
@@ -4826,7 +4856,7 @@
       "label": "Field()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminShops.jsx",
-      "source_location": "L294",
+      "source_location": "L308",
       "_origin": "ast",
       "id": "src_pages_admin_adminshops_field",
       "community": 8,
@@ -4846,7 +4876,7 @@
       "label": "fmt()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminStats.jsx",
-      "source_location": "L6",
+      "source_location": "L7",
       "_origin": "ast",
       "id": "src_pages_admin_adminstats_fmt",
       "community": 13,
@@ -4856,7 +4886,7 @@
       "label": "AdminStats()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminStats.jsx",
-      "source_location": "L8",
+      "source_location": "L9",
       "_origin": "ast",
       "id": "src_pages_admin_adminstats_adminstats",
       "community": 13,
@@ -4866,7 +4896,7 @@
       "label": "Card()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminStats.jsx",
-      "source_location": "L82",
+      "source_location": "L110",
       "_origin": "ast",
       "id": "src_pages_admin_adminstats_card",
       "community": 13,
@@ -4876,7 +4906,7 @@
       "label": "TopList()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminStats.jsx",
-      "source_location": "L93",
+      "source_location": "L121",
       "_origin": "ast",
       "id": "src_pages_admin_adminstats_toplist",
       "community": 13,
@@ -4893,6 +4923,336 @@
       "norm_label": "vite.config.js"
     },
     {
+      "label": "CLAUDE.md",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude",
+      "community": 36,
+      "norm_label": "claude.md"
+    },
+    {
+      "label": "graphify (REQUIRED \u2014 always on)",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_graphify_required_always_on",
+      "community": 36,
+      "norm_label": "graphify (required \u2014 always on)"
+    },
+    {
+      "label": "ponytail (REQUIRED \u2014 always on)",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "claude_ponytail_required_always_on",
+      "community": 36,
+      "norm_label": "ponytail (required \u2014 always on)"
+    },
+    {
+      "label": "LANDING_STANDOUT_CHANGES.md",
+      "file_type": "document",
+      "source_file": "LANDING_STANDOUT_CHANGES.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "landing_standout_changes",
+      "community": 39,
+      "norm_label": "landing_standout_changes.md"
+    },
+    {
+      "label": "Landing-page \"standout\" changes \u2014 Home.jsx",
+      "file_type": "document",
+      "source_file": "LANDING_STANDOUT_CHANGES.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "landing_standout_changes_landing_page_standout_changes_home_jsx",
+      "community": 39,
+      "norm_label": "landing-page \"standout\" changes \u2014 home.jsx"
+    },
+    {
+      "label": "1. Surfaced the `ProtectShowcase` component on the homepage  \u2605 biggest win",
+      "file_type": "document",
+      "source_file": "LANDING_STANDOUT_CHANGES.md",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "landing_standout_changes_1_surfaced_the_protectshowcase_component_on_the_homepage_biggest_win",
+      "community": 39,
+      "norm_label": "1. surfaced the `protectshowcase` component on the homepage  \u2605 biggest win"
+    },
+    {
+      "label": "2. Bangla brand line in the hero \u2014 own the name",
+      "file_type": "document",
+      "source_file": "LANDING_STANDOUT_CHANGES.md",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "landing_standout_changes_2_bangla_brand_line_in_the_hero_own_the_name",
+      "community": 39,
+      "norm_label": "2. bangla brand line in the hero \u2014 own the name"
+    },
+    {
+      "label": "3. Trust micro-proofs under the hero search",
+      "file_type": "document",
+      "source_file": "LANDING_STANDOUT_CHANGES.md",
+      "source_location": "L36",
+      "_origin": "ast",
+      "id": "landing_standout_changes_3_trust_micro_proofs_under_the_hero_search",
+      "community": 39,
+      "norm_label": "3. trust micro-proofs under the hero search"
+    },
+    {
+      "label": "4. (implicit) Reordered emphasis",
+      "file_type": "document",
+      "source_file": "LANDING_STANDOUT_CHANGES.md",
+      "source_location": "L42",
+      "_origin": "ast",
+      "id": "landing_standout_changes_4_implicit_reordered_emphasis",
+      "community": 39,
+      "norm_label": "4. (implicit) reordered emphasis"
+    },
+    {
+      "label": "How to revert",
+      "file_type": "document",
+      "source_file": "LANDING_STANDOUT_CHANGES.md",
+      "source_location": "L48",
+      "_origin": "ast",
+      "id": "landing_standout_changes_how_to_revert",
+      "community": 39,
+      "norm_label": "how to revert"
+    },
+    {
+      "label": "Not done in code (needs your input \u2014 see the strategy report)",
+      "file_type": "document",
+      "source_file": "LANDING_STANDOUT_CHANGES.md",
+      "source_location": "L54",
+      "_origin": "ast",
+      "id": "landing_standout_changes_not_done_in_code_needs_your_input_see_the_strategy_report",
+      "community": 39,
+      "norm_label": "not done in code (needs your input \u2014 see the strategy report)"
+    },
+    {
+      "label": "README.md",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "readme",
+      "community": 24,
+      "norm_label": "readme.md"
+    },
+    {
+      "label": "dam-kemon-frontend",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "readme_dam_kemon_frontend",
+      "community": 24,
+      "norm_label": "dam-kemon-frontend"
+    },
+    {
+      "label": "Stack",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "readme_stack",
+      "community": 24,
+      "norm_label": "stack"
+    },
+    {
+      "label": "Quick start",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "readme_quick_start",
+      "community": 24,
+      "norm_label": "quick start"
+    },
+    {
+      "label": "Prerequisites",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "readme_prerequisites",
+      "community": 24,
+      "norm_label": "prerequisites"
+    },
+    {
+      "label": "1. Install",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L36",
+      "_origin": "ast",
+      "id": "readme_1_install",
+      "community": 24,
+      "norm_label": "1. install"
+    },
+    {
+      "label": "2. Configure (optional)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L42",
+      "_origin": "ast",
+      "id": "readme_2_configure_optional",
+      "community": 24,
+      "norm_label": "2. configure (optional)"
+    },
+    {
+      "label": "3. Run",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L56",
+      "_origin": "ast",
+      "id": "readme_3_run",
+      "community": 24,
+      "norm_label": "3. run"
+    },
+    {
+      "label": "4. Build",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L62",
+      "_origin": "ast",
+      "id": "readme_4_build",
+      "community": 24,
+      "norm_label": "4. build"
+    },
+    {
+      "label": "Pages",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L71",
+      "_origin": "ast",
+      "id": "readme_pages",
+      "community": 24,
+      "norm_label": "pages"
+    },
+    {
+      "label": "Search UX",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L84",
+      "_origin": "ast",
+      "id": "readme_search_ux",
+      "community": 24,
+      "norm_label": "search ux"
+    },
+    {
+      "label": "Layout",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L99",
+      "_origin": "ast",
+      "id": "readme_layout",
+      "community": 24,
+      "norm_label": "layout"
+    },
+    {
+      "label": "Environment variables",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L125",
+      "_origin": "ast",
+      "id": "readme_environment_variables",
+      "community": 24,
+      "norm_label": "environment variables"
+    },
+    {
+      "label": "Backend contract",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L154",
+      "_origin": "ast",
+      "id": "readme_backend_contract",
+      "community": 24,
+      "norm_label": "backend contract"
+    },
+    {
+      "label": "Scripts",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L173",
+      "_origin": "ast",
+      "id": "readme_scripts",
+      "community": 24,
+      "norm_label": "scripts"
+    },
+    {
+      "label": "Roadmap",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L184",
+      "_origin": "ast",
+      "id": "readme_roadmap",
+      "community": 24,
+      "norm_label": "roadmap"
+    },
+    {
+      "label": "Phase 2 \u2014 live signals on the public site",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L189",
+      "_origin": "ast",
+      "id": "readme_phase_2_live_signals_on_the_public_site",
+      "community": 24,
+      "norm_label": "phase 2 \u2014 live signals on the public site"
+    },
+    {
+      "label": "Phase 3 \u2014 admin console at `/admin`",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L199",
+      "_origin": "ast",
+      "id": "readme_phase_3_admin_console_at_admin",
+      "community": 24,
+      "norm_label": "phase 3 \u2014 admin console at `/admin`"
+    },
+    {
+      "label": "Phase 4 \u2014 user accounts",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L210",
+      "_origin": "ast",
+      "id": "readme_phase_4_user_accounts",
+      "community": 24,
+      "norm_label": "phase 4 \u2014 user accounts"
+    },
+    {
+      "label": "Phase 5 \u2014 SEO + performance",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L219",
+      "_origin": "ast",
+      "id": "readme_phase_5_seo_performance",
+      "community": 24,
+      "norm_label": "phase 5 \u2014 seo + performance"
+    },
+    {
+      "label": "UI / UX polish backlog",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L230",
+      "_origin": "ast",
+      "id": "readme_ui_ux_polish_backlog",
+      "community": 24,
+      "norm_label": "ui / ux polish backlog"
+    },
+    {
+      "label": "See also",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L243",
+      "_origin": "ast",
+      "id": "readme_see_also",
+      "community": 24,
+      "norm_label": "see also"
+    },
+    {
       "label": "Production Deploy Job (deploy-production)",
       "file_type": "code",
       "source_file": ".github/workflows/production-deploy.yml",
@@ -4902,9 +5262,9 @@
       "author": null,
       "contributor": null,
       "rationale": "Triggered by push to deployment-prod: npm ci + npm run build, scp dist/* to a temp dir, ssh clears the web root, moves files in, and chowns www-data. Redeploy = replace static bundle.",
-      "id": "github_workflows_production_deploy_deploy_production",
       "community": 29,
-      "norm_label": "production deploy job (deploy-production)"
+      "norm_label": "production deploy job (deploy-production)",
+      "id": "github_workflows_production_deploy_deploy_production"
     },
     {
       "label": "VITE_API_BASE Opaque API Prefix (cloaking)",
@@ -4916,9 +5276,9 @@
       "author": null,
       "contributor": null,
       "rationale": "Setting repo var VITE_API_BASE=/_dk switches the built bundle to a cloaked path; must only be done AFTER nginx maps /_dk/ to backend /api/. Unset falls back to /api (no-op).",
-      "id": "github_workflows_production_deploy_api_cloaking",
       "community": 29,
-      "norm_label": "vite_api_base opaque api prefix (cloaking)"
+      "norm_label": "vite_api_base opaque api prefix (cloaking)",
+      "id": "github_workflows_production_deploy_api_cloaking"
     },
     {
       "label": "Staging Deploy Job (deploy-staging)",
@@ -4930,23 +5290,9 @@
       "author": null,
       "contributor": null,
       "rationale": "Triggered by push to release/staging: builds with --mode staging and VITE_API_URL_STAGING, then the same scp+ssh temp-dir-swap deploy to the staging web root.",
-      "id": "github_workflows_staging_deploy_deploy_staging",
       "community": 29,
-      "norm_label": "staging deploy job (deploy-staging)"
-    },
-    {
-      "label": "gstack Global Install Requirement",
-      "file_type": "concept",
-      "source_file": "CLAUDE.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "rationale": "gstack is mandatory for all AI-assisted work in the repo; if ~/.claude/skills/gstack/bin is missing the agent must STOP and instruct the user to install it. Provides /qa, /ship, /review, /investigate, /browse skills.",
-      "id": "claude_gstack_requirement",
-      "community": 36,
-      "norm_label": "gstack global install requirement"
+      "norm_label": "staging deploy job (deploy-staging)",
+      "id": "github_workflows_staging_deploy_deploy_staging"
     },
     {
       "label": "ProtectShowcase Surfacing on Homepage",
@@ -4958,9 +5304,9 @@
       "author": null,
       "contributor": null,
       "rationale": "ProtectShowcase (animated anti-scam live risk check) was already built but never rendered anywhere. Surfaced high on Home.jsx as the single strongest trust differentiator vs price-only BD competitors (MuthoPhone, PriceMama, BDStall). Demonstrates flagging bKash-personal-number and below-market scam patterns.",
-      "id": "landing_standout_changes_protectshowcase",
-      "community": 19,
-      "norm_label": "protectshowcase surfacing on homepage"
+      "community": 48,
+      "norm_label": "protectshowcase surfacing on homepage",
+      "id": "landing_standout_changes_protectshowcase"
     },
     {
       "label": "Bangla Brand Line in Hero",
@@ -4972,9 +5318,9 @@
       "author": null,
       "contributor": null,
       "rationale": "Added the Bangla phrase \u09a6\u09be\u09ae \u0995\u09c7\u09ae\u09a8? ('how's the price?') under the H1. The brand name is the everyday Bangla phrase for 'what's the price?' \u2014 a memorable local asset. Renders crisply because the Hind Siliguri Bangla font is already loaded.",
-      "id": "landing_standout_changes_bangla_brand_line",
-      "community": 19,
-      "norm_label": "bangla brand line in hero"
+      "community": 46,
+      "norm_label": "bangla brand line in hero",
+      "id": "landing_standout_changes_bangla_brand_line"
     },
     {
       "label": "Trust Micro-proofs Under Hero Search",
@@ -4986,9 +5332,9 @@
       "author": null,
       "contributor": null,
       "rationale": "Compact row at point of action: 'Real prices, never fake \u00b7 Scam-risk checked \u00b7 Free for shoppers'. Trust signals placed next to the primary action lift buyer confidence (conversion research). Reuses already-imported BadgeCheck, ShieldCheck, Sparkles icons.",
-      "id": "landing_standout_changes_trust_microproofs",
-      "community": 19,
-      "norm_label": "trust micro-proofs under hero search"
+      "community": 50,
+      "norm_label": "trust micro-proofs under hero search",
+      "id": "landing_standout_changes_trust_microproofs"
     },
     {
       "label": "Trust-first Emphasis Reorder",
@@ -5000,9 +5346,9 @@
       "author": null,
       "contributor": null,
       "rationale": "Page reordered to price proof -> trust/anti-scam (Protect) -> how it works -> social proof -> FAQ. Trust is the #1 reason BD shoppers hesitate post-Evaly, so trust is no longer buried.",
-      "id": "landing_standout_changes_trust_first_reorder",
-      "community": 19,
-      "norm_label": "trust-first emphasis reorder"
+      "community": 49,
+      "norm_label": "trust-first emphasis reorder",
+      "id": "landing_standout_changes_trust_first_reorder"
     },
     {
       "label": "Home.jsx (landing page target)",
@@ -5013,9 +5359,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "landing_standout_changes_home_jsx",
-      "community": 19,
-      "norm_label": "home.jsx (landing page target)"
+      "community": 47,
+      "norm_label": "home.jsx (landing page target)",
+      "id": "landing_standout_changes_home_jsx"
     },
     {
       "label": "axios Client (src/api/api.js)",
@@ -5027,23 +5373,9 @@
       "author": null,
       "contributor": null,
       "rationale": "The single place that talks to the backend; all endpoint helpers live here.",
-      "id": "readme_api_js",
-      "community": 24,
-      "norm_label": "axios client (src/api/api.js)"
-    },
-    {
-      "label": "Backend API Contract",
-      "file_type": "concept",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "rationale": "Consumed endpoints: GET /api/search, /api/search/suggest, /api/products*, /api/compare, /api/sellers, /api/dashboard/stats, admin index endpoints, and legacy POST /api/scrape (now a full reindex trigger).",
-      "id": "readme_backend_contract",
-      "community": 24,
-      "norm_label": "backend api contract"
+      "community": 51,
+      "norm_label": "axios client (src/api/api.js)",
+      "id": "readme_api_js"
     },
     {
       "label": "SearchBar Autosuggest (src/components/SearchBar.jsx)",
@@ -5055,9 +5387,9 @@
       "author": null,
       "contributor": null,
       "rationale": "Debounced 180ms autosuggest dropdown with up/down/Enter/Esc nav, backed by GET /api/search/suggest. Selecting a row goes to the product page; bare Enter runs a full search.",
-      "id": "readme_searchbar",
-      "community": 24,
-      "norm_label": "searchbar autosuggest (src/components/searchbar.jsx)"
+      "community": 53,
+      "norm_label": "searchbar autosuggest (src/components/searchbar.jsx)",
+      "id": "readme_searchbar"
     },
     {
       "label": "SearchResults Page (src/pages/SearchResults.jsx)",
@@ -5069,9 +5401,9 @@
       "author": null,
       "contributor": null,
       "rationale": "Calls GET /api/search?q= for synchronous DB-first instant search served from the indexed catalog; renders grouped per-product cards with a per-seller price table.",
-      "id": "readme_searchresults",
-      "community": 24,
-      "norm_label": "searchresults page (src/pages/searchresults.jsx)"
+      "community": 54,
+      "norm_label": "searchresults page (src/pages/searchresults.jsx)",
+      "id": "readme_searchresults"
     },
     {
       "label": "Dashboard Page (src/pages/Dashboard.jsx)",
@@ -5083,9 +5415,9 @@
       "author": null,
       "contributor": null,
       "rationale": "Renders live /api/dashboard/stats \u2014 products / shops / reviews / price points.",
-      "id": "readme_dashboard",
-      "community": 24,
-      "norm_label": "dashboard page (src/pages/dashboard.jsx)"
+      "community": 52,
+      "norm_label": "dashboard page (src/pages/dashboard.jsx)",
+      "id": "readme_dashboard"
     },
     {
       "label": "SPA Root Shell + main.jsx Entry",
@@ -5097,9 +5429,9 @@
       "author": null,
       "contributor": null,
       "rationale": "#root div mounted by the module script /src/main.jsx (Vite entry).",
-      "id": "index_root_entry",
       "community": 33,
-      "norm_label": "spa root shell + main.jsx entry"
+      "norm_label": "spa root shell + main.jsx entry",
+      "id": "index_root_entry"
     },
     {
       "label": "SEO / OpenGraph / Twitter Meta Tags",
@@ -5111,9 +5443,9 @@
       "author": null,
       "contributor": null,
       "rationale": "Static title/description plus og:title, og:description, og:type, twitter:card. Positions Damkemon as 'find the cheapest price across all of Bangladesh' / one search across 60+ BD shops.",
-      "id": "index_seo_meta",
       "community": 33,
-      "norm_label": "seo / opengraph / twitter meta tags"
+      "norm_label": "seo / opengraph / twitter meta tags",
+      "id": "index_seo_meta"
     },
     {
       "label": "Google Fonts (Fraunces, DM Sans, JetBrains Mono, Hind Siliguri)",
@@ -5125,9 +5457,9 @@
       "author": null,
       "contributor": null,
       "rationale": "Preconnected and loaded webfonts including Hind Siliguri for Bangla script rendering.",
-      "id": "index_google_fonts",
       "community": 19,
-      "norm_label": "google fonts (fraunces, dm sans, jetbrains mono, hind siliguri)"
+      "norm_label": "google fonts (fraunces, dm sans, jetbrains mono, hind siliguri)",
+      "id": "index_google_fonts"
     }
   ],
   "links": [
@@ -5979,7 +6311,17 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L53",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "src_api_admin",
+      "target": "src_api_admin_admincreateproduct",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/api/admin.js",
+      "source_location": "L56",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_admindeleteproduct",
@@ -5989,7 +6331,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L51",
+      "source_location": "L54",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_admineditproduct",
@@ -5999,7 +6341,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L59",
+      "source_location": "L62",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_adminflaggedreviews",
@@ -6019,7 +6361,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L55",
+      "source_location": "L58",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_adminmergeproducts",
@@ -6029,7 +6371,17 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L60",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "src_api_admin",
+      "target": "src_api_admin_adminsellerdepth",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/api/admin.js",
+      "source_location": "L63",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_adminsetreviewstatus",
@@ -6039,7 +6391,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L84",
+      "source_location": "L89",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticsdailyusers",
@@ -6049,7 +6401,17 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L94",
+      "source_location": "L97",
+      "weight": 1.0,
+      "source": "src_api_admin",
+      "target": "src_api_admin_analyticsdevices",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/api/admin.js",
+      "source_location": "L103",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticsfunnel",
@@ -6059,7 +6421,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L82",
+      "source_location": "L87",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticshourly",
@@ -6069,7 +6431,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L79",
+      "source_location": "L84",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticsoverview",
@@ -6079,7 +6441,17 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L90",
+      "source_location": "L99",
+      "weight": 1.0,
+      "source": "src_api_admin",
+      "target": "src_api_admin_analyticsreferrers",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/api/admin.js",
+      "source_location": "L95",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticsrequests",
@@ -6089,7 +6461,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L106",
+      "source_location": "L115",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticsresultshops",
@@ -6099,7 +6471,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L96",
+      "source_location": "L105",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticsshopclicksbycategory",
@@ -6109,7 +6481,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L110",
+      "source_location": "L119",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticsshoppricewins",
@@ -6119,7 +6491,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L102",
+      "source_location": "L111",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticstopconvertingsearches",
@@ -6129,7 +6501,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L86",
+      "source_location": "L91",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticstopips",
@@ -6139,7 +6511,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L88",
+      "source_location": "L93",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticstoppaths",
@@ -6149,7 +6521,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L100",
+      "source_location": "L109",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticstopproducts",
@@ -6159,7 +6531,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L80",
+      "source_location": "L85",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticstopsearches",
@@ -6169,7 +6541,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L98",
+      "source_location": "L107",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticstopshops",
@@ -6179,7 +6551,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L108",
+      "source_location": "L117",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticszeroresultsearches",
@@ -6239,7 +6611,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L66",
+      "source_location": "L69",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_flushallcaches",
@@ -6249,7 +6621,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L65",
+      "source_location": "L68",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_flushcache",
@@ -6279,7 +6651,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L71",
+      "source_location": "L74",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_jobruns",
@@ -6289,7 +6661,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L64",
+      "source_location": "L67",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_listcaches",
@@ -6299,7 +6671,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L69",
+      "source_location": "L72",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_listjobs",
@@ -6339,7 +6711,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L115",
+      "source_location": "L124",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_listsubscribers",
@@ -6349,7 +6721,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L114",
+      "source_location": "L123",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_newsletteranalytics",
@@ -6359,10 +6731,20 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L74",
+      "source_location": "L77",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_recentsearches",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/api/admin.js",
+      "source_location": "L80",
+      "weight": 1.0,
+      "source": "src_api_admin",
+      "target": "src_api_admin_recentsuggestclicks",
       "confidence_score": 1.0
     },
     {
@@ -6419,7 +6801,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L70",
+      "source_location": "L73",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_runjob",
@@ -6429,7 +6811,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L76",
+      "source_location": "L79",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_searchlatency",
@@ -6459,7 +6841,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L117",
+      "source_location": "L126",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_triggernewsletter",
@@ -6630,6 +7012,17 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/pages/admin/AdminStats.jsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_pages_admin_adminstats",
+      "target": "src_api_admin",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -6868,6 +7261,28 @@
       "source_location": "L2",
       "weight": 1.0,
       "source": "src_pages_admin_admincatalog",
+      "target": "src_api_admin_admincreateproduct",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/pages/admin/AdminStats.jsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_pages_admin_adminstats",
+      "target": "src_api_admin_adminsellerdepth",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/pages/admin/AdminCatalog.jsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_pages_admin_admincatalog",
       "target": "src_api_admin_admineditproduct",
       "confidence_score": 1.0
     },
@@ -7007,6 +7422,17 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/pages/admin/AdminSearchLog.jsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_pages_admin_adminsearchlog",
+      "target": "src_api_admin_recentsuggestclicks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
       "source_location": "L13",
       "weight": 1.0,
@@ -7078,6 +7504,28 @@
       "weight": 1.0,
       "source": "src_pages_admin_adminanalytics",
       "target": "src_api_admin_analyticsrequests",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/pages/admin/AdminAnalytics.jsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "src_pages_admin_adminanalytics",
+      "target": "src_api_admin_analyticsdevices",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/pages/admin/AdminAnalytics.jsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "src_pages_admin_adminanalytics",
+      "target": "src_api_admin_analyticsreferrers",
       "confidence_score": 1.0
     },
     {
@@ -7235,10 +7683,20 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/analytics.js",
-      "source_location": "L66",
+      "source_location": "L73",
       "weight": 1.0,
       "source": "src_api_analytics",
       "target": "src_api_analytics_trackpageview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/api/analytics.js",
+      "source_location": "L64",
+      "weight": 1.0,
+      "source": "src_api_analytics",
+      "target": "src_api_analytics_tracksuggestclick",
       "confidence_score": 1.0
     },
     {
@@ -7281,6 +7739,17 @@
       "source_location": "L3",
       "weight": 1.0,
       "source": "src_components_pricecomparisontable",
+      "target": "src_api_analytics",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/SearchBar.jsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_components_searchbar",
       "target": "src_api_analytics",
       "confidence_score": 1.0
     },
@@ -7344,9 +7813,20 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/api/analytics.js",
-      "source_location": "L76",
+      "source_location": "L83",
       "weight": 1.0,
       "source": "src_api_analytics_trackpageview",
+      "target": "src_api_analytics_firebeacon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/api/analytics.js",
+      "source_location": "L66",
+      "weight": 1.0,
+      "source": "src_api_analytics_tracksuggestclick",
       "target": "src_api_analytics_firebeacon",
       "confidence_score": 1.0
     },
@@ -7403,6 +7883,17 @@
       "weight": 1.0,
       "source": "src_pages_productdetail",
       "target": "src_api_analytics_trackclick",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/SearchBar.jsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_components_searchbar",
+      "target": "src_api_analytics_tracksuggestclick",
       "confidence_score": 1.0
     },
     {
@@ -8360,28 +8851,6 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "src/pages/Home.jsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "src_pages_home",
-      "target": "src_api_api_getlivestats",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/pages/Home.jsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "src_pages_home",
-      "target": "src_api_api_getheadlinestats",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "src/components/TrendingStrip.jsx",
       "source_location": "L4",
       "weight": 1.0,
@@ -8397,17 +8866,6 @@
       "source_location": "L3",
       "weight": 1.0,
       "source": "src_pages_dashboard",
-      "target": "src_api_api_gettrendingsearches",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/pages/Home.jsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "src_pages_home",
       "target": "src_api_api_gettrendingsearches",
       "confidence_score": 1.0
     },
@@ -10224,7 +10682,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L9",
+      "source_location": "L8",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_components_alphabadge",
@@ -10257,7 +10715,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L9",
+      "source_location": "L8",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_components_alphabadge_alphabadge",
@@ -10371,7 +10829,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L14",
+      "source_location": "L13",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_components_feedbacksection",
@@ -10382,7 +10840,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L14",
+      "source_location": "L13",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_components_feedbacksection_feedbacksection",
@@ -10691,7 +11149,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L13",
+      "source_location": "L12",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_components_newslettersection",
@@ -10702,7 +11160,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L13",
+      "source_location": "L12",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_components_newslettersection_newslettersection",
@@ -11179,7 +11637,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/SearchBar.jsx",
-      "source_location": "L6",
+      "source_location": "L7",
       "weight": 1.0,
       "source": "src_components_searchbar",
       "target": "src_components_searchbar_fmt",
@@ -11189,7 +11647,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/SearchBar.jsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0,
       "source": "src_components_searchbar",
       "target": "src_components_searchbar_searchbar",
@@ -11200,7 +11658,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L8",
+      "source_location": "L7",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_components_searchbar",
@@ -11211,7 +11669,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L8",
+      "source_location": "L7",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_components_searchbar_searchbar",
@@ -11860,7 +12318,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L12",
+      "source_location": "L11",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_components_trustbadge",
@@ -11959,7 +12417,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L12",
+      "source_location": "L11",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_components_trustbadge_deliverytext",
@@ -12058,7 +12516,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L12",
+      "source_location": "L11",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_components_trustbadge_trustscore",
@@ -12247,7 +12705,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L15",
+      "source_location": "L14",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_lib_categoryicon",
@@ -12269,7 +12727,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L15",
+      "source_location": "L14",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_lib_categoryicon_categoryicon",
@@ -12581,7 +13039,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L523",
+      "source_location": "L454",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_pages_home_countup",
@@ -12591,7 +13049,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L610",
+      "source_location": "L504",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_pages_home_faq",
@@ -12601,7 +13059,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L603",
+      "source_location": "L497",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_pages_home_faqs",
@@ -12611,7 +13069,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L28",
+      "source_location": "L26",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_pages_home_fmt",
@@ -12621,17 +13079,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L34",
-      "weight": 1.0,
-      "source": "src_pages_home",
-      "target": "src_pages_home_fmtlakh",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/pages/Home.jsx",
-      "source_location": "L32",
+      "source_location": "L30",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_pages_home_fmtnum",
@@ -12641,7 +13089,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L56",
+      "source_location": "L33",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_pages_home_fromdrop",
@@ -12651,7 +13099,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L62",
+      "source_location": "L39",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_pages_home_fromproduct",
@@ -12661,27 +13109,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L544",
-      "weight": 1.0,
-      "source": "src_pages_home",
-      "target": "src_pages_home_growthbars",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/pages/Home.jsx",
-      "source_location": "L43",
-      "weight": 1.0,
-      "source": "src_pages_home",
-      "target": "src_pages_home_headlinepill",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/pages/Home.jsx",
-      "source_location": "L73",
+      "source_location": "L50",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_pages_home_home",
@@ -12691,7 +13119,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L492",
+      "source_location": "L423",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_pages_home_insights",
@@ -12701,7 +13129,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L466",
+      "source_location": "L397",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_pages_home_marquee_shops",
@@ -12711,7 +13139,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L486",
+      "source_location": "L417",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_pages_home_quotes",
@@ -12721,17 +13149,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L529",
-      "weight": 1.0,
-      "source": "src_pages_home",
-      "target": "src_pages_home_statblock",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/pages/Home.jsx",
-      "source_location": "L479",
+      "source_location": "L410",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_pages_home_steps",
@@ -12741,7 +13159,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L565",
+      "source_location": "L459",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_pages_home_testimonials",
@@ -12751,7 +13169,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L500",
+      "source_location": "L431",
       "weight": 1.0,
       "source": "src_pages_home",
       "target": "src_pages_home_usecountup",
@@ -12762,20 +13180,9 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/Home.jsx",
-      "source_location": "L524",
+      "source_location": "L455",
       "weight": 1.0,
       "source": "src_pages_home_countup",
-      "target": "src_pages_home_usecountup",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/pages/Home.jsx",
-      "source_location": "L530",
-      "weight": 1.0,
-      "source": "src_pages_home_statblock",
       "target": "src_pages_home_usecountup",
       "confidence_score": 1.0
     },
@@ -13371,7 +13778,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L35",
+      "source_location": "L36",
       "weight": 1.0,
       "source": "src_pages_admin_adminanalytics",
       "target": "src_pages_admin_adminanalytics_adminanalytics",
@@ -13381,7 +13788,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L33",
+      "source_location": "L34",
       "weight": 1.0,
       "source": "src_pages_admin_adminanalytics",
       "target": "src_pages_admin_adminanalytics_daily_ranges",
@@ -13391,7 +13798,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L707",
+      "source_location": "L765",
       "weight": 1.0,
       "source": "src_pages_admin_adminanalytics",
       "target": "src_pages_admin_adminanalytics_dailytooltip",
@@ -13401,7 +13808,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L690",
+      "source_location": "L748",
       "weight": 1.0,
       "source": "src_pages_admin_adminanalytics",
       "target": "src_pages_admin_adminanalytics_empty",
@@ -13411,7 +13818,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L660",
+      "source_location": "L718",
       "weight": 1.0,
       "source": "src_pages_admin_adminanalytics",
       "target": "src_pages_admin_adminanalytics_funnelstage",
@@ -13421,7 +13828,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L694",
+      "source_location": "L752",
       "weight": 1.0,
       "source": "src_pages_admin_adminanalytics",
       "target": "src_pages_admin_adminanalytics_hourtooltip",
@@ -13431,7 +13838,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L648",
+      "source_location": "L706",
       "weight": 1.0,
       "source": "src_pages_admin_adminanalytics",
       "target": "src_pages_admin_adminanalytics_kpi",
@@ -13441,7 +13848,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L32",
+      "source_location": "L33",
       "weight": 1.0,
       "source": "src_pages_admin_adminanalytics",
       "target": "src_pages_admin_adminanalytics_leaderboard_ranges",
@@ -13451,7 +13858,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L21",
+      "source_location": "L22",
       "weight": 1.0,
       "source": "src_pages_admin_adminanalytics",
       "target": "src_pages_admin_adminanalytics_num",
@@ -13461,7 +13868,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L672",
+      "source_location": "L730",
       "weight": 1.0,
       "source": "src_pages_admin_adminanalytics",
       "target": "src_pages_admin_adminanalytics_rangetoggle",
@@ -13471,7 +13878,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L717",
+      "source_location": "L775",
       "weight": 1.0,
       "source": "src_pages_admin_adminanalytics",
       "target": "src_pages_admin_adminanalytics_row",
@@ -13481,7 +13888,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L23",
+      "source_location": "L24",
       "weight": 1.0,
       "source": "src_pages_admin_adminanalytics",
       "target": "src_pages_admin_adminanalytics_timeago",
@@ -13492,7 +13899,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L120",
+      "source_location": "L125",
       "weight": 1.0,
       "source": "src_pages_admin_adminanalytics_adminanalytics",
       "target": "src_pages_admin_adminanalytics_num",
@@ -13503,7 +13910,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L666",
+      "source_location": "L724",
       "weight": 1.0,
       "source": "src_pages_admin_adminanalytics_funnelstage",
       "target": "src_pages_admin_adminanalytics_num",
@@ -13514,7 +13921,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminAnalytics.jsx",
-      "source_location": "L722",
+      "source_location": "L780",
       "weight": 1.0,
       "source": "src_pages_admin_adminanalytics_row",
       "target": "src_pages_admin_adminanalytics_num",
@@ -13544,7 +13951,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminCatalog.jsx",
-      "source_location": "L7",
+      "source_location": "L12",
       "weight": 1.0,
       "source": "src_pages_admin_admincatalog",
       "target": "src_pages_admin_admincatalog_admincatalog",
@@ -13554,7 +13961,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminCatalog.jsx",
-      "source_location": "L174",
+      "source_location": "L254",
       "weight": 1.0,
       "source": "src_pages_admin_admincatalog",
       "target": "src_pages_admin_admincatalog_editfield",
@@ -13567,6 +13974,16 @@
       "source_location": "L5",
       "weight": 1.0,
       "source": "src_pages_admin_admincatalog",
+      "target": "src_pages_admin_admincatalog_empty_draft",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/pages/admin/AdminCatalog.jsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "src_pages_admin_admincatalog",
       "target": "src_pages_admin_admincatalog_fmt",
       "confidence_score": 1.0
     },
@@ -13574,7 +13991,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminIndexer.jsx",
-      "source_location": "L202",
+      "source_location": "L216",
       "weight": 1.0,
       "source": "src_pages_admin_adminindexer",
       "target": "src_pages_admin_adminindexer_actionbtn",
@@ -13594,7 +14011,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminIndexer.jsx",
-      "source_location": "L192",
+      "source_location": "L206",
       "weight": 1.0,
       "source": "src_pages_admin_adminindexer",
       "target": "src_pages_admin_adminindexer_stat",
@@ -13724,7 +14141,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminSearchLog.jsx",
-      "source_location": "L76",
+      "source_location": "L119",
       "weight": 1.0,
       "source": "src_pages_admin_adminsearchlog",
       "target": "src_pages_admin_adminsearchlog_latcard",
@@ -13754,7 +14171,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminShops.jsx",
-      "source_location": "L294",
+      "source_location": "L308",
       "weight": 1.0,
       "source": "src_pages_admin_adminshops",
       "target": "src_pages_admin_adminshops_field",
@@ -13774,7 +14191,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminStats.jsx",
-      "source_location": "L8",
+      "source_location": "L9",
       "weight": 1.0,
       "source": "src_pages_admin_adminstats",
       "target": "src_pages_admin_adminstats_adminstats",
@@ -13784,7 +14201,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminStats.jsx",
-      "source_location": "L82",
+      "source_location": "L110",
       "weight": 1.0,
       "source": "src_pages_admin_adminstats",
       "target": "src_pages_admin_adminstats_card",
@@ -13794,7 +14211,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminStats.jsx",
-      "source_location": "L6",
+      "source_location": "L7",
       "weight": 1.0,
       "source": "src_pages_admin_adminstats",
       "target": "src_pages_admin_adminstats_fmt",
@@ -13804,10 +14221,310 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminStats.jsx",
-      "source_location": "L93",
+      "source_location": "L121",
       "weight": 1.0,
       "source": "src_pages_admin_adminstats",
       "target": "src_pages_admin_adminstats_toplist",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CLAUDE.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "claude",
+      "target": "claude_graphify_required_always_on",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CLAUDE.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "claude",
+      "target": "claude_ponytail_required_always_on",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "LANDING_STANDOUT_CHANGES.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "landing_standout_changes",
+      "target": "landing_standout_changes_landing_page_standout_changes_home_jsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "LANDING_STANDOUT_CHANGES.md",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "landing_standout_changes_landing_page_standout_changes_home_jsx",
+      "target": "landing_standout_changes_1_surfaced_the_protectshowcase_component_on_the_homepage_biggest_win",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "LANDING_STANDOUT_CHANGES.md",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "landing_standout_changes_landing_page_standout_changes_home_jsx",
+      "target": "landing_standout_changes_2_bangla_brand_line_in_the_hero_own_the_name",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "LANDING_STANDOUT_CHANGES.md",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "landing_standout_changes_landing_page_standout_changes_home_jsx",
+      "target": "landing_standout_changes_3_trust_micro_proofs_under_the_hero_search",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "LANDING_STANDOUT_CHANGES.md",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "landing_standout_changes_landing_page_standout_changes_home_jsx",
+      "target": "landing_standout_changes_4_implicit_reordered_emphasis",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "LANDING_STANDOUT_CHANGES.md",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "landing_standout_changes_landing_page_standout_changes_home_jsx",
+      "target": "landing_standout_changes_how_to_revert",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "LANDING_STANDOUT_CHANGES.md",
+      "source_location": "L54",
+      "weight": 1.0,
+      "source": "landing_standout_changes_landing_page_standout_changes_home_jsx",
+      "target": "landing_standout_changes_not_done_in_code_needs_your_input_see_the_strategy_report",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "readme",
+      "target": "readme_dam_kemon_frontend",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L154",
+      "weight": 1.0,
+      "source": "readme_dam_kemon_frontend",
+      "target": "readme_backend_contract",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L125",
+      "weight": 1.0,
+      "source": "readme_dam_kemon_frontend",
+      "target": "readme_environment_variables",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L99",
+      "weight": 1.0,
+      "source": "readme_dam_kemon_frontend",
+      "target": "readme_layout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L71",
+      "weight": 1.0,
+      "source": "readme_dam_kemon_frontend",
+      "target": "readme_pages",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "readme_dam_kemon_frontend",
+      "target": "readme_quick_start",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L184",
+      "weight": 1.0,
+      "source": "readme_dam_kemon_frontend",
+      "target": "readme_roadmap",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L173",
+      "weight": 1.0,
+      "source": "readme_dam_kemon_frontend",
+      "target": "readme_scripts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L84",
+      "weight": 1.0,
+      "source": "readme_dam_kemon_frontend",
+      "target": "readme_search_ux",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L243",
+      "weight": 1.0,
+      "source": "readme_dam_kemon_frontend",
+      "target": "readme_see_also",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "readme_dam_kemon_frontend",
+      "target": "readme_stack",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "readme_quick_start",
+      "target": "readme_1_install",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "readme_quick_start",
+      "target": "readme_2_configure_optional",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "readme_quick_start",
+      "target": "readme_3_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L62",
+      "weight": 1.0,
+      "source": "readme_quick_start",
+      "target": "readme_4_build",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "readme_quick_start",
+      "target": "readme_prerequisites",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L189",
+      "weight": 1.0,
+      "source": "readme_roadmap",
+      "target": "readme_phase_2_live_signals_on_the_public_site",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L199",
+      "weight": 1.0,
+      "source": "readme_roadmap",
+      "target": "readme_phase_3_admin_console_at_admin",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L210",
+      "weight": 1.0,
+      "source": "readme_roadmap",
+      "target": "readme_phase_4_user_accounts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L219",
+      "weight": 1.0,
+      "source": "readme_roadmap",
+      "target": "readme_phase_5_seo_performance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L230",
+      "weight": 1.0,
+      "source": "readme_roadmap",
+      "target": "readme_ui_ux_polish_backlog",
       "confidence_score": 1.0
     },
     {
@@ -13829,106 +14546,6 @@
       "weight": 1.0,
       "source": "github_workflows_staging_deploy_deploy_staging",
       "target": "github_workflows_production_deploy_deploy_production"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "LANDING_STANDOUT_CHANGES.md",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "landing_standout_changes_protectshowcase",
-      "target": "landing_standout_changes_home_jsx"
-    },
-    {
-      "relation": "references",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "LANDING_STANDOUT_CHANGES.md",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "landing_standout_changes_bangla_brand_line",
-      "target": "index_google_fonts"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "LANDING_STANDOUT_CHANGES.md",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "landing_standout_changes_bangla_brand_line",
-      "target": "landing_standout_changes_home_jsx"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "LANDING_STANDOUT_CHANGES.md",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "landing_standout_changes_trust_microproofs",
-      "target": "landing_standout_changes_home_jsx"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "LANDING_STANDOUT_CHANGES.md",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "landing_standout_changes_trust_first_reorder",
-      "target": "landing_standout_changes_home_jsx"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "readme_api_js",
-      "target": "readme_backend_contract"
-    },
-    {
-      "relation": "shares_data_with",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "readme_searchbar",
-      "target": "readme_api_js"
-    },
-    {
-      "relation": "references",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "readme_searchresults",
-      "target": "readme_api_js"
-    },
-    {
-      "relation": "references",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "readme_dashboard",
-      "target": "readme_backend_contract"
-    },
-    {
-      "relation": "references",
-      "confidence": "INFERRED",
-      "confidence_score": 0.75,
-      "source_file": "README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "readme_searchbar",
-      "target": "readme_searchresults"
     },
     {
       "relation": "conceptually_related_to",
@@ -13971,5 +14588,5 @@
       "source_file": ".github/workflows/production-deploy.yml"
     }
   ],
-  "built_at_commit": "ea4dcbcace371433c73785ef429939818c91dce8"
+  "built_at_commit": "eeb3d4aa205087b125d98e5ea7c26c72714f7631"
 }

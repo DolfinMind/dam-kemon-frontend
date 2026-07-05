@@ -30,14 +30,14 @@
     "semantic_hash": "545e15036d279ff855b4284501dd44f3"
   },
   "src/api/admin.js": {
-    "mtime": 1782123278.6527739,
-    "ast_hash": "67cc50c4d45b2bcc84b6312dba359faf",
-    "semantic_hash": "67cc50c4d45b2bcc84b6312dba359faf"
+    "mtime": 1783239427.3539605,
+    "ast_hash": "49dbcf257b77bfdf00ac217b94e641f2",
+    "semantic_hash": ""
   },
   "src/api/analytics.js": {
-    "mtime": 1781515197.987959,
-    "ast_hash": "6d8f3aa3a4f487da0cd3adb46a5f8786",
-    "semantic_hash": "6d8f3aa3a4f487da0cd3adb46a5f8786"
+    "mtime": 1783239427.3542857,
+    "ast_hash": "70595e17ea82ae60113899e4ba08b8c8",
+    "semantic_hash": ""
   },
   "src/api/api.js": {
     "mtime": 1782121582.7636063,
@@ -170,9 +170,9 @@
     "semantic_hash": "5356269e7c62c126df17a166d3db10e7"
   },
   "src/components/SearchBar.jsx": {
-    "mtime": 1782028157.2934456,
-    "ast_hash": "e170f7b8836dce735ede270320f2433e",
-    "semantic_hash": "e170f7b8836dce735ede270320f2433e"
+    "mtime": 1783239427.355517,
+    "ast_hash": "81c6b5be2ccaa48980867f245f6923e6",
+    "semantic_hash": ""
   },
   "src/components/SearchProductCard.jsx": {
     "mtime": 1782019262.04468,
@@ -270,9 +270,9 @@
     "semantic_hash": "ee91568fedfd76b9fec95edfd338d064"
   },
   "src/pages/Home.jsx": {
-    "mtime": 1782191972.6986742,
-    "ast_hash": "9299dbf67ab28cf328914d08180848d1",
-    "semantic_hash": "9299dbf67ab28cf328914d08180848d1"
+    "mtime": 1783239427.3559752,
+    "ast_hash": "863432168a468cef6aa6676174d497df",
+    "semantic_hash": ""
   },
   "src/pages/ProductDetail.jsx": {
     "mtime": 1782190325.8433278,
@@ -325,9 +325,9 @@
     "semantic_hash": "621b4a334460333b93b9e27d547c4522"
   },
   "src/pages/admin/AdminAnalytics.jsx": {
-    "mtime": 1782120250.4709089,
-    "ast_hash": "571b9747d6227d366f1831a65e13ea71",
-    "semantic_hash": "571b9747d6227d366f1831a65e13ea71"
+    "mtime": 1783239427.3563342,
+    "ast_hash": "d9f05594f9c3e80bc489728df0339591",
+    "semantic_hash": ""
   },
   "src/pages/admin/AdminAuditLog.jsx": {
     "mtime": 1779525908.8610485,
@@ -340,14 +340,14 @@
     "semantic_hash": "5b4c915947265225fdad73ae0ebd6bc1"
   },
   "src/pages/admin/AdminCatalog.jsx": {
-    "mtime": 1781069831.2911177,
-    "ast_hash": "a410e4b7b9c9da1ef012c779e82956db",
-    "semantic_hash": "a410e4b7b9c9da1ef012c779e82956db"
+    "mtime": 1783239427.3568044,
+    "ast_hash": "704fdd7ead044d4025e9fde7ac2eb31b",
+    "semantic_hash": ""
   },
   "src/pages/admin/AdminIndexer.jsx": {
-    "mtime": 1781069831.2665849,
-    "ast_hash": "259238489e3ef88b28af45c5e908c1c3",
-    "semantic_hash": "259238489e3ef88b28af45c5e908c1c3"
+    "mtime": 1783239442.5426166,
+    "ast_hash": "ffd4e85ec6c3296b8bea3e40c32e2984",
+    "semantic_hash": ""
   },
   "src/pages/admin/AdminJobs.jsx": {
     "mtime": 1781069831.273704,
@@ -380,19 +380,19 @@
     "semantic_hash": "1a84f2b19f899e859a291ae5776a4d47"
   },
   "src/pages/admin/AdminSearchLog.jsx": {
-    "mtime": 1781069831.3065462,
-    "ast_hash": "4aa135b419af51de69c7a9582b7c3450",
-    "semantic_hash": "4aa135b419af51de69c7a9582b7c3450"
+    "mtime": 1783239427.3582408,
+    "ast_hash": "4e3db56f7c001af8a41803611aa97bbc",
+    "semantic_hash": ""
   },
   "src/pages/admin/AdminShops.jsx": {
-    "mtime": 1782190244.024542,
-    "ast_hash": "53264b5ed77a41b9e48a6075244903ed",
-    "semantic_hash": "53264b5ed77a41b9e48a6075244903ed"
+    "mtime": 1783239427.3587806,
+    "ast_hash": "59f5bb59155494d6a44af9d84d844432",
+    "semantic_hash": ""
   },
   "src/pages/admin/AdminStats.jsx": {
-    "mtime": 1779525908.8621387,
-    "ast_hash": "0ddebb4dee4760b6d942efb9b03e0d64",
-    "semantic_hash": "0ddebb4dee4760b6d942efb9b03e0d64"
+    "mtime": 1783239427.3592036,
+    "ast_hash": "9fbe6576d76aee609a86769d559a7472",
+    "semantic_hash": ""
   },
   "vite.config.js": {
     "mtime": 1781069886.506541,
@@ -410,9 +410,9 @@
     "semantic_hash": "08b9b93a84ffa1733162569a4611946b"
   },
   "CLAUDE.md": {
-    "mtime": 1782725813.756779,
-    "ast_hash": "97145687f99d0a8c755756ba757d390b",
-    "semantic_hash": "97145687f99d0a8c755756ba757d390b"
+    "mtime": 1782900388.1365733,
+    "ast_hash": "3a51694e2684ce040a9325a8a8eb01f9",
+    "semantic_hash": ""
   },
   "LANDING_STANDOUT_CHANGES.md": {
     "mtime": 1782019262.0403497,
