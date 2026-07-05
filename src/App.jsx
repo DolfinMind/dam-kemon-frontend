@@ -27,6 +27,10 @@ const GuideDetail = lazy(() => import('./pages/GuideDetail'));
 const Dashboard = SHOW_PUBLIC_DASHBOARD ? lazy(() => import('./pages/Dashboard')) : null;
 const SubmitShop = lazy(() => import('./pages/SubmitShop'));
 const SignIn = lazy(() => import('./pages/SignIn'));
+const SignUp = lazy(() => import('./pages/SignUp'));
+const VerifyEmail = lazy(() => import('./pages/VerifyEmail'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const Account = lazy(() => import('./pages/Account'));
 const FcommerceSignup = SHOW_SAATHI ? lazy(() => import('./pages/FcommerceSignup')) : null;
 const Saathi = SHOW_SAATHI ? lazy(() => import('./pages/Saathi')) : null;
@@ -97,6 +101,10 @@ function App() {
                   </>
                 )}
                 <Route path="/sign-in" element={<SignIn />} />
+                <Route path="/sign-up" element={<SignUp />} />
+                <Route path="/verify" element={<VerifyEmail />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/account" element={<Account />} />
                 {SHOW_PUBLIC_DASHBOARD && <Route path="/dashboard" element={<Dashboard />} />}
                 <Route path="/admin" element={<AdminLayout />}>

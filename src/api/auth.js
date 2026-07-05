@@ -39,9 +39,22 @@ api.interceptors.response.use(
   }
 );
 
-/** Fixed-credential owner sign-in. Issues a 30-day JWT. */
-export const passwordLogin = (username, password) =>
-  api.post('/auth/login', { username, password });
+/** Sign-in for everyone: owners type a username, users their email. 30-day JWT. */
+export const passwordLogin = (identifier, password) =>
+  api.post('/auth/login', { username: identifier, password });
+
+/** Regular-user registration. Returns {token, user} — signed in immediately. */
+export const signup = ({ name, email, password, phone, newsletterOptIn }) =>
+  api.post('/auth/signup', { name, email, password, phone, newsletterOptIn });
+
+export const verifyEmail = (token) => api.post('/auth/verify', { token });
+export const resendVerification = () => api.post('/auth/resend-verification');
+export const forgotPassword = (email) => api.post('/auth/forgot', { email });
+export const resetPassword = (token, password) =>
+  api.post('/auth/reset', { token, password });
+
+/** Partial profile update (phone, district, gender, birthYear, interests…). */
+export const updateProfile = (patch) => api.patch('/auth/profile', patch);
 
 export const getMe = () => api.get('/auth/me');
 

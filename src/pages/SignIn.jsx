@@ -5,11 +5,11 @@ import { useAuth } from '../auth/AuthContext';
 import { ArrowLeft, AlertCircle, KeyRound } from 'lucide-react';
 
 /**
- * Sole sign-in path: owner enters username + password, server returns a
- * 30-day JWT. After success we honor a {@code ?next=...} query param so
- * pages that gate behind auth (e.g. /saathi/signup) can round-trip the
- * user back to themselves. Falls back to /admin for admin role, /account
- * otherwise.
+ * Sign-in for everyone: regular users type their email, the owner a
+ * username — one field, one endpoint, server returns a 30-day JWT. After
+ * success we honor a {@code ?next=...} query param so pages that gate
+ * behind auth can round-trip the user back to themselves. Falls back to
+ * /admin for admin role, /account otherwise.
  */
 export default function SignIn() {
   const { signIn } = useAuth();
@@ -19,6 +19,7 @@ export default function SignIn() {
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
+  const justReset = search.get('reset') === '1';
 
   // Whitelist next= targets — only relative paths starting with "/" to
   // prevent open-redirect attacks via ?next=https://evil.com.
@@ -38,7 +39,7 @@ export default function SignIn() {
         navigate(r.data.user?.role === 'admin' ? '/admin' : '/account');
       }
     } catch (err) {
-      setError(err.response?.data?.error || 'Could not sign in. Check your username and password.');
+      setError(err.response?.data?.error || 'Could not sign in. Check your email and password.');
     } finally {
       setBusy(false);
     }
@@ -57,12 +58,18 @@ export default function SignIn() {
         <h1 className="font-serif text-3xl sm:text-4xl font-semibold leading-tight mb-2">
           Sign in
         </h1>
-        <p className="text-gray text-[15px]">Operator sign-in for the Dam Kemon admin console.</p>
+        <p className="text-gray text-[15px]">Track prices, wishlists and drop alerts.</p>
       </div>
+
+      {justReset && (
+        <div className="mb-4 bg-acid/20 border border-acid/50 text-ink px-4 py-3 rounded-xl text-sm text-center">
+          Password updated — sign in with your new password.
+        </div>
+      )}
 
       <form onSubmit={onSubmit} className="card-soft p-6 sm:p-8 space-y-4">
         <label className="block">
-          <span className="block text-xs font-mono uppercase tracking-wider text-gray mb-1.5">Username</span>
+          <span className="block text-xs font-mono uppercase tracking-wider text-gray mb-1.5">Email or username</span>
           <input
             type="text"
             value={username}
@@ -99,6 +106,16 @@ export default function SignIn() {
         >
           {busy ? 'Signing in…' : 'Sign in'}
         </button>
+
+        <div className="flex items-center justify-between text-sm">
+          <Link to="/forgot-password" className="text-gray hover:text-ink">Forgot password?</Link>
+          <Link
+            to={next ? `/sign-up?next=${encodeURIComponent(next)}` : '/sign-up'}
+            className="font-semibold text-ink hover:text-red"
+          >
+            Create an account
+          </Link>
+        </div>
       </form>
     </div>
   );

@@ -115,9 +115,14 @@ export default function Navbar() {
                   </Link>
                 </>
               ) : (
-                <Link to="/sign-in" className="text-sm text-ink/70 hover:text-ink font-medium px-3 py-2 rounded-full hover:bg-cream transition-colors shrink-0 whitespace-nowrap hidden md:inline-block">
-                  Sign in
-                </Link>
+                <>
+                  <Link to="/sign-in" className="text-sm text-ink/70 hover:text-ink font-medium px-3 py-2 rounded-full hover:bg-cream transition-colors shrink-0 whitespace-nowrap hidden md:inline-block">
+                    Sign in
+                  </Link>
+                  <Link to="/sign-up" className="text-sm font-bold text-ink bg-acid hover:brightness-95 px-4 py-2 rounded-full transition-all shrink-0 whitespace-nowrap hidden md:inline-block">
+                    Sign up
+                  </Link>
+                </>
               )}
               {SHOW_PUBLIC_DASHBOARD && (
                 <Link to="/dashboard" className="btn-accent shrink-0 !text-sm !px-4 !py-2.5">
@@ -194,10 +199,16 @@ export default function Navbar() {
                   )}
                 </>
               ) : (
-                <button onClick={() => handleNavClick('/sign-in')} className="px-4 py-3.5 text-left text-ink hover:bg-white rounded-2xl text-[15px] font-medium flex items-center justify-between">
-                  <span className="inline-flex items-center gap-2"><UserIcon className="w-4 h-4" /> Sign in</span>
-                  <span className="text-gray-soft text-xl">→</span>
-                </button>
+                <>
+                  <button onClick={() => handleNavClick('/sign-in')} className="px-4 py-3.5 text-left text-ink hover:bg-white rounded-2xl text-[15px] font-medium flex items-center justify-between">
+                    <span className="inline-flex items-center gap-2"><UserIcon className="w-4 h-4" /> Sign in</span>
+                    <span className="text-gray-soft text-xl">→</span>
+                  </button>
+                  <button onClick={() => handleNavClick('/sign-up')} className="px-4 py-3.5 text-left text-ink bg-acid/60 hover:bg-acid rounded-2xl text-[15px] font-semibold flex items-center justify-between">
+                    <span className="inline-flex items-center gap-2"><UserIcon className="w-4 h-4" /> Create account</span>
+                    <span className="text-ink/50 text-xl">→</span>
+                  </button>
+                </>
               )}
               {/* THEME_TOGGLE_DISABLED: dark mode is paused. */}
             </div>

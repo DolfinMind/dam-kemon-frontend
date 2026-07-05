@@ -5,11 +5,28 @@ import {
   listSavedSearches, addSavedSearch, removeSavedSearch,
   listWishlist, removeFromWishlist, updateWishlistAlert,
   listNotifications, markNotificationsRead,
+  resendVerification, updateProfile,
 } from '../api/auth';
 import { accountSearchHistory } from '../api/api';
 import {
   User as UserIcon, Bell, Heart, LogOut, Plus, X, ArrowRight, Search as SearchIcon, History, TrendingDown, Inbox,
+  MailWarning, Check,
 } from 'lucide-react';
+
+// Bangladesh's 64 districts — the profile's location dropdown.
+const DISTRICTS = [
+  'Bagerhat','Bandarban','Barguna','Barishal','Bhola','Bogura','Brahmanbaria','Chandpur','Chattogram',
+  'Chuadanga','Cox\'s Bazar','Cumilla','Dhaka','Dinajpur','Faridpur','Feni','Gaibandha','Gazipur',
+  'Gopalganj','Habiganj','Jamalpur','Jashore','Jhalokati','Jhenaidah','Joypurhat','Khagrachhari','Khulna',
+  'Kishoreganj','Kurigram','Kushtia','Lakshmipur','Lalmonirhat','Madaripur','Magura','Manikganj','Meherpur',
+  'Moulvibazar','Munshiganj','Mymensingh','Naogaon','Narail','Narayanganj','Narsingdi','Natore',
+  'Nawabganj','Netrokona','Nilphamari','Noakhali','Pabna','Panchagarh','Patuakhali','Pirojpur','Rajbari',
+  'Rajshahi','Rangamati','Rangpur','Satkhira','Shariatpur','Sherpur','Sirajganj','Sunamganj','Sylhet',
+  'Tangail','Thakurgaon',
+];
+
+// Catalog categories a user can follow — mirrors the category focus.
+const INTERESTS = ['smartphones', 'laptops', 'desktops & pc', 'monitors', 'components', 'audio', 'accessories'];
 
 function fmt(p) { if (p == null) return 'N/A'; return '৳' + Number(p).toLocaleString('en-IN'); }
 
@@ -54,6 +71,8 @@ export default function Account() {
         </button>
       </div>
 
+      {user.emailVerified === false && <VerifyBanner />}
+
       <div className="flex gap-2 border-b border-line mb-6 overflow-x-auto no-scrollbar">
         <TabBtn active={tab === 'notifications'} onClick={() => setTab('notifications')} icon={Inbox}>
           Notifications
@@ -67,13 +86,181 @@ export default function Account() {
         <TabBtn active={tab === 'history'} onClick={() => setTab('history')} icon={History}>
           History
         </TabBtn>
+        <TabBtn active={tab === 'profile'} onClick={() => setTab('profile')} icon={UserIcon}>
+          Profile
+        </TabBtn>
       </div>
 
       {tab === 'notifications' && <NotificationsTab />}
       {tab === 'saved-searches' && <SavedSearchesTab />}
       {tab === 'wishlist' && <WishlistTab />}
       {tab === 'history' && <HistoryTab />}
+      {tab === 'profile' && <ProfileTab />}
     </div>
+  );
+}
+
+/** Shown while the signup verification link hasn't been clicked — alert
+ *  emails stay off until it is. */
+function VerifyBanner() {
+  const [state, setState] = useState('idle'); // idle | busy | sent
+
+  const resend = async () => {
+    setState('busy');
+    try { await resendVerification(); setState('sent'); }
+    catch { setState('idle'); }
+  };
+
+  return (
+    <div className="flex flex-wrap items-center gap-3 mb-6 px-4 py-3 bg-yellow-soft border border-yellow rounded-2xl text-sm">
+      <MailWarning className="w-4 h-4 shrink-0 text-ink" />
+      <span className="flex-1 min-w-[16rem] text-ink/80">
+        Verify your email to activate price-drop alerts — check your inbox for the link.
+      </span>
+      {state === 'sent' ? (
+        <span className="inline-flex items-center gap-1 text-xs font-semibold text-green">
+          <Check className="w-3.5 h-3.5" /> Sent — check your inbox
+        </span>
+      ) : (
+        <button
+          onClick={resend}
+          disabled={state === 'busy'}
+          className="text-xs font-semibold px-3 py-1.5 rounded-full bg-ink text-cream hover:bg-red disabled:opacity-50 transition-colors"
+        >
+          {state === 'busy' ? 'Sending…' : 'Resend link'}
+        </button>
+      )}
+    </div>
+  );
+}
+
+/** Everything about you — all optional, saved with one button. */
+function ProfileTab() {
+  const { user, refresh } = useAuth();
+  const [form, setForm] = useState({
+    displayName: user?.displayName || '',
+    phone: user?.phone || '',
+    district: user?.district || '',
+    gender: user?.gender || '',
+    birthYear: user?.birthYear || '',
+    interests: user?.interests || [],
+    newsletterOptIn: user?.newsletterOptIn !== false,
+  });
+  const [busy, setBusy] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState(null);
+
+  const set = (k) => (e) => { setSaved(false); setForm({ ...form, [k]: e.target.value }); };
+  const toggleInterest = (i) => {
+    setSaved(false);
+    setForm((f) => ({
+      ...f,
+      interests: f.interests.includes(i) ? f.interests.filter((x) => x !== i) : [...f.interests, i],
+    }));
+  };
+
+  const save = async (e) => {
+    e.preventDefault();
+    setBusy(true);
+    setError(null);
+    try {
+      await updateProfile({
+        displayName: form.displayName,
+        phone: form.phone,
+        district: form.district,
+        gender: form.gender,
+        birthYear: form.birthYear === '' ? null : Number(form.birthYear),
+        interests: form.interests,
+        newsletterOptIn: form.newsletterOptIn,
+      });
+      await refresh();
+      setSaved(true);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Could not save. Try again.');
+    } finally { setBusy(false); }
+  };
+
+  const input = 'w-full bg-white border border-line rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-ink';
+  const label = 'block text-xs font-mono uppercase tracking-wider text-gray mb-1.5';
+
+  return (
+    <form onSubmit={save} className="card-soft p-6 sm:p-8 space-y-4 max-w-xl">
+      <p className="text-sm text-gray">
+        Everything here is optional — it helps us tailor deals and the weekly digest to you.
+      </p>
+      <label className="block">
+        <span className={label}>Name</span>
+        <input type="text" value={form.displayName} onChange={set('displayName')} className={input} />
+      </label>
+      <div className="grid sm:grid-cols-2 gap-4">
+        <label className="block">
+          <span className={label}>Phone</span>
+          <input type="tel" value={form.phone} onChange={set('phone')} placeholder="01XXXXXXXXX" className={input} />
+        </label>
+        <label className="block">
+          <span className={label}>District</span>
+          <select value={form.district} onChange={set('district')} className={input}>
+            <option value="">—</option>
+            {DISTRICTS.map((d) => <option key={d} value={d}>{d}</option>)}
+          </select>
+        </label>
+        <label className="block">
+          <span className={label}>Gender</span>
+          <select value={form.gender} onChange={set('gender')} className={input}>
+            <option value="">—</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+        <label className="block">
+          <span className={label}>Birth year</span>
+          <input type="number" min="1920" max={new Date().getFullYear()} value={form.birthYear}
+                 onChange={set('birthYear')} className={input} />
+        </label>
+      </div>
+      <div>
+        <span className={label}>I care about</span>
+        <div className="flex flex-wrap gap-2">
+          {INTERESTS.map((i) => (
+            <button
+              type="button"
+              key={i}
+              onClick={() => toggleInterest(i)}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium border capitalize transition-colors ${
+                form.interests.includes(i)
+                  ? 'bg-acid text-ink border-acid'
+                  : 'bg-white text-ink/70 border-line hover:border-ink'
+              }`}
+            >
+              {i}
+            </button>
+          ))}
+        </div>
+      </div>
+      <label className="flex items-start gap-2 text-sm text-ink/80">
+        <input
+          type="checkbox"
+          checked={form.newsletterOptIn}
+          onChange={(e) => { setSaved(false); setForm({ ...form, newsletterOptIn: e.target.checked }); }}
+          className="mt-0.5"
+        />
+        <span>Weekly price-drop digest</span>
+      </label>
+
+      {error && <p className="text-sm text-red">{error}</p>}
+
+      <div className="flex items-center gap-3">
+        <button
+          type="submit"
+          disabled={busy}
+          className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-ink text-cream font-semibold text-sm hover:bg-red disabled:opacity-50 transition-colors"
+        >
+          {busy ? 'Saving…' : 'Save profile'}
+        </button>
+        {saved && <span className="inline-flex items-center gap-1 text-sm text-green"><Check className="w-4 h-4" /> Saved</span>}
+      </div>
+    </form>
   );
 }
 
