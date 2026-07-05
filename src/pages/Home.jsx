@@ -126,7 +126,7 @@ export default function Home() {
               <span className="w-1.5 h-1.5 rounded-full bg-[#FF4A2A] animate-pulse-dot ml-0.5" />
             </div>
             <h2 className="font-sans font-extrabold text-[clamp(1.5rem,3.5vw,2.5rem)] leading-tight tracking-tight text-[#2A2A2A]">
-              Biggest price drops <span className="text-acid-deep">right now</span>
+              Deals you can check <span className="text-acid-deep">right now</span>
             </h2>
           </div>
           <Link to="/browse" className="text-[13px] font-bold text-[#A3A3A3] hover:text-[#2A2A2A] transition-colors inline-flex items-center gap-1.5 shrink-0 uppercase tracking-widest">
