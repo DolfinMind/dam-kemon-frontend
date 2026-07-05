@@ -62,6 +62,10 @@ export const getAllProducts = (page = 0, size = 20, category) =>
 /** Distinct catalog categories — powers the Browse filter chips. */
 export const getCategories = () => api.get('/products/categories');
 
+/** Homepage rails: top categories, each with a handful of fresh products. */
+export const getShowcase = (perCategory = 6) =>
+  api.get('/products/showcase', { params: { perCategory } });
+
 export const compareProducts = (ids) =>
   api.get('/compare', { params: { ids: Array.isArray(ids) ? ids.join(',') : ids } });
 

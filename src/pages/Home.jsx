@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  getDashboardStats, getHotDrops, getAllProducts,
+  getHotDrops, getAllProducts, getShowcase,
   getShops, getShopTrust,
 } from '../api/api';
 import SearchBar from '../components/SearchBar';
+import SearchProductCard from '../components/SearchProductCard';
 import AlphaBadge from '../components/AlphaBadge';
 // ponytail: Protect hidden from frontend per request.
 // import ProtectShowcase from '../components/ProtectShowcase';
@@ -13,8 +14,8 @@ import NewsletterSection from '../components/NewsletterSection';
 import FeedbackSection from '../components/FeedbackSection';
 import { CategoryIcon } from '../lib/categoryIcon';
 import {
-  ArrowRight, Play, ShieldCheck, Store, Flame,
-  TrendingDown, Plus, Minus, Star, Truck,
+  ArrowRight, ShieldCheck, Store, Flame,
+  TrendingDown, Plus, Minus, Truck,
 } from 'lucide-react';
 // Phosphor duotone for the landing's feature icons — adds a premium, two-tone
 // weight where Lucide's flat line look is more utilitarian.
@@ -49,12 +50,27 @@ function fromProduct(p) {
 
 export default function Home() {
   const navigate = useNavigate();
-  const [stats, setStats] = useState(null);
   const [deals, setDeals] = useState([]);
   const [shops, setShops] = useState([]);
+  const [showcase, setShowcase] = useState([]);
+  const [showcaseTrust, setShowcaseTrust] = useState({});
 
   useEffect(() => {
-    getDashboardStats().then((r) => setStats(r.data)).catch(() => {});
+    // Category rails — ONE cached call for every section, then one batched
+    // trust lookup covering all showcased products' cheapest sellers.
+    getShowcase(6)
+      .then((r) => {
+        const sections = Array.isArray(r.data) ? r.data : [];
+        setShowcase(sections);
+        const slugs = [...new Set(sections.flatMap((s) => (s.products || []).map((p) => {
+          const ps = (p.prices || []).slice().sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
+          return ps[0]?.siteSlug || ps[0]?.siteName;
+        })).filter(Boolean))].slice(0, 50);
+        if (slugs.length) {
+          getShopTrust(slugs).then((tr) => setShowcaseTrust(tr.data || {})).catch(() => {});
+        }
+      })
+      .catch(() => {});
 
     // Examples grid: prefer real hot-drops; fall back to featured catalog with
     // cross-seller savings so the grid is never empty.
@@ -205,65 +221,40 @@ export default function Home() {
       {/* ponytail: Protect spotlight hidden from frontend per request. Restore to bring it back. */}
       {/* <ProtectShowcase /> */}
 
-      {/* ── "Out of the box" intro + feature cards ───────────────── */}
-      <section className="container-tight pt-8 sm:pt-12">
-        <div className="grid lg:grid-cols-2 gap-6 lg:gap-16 items-start">
-          <h2 className="font-sans font-extrabold text-[clamp(1.8rem,4.5vw,3rem)] leading-[1.05] tracking-[-0.03em] text-ink">
-            The ultimate price comparison engine for Bangladesh
-          </h2>
-          <p className="text-ink/65 text-[15px] sm:text-lg leading-relaxed lg:pt-2">
-            Whether you are looking for the lowest iPhone price in BD, the best laptop deals, or verified authentic electronics, we bring every shop together in one place. Line up the exact product across major platforms and hundreds of other sellers. We score each shop for trust, so you can buy safely with real prices—never fake discounts.
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-5 mt-10">
-          {/* Stat card (MAC's 920+) */}
-          <div className="rounded-[1.75rem] bg-ink text-cream p-7 sm:p-9 relative overflow-hidden min-h-[260px] flex flex-col justify-between">
-            <div className="absolute -bottom-12 -left-10 w-56 h-56 rounded-full bg-acid/10 blur-3xl pointer-events-none" />
-            <div className="relative">
-              <div className="font-sans text-[clamp(3rem,7vw,4.5rem)] font-extrabold leading-none tracking-tight">
-                <CountUp value={stats?.totalPricePoints} />
-                <span className="text-acid">+</span>
-              </div>
-              <p className="text-cream/60 text-sm mt-2 max-w-[24ch]">prices compared so far — and growing every day</p>
+      {/* ── Category rails: real products over marketing copy ────── */}
+      {showcase.map((sec) => (
+        <section key={sec.category} className="container-tight pt-8 sm:pt-12">
+          <div className="flex items-end justify-between gap-3 mb-4 sm:mb-6">
+            <div>
+              <h2 className="font-sans font-extrabold text-[clamp(1.4rem,3vw,2rem)] leading-tight tracking-tight text-ink capitalize">
+                {sec.category}
+              </h2>
+              {sec.total > 0 && (
+                <p className="text-gray text-xs sm:text-sm mt-0.5 font-mono">
+                  {Number(sec.total).toLocaleString('en-IN')} products compared
+                </p>
+              )}
             </div>
-            <div className="relative flex items-center gap-2.5 mt-6">
-              {[PhStore, PhSearch, PhShieldCheck, PhSealCheck].map((Icon, i) => (
-                <span key={i} className="w-11 h-11 rounded-2xl bg-cream/10 flex items-center justify-center">
-                  <Icon className="w-5 h-5 text-acid" weight="duotone" />
-                </span>
-              ))}
-              <span className="w-11 h-11 rounded-2xl bg-acid text-ink flex items-center justify-center font-bold">
-                <Plus className="w-5 h-5" />
-              </span>
-            </div>
+            <Link
+              to={`/browse?category=${encodeURIComponent(sec.category)}`}
+              className="text-[13px] font-bold text-[#A3A3A3] hover:text-[#2A2A2A] transition-colors inline-flex items-center gap-1.5 shrink-0 uppercase tracking-widest"
+            >
+              See all <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
+          <div className="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 pb-4 items-start">
+            {(sec.products || []).map((p) => (
+              <div key={p.id || p.slug} className="snap-start shrink-0 w-[300px] sm:w-[340px]">
+                <SearchProductCard product={p} trust={showcaseTrust} />
+              </div>
+            ))}
+          </div>
+        </section>
+      ))}
 
-          {/* HOW WE WORK card */}
-          <a href="#how" className="group rounded-[1.75rem] bg-neutral-bg border border-line p-7 sm:p-9 relative overflow-hidden min-h-[260px] flex flex-col justify-between hover:border-line-strong transition-colors">
-            <div className="flex items-center justify-between">
-              <span className="font-sans font-extrabold text-[clamp(1.4rem,3.5vw,2.25rem)] tracking-[0.12em] text-ink/85 leading-none">
-                HOW&nbsp;WE&nbsp;WORK
-              </span>
-            </div>
-            <p className="text-ink/55 text-sm max-w-[34ch]">
-              Search, compare, and buy with confidence — the three steps that put every BD seller in one honest row.
-            </p>
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold text-ink inline-flex items-center gap-1.5">
-                Watch the flow <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </span>
-              <span className="w-16 h-16 rounded-full bg-acid flex items-center justify-center shadow-[0_10px_30px_-8px_rgba(159,226,49,0.6)] group-hover:scale-105 transition-transform">
-                <Play className="w-6 h-6 text-ink fill-ink ml-0.5" />
-              </span>
-            </div>
-          </a>
-        </div>
-      </section>
-
-      {/* ── Most-trusted shops + Testimonial ─────────────────────── */}
+      {/* ── Most-trusted shops ───────────────────────────────────── */}
       <section className="container-tight pt-8 sm:pt-12">
-        <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-8 lg:gap-12 items-stretch">
+        <div className="max-w-2xl">
           {/* Trusted shops */}
           <div className="rounded-[1.75rem] bg-neutral-bg border border-line p-6 sm:p-8">
             <div className="flex items-center gap-2 mb-5">
@@ -298,9 +289,6 @@ export default function Home() {
               All sellers <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-
-          {/* Testimonial carousel */}
-          <Testimonials />
         </div>
       </section>
 
@@ -413,86 +401,12 @@ const STEPS = [
   { num: '03', title: 'Buy with confidence', desc: 'Pick the lowest price from a seller you can trust — and never quietly overpay again.', icon: PhShieldCheck },
 ];
 
-// NOTE: placeholder testimonials — swap in real shopper quotes when you have them.
-const QUOTES = [
-  { text: 'I used to open six tabs to check one phone price. Now it’s a single search and I can see who’s actually cheapest — and who I can trust to deliver.', name: 'Rafa H.', role: 'Shopper · Dhaka' },
-  { text: 'The trust score flagged a seller with a suspiciously low price. Damkemon basically saved me from a scam before I paid a taka.', name: 'Tanvir A.', role: 'Shopper · Chattogram' },
-  { text: 'Finally, a Bangladesh price comparison that doesn’t show made-up prices. What it says is the price, is the price.', name: 'Nusrat J.', role: 'Shopper · Sylhet' },
-];
-
 const INSIGHTS = [
   { title: 'Why one search beats ten browser tabs', desc: 'See every shop that sells your product — price, trust and delivery, side by side.', read: 4, to: '/guides/why-one-search-beats-ten-browser-tabs', icon: PhSearch, tone: 'bg-acid-soft text-acid-deep' },
   { title: 'How our trust score spots fake low prices', desc: 'Delivery signals, review history and stock depth — combined into one number.', read: 5, to: '/guides/how-trust-score-spots-fake-low-prices', icon: PhSealCheck, tone: 'bg-yellow-soft text-ink' },
 ];
 
 /* ───────────────────────── pieces ───────────────────────── */
-
-// Count a number up from 0 → target once it arrives (easeOutCubic).
-function useCountUp(target, fallback = 0, duration = 1400) {
-  const [display, setDisplay] = useState(fallback);
-  const fromRef = useRef(fallback);
-  const rafRef = useRef(0);
-  useEffect(() => {
-    if (target == null) return;
-    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-    if (reduce) { setDisplay(target); fromRef.current = target; return; }
-    const from = fromRef.current;
-    const start = performance.now();
-    const ease = (t) => 1 - Math.pow(1 - t, 3);
-    const tick = (now) => {
-      const t = Math.min(1, (now - start) / duration);
-      setDisplay(Math.round(from + (target - from) * ease(t)));
-      if (t < 1) rafRef.current = requestAnimationFrame(tick);
-      else fromRef.current = target;
-    };
-    rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [target, duration]);
-  return display;
-}
-
-function CountUp({ value }) {
-  const d = useCountUp(value, 0);
-  return d != null ? Number(d).toLocaleString('en-IN') : '—';
-}
-
-function Testimonials() {
-  const [i, setI] = useState(0);
-  const q = QUOTES[i];
-  const go = (d) => setI((p) => (p + d + QUOTES.length) % QUOTES.length);
-  return (
-    <div className="rounded-[1.75rem] bg-acid p-7 sm:p-10 flex flex-col justify-between min-h-[260px]">
-      <div>
-        <div className="flex gap-0.5 mb-5">
-          {Array.from({ length: 5 }).map((_, k) => <Star key={k} className="w-4 h-4 text-ink fill-ink" />)}
-        </div>
-        <blockquote className="font-sans text-ink text-xl sm:text-[1.7rem] font-semibold leading-snug tracking-[-0.01em]">
-          “{q.text}”
-        </blockquote>
-      </div>
-      <div className="flex items-center justify-between mt-8">
-        <div className="flex items-center gap-3">
-          <span className="w-11 h-11 rounded-full bg-ink text-acid flex items-center justify-center font-sans font-bold">
-            {q.name[0]}
-          </span>
-          <div>
-            <div className="font-sans font-bold text-ink text-sm">{q.name}</div>
-            <div className="text-ink/60 text-xs">{q.role}</div>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-ink/60 text-xs tabular-nums mr-1">{String(i + 1).padStart(2, '0')}/{String(QUOTES.length).padStart(2, '0')}</span>
-          <button onClick={() => go(-1)} aria-label="Previous" className="w-9 h-9 rounded-full border border-ink/20 text-ink flex items-center justify-center hover:bg-ink hover:text-acid transition-colors">
-            <ArrowRight className="w-4 h-4 rotate-180" />
-          </button>
-          <button onClick={() => go(1)} aria-label="Next" className="w-9 h-9 rounded-full bg-ink text-acid flex items-center justify-center hover:opacity-90 transition-opacity">
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 const FAQS = [
   { q: 'Where do the prices come from?', a: 'We bring together prices from shops right across Bangladesh and keep them updated, so a single search shows you a complete, side-by-side comparison in an instant.' },
