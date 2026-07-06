@@ -2,33 +2,34 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   getHotDrops, getAllProducts, getShowcase,
-  getShops, getShopTrust,
+  getShops, getShopTrust, subscribeNewsletter,
 } from '../api/api';
 import SearchBar from '../components/SearchBar';
 import SearchProductCard from '../components/SearchProductCard';
-import AlphaBadge from '../components/AlphaBadge';
+import { useAuth } from '../auth/AuthContext';
 // ponytail: Protect hidden from frontend per request.
 // import ProtectShowcase from '../components/ProtectShowcase';
 import { TrustScore, deliveryText } from '../components/TrustBadge';
-import NewsletterSection from '../components/NewsletterSection';
-import FeedbackSection from '../components/FeedbackSection';
 import { CategoryIcon } from '../lib/categoryIcon';
 import {
-  ArrowRight, ShieldCheck, Store, Flame,
-  TrendingDown, Plus, Minus, Truck,
+  ArrowRight, ShieldCheck, Flame, TrendingDown, Truck, Heart, Check,
 } from 'lucide-react';
-// Phosphor duotone for the landing's feature icons — adds a premium, two-tone
-// weight where Lucide's flat line look is more utilitarian.
-import {
-  MagnifyingGlass as PhSearch, Storefront as PhStore,
-  ShieldCheck as PhShieldCheck, SealCheck as PhSealCheck,
-} from '@phosphor-icons/react';
 
 function fmt(p) {
   if (p == null) return 'N/A';
   return '৳' + Number(p).toLocaleString('en-IN');
 }
 const fmtNum = (n) => (n == null ? '—' : Number(n).toLocaleString('en-IN'));
+
+// Quick paths into the catalog — doubles as "what we cover", right under search.
+const QUICK_CATS = [
+  { label: 'Smartphones', category: 'smartphones' },
+  { label: 'Laptops', category: 'laptops' },
+  { label: 'Desktops & PC', category: 'desktops & pc' },
+  { label: 'Monitors', category: 'monitors' },
+  { label: 'Audio', category: 'headphones & audio' },
+  { label: 'Accessories', category: 'accessories' },
+];
 
 // Normalise a hot-drop or a catalog product into one card shape.
 function fromDrop(p) {
@@ -72,8 +73,8 @@ export default function Home() {
       })
       .catch(() => {});
 
-    // Examples grid: prefer real hot-drops; fall back to featured catalog with
-    // cross-seller savings so the grid is never empty.
+    // Deals rail: prefer real hot-drops; fall back to featured catalog with
+    // cross-seller savings so the rail is never empty.
     getHotDrops(10)
       .then((r) => {
         const drops = Array.isArray(r.data) ? r.data : [];
@@ -113,24 +114,44 @@ export default function Home() {
 
   return (
     <div className="overflow-x-hidden">
-      {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="container-tight pt-4 sm:pt-6 lg:pt-8 pb-6 text-center flex flex-col items-center">
-        <div className="flex items-center justify-center gap-2 mb-6">
-          <span className="chip chip-ghost !text-ink/70">
-            <Store className="w-3.5 h-3.5 text-acid-deep" /> Bangladesh price comparison
-          </span>
-          <AlphaBadge />
-        </div>
+      {/* ── Hero: the brand question, a search box, and nothing else ── */}
+      <section className="relative container-tight pt-6 sm:pt-10 lg:pt-14 pb-8 text-center flex flex-col items-center">
+        {/* The taka sign IS the subject — one quiet watermark, no decoration elsewhere. */}
+        <span
+          aria-hidden="true"
+          className="hidden md:block absolute -top-16 -right-8 lg:right-4 font-sans font-extrabold text-[22rem] lg:text-[28rem] leading-none text-acid/15 select-none pointer-events-none -rotate-6"
+        >
+          ৳
+        </span>
 
-        <h1 className="font-sans font-extrabold leading-[0.95] tracking-[-0.04em] text-[clamp(2.5rem,5vw,4.5rem)] text-ink max-w-4xl mx-auto mb-10 sm:mb-14">
-          <span className="bg-acid px-3 py-1 -ml-3 mr-1 inline-block">Compare</span> prices across <span className="text-acid-deep">every online shop</span> in Bangladesh.
-        </h1>
-        
-        {/* Search — the hero's single focus, no stat clutter */}
-        <div className="w-full max-w-2xl mx-auto relative z-10 text-left">
-          <SearchBar large onSearch={handleSearch} />
-        </div>
+        <div className="relative">
+          <h1 className="max-w-4xl mx-auto mb-4">
+            <span className="block font-sans font-extrabold leading-[0.92] tracking-[-0.04em] text-[clamp(3.2rem,8vw,6.5rem)] text-ink">
+              Dam <span className="bg-acid px-3 -mx-1 inline-block">kemon?</span>
+            </span>
+            <span className="block mt-5 text-ink/65 text-[15px] sm:text-lg font-medium leading-relaxed max-w-xl mx-auto">
+              Compare prices across every online shop in Bangladesh — real prices, ranked by trust.
+            </span>
+          </h1>
 
+          <div className="w-full max-w-2xl mx-auto relative z-10 text-left mt-6">
+            <SearchBar large onSearch={handleSearch} />
+          </div>
+
+          {/* Quick paths into the catalog */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mt-6 max-w-2xl mx-auto">
+            {QUICK_CATS.map((c) => (
+              <Link
+                key={c.category}
+                to={`/browse?category=${encodeURIComponent(c.category)}`}
+                className="inline-flex items-center gap-1.5 bg-white border border-line hover:border-ink text-ink/80 hover:text-ink text-[13px] font-semibold px-3.5 py-2 rounded-full transition-colors"
+              >
+                <CategoryIcon category={c.category} className="w-3.5 h-3.5 text-acid-deep" />
+                {c.label}
+              </Link>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* ── Today's deals (scroll rail) ──────────────────────────── */}
@@ -195,29 +216,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Trust marquee ────────────────────────────────────────── */}
-      <section className="container-tight pt-6 sm:pt-8">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-gray shrink-0 max-w-[10rem] leading-relaxed">
-            Comparing Bangladesh's biggest shops
-          </p>
-          <div className="relative flex-1 overflow-hidden mask-fade">
-            <div className="flex items-center gap-8 sm:gap-12 animate-scroll w-max">
-              {[...MARQUEE_SHOPS, ...MARQUEE_SHOPS].map((shop, i) => (
-                <span key={i} className="flex items-center gap-3 font-sans font-bold text-lg sm:text-xl text-ink/40 whitespace-nowrap">
-                  <img 
-                    src={`https://www.google.com/s2/favicons?domain=${shop.domain}&sz=128`} 
-                    alt={shop.name} 
-                    className="w-7 h-7 sm:w-8 sm:h-8 object-contain mix-blend-multiply opacity-60 grayscale" 
-                  />
-                  {shop.name}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ponytail: Protect spotlight hidden from frontend per request. Restore to bring it back. */}
       {/* <ProtectShowcase /> */}
 
@@ -252,192 +250,137 @@ export default function Home() {
         </section>
       ))}
 
-      {/* ── Most-trusted shops ───────────────────────────────────── */}
-      <section className="container-tight pt-8 sm:pt-12">
-        <div className="max-w-2xl">
-          {/* Trusted shops */}
-          <div className="rounded-[1.75rem] bg-neutral-bg border border-line p-6 sm:p-8">
-            <div className="flex items-center gap-2 mb-5">
-              <ShieldCheck className="w-5 h-5 text-acid-deep" />
-              <h3 className="font-sans text-lg font-bold text-ink">Most-trusted shops</h3>
-            </div>
-            <div className="space-y-4">
-              {(shops.length ? shops : Array.from({ length: 5 })).map((s, i) => (
-                s ? (
-                  <Link key={s.slug} to="/sellers" className="flex items-center gap-3 group">
-                    <span className="font-sans text-lg font-extrabold text-ink/20 w-6 shrink-0 tabular-nums">{String(i + 1).padStart(2, '0')}</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-semibold text-ink truncate group-hover:text-acid-deep transition-colors">{s.name}</div>
-                      <div className="text-[11px] text-gray inline-flex items-center gap-2">
-                        <span className="font-mono">{fmtNum(s.productCount)} products</span>
-                        {s.trust && deliveryText(s.trust) && (
-                          <span className="inline-flex items-center gap-0.5"><Truck className="w-3 h-3" /> {deliveryText(s.trust)}</span>
-                        )}
-                      </div>
-                    </div>
-                    {s.trust?.trustScore != null && <TrustScore score={s.trust.trustScore} size="sm" showLabel={false} />}
-                  </Link>
-                ) : (
-                  <div key={i} className="flex items-center gap-3">
-                    <span className="font-sans text-lg font-extrabold text-ink/15 w-6 tabular-nums">{String(i + 1).padStart(2, '0')}</span>
-                    <div className="flex-1 h-8 rounded-lg bg-ink/[0.04] animate-pulse" />
-                  </div>
-                )
-              ))}
-            </div>
-            <Link to="/sellers" className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-ink hover:text-acid-deep transition-colors">
-              All sellers <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── How it works (steps) ─────────────────────────────────── */}
-      <section id="how" className="container-tight pt-8 sm:pt-12 scroll-mt-24">
-        <div className="flex items-center gap-2 mb-3">
-          <span className="w-7 h-px bg-acid-deep" />
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-gray">How it works</span>
-        </div>
-        <h2 className="font-sans font-extrabold text-[clamp(1.8rem,4.5vw,3rem)] leading-[1.05] tracking-[-0.03em] text-ink max-w-2xl mb-10">
-          The whole market, <span className="text-acid-deep">one search.</span>
-        </h2>
-        <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-          {STEPS.map((s, i) => {
-            const Icon = s.icon;
-            return (
-              <div key={s.num} className="group rounded-[1.5rem] bg-surface border border-line p-7 hover:shadow-[var(--shadow-lift)] hover:border-line-strong transition-all relative">
-                <div className="flex items-center justify-between mb-6">
-                  <span className="font-sans text-5xl font-extrabold text-ink/10 leading-none tabular-nums">{s.num}</span>
-                  <span className="w-12 h-12 rounded-2xl bg-acid-soft text-acid-deep flex items-center justify-center group-hover:bg-acid group-hover:text-ink transition-colors">
-                    <Icon className="w-5 h-5" weight="duotone" />
-                  </span>
-                </div>
-                <h3 className="font-sans text-lg font-bold text-ink mb-2">{s.title}</h3>
-                <p className="text-ink/60 text-sm leading-relaxed">{s.desc}</p>
-                {i < STEPS.length - 1 && (
-                  <ArrowRight className="hidden md:block absolute top-1/2 -translate-y-1/2 -right-4 lg:-right-5 w-6 h-6 text-ink/15 z-10" />
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* ── FAQ ──────────────────────────────────────────────────── */}
-      <section className="container-tight pt-8 sm:pt-12">
-        <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-8 lg:gap-14">
-          <div>
-            <h2 className="font-sans font-extrabold text-[clamp(1.8rem,4.5vw,2.75rem)] leading-[1.05] tracking-[-0.03em] text-ink">
-              Price-comparison FAQs
-            </h2>
-            <p className="text-ink/60 text-[15px] mt-4 mb-7 leading-relaxed max-w-sm">
-              Learn how Damkemon gathers live prices, scores seller trust, and protects your online shopping in Bangladesh from advance payment scams.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Link to="/browse" className="btn-primary">Browse products</Link>
-              {/* ponytail: "Try Protect" hidden per request. */}
-            </div>
-          </div>
-          <Faq />
-        </div>
-      </section>
-
-      {/* ── Guides & insights ────────────────────────────────────── */}
-      <section className="container-tight pt-8 sm:pt-12">
-        <div className="flex items-end justify-between mb-8 gap-4">
-          <h2 className="font-sans font-extrabold text-[clamp(1.6rem,4vw,2.5rem)] leading-[1.05] tracking-[-0.03em] text-ink max-w-xl">
-            Guides that help you buy smarter in Bangladesh.
+      {/* ── Trust strip: who you can safely buy from, one row ────── */}
+      <section className="container-tight pt-10 sm:pt-14">
+        <div className="flex items-end justify-between gap-3 mb-4 sm:mb-6">
+          <h2 className="font-sans font-extrabold text-[clamp(1.4rem,3vw,2rem)] leading-tight tracking-tight text-ink inline-flex items-center gap-2.5">
+            <ShieldCheck className="w-6 h-6 text-acid-deep shrink-0" />
+            Shops you can trust
           </h2>
-          <Link to="/guides" className="text-sm font-semibold text-ink/70 hover:text-ink inline-flex items-center gap-1.5 shrink-0">
-            See more <ArrowRight className="w-4 h-4" />
+          <Link to="/sellers" className="text-[13px] font-bold text-[#A3A3A3] hover:text-[#2A2A2A] transition-colors inline-flex items-center gap-1.5 shrink-0 uppercase tracking-widest">
+            All sellers <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className="grid md:grid-cols-3 gap-5">
-          {INSIGHTS.map((p) => (
-            <Link key={p.title} to={p.to} className="group card-soft p-6 flex flex-col">
-              <span className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-5 ${p.tone}`}>
-                <p.icon className="w-5 h-5" weight="duotone" />
-              </span>
-              <span className="font-mono text-[10px] uppercase tracking-wider text-gray mb-2">{p.read} min read</span>
-              <h3 className="font-sans text-lg font-bold text-ink leading-snug group-hover:text-acid-deep transition-colors">{p.title}</h3>
-              <p className="text-ink/60 text-sm mt-2 leading-relaxed flex-1">{p.desc}</p>
-              <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-ink">
-                Read guide <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </span>
-            </Link>
+        <div className="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar snap-x -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 pb-4">
+          {(shops.length ? shops : Array.from({ length: 5 })).map((s, i) => (
+            s ? (
+              <Link
+                key={s.slug}
+                to="/sellers"
+                className="group snap-start shrink-0 w-[230px] bg-white rounded-2xl border border-line hover:border-ink/30 p-4 sm:p-5 transition-colors"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <span className="font-sans text-2xl font-extrabold text-ink/15 tabular-nums leading-none">{String(i + 1).padStart(2, '0')}</span>
+                  {s.trust?.trustScore != null && <TrustScore score={s.trust.trustScore} size="sm" showLabel={false} />}
+                </div>
+                <div className="mt-3 text-[15px] font-bold text-ink truncate group-hover:text-acid-deep transition-colors">{s.name}</div>
+                <div className="text-[11px] text-gray mt-1 flex items-center gap-2">
+                  <span className="font-mono">{fmtNum(s.productCount)} products</span>
+                  {s.trust && deliveryText(s.trust) && (
+                    <span className="inline-flex items-center gap-0.5"><Truck className="w-3 h-3" /> {deliveryText(s.trust)}</span>
+                  )}
+                </div>
+              </Link>
+            ) : (
+              <div key={i} className="snap-start shrink-0 w-[230px] h-28 bg-white rounded-2xl border border-line animate-pulse" />
+            )
           ))}
         </div>
       </section>
 
-      {/* ── Feedback & Newsletter ── */}
-      <section className="container-tight pt-10 sm:pt-16 pb-12 sm:pb-20">
-        <div className="grid lg:grid-cols-2 gap-6 items-stretch">
-          <FeedbackSection />
-          <NewsletterSection />
-        </div>
+      {/* ── Close: turn a visit into a tracked price ─────────────── */}
+      <section className="container-tight pt-10 sm:pt-14 pb-14 sm:pb-20">
+        <CloseBand />
       </section>
     </div>
   );
 }
 
-/* ───────────────────────── data ───────────────────────── */
-
-const MARQUEE_SHOPS = [
-  { name: 'StarTech', domain: 'startech.com.bd' },
-  { name: 'Daraz', domain: 'daraz.com.bd' },
-  { name: 'Ryans', domain: 'ryanscomputers.com' },
-  { name: 'Pickaboo', domain: 'pickaboo.com' },
-  { name: 'TechLand', domain: 'techlandbd.com' },
-  { name: 'Othoba', domain: 'othoba.com' },
-  { name: 'Gadget & Gear', domain: 'gadgetandgear.com' },
-  { name: 'Computer Source', domain: 'computersourcebd.com' },
-  { name: 'AjkerDeal', domain: 'ajkerdeal.com' },
-  { name: 'Diamu', domain: 'diamu.com.bd' }
-];
-
-const STEPS = [
-  { num: '01', title: 'Search once', desc: 'Type any product and see every shop in Bangladesh that sells it — no more juggling a dozen browser tabs.', icon: PhSearch },
-  { num: '02', title: 'Compare side by side', desc: 'Every seller’s price, trust score and delivery promise lined up in a single, honest row.', icon: PhStore },
-  { num: '03', title: 'Buy with confidence', desc: 'Pick the lowest price from a seller you can trust — and never quietly overpay again.', icon: PhShieldCheck },
-];
-
-const INSIGHTS = [
-  { title: 'Why one search beats ten browser tabs', desc: 'See every shop that sells your product — price, trust and delivery, side by side.', read: 4, to: '/guides/why-one-search-beats-ten-browser-tabs', icon: PhSearch, tone: 'bg-acid-soft text-acid-deep' },
-  { title: 'How our trust score spots fake low prices', desc: 'Delivery signals, review history and stock depth — combined into one number.', read: 5, to: '/guides/how-trust-score-spots-fake-low-prices', icon: PhSealCheck, tone: 'bg-yellow-soft text-ink' },
-];
-
 /* ───────────────────────── pieces ───────────────────────── */
 
-const FAQS = [
-  { q: 'Where do the prices come from?', a: 'We bring together prices from shops right across Bangladesh and keep them updated, so a single search shows you a complete, side-by-side comparison in an instant.' },
-  { q: 'Are the prices accurate and live?', a: 'We show real prices straight from each shop and keep them fresh — never fabricated numbers. If a listing goes stale we flag it rather than guess.' },
-  { q: 'How does the trust score work?', a: 'Each shop is scored on real signals — delivery reliability, review history, how long it’s been active and how deep its stock is — combined into one number so you can spot a risky seller at a glance.' },
-  { q: 'Is damkemon free to use?', a: 'Yes — searching and comparing prices is completely free for shoppers, always.' },
-];
-
-function Faq() {
-  const [open, setOpen] = useState(0);
+// One conversion block instead of four content sections: wishlist alerts for
+// the signed-out, the weekly digest for everyone.
+function CloseBand() {
+  const { user } = useAuth();
   return (
-    <div className="divide-y divide-line border-t border-line">
-      {FAQS.map((f, i) => {
-        const isOpen = open === i;
-        return (
-          <div key={i}>
-            <button
-              onClick={() => setOpen(isOpen ? -1 : i)}
-              className="w-full flex items-center justify-between gap-4 py-5 text-left group"
-            >
-              <span className={`font-sans font-bold text-[15px] sm:text-base transition-colors ${isOpen ? 'text-ink' : 'text-ink/80 group-hover:text-ink'}`}>{f.q}</span>
-              <span className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-colors ${isOpen ? 'bg-acid text-ink' : 'bg-ink/[0.06] text-ink/60'}`}>
-                {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-              </span>
-            </button>
-            <div className={`grid transition-all duration-300 ${isOpen ? 'grid-rows-[1fr] opacity-100 pb-5' : 'grid-rows-[0fr] opacity-0'}`}>
-              <p className="overflow-hidden text-ink/65 text-sm leading-relaxed max-w-xl">{f.a}</p>
-            </div>
-          </div>
-        );
-      })}
+    <div className="rounded-[2rem] bg-ink text-cream p-7 sm:p-10 lg:p-12 relative overflow-hidden">
+      <span
+        aria-hidden="true"
+        className="absolute -bottom-24 -left-6 font-sans font-extrabold text-[16rem] leading-none text-acid/10 select-none pointer-events-none"
+      >
+        ৳
+      </span>
+      <div className="relative grid lg:grid-cols-2 gap-8 lg:gap-14 items-center">
+        <div>
+          <h2 className="font-sans font-extrabold text-[clamp(1.7rem,3.6vw,2.6rem)] leading-[1.05] tracking-[-0.02em]">
+            Never quietly <span className="text-acid">overpay</span> again.
+          </h2>
+          <p className="text-cream/60 text-[15px] mt-3 max-w-md">
+            Wishlist any product and we&apos;ll email you the moment its price drops at any shop.
+          </p>
+          <Link
+            to={user ? '/account' : '/sign-up'}
+            className="mt-6 inline-flex items-center gap-2 bg-acid text-ink font-bold text-sm px-6 py-3.5 rounded-full hover:brightness-95 transition-all"
+          >
+            <Heart className="w-4 h-4" />
+            {user ? 'Open your wishlist' : 'Create a free account'}
+          </Link>
+        </div>
+        <NewsletterMini />
+      </div>
+    </div>
+  );
+}
+
+function NewsletterMini() {
+  const [email, setEmail] = useState('');
+  const [state, setState] = useState('idle'); // idle | busy | done
+  const [error, setError] = useState(null);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setState('busy');
+    setError(null);
+    try {
+      await subscribeNewsletter(email.trim());
+      setState('done');
+    } catch {
+      setError('Could not subscribe — try again.');
+      setState('idle');
+    }
+  };
+
+  return (
+    <div className="lg:border-l lg:border-cream/10 lg:pl-14">
+      <h3 className="font-sans text-lg font-bold">The Monday digest</h3>
+      <p className="text-cream/60 text-sm mt-1.5 max-w-sm">
+        The week&apos;s biggest real price drops, once a week. No spam, unsubscribe anytime.
+      </p>
+      {state === 'done' ? (
+        <p className="mt-5 inline-flex items-center gap-2 text-acid font-semibold text-sm">
+          <Check className="w-4 h-4" /> You&apos;re on the list — see you Monday.
+        </p>
+      ) : (
+        <form onSubmit={submit} className="mt-5 flex gap-2 max-w-sm">
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@email.com"
+            className="flex-1 min-w-0 bg-cream/10 border border-cream/20 rounded-full px-4 py-2.5 text-sm text-cream placeholder-cream/40 focus:outline-none focus:border-acid"
+          />
+          <button
+            type="submit"
+            disabled={state === 'busy'}
+            className="shrink-0 bg-cream text-ink text-sm font-bold px-5 py-2.5 rounded-full hover:bg-acid transition-colors disabled:opacity-60"
+          >
+            {state === 'busy' ? '…' : 'Join'}
+          </button>
+        </form>
+      )}
+      {error && <p className="text-red text-xs mt-2">{error}</p>}
     </div>
   );
 }

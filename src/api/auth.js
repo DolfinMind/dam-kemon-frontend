@@ -47,6 +47,10 @@ export const passwordLogin = (identifier, password) =>
 export const signup = ({ name, email, password, phone, newsletterOptIn }) =>
   api.post('/auth/signup', { name, email, password, phone, newsletterOptIn });
 
+/** Google Identity Services: exchange the Google ID token for our JWT. */
+export const googleLogin = (credential) =>
+  api.post('/auth/google', { credential });
+
 export const verifyEmail = (token) => api.post('/auth/verify', { token });
 export const resendVerification = () => api.post('/auth/resend-verification');
 export const forgotPassword = (email) => api.post('/auth/forgot', { email });

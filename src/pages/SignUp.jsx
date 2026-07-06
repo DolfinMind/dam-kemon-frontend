@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { signup } from '../api/auth';
 import { useAuth } from '../auth/AuthContext';
+import GoogleSignInButton from '../components/GoogleSignInButton';
 import { ArrowLeft, AlertCircle, UserPlus } from 'lucide-react';
 
 /**
@@ -91,6 +92,11 @@ export default function SignUp() {
             Sign in
           </Link>
         </p>
+
+        <GoogleSignInButton
+          onSuccess={(data) => { signIn(data.token, data.user); navigate(next || '/account'); }}
+          onError={setError}
+        />
       </form>
     </div>
   );

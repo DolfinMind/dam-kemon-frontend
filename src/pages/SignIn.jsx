@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { passwordLogin } from '../api/auth';
 import { useAuth } from '../auth/AuthContext';
+import GoogleSignInButton from '../components/GoogleSignInButton';
 import { ArrowLeft, AlertCircle, KeyRound } from 'lucide-react';
 
 /**
@@ -26,18 +27,22 @@ export default function SignIn() {
   const rawNext = search.get('next');
   const next = (rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//')) ? rawNext : null;
 
+  const finishSignIn = (data) => {
+    signIn(data.token, data.user);
+    if (next) {
+      navigate(next);
+    } else {
+      navigate(data.user?.role === 'admin' ? '/admin' : '/account');
+    }
+  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     setBusy(true);
     try {
       const r = await passwordLogin(username, password);
-      signIn(r.data.token, r.data.user);
-      if (next) {
-        navigate(next);
-      } else {
-        navigate(r.data.user?.role === 'admin' ? '/admin' : '/account');
-      }
+      finishSignIn(r.data);
     } catch (err) {
       setError(err.response?.data?.error || 'Could not sign in. Check your email and password.');
     } finally {
@@ -116,6 +121,8 @@ export default function SignIn() {
             Create an account
           </Link>
         </div>
+
+        <GoogleSignInButton onSuccess={finishSignIn} onError={setError} />
       </form>
     </div>
   );
