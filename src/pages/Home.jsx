@@ -6,6 +6,7 @@ import {
 } from '../api/api';
 import SearchBar from '../components/SearchBar';
 import SearchProductCard from '../components/SearchProductCard';
+import SearchProductCardSkeleton from '../components/SearchProductCardSkeleton';
 import { useAuth } from '../auth/AuthContext';
 // ponytail: Protect hidden from frontend per request.
 // import ProtectShowcase from '../components/ProtectShowcase';
@@ -53,7 +54,7 @@ export default function Home() {
   const navigate = useNavigate();
   const [deals, setDeals] = useState([]);
   const [shops, setShops] = useState([]);
-  const [showcase, setShowcase] = useState([]);
+  const [showcase, setShowcase] = useState(null);   // null = loading → skeleton rails
   const [showcaseTrust, setShowcaseTrust] = useState({});
 
   useEffect(() => {
@@ -71,7 +72,7 @@ export default function Home() {
           getShopTrust(slugs).then((tr) => setShowcaseTrust(tr.data || {})).catch(() => {});
         }
       })
-      .catch(() => {});
+      .catch(() => setShowcase([]));
 
     // Deals rail: prefer real hot-drops; fall back to featured catalog with
     // cross-seller savings so the rail is never empty.
@@ -220,7 +221,19 @@ export default function Home() {
       {/* <ProtectShowcase /> */}
 
       {/* ── Category rails: real products over marketing copy ────── */}
-      {showcase.map((sec) => (
+      {showcase === null && (
+        <section className="container-tight pt-8 sm:pt-12">
+          <div className="h-8 w-56 rounded-lg bg-ink/[0.06] animate-pulse mb-6" />
+          <div className="flex gap-3 sm:gap-4 overflow-hidden -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 pb-4">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="shrink-0 w-[300px] sm:w-[340px]">
+                <SearchProductCardSkeleton />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+      {(showcase || []).map((sec) => (
         <section key={sec.category} className="container-tight pt-8 sm:pt-12">
           <div className="flex items-end justify-between gap-3 mb-4 sm:mb-6">
             <div>
