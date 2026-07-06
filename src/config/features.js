@@ -10,13 +10,10 @@
 
 // Damkemon Saathi — the F-commerce seller toolkit: landing (/saathi), signup,
 // seller dashboard, public storefronts (/p/:slug) and F-commerce onboarding
-// (/fcommerce/signup). SHIPPED 2026-07-06 — proven end-to-end on live catalog
-// data (signup → attach → live-assist → public storefront). Note: the Messenger
-// AUTO-reply to arbitrary customers needs Meta app review for pages_messaging;
-// the copy-paste live-assist, storefront and verified badge work with no Meta
-// setup at all, and Messenger auto-reply works today for the seller's own page
-// (Meta dev mode) — so nothing here is a dead end.
-export const SHOW_SAATHI = true;
+// (/fcommerce/signup). Paused 2026-07-06 — the whole surface is built and was
+// proven end-to-end on live data, but it's hidden for now while focus shifts to
+// the crawler. Flip to true to re-expose everything at once (routes + nav).
+export const SHOW_SAATHI = false;
 
 // The public live stats page at /dashboard. Hidden from the public site for now.
 export const SHOW_PUBLIC_DASHBOARD = false;
