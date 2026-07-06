@@ -31,9 +31,9 @@ jobs:
           # — only AFTER nginx maps /_dk/ → backend /api/ (deploy/nginx.conf.example).
           VITE_API_BASE: ${{ vars.VITE_API_BASE }}
           VITE_ENV_LABEL: production
-          # Google OAuth web client id (same value the backend gets as
-          # GOOGLE_CLIENT_ID). Unset → the Google button simply doesn't render.
-          VITE_GOOGLE_CLIENT_ID: ${{ vars.VITE_GOOGLE_CLIENT_ID }}
+          # NOTE: the Google client id is NOT a build var — the frontend reads it
+          # at runtime from GET /api/auth/config (backend GOOGLE_CLIENT_ID env is
+          # the single source of truth).
 
       - name: Copy build to temporary directory on server
         uses: appleboy/scp-action@v0.1.7

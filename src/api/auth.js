@@ -51,6 +51,10 @@ export const signup = ({ name, email, password, phone, newsletterOptIn }) =>
 export const googleLogin = (credential) =>
   api.post('/auth/google', { credential });
 
+/** Public runtime client config (Google client id, …) — backend env is the
+ *  single source of truth, so no build-time var is needed. */
+export const getAuthConfig = () => api.get('/auth/config');
+
 export const verifyEmail = (token) => api.post('/auth/verify', { token });
 export const resendVerification = () => api.post('/auth/resend-verification');
 export const forgotPassword = (email) => api.post('/auth/forgot', { email });
