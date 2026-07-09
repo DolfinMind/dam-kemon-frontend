@@ -14,6 +14,7 @@ export default function AdminCatalog() {
   const [total, setTotal] = useState(0);
   const [q, setQ] = useState('');
   const [page, setPage] = useState(0);
+  const [sort, setSort] = useState('date_desc');
   const [editing, setEditing] = useState(null);
   const [creating, setCreating] = useState(null); // draft form values, or null
   const [createError, setCreateError] = useState(null);
@@ -23,13 +24,13 @@ export default function AdminCatalog() {
 
   const load = () => {
     setBusy(true);
-    adminListCatalog({ q: q || undefined, page, size: 30 })
+    adminListCatalog({ q: q || undefined, page, size: 30, sort: sort || undefined })
       .then((r) => { setItems(r.data?.content || []); setTotal(r.data?.totalElements || 0); })
       .catch(() => { setItems([]); setTotal(0); })
       .finally(() => setBusy(false));
   };
 
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, [page]);
+  useEffect(() => { load(); /* eslint-disable-next-line */ }, [page, sort]);
 
   const onSearch = (e) => { e.preventDefault(); setPage(0); load(); };
 
@@ -109,6 +110,15 @@ export default function AdminCatalog() {
             className="w-full pl-10 pr-4 py-2.5 bg-white border border-line rounded-xl text-sm focus:outline-none focus:border-ink"
           />
         </div>
+        <select
+          value={sort}
+          onChange={(e) => { setSort(e.target.value); setPage(0); }}
+          className="px-3 py-2.5 bg-white border border-line rounded-xl text-sm focus:outline-none focus:border-ink"
+        >
+          <option value="date_desc">Newest First</option>
+          <option value="date_asc">Oldest First</option>
+          <option value="">Default (Relevance)</option>
+        </select>
         <button type="submit" className="px-4 py-2.5 rounded-xl bg-ink text-cream font-semibold text-sm hover:bg-red">Search</button>
         <button
           type="button"

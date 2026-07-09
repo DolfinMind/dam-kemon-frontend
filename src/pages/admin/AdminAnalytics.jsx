@@ -8,11 +8,10 @@ import {
   Radio, Users, Activity, Eye, Search as SearchIcon, MousePointerClick,
   Globe, Server, Clock, TrendingUp, Map as MapIcon,
   Store, Package, Layers, Crown, Filter, MessageSquare, AlertTriangle,
-  Trophy, SearchX, Award, Smartphone, ExternalLink
 } from 'lucide-react';
 import {
   analyticsOverview, analyticsHourly, analyticsDailyUsers,
-  analyticsTopSearches, analyticsTopIps, analyticsTopPaths, analyticsRequests,
+  analyticsTopSearches, analyticsTopIps, analyticsTopPaths,
   analyticsFunnel, analyticsShopClicksByCategory, analyticsTopShops,
   analyticsTopProducts, analyticsTopConvertingSearches,
   analyticsResultShops, analyticsZeroResultSearches, analyticsShopPriceWins,
@@ -40,7 +39,6 @@ export default function AdminAnalytics() {
   const [topSearches, setTopSearches] = useState([]);
   const [topIps, setTopIps] = useState([]);
   const [topPaths, setTopPaths] = useState([]);
-  const [requests, setRequests] = useState([]);
   const [funnel, setFunnel] = useState(null);
   const [shopCat, setShopCat] = useState([]);
   const [topShops, setTopShops] = useState([]);
@@ -79,16 +77,13 @@ export default function AdminAnalytics() {
     analyticsDailyUsers(dailyDays).then((r) => setDaily(r.data || [])).catch(() => {});
   }, [dailyDays]);
 
-  // Live counters + request feed — poll while "live" is on.
+  // Live counters — poll while "live" is on.
   useEffect(() => {
     const pullOverview = () => analyticsOverview().then((r) => setOverview(r.data)).catch(() => {});
-    const pullFeed = () => analyticsRequests(60).then((r) => setRequests(r.data || [])).catch(() => {});
     pullOverview();
-    pullFeed();
     const t = setInterval(() => {
       if (!liveRef.current) return;
       pullOverview();
-      pullFeed();
     }, 5000);
     return () => clearInterval(t);
   }, []);
@@ -114,7 +109,7 @@ export default function AdminAnalytics() {
           className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors ${
             live ? 'bg-green/10 text-green border-green/30' : 'bg-cream-soft text-gray border-line'
           }`}
-          title="Auto-refresh live counters and the request feed"
+          title="Auto-refresh live counters"
         >
           <Radio className={`w-3.5 h-3.5 ${live ? 'animate-pulse' : ''}`} /> {live ? 'Live' : 'Paused'}
         </button>
@@ -662,43 +657,7 @@ export default function AdminAnalytics() {
         )}
       </section>
 
-      {/* ── live request feed ── */}
-      <section>
-        <h3 className="font-serif text-lg font-semibold mb-3 inline-flex items-center gap-2">
-          <Server className="w-4 h-4" /> Live request feed
-          {live && <span className="inline-flex items-center gap-1 text-[10px] font-mono text-green"><Radio className="w-3 h-3 animate-pulse" /> streaming</span>}
-        </h3>
-        {requests.length === 0 ? <Empty>No requests captured yet.</Empty> : (
-          <div className="overflow-x-auto max-h-[28rem] overflow-y-auto rounded-lg border border-line">
-            <table className="w-full text-xs">
-              <thead className="sticky top-0 bg-cream">
-                <tr className="text-left text-[10px] font-mono uppercase tracking-wider text-gray border-b border-line">
-                  <th className="py-2 px-3">When</th>
-                  <th className="py-2 pr-3">Method</th>
-                  <th className="py-2 pr-3">Path</th>
-                  <th className="py-2 pr-3 text-right">Status</th>
-                  <th className="py-2 pr-3 text-right">ms</th>
-                  <th className="py-2 pr-3">IP</th>
-                </tr>
-              </thead>
-              <tbody>
-                {requests.map((r) => (
-                  <tr key={r.id} className="border-b border-line/50">
-                    <td className="py-1.5 px-3 text-gray whitespace-nowrap">{timeAgo(r.ts)}</td>
-                    <td className="py-1.5 pr-3 font-mono font-semibold">{r.method}</td>
-                    <td className="py-1.5 pr-3 font-mono max-w-[20rem] truncate" title={`${r.path}${r.query ? '?' + r.query : ''}`}>
-                      {r.path}{r.query ? <span className="text-gray">?{r.query}</span> : null}
-                    </td>
-                    <td className={`py-1.5 pr-3 text-right font-mono ${r.status >= 500 ? 'text-red' : r.status >= 400 ? 'text-yellow' : 'text-green'}`}>{r.status}</td>
-                    <td className="py-1.5 pr-3 text-right font-mono text-gray">{r.latencyMs}</td>
-                    <td className="py-1.5 pr-3 font-mono text-gray">{r.ip || `hash:${r.ipHash || '—'}`}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
+
     </div>
   );
 }
