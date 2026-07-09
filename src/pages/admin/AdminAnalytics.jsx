@@ -8,6 +8,7 @@ import {
   Radio, Users, Activity, Eye, Search as SearchIcon, MousePointerClick,
   Globe, Server, Clock, TrendingUp, Map as MapIcon,
   Store, Package, Layers, Crown, Filter, MessageSquare, AlertTriangle,
+  Trophy, SearchX, Award, Smartphone, ExternalLink
 } from 'lucide-react';
 import {
   analyticsOverview, analyticsHourly, analyticsDailyUsers,
