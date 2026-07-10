@@ -93,6 +93,7 @@ export const getTrendingSearches = (limit = 10) =>
   api.get(`/events/trending-searches?limit=${limit}`);
 
 export const getTrending = () => api.get('/events/trending');
+export const getTrendingShops = () => api.get('/events/trending-shops');
 export const getHotDrops = (limit = 12) =>
   api.get('/stats/hot-drops', { params: { limit } });
 export const getWorldCup = (limit = 12) =>

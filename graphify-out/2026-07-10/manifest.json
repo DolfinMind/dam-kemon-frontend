@@ -20,18 +20,18 @@
     "semantic_hash": "bfe13b9e25d0af7959d0396aa103d88c"
   },
   "package.json": {
-    "mtime": 1783677860.9928255,
-    "ast_hash": "b7ecd0072532c39e0cf5f6d5b0899555",
-    "semantic_hash": ""
+    "mtime": 1781540757.3675425,
+    "ast_hash": "f8ef9ee3bd110996166d804d04df2ddb",
+    "semantic_hash": "f8ef9ee3bd110996166d804d04df2ddb"
   },
   "src/App.jsx": {
-    "mtime": 1783678397.6291618,
-    "ast_hash": "c1d0266a142a9cc2554bebe913077bc7",
+    "mtime": 1783430334.0306778,
+    "ast_hash": "f54e334b2f93ac0490eddae5b97d80a8",
     "semantic_hash": ""
   },
   "src/api/admin.js": {
-    "mtime": 1783674837.2425277,
-    "ast_hash": "e00d294805359fe1b4dddca2c755604f",
+    "mtime": 1783265854.185656,
+    "ast_hash": "49dbcf257b77bfdf00ac217b94e641f2",
     "semantic_hash": ""
   },
   "src/api/analytics.js": {
@@ -40,8 +40,8 @@
     "semantic_hash": ""
   },
   "src/api/api.js": {
-    "mtime": 1783682672.6648912,
-    "ast_hash": "41e73dba5417f3417bafc38228b9ec07",
+    "mtime": 1783427826.4394403,
+    "ast_hash": "22139cdebfda1cb4792070552c672d2a",
     "semantic_hash": ""
   },
   "src/api/auth.js": {
@@ -120,8 +120,8 @@
     "semantic_hash": "ab4818066580902b93554c4a7b1efec3"
   },
   "src/components/Navbar.jsx": {
-    "mtime": 1783678513.359155,
-    "ast_hash": "408d4da52077053750fdd149c9fc8c10",
+    "mtime": 1783269909.1845279,
+    "ast_hash": "d0b0f5c14c948a4cd659a3e5186fcdd7",
     "semantic_hash": ""
   },
   "src/components/NewsletterSection.jsx": {
@@ -145,9 +145,9 @@
     "semantic_hash": "279c8adb8e1ce273270bc3f0ea7866ad"
   },
   "src/components/ProductSEO.jsx": {
-    "mtime": 1783677950.216721,
-    "ast_hash": "20615b4f73430938bb55169733110c7c",
-    "semantic_hash": ""
+    "mtime": 1779894132.586005,
+    "ast_hash": "a5138c4b7eaedf1db7046c5953711f63",
+    "semantic_hash": "a5138c4b7eaedf1db7046c5953711f63"
   },
   "src/components/ProtectShowcase.jsx": {
     "mtime": 1783269909.1848607,
@@ -230,9 +230,9 @@
     "semantic_hash": "7e0482b9bf57749765661ca286740ff6"
   },
   "src/main.jsx": {
-    "mtime": 1783677878.6497133,
-    "ast_hash": "21ea8acf7f42bb1505d05b55e0252326",
-    "semantic_hash": ""
+    "mtime": 1779264353.9666147,
+    "ast_hash": "c3e57cb4c51b7526e4e277e06df24fd3",
+    "semantic_hash": "c3e57cb4c51b7526e4e277e06df24fd3"
   },
   "src/pages/Account.jsx": {
     "mtime": 1783265854.188299,
@@ -270,13 +270,13 @@
     "semantic_hash": "ee91568fedfd76b9fec95edfd338d064"
   },
   "src/pages/Home.jsx": {
-    "mtime": 1783678193.1106205,
-    "ast_hash": "945820f49ee9c1e2c36bd2151ceaaebe",
+    "mtime": 1783427826.4403164,
+    "ast_hash": "dc42a6caa86c590e69a08cb5257ac37a",
     "semantic_hash": ""
   },
   "src/pages/ProductDetail.jsx": {
-    "mtime": 1783677968.4894795,
-    "ast_hash": "1b6648f11525ccdc89afb0642fcb5c60",
+    "mtime": 1783430439.9412127,
+    "ast_hash": "1ebb18d8bf892679eaad3b3da35a270f",
     "semantic_hash": ""
   },
   "src/pages/Protect.jsx": {
@@ -325,8 +325,8 @@
     "semantic_hash": "621b4a334460333b93b9e27d547c4522"
   },
   "src/pages/admin/AdminAnalytics.jsx": {
-    "mtime": 1783672597.911505,
-    "ast_hash": "567c7e624e732c31945c30761e131a9b",
+    "mtime": 1783265854.1902444,
+    "ast_hash": "d9f05594f9c3e80bc489728df0339591",
     "semantic_hash": ""
   },
   "src/pages/admin/AdminAuditLog.jsx": {
@@ -340,8 +340,8 @@
     "semantic_hash": "5b4c915947265225fdad73ae0ebd6bc1"
   },
   "src/pages/admin/AdminCatalog.jsx": {
-    "mtime": 1783672597.911777,
-    "ast_hash": "41c213f8e7a0a174ca4e0d1a968e4254",
+    "mtime": 1783265854.1907113,
+    "ast_hash": "704fdd7ead044d4025e9fde7ac2eb31b",
     "semantic_hash": ""
   },
   "src/pages/admin/AdminIndexer.jsx": {
@@ -355,9 +355,9 @@
     "semantic_hash": "9985ab27d255f206bc353ca4c6c036cd"
   },
   "src/pages/admin/AdminLayout.jsx": {
-    "mtime": 1783675534.48164,
-    "ast_hash": "f669d2b2951e38004ad4791b0be147f2",
-    "semantic_hash": ""
+    "mtime": 1782137455.0684352,
+    "ast_hash": "6c2b811fdc7a1dc2fcfebc7899ebfaf7",
+    "semantic_hash": "6c2b811fdc7a1dc2fcfebc7899ebfaf7"
   },
   "src/pages/admin/AdminNewsletter.jsx": {
     "mtime": 1782137455.0686054,
@@ -425,9 +425,9 @@
     "semantic_hash": "8ce0b8000cb2a32eb00a4a4b71432c72"
   },
   "index.html": {
-    "mtime": 1783683130.6524389,
-    "ast_hash": "a61bb8695d3830fbe6d82af096fb168f",
-    "semantic_hash": ""
+    "mtime": 1781450722.8738701,
+    "ast_hash": "59f52c8120128a49b66a1dae5730f06c",
+    "semantic_hash": "59f52c8120128a49b66a1dae5730f06c"
   },
   "public/favicon.svg": {
     "mtime": 1781540756.1578605,
@@ -460,8 +460,8 @@
     "semantic_hash": ""
   },
   "src/components/NewsletterInline.jsx": {
-    "mtime": 1783678534.4286246,
-    "ast_hash": "555b242b6a76bfca8e968c718eae67a2",
+    "mtime": 1783430242.5889966,
+    "ast_hash": "e2feca4a33103469c9a6e4f8b715c072",
     "semantic_hash": ""
   },
   "src/pages/Drops.jsx": {
@@ -487,41 +487,6 @@
   "src/pages/VerifyEmail.jsx": {
     "mtime": 1783265854.1899254,
     "ast_hash": "f45d520166c925abf9b2dc9bfc184d0d",
-    "semantic_hash": ""
-  },
-  "src/components/ExitIntentModal.jsx": {
-    "mtime": 1783678572.530386,
-    "ast_hash": "ad34b7ea9bc517efd00e3a4a2ba757e0",
-    "semantic_hash": ""
-  },
-  "src/components/NewsletterModal.jsx": {
-    "mtime": 1783678581.8965313,
-    "ast_hash": "3bc219119a63e4038fff504697907a0a",
-    "semantic_hash": ""
-  },
-  "src/components/SocialProofToasts.jsx": {
-    "mtime": 1783676239.0719364,
-    "ast_hash": "778bcfd3c553bba1d04a814b066c36bb",
-    "semantic_hash": ""
-  },
-  "src/pages/Trending.jsx": {
-    "mtime": 1783682709.5640564,
-    "ast_hash": "fc6a414489dc2bf9db1431e2b606dc0f",
-    "semantic_hash": ""
-  },
-  "src/pages/admin/AdminFeedback.jsx": {
-    "mtime": 1783677381.4263415,
-    "ast_hash": "788c840ae59a6aa9f27788b45cab37f4",
-    "semantic_hash": ""
-  },
-  "public/newsletter-bg.jpg": {
-    "mtime": 1783674635.5081801,
-    "ast_hash": "e1bcec52c1b79fe76c0d8a7a0079a908",
-    "semantic_hash": ""
-  },
-  "public/og.png": {
-    "mtime": 1783683110.4992793,
-    "ast_hash": "35b2f750a0a8429f17638d8af780abc0",
     "semantic_hash": ""
   }
 }
