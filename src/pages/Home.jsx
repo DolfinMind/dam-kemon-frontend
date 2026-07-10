@@ -54,25 +54,24 @@ export default function Home() {
   const navigate = useNavigate();
   const [deals, setDeals] = useState([]);
   const [shops, setShops] = useState([]);
-  const [showcase, setShowcase] = useState(null);   // null = loading → skeleton rails
-  const [showcaseTrust, setShowcaseTrust] = useState({});
+  const [allProducts, setAllProducts] = useState(null);   // null = loading
+  const [allProductsTrust, setAllProductsTrust] = useState({});
 
   useEffect(() => {
-    // Category rails — ONE cached call for every section, then one batched
-    // trust lookup covering all showcased products' cheapest sellers.
-    getShowcase(6)
-      .then((r) => {
-        const sections = Array.isArray(r.data) ? r.data : [];
-        setShowcase(sections);
-        const slugs = [...new Set(sections.flatMap((s) => (s.products || []).map((p) => {
-          const ps = (p.prices || []).slice().sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
-          return ps[0]?.siteSlug || ps[0]?.siteName;
-        })).filter(Boolean))].slice(0, 50);
+    // All Products Grid — grab the first 24 products for the homepage.
+    getAllProducts(0, 24)
+      .then((res) => {
+        const ps = res.data?.content || [];
+        setAllProducts(ps);
+        const slugs = [...new Set(ps.map((p) => {
+          const prices = (p.prices || []).slice().sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
+          return prices[0]?.siteSlug || prices[0]?.siteName;
+        }).filter(Boolean))].slice(0, 50);
         if (slugs.length) {
-          getShopTrust(slugs).then((tr) => setShowcaseTrust(tr.data || {})).catch(() => {});
+          getShopTrust(slugs).then((tr) => setAllProductsTrust(tr.data || {})).catch(() => {});
         }
       })
-      .catch(() => setShowcase([]));
+      .catch(() => setAllProducts([]));
 
     // Deals rail: prefer real hot-drops; fall back to featured catalog with
     // cross-seller savings so the rail is never empty.
@@ -220,48 +219,50 @@ export default function Home() {
       {/* ponytail: Protect spotlight hidden from frontend per request. Restore to bring it back. */}
       {/* <ProtectShowcase /> */}
 
-      {/* ── Category rails: real products over marketing copy ────── */}
-      {showcase === null && (
-        <section className="container-tight pt-8 sm:pt-12">
-          <div className="h-8 w-56 rounded-lg bg-ink/[0.06] animate-pulse mb-6" />
-          <div className="flex gap-3 sm:gap-4 overflow-hidden -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 pb-4">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="shrink-0 w-[300px] sm:w-[340px]">
-                <SearchProductCardSkeleton />
-              </div>
+      {/* ── All Products Grid ────── */}
+      <section className="container-tight pt-10 sm:pt-16">
+        <div className="flex items-end justify-between gap-3 mb-6 sm:mb-8">
+          <div>
+            <h2 className="font-sans font-extrabold text-[clamp(1.5rem,3.5vw,2.5rem)] leading-tight tracking-tight text-ink">
+              Everything you need, <span className="text-acid-deep">in one place.</span>
+            </h2>
+            <p className="text-ink/60 text-[14px] sm:text-[16px] mt-2 font-medium max-w-xl">
+              Browse our complete collection of products at the best prices, sorted just for you.
+            </p>
+          </div>
+          <Link
+            to="/browse"
+            className="hidden sm:inline-flex text-[13px] font-bold text-[#A3A3A3] hover:text-[#2A2A2A] transition-colors items-center gap-1.5 shrink-0 uppercase tracking-widest"
+          >
+            See all <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        {allProducts === null ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+            {[...Array(8)].map((_, i) => (
+              <SearchProductCardSkeleton key={i} />
             ))}
           </div>
-        </section>
-      )}
-      {(showcase || []).map((sec) => (
-        <section key={sec.category} className="container-tight pt-8 sm:pt-12">
-          <div className="flex items-end justify-between gap-3 mb-4 sm:mb-6">
-            <div>
-              <h2 className="font-sans font-extrabold text-[clamp(1.4rem,3vw,2rem)] leading-tight tracking-tight text-ink capitalize">
-                {sec.category}
-              </h2>
-              {sec.total > 0 && (
-                <p className="text-gray text-xs sm:text-sm mt-0.5 font-mono">
-                  {Number(sec.total).toLocaleString('en-IN')} products compared
-                </p>
-              )}
+        ) : (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+              {allProducts.map((p) => (
+                <SearchProductCard key={p.id || p.slug} product={p} trust={allProductsTrust} />
+              ))}
             </div>
-            <Link
-              to={`/browse?category=${encodeURIComponent(sec.category)}`}
-              className="text-[13px] font-bold text-[#A3A3A3] hover:text-[#2A2A2A] transition-colors inline-flex items-center gap-1.5 shrink-0 uppercase tracking-widest"
-            >
-              See all <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-          <div className="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 pb-4 items-start">
-            {(sec.products || []).map((p) => (
-              <div key={p.id || p.slug} className="snap-start shrink-0 w-[300px] sm:w-[340px]">
-                <SearchProductCard product={p} trust={showcaseTrust} />
-              </div>
-            ))}
-          </div>
-        </section>
-      ))}
+            
+            <div className="mt-10 flex justify-center">
+              <Link
+                to="/browse"
+                className="inline-flex items-center gap-2 bg-ink text-white hover:bg-ink/90 font-bold text-[14px] px-8 py-3.5 rounded-full transition-all hover:scale-105 active:scale-95 shadow-sm"
+              >
+                Browse all products <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </>
+        )}
+      </section>
 
       {/* ── Trust strip: who you can safely buy from, one row ────── */}
       <section className="container-tight pt-10 sm:pt-14">
