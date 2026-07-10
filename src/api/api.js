@@ -90,7 +90,9 @@ export const getLiveStats = () => api.get('/stats/live');
 /** Homepage social-proof headline figures: saved this month, comparisons today, drops this week. */
 export const getHeadlineStats = () => api.get('/stats/headline');
 export const getTrendingSearches = (limit = 10) =>
-  api.get('/stats/trending', { params: { limit } });
+  api.get(`/events/trending-searches?limit=${limit}`);
+
+export const getTrending = () => api.get('/events/trending');
 export const getHotDrops = (limit = 12) =>
   api.get('/stats/hot-drops', { params: { limit } });
 export const getWorldCup = (limit = 12) =>
