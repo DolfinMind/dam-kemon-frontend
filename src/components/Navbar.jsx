@@ -61,8 +61,30 @@ export default function Navbar() {
     navigate(to);
   };
 
+  const [topBarVisible, setTopBarVisible] = useState(() => {
+    try {
+      if (localStorage.getItem('dk_topbar_dismissed')) return false;
+    } catch { /* ignore */ }
+    return true;
+  });
+
+  const dismissTopBar = () => {
+    try { localStorage.setItem('dk_topbar_dismissed', '1'); } catch { /* ignore */ }
+    setTopBarVisible(false);
+  };
+
   return (
     <>
+      {topBarVisible && !user && (
+        <div className="bg-acid-soft border-b border-acid/20 py-2 relative text-center">
+          <Link to="/sign-up" className="text-sm font-semibold text-ink hover:underline">
+            🔥 Join 10,000+ smart shoppers and never overpay again.
+          </Link>
+          <button onClick={dismissTopBar} className="absolute right-4 top-1/2 -translate-y-1/2 text-ink/40 hover:text-ink">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
       <nav
         className={`sticky top-0 z-50 transition-all duration-300 ${
           scrolled ? 'glass shadow-[0_1px_0_var(--color-line)]' : 'bg-transparent'

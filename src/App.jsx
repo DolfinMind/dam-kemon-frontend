@@ -7,6 +7,8 @@ import BottomNav from './components/BottomNav';
 import AssistantWidget from './components/AssistantWidget';
 import GoogleOneTap from './components/GoogleOneTap';
 import ScrollToTop from './components/ScrollToTop';
+import ExitIntentModal from './components/ExitIntentModal';
+import SocialProofToasts from './components/SocialProofToasts';
 import { AuthProvider } from './auth/AuthContext';
 import LoadingSpinner from './components/LoadingSpinner';
 import { SHOW_SAATHI, SHOW_PUBLIC_DASHBOARD, SHOW_ASSISTANT } from './config/features';
@@ -53,6 +55,7 @@ const AdminSearchLog = lazy(() => import('./pages/admin/AdminSearchLog'));
 const AdminCache = lazy(() => import('./pages/admin/AdminCache'));
 const AdminJobs = lazy(() => import('./pages/admin/AdminJobs'));
 const AdminNewsletter = lazy(() => import('./pages/admin/AdminNewsletter'));
+const AdminFeedback = lazy(() => import('./pages/admin/AdminFeedback'));
 
 function PageFallback() {
   return (
@@ -125,6 +128,7 @@ function App() {
                   <Route path="jobs" element={<AdminJobs />} />
                   <Route path="audit" element={<AdminAuditLog />} />
                   <Route path="newsletter" element={<AdminNewsletter />} />
+                  <Route path="feedback" element={<AdminFeedback />} />
                 </Route>
                 {/* Hidden/unknown paths (incl. gated Saathi & dashboard) → home. */}
                 <Route path="*" element={<Navigate to="/" replace />} />
@@ -134,6 +138,8 @@ function App() {
           <Footer />
           <BottomNav />
           <GoogleOneTap />
+          <ExitIntentModal />
+          <SocialProofToasts />
           {SHOW_ASSISTANT && <AssistantWidget />}
         </div>
       </AuthProvider>

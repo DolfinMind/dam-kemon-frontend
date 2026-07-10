@@ -349,6 +349,15 @@ export default function ProductDetail() {
               {product.name}
             </h1>
 
+            {/* Simulated Scarcity/Demand Badge */}
+            <div className="inline-flex items-center gap-1.5 bg-red-soft text-red px-2.5 py-1 rounded-full text-xs font-bold mb-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <span className="relative flex w-1.5 h-1.5">
+                <span className="absolute inset-0 bg-red rounded-full animate-ping opacity-75" />
+                <span className="relative w-1.5 h-1.5 bg-red rounded-full" />
+              </span>
+              🔥 Trending: {Math.floor(Math.random() * 20) + 5} people viewing this
+            </div>
+
             <div className="flex flex-wrap items-center gap-4">
               {avgOurRating != null ? (
                 <div className="flex items-center gap-2">

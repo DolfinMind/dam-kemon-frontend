@@ -119,8 +119,10 @@ export const analyticsZeroResultSearches = (days = 7, limit = 25) =>
 export const analyticsShopPriceWins = (limit = 15) =>
   api.get('/admin/analytics/shop-price-wins', { params: { limit } });
 
-// ─── Newsletter ───
+// ─── Newsletter & Feedback ───
 export const newsletterAnalytics = () => api.get('/admin/newsletter/analytics');
 export const listSubscribers = (page = 0, size = 50) =>
   api.get('/admin/newsletter/subscribers', { params: { page, size } });
 export const triggerNewsletter = () => api.post('/admin/newsletter/send');
+
+export const getFeedback = () => api.get('/admin/feedback');
