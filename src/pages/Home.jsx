@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  getHotDrops, getAllProducts, getShowcase,
+  getHotDrops, getAllProducts, getMostSellers, getShowcase,
   getShops, getShopTrust, subscribeNewsletter,
 } from '../api/api';
 import SearchBar from '../components/SearchBar';
@@ -12,6 +12,7 @@ import { useAuth } from '../auth/AuthContext';
 // import ProtectShowcase from '../components/ProtectShowcase';
 import { TrustScore, deliveryText } from '../components/TrustBadge';
 import { CategoryIcon } from '../lib/categoryIcon';
+import FeedbackPulse from '../components/FeedbackPulse';
 import {
   ArrowRight, ShieldCheck, Flame, TrendingDown, Truck, Heart, Check,
 } from 'lucide-react';
@@ -56,12 +57,19 @@ export default function Home() {
   const [shops, setShops] = useState([]);
   const [allProducts, setAllProducts] = useState(null);   // null = loading
   const [allProductsTrust, setAllProductsTrust] = useState({});
+  const [homePulseArmed, setHomePulseArmed] = useState(false);
 
   useEffect(() => {
-    // All Products Grid — grab the first 24 products for the homepage.
-    getAllProducts(0, 24)
+    // Arm feedback pulse after 10 seconds
+    const timer = setTimeout(() => setHomePulseArmed(true), 10000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    // All Products Grid — grab 24 products with the most sellers (minimum 6).
+    getMostSellers(24, 6)
       .then((res) => {
-        const ps = res.data?.content || [];
+        const ps = Array.isArray(res.data) ? res.data : (res.data?.content || []);
         setAllProducts(ps);
         const slugs = [...new Set(ps.map((p) => {
           const prices = (p.prices || []).slice().sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
@@ -306,6 +314,8 @@ export default function Home() {
       <section className="container-tight pt-10 sm:pt-14 pb-14 sm:pb-20">
         <CloseBand />
       </section>
+      
+      <FeedbackPulse armed={homePulseArmed} />
     </div>
   );
 }
@@ -326,6 +336,9 @@ function CloseBand() {
       </span>
       <div className="relative grid lg:grid-cols-2 gap-8 lg:gap-14 items-center">
         <div>
+          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-cream px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4 animate-bounce">
+            🔥 Join 10,000+ smart shoppers
+          </div>
           <h2 className="font-sans font-extrabold text-[clamp(1.7rem,3.6vw,2.6rem)] leading-[1.05] tracking-[-0.02em]">
             Never quietly <span className="text-acid">overpay</span> again.
           </h2>

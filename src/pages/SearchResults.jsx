@@ -5,6 +5,7 @@ import SearchProductCard from '../components/SearchProductCard';
 import { SkeletonRow } from '../components/LoadingSpinner';
 import SearchProductCardSkeleton from '../components/SearchProductCardSkeleton';
 import ServiceUnavailable from '../components/ServiceUnavailable';
+import NewsletterInline from '../components/NewsletterInline';
 import {
   Search, ArrowUpDown, ArrowLeft, Sparkles, TrendingDown,
   TrendingUp, Equal, AlertTriangle, RefreshCw, Lightbulb,
@@ -443,6 +444,9 @@ export default function SearchResults() {
             Our catalog doesn't have anything matching <b>"{query}"</b> yet —
             try a broader term, or check back soon as we add more every day.
           </p>
+          <div className="mt-6 max-w-xl mx-auto text-left">
+            <NewsletterInline title="Meanwhile, get the week's biggest price drops in your inbox" />
+          </div>
         </div>
       ) : (
         <>

@@ -59,6 +59,9 @@ export const triggerScrape = (query, sites) =>
 export const getAllProducts = (page = 0, size = 20, category) =>
   api.get('/products', { params: { page, size, ...(category ? { category } : {}) } });
 
+export const getMostSellers = (limit = 24, minSellers = 6) =>
+  api.get('/products/most-sellers', { params: { limit, minSellers } });
+
 /** Distinct catalog categories — powers the Browse filter chips. */
 export const getCategories = () => api.get('/products/categories');
 

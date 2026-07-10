@@ -9,6 +9,48 @@ function fmt(p) {
   return '৳' + Number(p).toLocaleString('en-IN');
 }
 
+/** One hot-drop card; shared by this rail and the public /drops page. */
+export function DropCard({ p }) {
+  return (
+    <Link
+      to={`/product/${p.id || p.slug}`}
+      className="card-soft overflow-hidden flex flex-col hover:shadow-[var(--shadow-card)] transition-shadow group"
+    >
+      <div className="relative aspect-[4/3] bg-cream-soft flex items-center justify-center overflow-hidden">
+        {p.imageUrl ? (
+          <img
+            src={p.imageUrl}
+            alt={p.name}
+            className="w-full h-full object-cover transition-transform group-hover:scale-[1.03]"
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+        ) : (
+          <CategoryIcon category={p.category} className="w-10 h-10 text-ink/20" />
+        )}
+        {p.dropPct > 0 && (
+          <div className="absolute top-2 right-2 inline-flex items-center gap-1 bg-red text-white px-2 py-0.5 rounded-full text-[10px] font-mono font-bold">
+            -{p.dropPct}%
+          </div>
+        )}
+      </div>
+      <div className="p-3 sm:p-4 flex-1 flex flex-col">
+        {p.category && (
+          <span className="font-mono text-[10px] uppercase tracking-wider text-gray mb-1">{p.category}</span>
+        )}
+        <h3 className="font-serif text-sm sm:text-[15px] font-semibold text-ink leading-snug line-clamp-2 mb-2">
+          {p.name}
+        </h3>
+        <div className="mt-auto flex items-baseline justify-between gap-2">
+          <span className="font-mono text-base sm:text-lg font-bold text-ink">{fmt(p.currentPrice)}</span>
+          {p.peakPrice > p.currentPrice && (
+            <span className="font-mono text-[11px] text-gray line-through">{fmt(p.peakPrice)}</span>
+          )}
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 /**
  * Horizontal scroller of products whose current cheapest price is at least
  * 10% below their 7-day peak. The backend rebuilds the underlying list
@@ -45,45 +87,7 @@ export default function HotDropsRail() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-        {items.slice(0, 8).map((p) => (
-          <Link
-            key={p.id}
-            to={`/product/${p.id || p.slug}`}
-            className="card-soft overflow-hidden flex flex-col hover:shadow-[var(--shadow-card)] transition-shadow group"
-          >
-            <div className="relative aspect-[4/3] bg-cream-soft flex items-center justify-center overflow-hidden">
-              {p.imageUrl ? (
-                <img
-                  src={p.imageUrl}
-                  alt={p.name}
-                  className="w-full h-full object-cover transition-transform group-hover:scale-[1.03]"
-                  onError={(e) => { e.target.style.display = 'none'; }}
-                />
-              ) : (
-                <CategoryIcon category={p.category} className="w-10 h-10 text-ink/20" />
-              )}
-              {p.dropPct > 0 && (
-                <div className="absolute top-2 right-2 inline-flex items-center gap-1 bg-red text-white px-2 py-0.5 rounded-full text-[10px] font-mono font-bold">
-                  -{p.dropPct}%
-                </div>
-              )}
-            </div>
-            <div className="p-3 sm:p-4 flex-1 flex flex-col">
-              {p.category && (
-                <span className="font-mono text-[10px] uppercase tracking-wider text-gray mb-1">{p.category}</span>
-              )}
-              <h3 className="font-serif text-sm sm:text-[15px] font-semibold text-ink leading-snug line-clamp-2 mb-2">
-                {p.name}
-              </h3>
-              <div className="mt-auto flex items-baseline justify-between gap-2">
-                <span className="font-mono text-base sm:text-lg font-bold text-ink">{fmt(p.currentPrice)}</span>
-                {p.peakPrice > p.currentPrice && (
-                  <span className="font-mono text-[11px] text-gray line-through">{fmt(p.peakPrice)}</span>
-                )}
-              </div>
-            </div>
-          </Link>
-        ))}
+        {items.slice(0, 8).map((p) => <DropCard key={p.id} p={p} />)}
       </div>
     </section>
   );

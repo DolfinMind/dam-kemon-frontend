@@ -13,6 +13,9 @@ import AddOffer from '../components/AddOffer';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ProductSEO from '../components/ProductSEO';
 import ServiceUnavailable from '../components/ServiceUnavailable';
+import NewsletterInline from '../components/NewsletterInline';
+import NewsletterModal from '../components/NewsletterModal';
+import FeedbackPulse from '../components/FeedbackPulse';
 import { valueScore, tierOf, deliveryText } from '../components/TrustBadge';
 import {
   ArrowLeft, Star, Share2, Bell, ShieldCheck, Store, AlertTriangle, Heart,
@@ -80,6 +83,44 @@ export default function ProductDetail() {
     }
   }, [product?.id, id]);
 
+  // Value-moment newsletter ask: only from the 2nd product viewed this
+  // session — a first-time lander hasn't seen the value yet.
+  const [showNewsletter, setShowNewsletter] = useState(false);
+  useEffect(() => {
+    try {
+      const n = Number(sessionStorage.getItem('dk_pv') || 0) + 1;
+      sessionStorage.setItem('dk_pv', String(n));
+      if (n >= 2) {
+        if (localStorage.getItem('dk_nl')) return;
+        if (Date.now() - Number(localStorage.getItem('dk_nl_x') || 0) < 14 * 24 * 3600 * 1000) return;
+        // Delay popup slightly for a smoother UX
+        setTimeout(() => setShowNewsletter(true), 2500);
+      }
+    } catch { /* private mode */ }
+  }, [id]);
+
+  // One-click pulse survey, armed when the shopper returns from a store tab —
+  // the moment they know whether we actually helped.
+  const [pulseArmed, setPulseArmed] = useState(false);
+  useEffect(() => {
+    const onVis = () => {
+      if (document.visibilityState === 'visible' && sessionStorage.getItem('dk_outclick')) {
+        sessionStorage.removeItem('dk_outclick');
+        setPulseArmed(true);
+      }
+    };
+    document.addEventListener('visibilitychange', onVis);
+
+    const timer = setTimeout(() => {
+      setPulseArmed(true);
+    }, 10000);
+
+    return () => {
+      document.removeEventListener('visibilitychange', onVis);
+      clearTimeout(timer);
+    };
+  }, []);
+
   const { user } = useAuth();
   const [inWishlist, setInWishlist] = useState(false);
   const [wishlistBusy, setWishlistBusy] = useState(false);
@@ -108,9 +149,13 @@ export default function ProductDetail() {
     }).catch(() => {});
   }, [user, product?.id, id]);
 
+  // Send anonymous users to sign-in WITH a way back — losing the product
+  // they were on is where the signup funnel used to leak.
+  const signInNext = () => navigate(`/sign-in?next=${encodeURIComponent(`/product/${id}`)}`);
+
   const toggleWishlist = async () => {
     const pid = product?.id || id;
-    if (!pid || !user) { navigate('/sign-in'); return; }
+    if (!pid || !user) { signInNext(); return; }
     setWishlistBusy(true);
     try {
       if (inWishlist) { await removeFromWishlist(pid); setInWishlist(false); }
@@ -122,7 +167,7 @@ export default function ProductDetail() {
   const openTrackPrice = async () => {
     const pid = product?.id || id;
     if (!pid) return;
-    if (!user) { navigate('/sign-in'); return; }
+    if (!user) { signInNext(); return; }
     // Add to wishlist first if not already — alerts hang off a wishlist row
     if (!inWishlist) {
       try { await addToWishlist(pid); setInWishlist(true); }
@@ -428,11 +473,26 @@ export default function ProductDetail() {
                     href={champHref}
                     target="_blank"
                     rel="noopener noreferrer sponsored"
-                    onClick={() => trackClick(pid, cheapest.siteSlug || cheapest.siteName)}
+                    onClick={() => {
+                      trackClick(pid, cheapest.siteSlug || cheapest.siteName);
+                      try { sessionStorage.setItem('dk_outclick', '1'); } catch { /* private mode */ }
+                    }}
                     className="btn-primary !px-6 !py-3 w-full sm:w-auto text-center"
                   >
                     Visit store <ExternalLink className="w-4 h-4" />
                   </a>
+                  <button
+                    onClick={openTrackPrice}
+                    disabled={wishlistBusy}
+                    className={`w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-6 py-2.5 rounded-xl border text-sm font-bold transition-colors ${
+                      alertSettings.alertsEnabled
+                        ? 'border-green/40 bg-green/10 text-green'
+                        : 'border-line bg-white text-ink hover:border-acid hover:bg-acid-soft'
+                    }`}
+                  >
+                    <Bell className="w-4 h-4" />
+                    {alertSettings.alertsEnabled ? 'Alert is on' : 'Alert me if it drops'}
+                  </button>
                   {/* ponytail: "Buy Protected" hidden from frontend per request. Restore to bring it back. */}
                 </div>
               </div>
@@ -441,7 +501,7 @@ export default function ProductDetail() {
             <div className="bg-cream-soft rounded-[1.25rem] border border-line p-8 flex flex-col items-center justify-center text-center">
               <Store className="w-8 h-8 text-ink/20 mb-3" />
               <p className="font-sans text-lg font-extrabold text-ink">No sellers found yet</p>
-              <p className="text-sm text-gray mt-1">We're actively scanning the market for this product.</p>
+              <p className="text-sm text-gray mt-1">No shops carry this right now — check back soon.</p>
             </div>
           )}
         </div>
@@ -460,6 +520,11 @@ export default function ProductDetail() {
             </div>
           </div>
           <PriceComparisonTable prices={prices} productId={pid} trust={trust} sellerTrust={sellerTrust} />
+          {showNewsletter && (
+            <div className="mt-5">
+              <NewsletterInline />
+            </div>
+          )}
           <AddOffer productId={pid} />
         </section>
 
@@ -569,6 +634,8 @@ export default function ProductDetail() {
           </div>
         </div>
       )}
+      <FeedbackPulse armed={pulseArmed} />
+      <NewsletterModal open={showNewsletter} onClose={() => setShowNewsletter(false)} />
     </div>
   );
 }

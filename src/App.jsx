@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import BottomNav from './components/BottomNav';
 import AssistantWidget from './components/AssistantWidget';
+import GoogleOneTap from './components/GoogleOneTap';
 import ScrollToTop from './components/ScrollToTop';
 import { AuthProvider } from './auth/AuthContext';
 import LoadingSpinner from './components/LoadingSpinner';
@@ -17,6 +18,7 @@ import SearchResults from './pages/SearchResults';
 // Lazy-load everything else so the initial bundle stays slim.
 const ProductDetail = lazy(() => import('./pages/ProductDetail'));
 const Browse = lazy(() => import('./pages/Browse'));
+const Drops = lazy(() => import('./pages/Drops'));
 const Protect = lazy(() => import('./pages/Protect'));
 const Compare = lazy(() => import('./pages/Compare'));
 const Sellers = lazy(() => import('./pages/Sellers'));
@@ -84,6 +86,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/search" element={<SearchResults />} />
                 <Route path="/browse" element={<Browse />} />
+                <Route path="/drops" element={<Drops />} />
                 <Route path="/protect" element={<Protect />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/compare" element={<Compare />} />
@@ -130,6 +133,7 @@ function App() {
           </main>
           <Footer />
           <BottomNav />
+          <GoogleOneTap />
           {SHOW_ASSISTANT && <AssistantWidget />}
         </div>
       </AuthProvider>
