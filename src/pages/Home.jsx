@@ -134,15 +134,9 @@ export default function Home() {
         </span>
 
         <div className="relative">
-          <div className="flex justify-center mb-6">
-            <LiveActivityPill fallbackProductsCount={15000} />
-          </div>
           <h1 className="max-w-4xl mx-auto mb-4">
             <span className="block font-sans font-extrabold leading-[0.92] tracking-[-0.04em] text-[clamp(3.2rem,8vw,6.5rem)] text-ink">
               Dam <span className="bg-acid px-3 -mx-1 inline-block">kemon?</span>
-            </span>
-            <span className="block mt-5 text-ink/65 text-[15px] sm:text-lg font-medium leading-relaxed max-w-xl mx-auto">
-              Compare prices across every online shop in Bangladesh — real prices, ranked by trust.
             </span>
           </h1>
 

@@ -47,8 +47,8 @@ export default function SocialProofToasts() {
 
   return (
     <div
-      className={`fixed bottom-24 md:bottom-6 left-4 z-40 transition-all duration-700 transform ${
-        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0 pointer-events-none'
+      className={`fixed top-4 right-4 md:top-6 md:right-6 z-50 transition-all duration-500 transform ${
+        isVisible ? 'translate-x-0 opacity-100' : 'translate-x-8 opacity-0 pointer-events-none'
       }`}
     >
       <div className="bg-surface border border-line-strong rounded-2xl shadow-xl shadow-ink/5 p-3 pr-4 flex items-center gap-3 max-w-sm backdrop-blur-md">
