@@ -19,7 +19,7 @@ import FeedbackPulse from '../components/FeedbackPulse';
 import { valueScore, tierOf, deliveryText } from '../components/TrustBadge';
 import {
   ArrowLeft, Star, Share2, Bell, ShieldCheck, Store, AlertTriangle, Heart,
-  Crown, ExternalLink, Truck, Banknote, ArrowDown,
+  Crown, ExternalLink, Truck, Banknote, ArrowDown, Share,
 } from 'lucide-react';
 import { CategoryIcon } from '../lib/categoryIcon';
 
@@ -409,6 +409,16 @@ export default function ProductDetail() {
                   className="text-sm font-medium text-gray hover:text-ink flex items-center gap-1.5 transition-colors"
                 >
                   <Share2 className="w-4 h-4" /> Share
+                </button>
+                <button
+                  onClick={() => {
+                    trackClick(pid, 'whatsapp-share');
+                    const text = `🔥 Just found a massive deal on ${product.name}! Lowest price is ${formatPrice(lowestPrice)}. Check it out here: ${window.location.href}`;
+                    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                  }}
+                  className="text-sm font-bold text-green flex items-center gap-1.5 transition-colors bg-green/10 px-3 py-1.5 rounded-full hover:bg-green/20"
+                >
+                  <Share className="w-4 h-4" /> WhatsApp
                 </button>
               </div>
             </div>

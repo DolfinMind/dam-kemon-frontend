@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import {
   getHotDrops, getAllProducts, getMostSellers, getShowcase,
   getShops, getShopTrust, subscribeNewsletter,
@@ -122,7 +123,12 @@ export default function Home() {
   };
 
   return (
-    <div className="overflow-x-hidden">
+    <div className="w-full bg-slate-50 min-h-screen">
+      <Helmet>
+        <title>Damkemon - The Ultimate Price Comparison Engine</title>
+        <meta name="description" content="Find the best deals on laptops, phones, and tech gear across trusted BD sellers. Never overpay again." />
+      </Helmet>
+
       {/* ── Hero: the brand question, a search box, and nothing else ── */}
       <section className="relative container-tight pt-6 sm:pt-10 lg:pt-14 pb-8 text-center flex flex-col items-center">
         {/* The taka sign IS the subject — one quiet watermark, no decoration elsewhere. */}
