@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { subscribeNewsletter } from '../api/api';
 import { Mail, Check, X, ShieldCheck, Flame, ArrowRight } from 'lucide-react';
+import { trackClick } from '../api/analytics';
 
-export default function NewsletterModal({ open, onClose }) {
+export default function NewsletterModal({ open, onClose, isExitIntent = false }) {
   const overlayRef = useRef(null);
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle'); // idle | loading | done | error
@@ -27,6 +28,7 @@ export default function NewsletterModal({ open, onClose }) {
     try {
       await subscribeNewsletter(email);
       try { localStorage.setItem('dk_nl', '1'); } catch { /* private mode */ }
+      trackClick('newsletter-subscribe', 'modal-form');
       setStatus('done');
       setTimeout(onClose, 2500); // Close modal automatically after 2.5s on success
     } catch {
@@ -79,11 +81,15 @@ export default function NewsletterModal({ open, onClose }) {
           </div>
 
           <h2 className="font-sans text-3xl sm:text-4xl font-extrabold leading-[1.1] tracking-tight text-ink mb-4">
-            Don't overpay for your next gadget.
+            {isExitIntent 
+              ? "Wait! Don't buy anything yet."
+              : "Don't overpay for your next gadget."}
           </h2>
           
           <p className="text-gray text-[15px] sm:text-base leading-relaxed mb-8 max-w-md">
-            Join the top 1% of smart shoppers in Bangladesh. We track the market and send you the biggest price drops and exclusive deals every Monday morning.
+            {isExitIntent
+              ? "Join 15,000+ smart shoppers who get our top secret tech deals every Monday. We track the market so you never overpay."
+              : "Join the top 1% of smart shoppers in Bangladesh. We track the market and send you the biggest price drops and exclusive deals every Monday morning."}
           </p>
 
           {status === 'done' ? (

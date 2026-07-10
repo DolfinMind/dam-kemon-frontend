@@ -47,6 +47,7 @@ export default function Navbar() {
   const navLinks = [
     { to: '/',          label: 'Home' },
     { to: '/browse',    label: 'Browse' },
+    { to: '/trending',  label: 'Trending' },
     // ponytail: Protect hidden from frontend per request. Restore this line to bring it back.
     // { to: '/protect',   label: 'Protect' },
     { to: '/compare',   label: 'Compare' },

@@ -123,7 +123,7 @@ export default function Home() {
   };
 
   return (
-    <div className="w-full bg-slate-50 min-h-screen">
+    <div className="overflow-x-hidden">
       <Helmet>
         <title>Damkemon - The Ultimate Price Comparison Engine</title>
         <meta name="description" content="Find the best deals on laptops, phones, and tech gear across trusted BD sellers. Never overpay again." />

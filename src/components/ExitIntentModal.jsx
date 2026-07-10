@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import NewsletterInline from './NewsletterInline';
+import NewsletterModal from './NewsletterModal';
 import { useAuth } from '../auth/AuthContext';
 
 export default function ExitIntentModal() {
@@ -29,14 +29,6 @@ export default function ExitIntentModal() {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-ink/40 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="relative w-full max-w-lg transform scale-100 animate-in zoom-in-95 duration-300 shadow-2xl rounded-2xl">
-        <NewsletterInline 
-          title="Wait! Don't leave without our best deals" 
-          dismissible={true}
-          onDismiss={() => setOpen(false)}
-        />
-      </div>
-    </div>
+    <NewsletterModal open={open} onClose={() => setOpen(false)} isExitIntent={true} />
   );
 }

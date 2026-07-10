@@ -23,6 +23,7 @@ const Browse = lazy(() => import('./pages/Browse'));
 const Drops = lazy(() => import('./pages/Drops'));
 const Protect = lazy(() => import('./pages/Protect'));
 const Compare = lazy(() => import('./pages/Compare'));
+const Trending = lazy(() => import('./pages/Trending'));
 const Sellers = lazy(() => import('./pages/Sellers'));
 const Guides = lazy(() => import('./pages/Guides'));
 const GuideDetail = lazy(() => import('./pages/GuideDetail'));
@@ -91,6 +92,7 @@ function App() {
                 <Route path="/browse" element={<Browse />} />
                 <Route path="/drops" element={<Drops />} />
                 <Route path="/protect" element={<Protect />} />
+                <Route path="/trending" element={<Trending />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/compare" element={<Compare />} />
                 <Route path="/sellers" element={<Sellers />} />
