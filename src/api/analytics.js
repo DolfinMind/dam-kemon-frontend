@@ -71,6 +71,7 @@ export const trackSuggestClick = (query, productId, productName) => {
 // browser's document.referrer (external entry) — internal hops are reconstructed
 // server-side from the sequence of page views per anon id.
 export const trackPageView = (path) => {
+  metaPixelPageView();
   let p = path;
   try {
     if (!p) p = `${location.pathname}${location.search}`;
@@ -82,3 +83,29 @@ export const trackPageView = (path) => {
   try { referer = document.referrer || null; } catch { /* ignore */ }
   fireBeacon('/events/pageview', { path: p, referer });
 };
+
+// Meta Pixel for ad retargeting. Inert until VITE_META_PIXEL_ID is set at
+// build time; bootstraps fbq on the first page view, then logs one PageView
+// per SPA navigation. ponytail: PageView only — add ViewContent/Lead events
+// when ad campaigns need conversion optimization.
+const PIXEL_ID = import.meta.env.VITE_META_PIXEL_ID;
+
+function metaPixelPageView() {
+  if (!PIXEL_ID) return;
+  try {
+    if (!window.fbq) {
+      const n = (window.fbq = function () {
+        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+      });
+      n.push = n; n.loaded = true; n.version = '2.0'; n.queue = [];
+      const s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://connect.facebook.net/en_US/fbevents.js';
+      document.head.appendChild(s);
+      window.fbq('init', PIXEL_ID);
+    }
+    window.fbq('track', 'PageView');
+  } catch {
+    /* analytics must never break the UI */
+  }
+}

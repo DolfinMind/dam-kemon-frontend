@@ -9,7 +9,11 @@ import { Helmet } from 'react-helmet-async';
 export default function ProductSEO({ product }) {
   if (!product) return null;
 
-  const title = `${product.name} Price in Bangladesh - Damkemon`;
+  // Price in the title = the CTR lever on "<name> price in bangladesh" SERPs.
+  const fromPrice = product.lowestPrice != null
+    ? ` — from ৳${Number(product.lowestPrice).toLocaleString('en-IN')}`
+    : '';
+  const title = `${product.name} Price in Bangladesh${fromPrice} - Damkemon`;
   const description = (product.description || `Compare ${product.name} prices across Bangladesh shops. Lowest price is ৳${product.lowestPrice}.`).slice(0, 240);
   const apiBase = import.meta.env.VITE_API_URL
     ? import.meta.env.VITE_API_URL.replace(/\/$/, '')
