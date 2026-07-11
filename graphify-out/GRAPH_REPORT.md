@@ -1,16 +1,16 @@
 # Graph Report - frontend  (2026-07-11)
 
 ## Corpus Check
-- 98 files · ~84,260 words
+- 98 files · ~84,270 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 595 nodes · 1019 edges · 54 communities (33 shown, 21 thin omitted)
+- 595 nodes · 1017 edges · 55 communities (33 shown, 22 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 2 edges (avg confidence: 0.78)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `41371880`
+- Built from commit: `2cf4e1b2`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -26,6 +26,7 @@
 - [[_COMMUNITY_AdminShops.jsx|AdminShops.jsx]]
 - [[_COMMUNITY_api.js|api.js]]
 - [[_COMMUNITY_auth.js|auth.js]]
+- [[_COMMUNITY_FeedbackPulse.jsx|FeedbackPulse.jsx]]
 - [[_COMMUNITY_AdminStats.jsx|AdminStats.jsx]]
 - [[_COMMUNITY_guides.jsx|guides.jsx]]
 - [[_COMMUNITY_AdminIndexer.jsx|AdminIndexer.jsx]]
@@ -97,11 +98,11 @@
 - **Trust-first Landing Redesign of Home.jsx** — landing_standout_changes_protectshowcase, landing_standout_changes_trust_microproofs, landing_standout_changes_bangla_brand_line, landing_standout_changes_trust_first_reorder, landing_standout_changes_home_jsx [INFERRED 0.85]
 - **Frontend CI/CD Deploy Pipeline (prod + staging)** — github_workflows_production_deploy_deploy_production, github_workflows_staging_deploy_deploy_staging, github_workflows_production_deploy_api_cloaking [INFERRED 0.80]
 
-## Communities (54 total, 21 thin omitted)
+## Communities (55 total, 22 thin omitted)
 
 ### Community 0 - "ProductDetail.jsx"
-Cohesion: 0.05
-Nodes (38): affiliateUrl(), getDailyPriceHistory(), getProduct(), getProductHistory(), getSellerTrust(), getShops(), submitOffer(), addToWishlist() (+30 more)
+Cohesion: 0.08
+Nodes (33): affiliateUrl(), getDailyPriceHistory(), getProduct(), getProductHistory(), getSellerTrust(), addToWishlist(), offerKey(), PriceComparisonTable() (+25 more)
 
 ### Community 1 - "App.jsx"
 Cohesion: 0.06
@@ -128,8 +129,8 @@ Cohesion: 0.16
 Nodes (13): fireBeacon(), getAnonId(), metaPixelPageView(), trackClick(), trackPageView(), trackSuggestClick(), trackView(), suggestProducts() (+5 more)
 
 ### Community 7 - "Home.jsx"
-Cohesion: 0.06
-Nodes (32): getAllProducts(), getCategories(), getHeadlineStats(), getHotDrops(), getMostSellers(), getShopTrust(), getShowcase(), subscribeNewsletter() (+24 more)
+Cohesion: 0.05
+Nodes (34): getAllProducts(), getCategories(), getHeadlineStats(), getHotDrops(), getMostSellers(), getShops(), getShopTrust(), getShowcase() (+26 more)
 
 ### Community 8 - "AdminShops.jsx"
 Cohesion: 0.17
@@ -137,7 +138,7 @@ Nodes (9): bulkSetShopStatus(), diagCollections(), editShop(), listShops(), rein
 
 ### Community 9 - "api.js"
 Cohesion: 0.17
-Nodes (7): protectAssess(), protectConfirmOrder(), protectCreateOrder(), protectDisputeOrder(), protectGetOrder(), submitFeedback(), PAYMENTS
+Nodes (8): protectAssess(), protectConfirmOrder(), protectCreateOrder(), protectDisputeOrder(), protectGetOrder(), submitOffer(), AddOffer(), PAYMENTS
 
 ### Community 10 - "auth.js"
 Cohesion: 0.05
@@ -218,7 +219,7 @@ Nodes (4): applyTheme(), getTheme(), toggleTheme(), App()
 ## Knowledge Gaps
 - **126 isolated node(s):** `check-gstack.sh script`, `name`, `private`, `version`, `type` (+121 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **21 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **22 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -227,12 +228,12 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.038) - this node is a cross-community bridge._
 - **Why does `api` connect `AdminStats.jsx` to `admin.js`, `api.js`, `auth.js`, `AdminStats.jsx`, `AdminIndexer.jsx`?**
   _High betweenness centrality (0.017) - this node is a cross-community bridge._
-- **Why does `LoadingSpinner()` connect `Sellers.jsx` to `ProductDetail.jsx`, `App.jsx`, `Dashboard.jsx`?**
+- **Why does `LoadingSpinner()` connect `Sellers.jsx` to `ProductDetail.jsx`, `App.jsx`, `Dashboard.jsx`, `Home.jsx`?**
   _High betweenness centrality (0.016) - this node is a cross-community bridge._
 - **What connects `check-gstack.sh script`, `name`, `private` to the rest of the system?**
   _129 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `ProductDetail.jsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.05427547363031234 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07770582793709528 - nodes in this community are weakly interconnected._
 - **Should `App.jsx` be split into smaller, more focused modules?**
   _Cohesion score 0.06060606060606061 - nodes in this community are weakly interconnected._
 - **Should `devDependencies` be split into smaller, more focused modules?**

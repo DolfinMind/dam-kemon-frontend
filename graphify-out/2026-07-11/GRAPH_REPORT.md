@@ -1,16 +1,16 @@
-# Graph Report - frontend  (2026-07-10)
+# Graph Report - frontend  (2026-07-11)
 
 ## Corpus Check
-- 97 files · ~82,495 words
+- 98 files · ~84,260 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 590 nodes · 991 edges · 60 communities (36 shown, 24 thin omitted)
+- 595 nodes · 1019 edges · 54 communities (33 shown, 21 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 2 edges (avg confidence: 0.78)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `fa680b0b`
+- Built from commit: `41371880`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -26,8 +26,6 @@
 - [[_COMMUNITY_AdminShops.jsx|AdminShops.jsx]]
 - [[_COMMUNITY_api.js|api.js]]
 - [[_COMMUNITY_auth.js|auth.js]]
-- [[_COMMUNITY_auth.js|auth.js]]
-- [[_COMMUNITY_Navbar.jsx|Navbar.jsx]]
 - [[_COMMUNITY_AdminStats.jsx|AdminStats.jsx]]
 - [[_COMMUNITY_guides.jsx|guides.jsx]]
 - [[_COMMUNITY_AdminIndexer.jsx|AdminIndexer.jsx]]
@@ -45,16 +43,13 @@
 - [[_COMMUNITY_WorldCupRail.jsx|WorldCupRail.jsx]]
 - [[_COMMUNITY_Dashboard.jsx|Dashboard.jsx]]
 - [[_COMMUNITY_Production Deploy Job (deploy-production)|Production Deploy Job (deploy-production)]]
-- [[_COMMUNITY_TrustBadge.jsx|TrustBadge.jsx]]
 - [[_COMMUNITY_AdminStats.jsx|AdminStats.jsx]]
 - [[_COMMUNITY_check-gstack.sh|check-gstack.sh]]
 - [[_COMMUNITY_SPA Root Shell + main.jsx Entry|SPA Root Shell + main.jsx Entry]]
 - [[_COMMUNITY_CLAUDE|CLAUDE.md]]
 - [[_COMMUNITY_Landing-page standout changes — Home.jsx|Landing-page "standout" changes — Home.jsx]]
-- [[_COMMUNITY_AssistantWidget.jsx|AssistantWidget.jsx]]
 - [[_COMMUNITY_Navbar.jsx|Navbar.jsx]]
 - [[_COMMUNITY_AdminPendingShops.jsx|AdminPendingShops.jsx]]
-- [[_COMMUNITY_SaathiProfile.jsx|SaathiProfile.jsx]]
 - [[_COMMUNITY_num|num]]
 - [[_COMMUNITY_AssistantWidget.jsx|AssistantWidget.jsx]]
 - [[_COMMUNITY_Bangla Brand Line in Hero|Bangla Brand Line in Hero]]
@@ -69,32 +64,31 @@
 - [[_COMMUNITY_Trending.jsx|Trending.jsx]]
 - [[_COMMUNITY_main.jsx|main.jsx]]
 - [[_COMMUNITY_BottomNav.jsx|BottomNav.jsx]]
-- [[_COMMUNITY_SocialProofToasts.jsx|SocialProofToasts.jsx]]
 - [[_COMMUNITY_ScrollToTop.jsx|ScrollToTop.jsx]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `useAuth()` - 28 edges
 2. `dam-kemon-frontend` - 11 edges
-3. `SmartVerdict()` - 9 edges
-4. `deliveryText()` - 9 edges
-5. `LoadingSpinner()` - 8 edges
-6. `trackClick()` - 7 edges
-7. `api` - 7 edges
-8. `tierOf()` - 7 edges
-9. `CategoryIcon` - 7 edges
-10. `ProductDetail()` - 7 edges
+3. `cleanName()` - 10 edges
+4. `ProductDetail()` - 10 edges
+5. `SmartVerdict()` - 9 edges
+6. `deliveryText()` - 9 edges
+7. `LoadingSpinner()` - 8 edges
+8. `saneSavePct()` - 8 edges
+9. `trackClick()` - 7 edges
+10. `api` - 7 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `AdminLayout()` --calls--> `useAuth()`  [EXTRACTED]
   src/pages/admin/AdminLayout.jsx → src/auth/AuthContext.jsx
 - `Staging Deploy Job (deploy-staging)` --semantically_similar_to--> `Production Deploy Job (deploy-production)`  [INFERRED] [semantically similar]
   .github/workflows/staging-deploy.yml → .github/workflows/production-deploy.yml
+- `PageTracker()` --calls--> `trackPageView()`  [EXTRACTED]
+  src/App.jsx → src/api/analytics.js
 - `NewsletterMini()` --calls--> `subscribeNewsletter()`  [EXTRACTED]
   src/pages/Home.jsx → src/api/api.js
 - `ExitIntentModal()` --calls--> `useAuth()`  [EXTRACTED]
   src/components/ExitIntentModal.jsx → src/auth/AuthContext.jsx
-- `Navbar()` --calls--> `useAuth()`  [EXTRACTED]
-  src/components/Navbar.jsx → src/auth/AuthContext.jsx
 
 ## Import Cycles
 - None detected.
@@ -103,15 +97,15 @@
 - **Trust-first Landing Redesign of Home.jsx** — landing_standout_changes_protectshowcase, landing_standout_changes_trust_microproofs, landing_standout_changes_bangla_brand_line, landing_standout_changes_trust_first_reorder, landing_standout_changes_home_jsx [INFERRED 0.85]
 - **Frontend CI/CD Deploy Pipeline (prod + staging)** — github_workflows_production_deploy_deploy_production, github_workflows_staging_deploy_deploy_staging, github_workflows_production_deploy_api_cloaking [INFERRED 0.80]
 
-## Communities (60 total, 24 thin omitted)
+## Communities (54 total, 21 thin omitted)
 
 ### Community 0 - "ProductDetail.jsx"
-Cohesion: 0.15
-Nodes (13): affiliateUrl(), getDailyPriceHistory(), getProduct(), getProductHistory(), getSellerTrust(), submitOffer(), addToWishlist(), AddOffer() (+5 more)
+Cohesion: 0.05
+Nodes (38): affiliateUrl(), getDailyPriceHistory(), getProduct(), getProductHistory(), getSellerTrust(), getShops(), submitOffer(), addToWishlist() (+30 more)
 
 ### Community 1 - "App.jsx"
 Cohesion: 0.06
-Nodes (32): Account, AdminAnalytics, AdminAuditLog, AdminCache, AdminCatalog, AdminFeedback, AdminIndexer, AdminJobs (+24 more)
+Nodes (31): Account, AdminAnalytics, AdminAuditLog, AdminCache, AdminCatalog, AdminFeedback, AdminIndexer, AdminJobs (+23 more)
 
 ### Community 2 - "devDependencies"
 Cohesion: 0.06
@@ -131,11 +125,11 @@ Nodes (18): analyticsDailyUsers(), analyticsDevices(), analyticsFunnel(), analyt
 
 ### Community 6 - "ScrollToTop.jsx"
 Cohesion: 0.16
-Nodes (12): fireBeacon(), getAnonId(), trackClick(), trackPageView(), trackSuggestClick(), trackView(), suggestProducts(), origin (+4 more)
+Nodes (13): fireBeacon(), getAnonId(), metaPixelPageView(), trackClick(), trackPageView(), trackSuggestClick(), trackView(), suggestProducts() (+5 more)
 
 ### Community 7 - "Home.jsx"
-Cohesion: 0.05
-Nodes (32): getAllProducts(), getCategories(), getDashboardStats(), getHeadlineStats(), getHotDrops(), getLiveStats(), getMostSellers(), getShopTrust() (+24 more)
+Cohesion: 0.06
+Nodes (32): getAllProducts(), getCategories(), getHeadlineStats(), getHotDrops(), getMostSellers(), getShopTrust(), getShowcase(), subscribeNewsletter() (+24 more)
 
 ### Community 8 - "AdminShops.jsx"
 Cohesion: 0.17
@@ -147,15 +141,7 @@ Nodes (7): protectAssess(), protectConfirmOrder(), protectCreateOrder(), protect
 
 ### Community 10 - "auth.js"
 Cohesion: 0.05
-Nodes (45): accountSearchHistory(), addSavedSearch(), forgotPassword(), getAuthConfig(), getAuthToken(), getMe(), googleLogin(), listNotifications() (+37 more)
-
-### Community 11 - "auth.js"
-Cohesion: 0.38
-Nodes (8): fmt(), sellerLabel(), slugOf(), SmartVerdict(), authenticityMeta(), deliveryText(), returnText(), TrustBadge()
-
-### Community 12 - "Navbar.jsx"
-Cohesion: 0.25
-Nodes (4): offerKey(), PriceComparisonTable(), sellerBadges, slugOf()
+Nodes (46): accountSearchHistory(), addSavedSearch(), forgotPassword(), getAuthConfig(), getAuthToken(), getMe(), googleLogin(), listNotifications() (+38 more)
 
 ### Community 14 - "guides.jsx"
 Cohesion: 0.26
@@ -201,13 +187,13 @@ Nodes (21): 1. Install, 2. Configure (optional), 3. Run, 4. Build, Backend contr
 Cohesion: 0.40
 Nodes (3): flushAllCaches(), flushCache(), listCaches()
 
+### Community 28 - "Dashboard.jsx"
+Cohesion: 0.18
+Nodes (6): getDashboardStats(), getLiveStats(), getTrendingSearches(), LiveActivityPill(), Dashboard(), fmt()
+
 ### Community 29 - "Production Deploy Job (deploy-production)"
 Cohesion: 0.67
 Nodes (3): VITE_API_BASE Opaque API Prefix (cloaking), Production Deploy Job (deploy-production), Staging Deploy Job (deploy-staging)
-
-### Community 30 - "TrustBadge.jsx"
-Cohesion: 0.36
-Nodes (6): avgDays(), clamp01(), sizeMap, tierOf(), TrustScore(), valueScore()
 
 ### Community 39 - "Landing-page "standout" changes — Home.jsx"
 Cohesion: 0.25
@@ -221,10 +207,6 @@ Nodes (3): AlphaBadge(), Footer(), Navbar()
 Cohesion: 0.40
 Nodes (3): approvePendingShop(), listPendingShops(), rejectPendingShop()
 
-### Community 43 - "SaathiProfile.jsx"
-Cohesion: 0.29
-Nodes (4): defaultColors, PriceHistoryChart(), ranges, siteLineColors
-
 ### Community 44 - "num"
 Cohesion: 0.50
 Nodes (4): AdminAnalytics(), FunnelStage(), num(), Row()
@@ -234,24 +216,24 @@ Cohesion: 0.53
 Nodes (4): applyTheme(), getTheme(), toggleTheme(), App()
 
 ## Knowledge Gaps
-- **127 isolated node(s):** `check-gstack.sh script`, `name`, `private`, `version`, `type` (+122 more)
+- **126 isolated node(s):** `check-gstack.sh script`, `name`, `private`, `version`, `type` (+121 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **24 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **21 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `useAuth()` connect `auth.js` to `ProductDetail.jsx`, `SaathiDashboard.jsx`, `ScrollToTop.jsx`, `Home.jsx`, `Navbar.jsx`, `AdminIndexer.jsx`?**
   _High betweenness centrality (0.038) - this node is a cross-community bridge._
-- **Why does `LoadingSpinner()` connect `Sellers.jsx` to `AssistantWidget.jsx`, `App.jsx`, `ProductDetail.jsx`, `Home.jsx`?**
-  _High betweenness centrality (0.017) - this node is a cross-community bridge._
 - **Why does `api` connect `AdminStats.jsx` to `admin.js`, `api.js`, `auth.js`, `AdminStats.jsx`, `AdminIndexer.jsx`?**
   _High betweenness centrality (0.017) - this node is a cross-community bridge._
+- **Why does `LoadingSpinner()` connect `Sellers.jsx` to `ProductDetail.jsx`, `App.jsx`, `Dashboard.jsx`?**
+  _High betweenness centrality (0.016) - this node is a cross-community bridge._
 - **What connects `check-gstack.sh script`, `name`, `private` to the rest of the system?**
-  _130 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _129 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `ProductDetail.jsx` be split into smaller, more focused modules?**
+  _Cohesion score 0.05427547363031234 - nodes in this community are weakly interconnected._
 - **Should `App.jsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.058823529411764705 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06060606060606061 - nodes in this community are weakly interconnected._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.0625 - nodes in this community are weakly interconnected._
-- **Should `Sellers.jsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.10822510822510822 - nodes in this community are weakly interconnected._

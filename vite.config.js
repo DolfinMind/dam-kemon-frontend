@@ -11,6 +11,7 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
+    port: Number(process.env.PORT) || 5173, // harness-assigned port when parallel sessions run
     proxy: {
       '/api': 'http://localhost:8080',
       '/_dk': {

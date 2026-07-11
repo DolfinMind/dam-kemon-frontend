@@ -1549,7 +1549,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "src_api_api_getshops",
-      "community": 0,
+      "community": 7,
       "norm_label": "getshops()"
     },
     {
@@ -1809,7 +1809,7 @@
       "source_location": "L184",
       "_origin": "ast",
       "id": "src_api_api_submitoffer",
-      "community": 0,
+      "community": 9,
       "norm_label": "submitoffer()"
     },
     {
@@ -1829,7 +1829,7 @@
       "source_location": "L189",
       "_origin": "ast",
       "id": "src_api_api_submitfeedback",
-      "community": 9,
+      "community": 11,
       "norm_label": "submitfeedback()"
     },
     {
@@ -2349,7 +2349,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_addoffer",
-      "community": 0,
+      "community": 9,
       "norm_label": "addoffer.jsx"
     },
     {
@@ -2359,7 +2359,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_components_addoffer_addoffer",
-      "community": 0,
+      "community": 9,
       "norm_label": "addoffer()"
     },
     {
@@ -2489,7 +2489,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_feedbackpulse",
-      "community": 0,
+      "community": 11,
       "norm_label": "feedbackpulse.jsx"
     },
     {
@@ -2499,7 +2499,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_feedbackpulse_eligible",
-      "community": 0,
+      "community": 11,
       "norm_label": "eligible()"
     },
     {
@@ -2509,7 +2509,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_components_feedbackpulse_feedbackpulse",
-      "community": 0,
+      "community": 11,
       "norm_label": "feedbackpulse()"
     },
     {
@@ -2519,7 +2519,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_feedbacksection",
-      "community": 9,
+      "community": 11,
       "norm_label": "feedbacksection.jsx"
     },
     {
@@ -2529,7 +2529,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_components_feedbacksection_feedbacksection",
-      "community": 9,
+      "community": 11,
       "norm_label": "feedbacksection()"
     },
     {
@@ -3849,7 +3849,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_pages_compare",
-      "community": 0,
+      "community": 7,
       "norm_label": "compare.jsx"
     },
     {
@@ -3859,7 +3859,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_pages_compare_avatar_colors",
-      "community": 0,
+      "community": 7,
       "norm_label": "avatar_colors"
     },
     {
@@ -3869,7 +3869,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_pages_compare_cap",
-      "community": 0,
+      "community": 7,
       "norm_label": "cap()"
     },
     {
@@ -3879,7 +3879,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_pages_compare_initialsof",
-      "community": 0,
+      "community": 7,
       "norm_label": "initialsof()"
     },
     {
@@ -3889,7 +3889,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_pages_compare_deliverydays",
-      "community": 0,
+      "community": 7,
       "norm_label": "deliverydays()"
     },
     {
@@ -3899,7 +3899,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "src_pages_compare_authrank",
-      "community": 0,
+      "community": 7,
       "norm_label": "authrank()"
     },
     {
@@ -3909,7 +3909,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "src_pages_compare_resprank",
-      "community": 0,
+      "community": 7,
       "norm_label": "resprank()"
     },
     {
@@ -3919,7 +3919,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "src_pages_compare_bestindex",
-      "community": 0,
+      "community": 7,
       "norm_label": "bestindex()"
     },
     {
@@ -3929,7 +3929,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "src_pages_compare_compare",
-      "community": 0,
+      "community": 7,
       "norm_label": "compare()"
     },
     {
@@ -4226,7 +4226,7 @@
       "label": "formatPrice()",
       "file_type": "code",
       "source_file": "src/pages/ProductDetail.jsx",
-      "source_location": "L27",
+      "source_location": "L26",
       "_origin": "ast",
       "id": "src_pages_productdetail_formatprice",
       "community": 0,
@@ -4236,7 +4236,7 @@
       "label": "slugOf()",
       "file_type": "code",
       "source_file": "src/pages/ProductDetail.jsx",
-      "source_location": "L32",
+      "source_location": "L31",
       "_origin": "ast",
       "id": "src_pages_productdetail_slugof",
       "community": 0,
@@ -4246,7 +4246,7 @@
       "label": "ProductDetail()",
       "file_type": "code",
       "source_file": "src/pages/ProductDetail.jsx",
-      "source_location": "L34",
+      "source_location": "L33",
       "_origin": "ast",
       "id": "src_pages_productdetail_productdetail",
       "community": 0,
@@ -12352,7 +12352,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/ProductDetail.jsx",
-      "source_location": "L18",
+      "source_location": "L17",
       "weight": 1.0,
       "source": "src_pages_productdetail",
       "target": "src_components_feedbackpulse",
@@ -12363,7 +12363,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/ProductDetail.jsx",
-      "source_location": "L18",
+      "source_location": "L17",
       "weight": 1.0,
       "source": "src_pages_productdetail",
       "target": "src_components_feedbackpulse_feedbackpulse",
@@ -12911,28 +12911,6 @@
       "source_location": "L6",
       "weight": 1.0,
       "source": "src_components_newslettermodal",
-      "target": "src_components_newslettermodal_newslettermodal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/pages/ProductDetail.jsx",
-      "source_location": "L17",
-      "weight": 1.0,
-      "source": "src_pages_productdetail",
-      "target": "src_components_newslettermodal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/pages/ProductDetail.jsx",
-      "source_location": "L17",
-      "weight": 1.0,
-      "source": "src_pages_productdetail",
       "target": "src_components_newslettermodal_newslettermodal",
       "confidence_score": 1.0
     },
@@ -14251,7 +14229,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/ProductDetail.jsx",
-      "source_location": "L19",
+      "source_location": "L18",
       "weight": 1.0,
       "source": "src_pages_productdetail",
       "target": "src_components_trustbadge",
@@ -14295,7 +14273,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/ProductDetail.jsx",
-      "source_location": "L19",
+      "source_location": "L18",
       "weight": 1.0,
       "source": "src_pages_productdetail",
       "target": "src_components_trustbadge_tierof",
@@ -14350,7 +14328,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/ProductDetail.jsx",
-      "source_location": "L19",
+      "source_location": "L18",
       "weight": 1.0,
       "source": "src_pages_productdetail",
       "target": "src_components_trustbadge_deliverytext",
@@ -14416,7 +14394,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/ProductDetail.jsx",
-      "source_location": "L19",
+      "source_location": "L18",
       "weight": 1.0,
       "source": "src_pages_productdetail",
       "target": "src_components_trustbadge_valuescore",
@@ -14638,7 +14616,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/ProductDetail.jsx",
-      "source_location": "L24",
+      "source_location": "L23",
       "weight": 1.0,
       "source": "src_pages_productdetail",
       "target": "src_lib_categoryicon",
@@ -14671,7 +14649,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/ProductDetail.jsx",
-      "source_location": "L24",
+      "source_location": "L23",
       "weight": 1.0,
       "source": "src_pages_productdetail",
       "target": "src_lib_categoryicon_categoryicon",
@@ -14734,7 +14712,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/ProductDetail.jsx",
-      "source_location": "L25",
+      "source_location": "L24",
       "weight": 1.0,
       "source": "src_pages_productdetail",
       "target": "src_lib_display",
@@ -14789,7 +14767,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/ProductDetail.jsx",
-      "source_location": "L25",
+      "source_location": "L24",
       "weight": 1.0,
       "source": "src_pages_productdetail",
       "target": "src_lib_display_cleanname",
@@ -14811,7 +14789,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/ProductDetail.jsx",
-      "source_location": "L25",
+      "source_location": "L24",
       "weight": 1.0,
       "source": "src_pages_productdetail",
       "target": "src_lib_display_reltime",
@@ -14855,7 +14833,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/ProductDetail.jsx",
-      "source_location": "L25",
+      "source_location": "L24",
       "weight": 1.0,
       "source": "src_pages_productdetail",
       "target": "src_lib_display_sanesavepct",
@@ -15328,7 +15306,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/ProductDetail.jsx",
-      "source_location": "L27",
+      "source_location": "L26",
       "weight": 1.0,
       "source": "src_pages_productdetail",
       "target": "src_pages_productdetail_formatprice",
@@ -15338,7 +15316,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/ProductDetail.jsx",
-      "source_location": "L34",
+      "source_location": "L33",
       "weight": 1.0,
       "source": "src_pages_productdetail",
       "target": "src_pages_productdetail_productdetail",
@@ -15348,7 +15326,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/ProductDetail.jsx",
-      "source_location": "L32",
+      "source_location": "L31",
       "weight": 1.0,
       "source": "src_pages_productdetail",
       "target": "src_pages_productdetail_slugof",
@@ -16806,5 +16784,5 @@
       "source_file": ".github/workflows/production-deploy.yml"
     }
   ],
-  "built_at_commit": "41371880b22aae03d8b4b71145b4dbaf59d5d792"
+  "built_at_commit": "2cf4e1b29e6d231838ba8447357c0536b4a00dd4"
 }

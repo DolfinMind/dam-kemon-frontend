@@ -3,7 +3,7 @@ import { subscribeNewsletter } from '../api/api';
 import { Mail, Check, X, ShieldCheck, Flame, ArrowRight } from 'lucide-react';
 import { trackClick } from '../api/analytics';
 
-export default function NewsletterModal({ open, onClose, isExitIntent = false }) {
+export default function NewsletterModal({ open, onClose }) {
   const overlayRef = useRef(null);
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle'); // idle | loading | done | error
@@ -81,9 +81,7 @@ export default function NewsletterModal({ open, onClose, isExitIntent = false })
           </div>
 
           <h2 className="font-sans text-3xl sm:text-4xl font-extrabold leading-[1.1] tracking-tight text-ink mb-4">
-            {isExitIntent
-              ? "Before you go — want Monday's price drops?"
-              : "Don't overpay for your next gadget."}
+            Don't overpay for your next gadget.
           </h2>
 
           <p className="text-gray text-[15px] sm:text-base leading-relaxed mb-8 max-w-md">

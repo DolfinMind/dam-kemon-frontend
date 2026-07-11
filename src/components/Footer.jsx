@@ -39,7 +39,7 @@ export default function Footer() {
 
         <div className="border-t border-cream/10 mt-8 pt-5 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-cream/40 text-xs sm:text-sm inline-flex items-center gap-1.5">
-            <Sparkles className="w-3 h-3 text-yellow" /> Made with chai in Dhaka
+            <Sparkles className="w-3 h-3 text-yellow" /> A product of Dolfinmind
           </p>
           <p className="text-cream/40 text-xs sm:text-sm font-mono">© 2026 Damkemon</p>
         </div>
