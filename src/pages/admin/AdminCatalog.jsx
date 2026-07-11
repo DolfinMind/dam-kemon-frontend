@@ -9,6 +9,13 @@ const EMPTY_DRAFT = {
 
 function fmt(p) { if (p == null) return 'N/A'; return '৳' + Number(p).toLocaleString('en-IN'); }
 
+function formatDateTime(isoString) {
+  if (!isoString) return '';
+  const d = new Date(isoString);
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${String(d.getFullYear()).slice(-2)}:${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 export default function AdminCatalog() {
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
@@ -143,6 +150,12 @@ export default function AdminCatalog() {
                 <span className="font-mono">{fmt(p.lowestPrice)}</span>
                 <span>·</span>
                 <span>{p.prices?.length || 0} sellers</span>
+                {p.createdAt && (
+                  <>
+                    <span>·</span>
+                    <span className="font-mono">{formatDateTime(p.createdAt)}</span>
+                  </>
+                )}
               </div>
             </div>
             <div className="flex gap-1 shrink-0">

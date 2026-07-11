@@ -13,7 +13,7 @@ export default defineConfig({
   server: {
     port: Number(process.env.PORT) || 5173, // harness-assigned port when parallel sessions run
     proxy: {
-      '/api': 'http://localhost:8080',
+      '/api': { target: 'https://damkemon.com', changeOrigin: true, secure: true }, // TEMP: revert to http://localhost:8080
       '/_dk': {
         target: 'http://localhost:8080',
         changeOrigin: true,

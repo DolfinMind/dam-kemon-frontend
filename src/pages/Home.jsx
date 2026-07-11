@@ -71,8 +71,8 @@ export default function Home() {
   // which can't happen on the homepage — a timer-armed ask is just a nag.
 
   useEffect(() => {
-    // All Products Grid — grab 24 products with the most sellers (minimum 6).
-    getMostSellers(24, 6)
+    // All Products Grid — grab 24 products with the most sellers (minimum 18).
+    getMostSellers(24, 18)
       .then((res) => {
         const ps = Array.isArray(res.data) ? res.data : (res.data?.content || []);
         setAllProducts(ps);

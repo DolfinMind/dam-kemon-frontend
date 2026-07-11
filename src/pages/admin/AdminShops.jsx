@@ -11,6 +11,8 @@ const HEALTH_BADGE = {
 export default function AdminShops() {
   const [shops, setShops] = useState([]);
   const [filter, setFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState('name');
   const [busy, setBusy] = useState(null);
   const [selected, setSelected] = useState(new Set());
   const [editing, setEditing] = useState(null);
@@ -45,9 +47,23 @@ export default function AdminShops() {
   };
 
   const filtered = shops.filter((s) => {
-    if (filter === 'all') return true;
-    if (filter === 'failing') return s.consecutiveFailures > 0 || s.needsRetry;
-    return (s.health || 'active') === filter;
+    if (filter !== 'all') {
+      if (filter === 'failing') {
+        if (!(s.consecutiveFailures > 0 || s.needsRetry)) return false;
+      } else {
+        if ((s.health || 'active') !== filter) return false;
+      }
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      if (!s.name.toLowerCase().includes(q) && !s.slug.toLowerCase().includes(q)) return false;
+    }
+    return true;
+  }).sort((a, b) => {
+    if (sortBy === 'products') {
+      return (b.lastIndexedCount ?? 0) - (a.lastIndexedCount ?? 0);
+    }
+    return a.name.localeCompare(b.name);
   });
 
   const reindex = async (slug) => {
@@ -153,6 +169,26 @@ export default function AdminShops() {
             {f} {f === 'all' && `(${shops.length})`}
           </button>
         ))}
+        
+        <div className="flex-1 min-w-[200px] ml-4">
+          <input 
+            type="text" 
+            placeholder="Search shops..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full px-3 py-1.5 bg-white border border-line rounded-lg text-xs"
+          />
+        </div>
+        
+        <select 
+          value={sortBy} 
+          onChange={(e) => setSortBy(e.target.value)}
+          className="px-3 py-1.5 bg-white border border-line rounded-lg text-xs"
+        >
+          <option value="name">Sort by Name</option>
+          <option value="products">Sort by Products</option>
+        </select>
+
         <span className="text-xs text-gray ml-auto">{filtered.length} shown</span>
       </div>
 

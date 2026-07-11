@@ -583,8 +583,8 @@ export default function ProductDetail() {
           >
             <div className="flex items-start justify-between mb-4">
               <div>
-                <h3 className="font-sans text-xl sm:text-2xl font-extrabold tracking-[-0.02em] text-ink">Track this price</h3>
-                <p className="text-xs text-gray mt-1">We'll email you the moment it drops.</p>
+                <h3 className="font-sans text-xl sm:text-2xl font-extrabold tracking-[-0.02em] text-ink">Plan a Genius Comeback</h3>
+                <p className="text-xs text-gray mt-1">Smart shoppers wait. We'll email you the moment the price drops.</p>
               </div>
               <button
                 onClick={() => setAlertModalOpen(false)}
