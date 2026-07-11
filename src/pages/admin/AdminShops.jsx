@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { listShops, reindexShop, setShopStatus, editShop, bulkSetShopStatus, diagCollections, reseedDirectories, syncShopFeed } from '../../api/admin';
-import { RotateCcw, AlertTriangle, CheckCircle2, Clock, Edit2, X, Check, DatabaseZap, DownloadCloud, Eye, EyeOff } from 'lucide-react';
+import { RotateCcw, AlertTriangle, CheckCircle2, Clock, Edit2, X, Check, DatabaseZap, DownloadCloud, Eye, EyeOff, FileText, Rss, Zap } from 'lucide-react';
+
+const PAGE_SIZE = 100;
 
 const HEALTH_BADGE = {
   active: { color: 'bg-green/15 text-green', icon: CheckCircle2 },
@@ -10,8 +12,11 @@ const HEALTH_BADGE = {
 
 export default function AdminShops() {
   const [shops, setShops] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(0);
   const [filter, setFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [q, setQ] = useState(''); // debounced copy of searchQuery that actually hits the server
   const [sortBy, setSortBy] = useState('name');
   const [busy, setBusy] = useState(null);
   const [selected, setSelected] = useState(new Set());
@@ -24,10 +29,19 @@ export default function AdminShops() {
   // A failed load (commonly a 401 from an expired admin session) must not look
   // like "0 shops" — surface the real reason so the table-empty case is honest.
   const load = () =>
-    listShops()
-      .then((r) => { setShops(Array.isArray(r.data) ? r.data : []); setLoadError(null); })
+    listShops({
+      page, size: PAGE_SIZE, sort: sortBy,
+      q: q || undefined,
+      health: filter !== 'all' ? filter : undefined,
+    })
+      .then((r) => {
+        setShops(Array.isArray(r.data?.shops) ? r.data.shops : []);
+        setTotal(r.data?.totalElements ?? 0);
+        setLoadError(null);
+      })
       .catch((e) => {
         setShops([]);
+        setTotal(0);
         setLoadError(
           e?.response?.status === 401
             ? 'Your admin session expired — sign in again to load shops.'
@@ -35,7 +49,12 @@ export default function AdminShops() {
         );
       });
   const loadDiag = () => diagCollections().then((r) => setDiag(r.data)).catch(() => setDiag(null));
-  useEffect(() => { load(); loadDiag(); }, []);
+  useEffect(() => { load(); /* eslint-disable-next-line */ }, [page, filter, sortBy, q]);
+  useEffect(() => { loadDiag(); }, []);
+  useEffect(() => {
+    const t = setTimeout(() => { setPage(0); setQ(searchQuery.trim()); }, 400);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
 
   const reseed = async () => {
     setReseeding(true);
@@ -45,26 +64,6 @@ export default function AdminShops() {
       await load();
     } finally { setReseeding(false); }
   };
-
-  const filtered = shops.filter((s) => {
-    if (filter !== 'all') {
-      if (filter === 'failing') {
-        if (!(s.consecutiveFailures > 0 || s.needsRetry)) return false;
-      } else {
-        if ((s.health || 'active') !== filter) return false;
-      }
-    }
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      if (!s.name.toLowerCase().includes(q) && !s.slug.toLowerCase().includes(q)) return false;
-    }
-    return true;
-  }).sort((a, b) => {
-    if (sortBy === 'products') {
-      return (b.lastIndexedCount ?? 0) - (a.lastIndexedCount ?? 0);
-    }
-    return a.name.localeCompare(b.name);
-  });
 
   const reindex = async (slug) => {
     setBusy('reindex:' + slug);
@@ -161,12 +160,12 @@ export default function AdminShops() {
         {['all', 'active', 'degraded', 'dormant', 'failing'].map((f) => (
           <button
             key={f}
-            onClick={() => setFilter(f)}
+            onClick={() => { setFilter(f); setPage(0); }}
             className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
               filter === f ? 'bg-ink text-cream border-ink' : 'bg-white text-ink border-line hover:border-ink'
             }`}
           >
-            {f} {f === 'all' && `(${shops.length})`}
+            {f} {filter === f && `(${total})`}
           </button>
         ))}
         
@@ -180,16 +179,18 @@ export default function AdminShops() {
           />
         </div>
         
-        <select 
-          value={sortBy} 
-          onChange={(e) => setSortBy(e.target.value)}
+        <select
+          value={sortBy}
+          onChange={(e) => { setSortBy(e.target.value); setPage(0); }}
           className="px-3 py-1.5 bg-white border border-line rounded-lg text-xs"
         >
           <option value="name">Sort by Name</option>
           <option value="products">Sort by Products</option>
         </select>
 
-        <span className="text-xs text-gray ml-auto">{filtered.length} shown</span>
+        <span className="text-xs text-gray ml-auto">
+          {shops.length === 0 ? '0' : `${page * PAGE_SIZE + 1}–${page * PAGE_SIZE + shops.length}`} of {total.toLocaleString()}
+        </span>
       </div>
 
       {selected.size > 0 && (
@@ -211,6 +212,7 @@ export default function AdminShops() {
             <tr className="text-left text-[10px] font-mono uppercase tracking-wider text-gray border-b border-line">
               <th className="py-2 pr-2 w-6"></th>
               <th className="py-2 pr-3">Shop</th>
+              <th className="py-2 pr-3" title="Sitemap · Feed · JavaScript">Sources</th>
               <th className="py-2 pr-3">Health</th>
               <th className="py-2 pr-3">Last run</th>
               <th className="py-2 pr-3 text-right">Products</th>
@@ -218,7 +220,7 @@ export default function AdminShops() {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((s) => {
+            {shops.map((s) => {
               const badge = HEALTH_BADGE[s.health] || HEALTH_BADGE.dormant;
               const Icon = badge.icon;
               return (
@@ -228,12 +230,31 @@ export default function AdminShops() {
                   </td>
                   <td className="py-2 pr-3">
                     <div className="font-semibold">{s.name}</div>
-                    <a href={s.baseUrl} target="_blank" rel="noopener noreferrer" className="text-[11px] text-gray hover:text-ink">
+                    <a href={s.baseUrl} target="_blank" rel="noopener noreferrer" className="text-[11px] text-gray hover:text-ink block">
                       {s.baseUrl?.replace(/^https?:\/\//, '')}
                     </a>
                     {s.lastError && (
                       <div className="text-[10px] text-red mt-1 line-clamp-2">{s.lastError}</div>
                     )}
+                  </td>
+                  <td className="py-2 pr-3">
+                    <div className="flex items-center gap-2">
+                      {s.sitemapUrl ? (
+                        <a href={s.sitemapUrl} target="_blank" rel="noopener noreferrer" className="text-green hover:opacity-70" title={`Sitemap: ${s.sitemapUrl}`}>
+                          <FileText className="w-3.5 h-3.5" />
+                        </a>
+                      ) : (
+                        <span className="text-gray/25" title="No sitemap — click Edit to add one">
+                          <FileText className="w-3.5 h-3.5" />
+                        </span>
+                      )}
+                      <span className={s.feedUrl ? 'text-green' : 'text-gray/25'} title={s.feedUrl ? `Feed: ${s.feedUrl}` : 'No product feed'}>
+                        <Rss className="w-3.5 h-3.5" />
+                      </span>
+                      <span className={s.requiresJs ? 'text-yellow' : 'text-gray/25'} title={s.requiresJs ? 'Requires JavaScript (Playwright render)' : 'Static HTML — no JS needed'}>
+                        <Zap className="w-3.5 h-3.5" />
+                      </span>
+                    </div>
                   </td>
                   <td className="py-2 pr-3">
                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-wider ${badge.color}`}>
@@ -258,8 +279,8 @@ export default function AdminShops() {
                   <td className="py-2 pr-3 text-xs text-gray">
                     {s.lastIndexedAt ? new Date(s.lastIndexedAt).toLocaleString() : '—'}
                   </td>
-                  <td className="py-2 pr-3 text-right font-mono">
-                    {(s.lastIndexedCount ?? 0).toLocaleString()}
+                  <td className="py-2 pr-3 text-right font-mono" title={`In catalog now: ${(s.catalogCount ?? 0).toLocaleString()} · last crawl found: ${(s.lastIndexedCount ?? 0).toLocaleString()}`}>
+                    {(s.catalogCount ?? s.lastIndexedCount ?? 0).toLocaleString()}
                   </td>
                   <td className="py-2 pr-3 text-right">
                     <div className="inline-flex items-center gap-1">
@@ -312,6 +333,28 @@ export default function AdminShops() {
           </tbody>
         </table>
       </div>
+
+      {total > PAGE_SIZE && (
+        <div className="flex items-center justify-between pt-2">
+          <button
+            onClick={() => setPage((x) => Math.max(0, x - 1))}
+            disabled={page === 0}
+            className="text-sm px-3 py-1.5 rounded-full border border-line hover:border-ink disabled:opacity-50"
+          >
+            Prev
+          </button>
+          <span className="text-xs text-gray font-mono">
+            page {page + 1} of {Math.max(1, Math.ceil(total / PAGE_SIZE))}
+          </span>
+          <button
+            onClick={() => setPage((x) => x + 1)}
+            disabled={(page + 1) * PAGE_SIZE >= total}
+            className="text-sm px-3 py-1.5 rounded-full border border-line hover:border-ink disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+      )}
 
       {editing && (
         <div className="fixed inset-0 z-50 bg-ink/40 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setEditing(null)}>

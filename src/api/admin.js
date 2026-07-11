@@ -20,7 +20,7 @@ export const getIndexerHistory = (limit = 30) =>
 export const reindexShop = (slug) => api.post(`/admin/index/shop/${encodeURIComponent(slug)}`);
 
 // ─── Shops ───
-export const listShops = () => api.get('/admin/shops');
+export const listShops = (params = {}) => api.get('/admin/shops', { params });
 export const setShopStatus = (slug, status) =>
   api.post(`/admin/shops/${encodeURIComponent(slug)}/status`, { status });
 export const editShop = (slug, patch) =>

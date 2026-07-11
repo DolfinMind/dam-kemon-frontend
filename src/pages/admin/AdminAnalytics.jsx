@@ -101,7 +101,7 @@ export default function AdminAnalytics() {
             <Activity className="w-5 h-5 text-red" /> Traffic &amp; Activity
           </h2>
           <p className="text-xs text-gray mt-0.5">
-            Every search, page view and request — logged.
+            Human traffic only — bots &amp; crawlers are excluded everywhere except Top IPs, Devices and the request feed.
             {overview?.timezone && <> Times in <span className="font-mono">{overview.timezone}</span>.</>}
           </p>
         </div>
@@ -118,7 +118,7 @@ export default function AdminAnalytics() {
 
       {/* ── KPI cards ── */}
       <section className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <Kpi icon={Radio} label="Active now" value={num(overview?.activeNow)} accent hint="last 5 min" />
+        <Kpi icon={Radio} label="Active now" value={num(overview?.activeNow)} accent hint="humans · last 5 min" />
         <Kpi icon={Users} label="Visitors today" value={num(overview?.visitorsToday)} />
         <Kpi icon={Server} label="Requests today" value={num(overview?.requestsToday)} hint={`${num(overview?.requestsLastHour)} last hr`} />
         <Kpi icon={SearchIcon} label="Searches today" value={num(overview?.searchesToday)} />

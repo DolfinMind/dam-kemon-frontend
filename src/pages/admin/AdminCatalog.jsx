@@ -31,7 +31,7 @@ export default function AdminCatalog() {
 
   const load = () => {
     setBusy(true);
-    adminListCatalog({ q: q || undefined, page, size: 30, sort: sort || undefined })
+    adminListCatalog({ q: q || undefined, page, size: 100, sort: sort || undefined })
       .then((r) => { setItems(r.data?.content || []); setTotal(r.data?.totalElements || 0); })
       .catch(() => { setItems([]); setTotal(0); })
       .finally(() => setBusy(false));
@@ -136,7 +136,7 @@ export default function AdminCatalog() {
         </button>
       </form>
 
-      <div className="text-xs text-gray">{total.toLocaleString()} products · page {page + 1}</div>
+      <div className="text-xs text-gray">{total.toLocaleString()} products · page {page + 1} of {Math.max(1, Math.ceil(total / 100))}</div>
 
       <div className="space-y-2">
         {items.map((p) => (
@@ -176,7 +176,7 @@ export default function AdminCatalog() {
       {items.length > 0 && (
         <div className="flex items-center justify-between pt-2">
           <button onClick={() => setPage((x) => Math.max(0, x - 1))} disabled={page === 0 || busy} className="text-sm px-3 py-1.5 rounded-full border border-line hover:border-ink disabled:opacity-50">Prev</button>
-          <button onClick={() => setPage((x) => x + 1)} disabled={items.length < 30 || busy} className="text-sm px-3 py-1.5 rounded-full border border-line hover:border-ink disabled:opacity-50">Next</button>
+          <button onClick={() => setPage((x) => x + 1)} disabled={(page + 1) * 100 >= total || busy} className="text-sm px-3 py-1.5 rounded-full border border-line hover:border-ink disabled:opacity-50">Next</button>
         </div>
       )}
 
