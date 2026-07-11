@@ -14,7 +14,6 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import ProductSEO from '../components/ProductSEO';
 import ServiceUnavailable from '../components/ServiceUnavailable';
 import NewsletterInline from '../components/NewsletterInline';
-import NewsletterModal from '../components/NewsletterModal';
 import FeedbackPulse from '../components/FeedbackPulse';
 import { valueScore, tierOf, deliveryText } from '../components/TrustBadge';
 import {
