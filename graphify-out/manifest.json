@@ -5,9 +5,9 @@
     "semantic_hash": "ecffd1f09dd13b81571f237fe2cd2244"
   },
   ".claude/launch.json": {
-    "mtime": 1780975973.5750096,
-    "ast_hash": "2df25c7d40a2547dea160671969f635b",
-    "semantic_hash": "2df25c7d40a2547dea160671969f635b"
+    "mtime": 1783750220.976978,
+    "ast_hash": "ce8a2d7824ad8cd61712e0c1edacbeee",
+    "semantic_hash": ""
   },
   ".claude/settings.json": {
     "mtime": 1782919561.53036,
@@ -95,9 +95,9 @@
     "semantic_hash": "cb069b1d2a4f7a161486669338f232ec"
   },
   "src/components/Footer.jsx": {
-    "mtime": 1781626903.2055945,
-    "ast_hash": "ebe6fb85c3342e8f33ffc2fe7fb03f91",
-    "semantic_hash": "ebe6fb85c3342e8f33ffc2fe7fb03f91"
+    "mtime": 1783750481.8624086,
+    "ast_hash": "8733c4511e1e8247b69382c5fad05915",
+    "semantic_hash": ""
   },
   "src/components/GuideSEO.jsx": {
     "mtime": 1781624636.6402044,
@@ -395,8 +395,8 @@
     "semantic_hash": ""
   },
   "vite.config.js": {
-    "mtime": 1783704035.9239497,
-    "ast_hash": "e35b7ddf56e555b4001d9f77278dcf1f",
+    "mtime": 1783750208.929248,
+    "ast_hash": "1a33d2601ae2c3b98ce4384f43d5ee79",
     "semantic_hash": ""
   },
   ".github/workflows/production-deploy.yml": {
