@@ -207,10 +207,10 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
                     Icon={ShieldCheck}
                     dark={isTop}
                     tone={isTop ? 'text-cream' : tier.text}
-                    title={`DamKemon score: ${score}/100`}
+                    title={`Damkemon score: ${score}/100`}
                   >
                     <span className={isTop ? 'text-cream' : ''}>{score}/100</span>
-                    <span className={isTop ? 'text-cream/70 font-sans font-normal' : 'text-gray font-sans font-normal'}>DamKemon score</span>
+                    <span className={isTop ? 'text-cream/70 font-sans font-normal' : 'text-gray font-sans font-normal'}>Damkemon score</span>
                   </Signal>
                 )}
                 {it.rating != null && it.rating > 0 && (

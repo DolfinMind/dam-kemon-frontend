@@ -79,7 +79,7 @@ export default function Navbar() {
       {topBarVisible && !user && (
         <div className="bg-acid-soft border-b border-acid/20 py-2 relative text-center">
           <Link to="/sign-up" className="text-sm font-semibold text-ink hover:underline">
-            🔥 Join 10,000+ smart shoppers and never overpay again.
+            Never quietly overpay again — free price-drop alerts on any product.
           </Link>
           <button onClick={dismissTopBar} className="absolute right-4 top-1/2 -translate-y-1/2 text-ink/40 hover:text-ink">
             <X className="w-4 h-4" />

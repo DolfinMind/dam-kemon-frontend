@@ -34,7 +34,7 @@ export default function NewsletterSection() {
           Never miss a price drop
         </h2>
         <p className="text-ink/75 mb-8">
-          Join thousands of smart shoppers. Get weekly alerts on massive price cuts, new tech, and scam-risk updates directly to your inbox.
+          Weekly alerts on real price cuts, new tech, and scam-risk updates — straight to your inbox.
         </p>
 
         {status === 'success' ? (

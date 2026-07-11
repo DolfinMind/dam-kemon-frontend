@@ -93,7 +93,7 @@ export default function SmartVerdict({ product, trust = {} }) {
             icon={ShieldCheck}
             tone={tier ? tier.text : 'text-gray'}
             bgTone={tier ? 'bg-acid-soft/50 group-hover:bg-acid-soft' : 'bg-cream-soft'}
-            q="DamKemon score"
+            q="Damkemon score"
             a={recT ? `${recT.trustScore}/100 · ${tier.label}` : 'Not yet rated'}
             sub={recT
               ? <>{recT.ratingCount > 0 ? `${recT.ratingCount} buyer review${recT.ratingCount === 1 ? '' : 's'}` : 'baseline reputation'}{recT.recommendRate != null ? ` · ${recT.recommendRate}% recommend` : ''}</>

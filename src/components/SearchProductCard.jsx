@@ -4,6 +4,7 @@ import { trackClick } from '../api/analytics';
 import { affiliateUrl } from '../api/api';
 import { CategoryIcon } from '../lib/categoryIcon';
 import TrustBadge from './TrustBadge';
+import { cleanName, saneSavePct } from '../lib/display';
 
 function fmt(p) {
   if (p == null) return 'N/A';
@@ -22,16 +23,21 @@ const VISIBLE_SELLERS = 4;
  */
 export default function SearchProductCard({ product, rank, sponsored = false, query, trust = {}, smartPick = false }) {
   const navigate = useNavigate();
-  const prices = Array.isArray(product.prices) ? [...product.prices] : [];
+  let prices = Array.isArray(product.prices) ? [...product.prices] : [];
   prices.sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
+  // One row per seller — duplicate listings keep only their cheapest price.
+  const seen = new Set();
+  prices = prices.filter((p) => {
+    const key = p.sellerId || `${p.siteSlug || p.siteName}|${p.sellerName || ''}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
   const cheapest = prices[0];
   const highest = prices[prices.length - 1];
   const sellerCount = prices.length;
   const isMulti = sellerCount > 1;
-  const savings = cheapest && highest && highest.price > cheapest.price
-    ? highest.price - cheapest.price : 0;
-  const savingsPct = savings && highest?.price
-    ? Math.round((savings / highest.price) * 100) : 0;
+  const savingsPct = saneSavePct(cheapest?.price, highest?.price);
 
   const detailHref = `/product/${product.id || product.slug || ''}`;
   const goToDetail = () => navigate(detailHref, { state: { product } });
@@ -75,7 +81,7 @@ export default function SearchProductCard({ product, rank, sponsored = false, qu
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1 flex-wrap">
             {product.category && (
-              <span className="font-mono text-[10px] uppercase tracking-wider text-gray">{product.category}</span>
+              <span className="font-mono text-[11px] uppercase tracking-wider text-ink/60">{product.category}</span>
             )}
             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
               isMulti ? 'bg-acid-soft text-acid-deep' : 'bg-cream-soft text-ink/60'
@@ -84,18 +90,14 @@ export default function SearchProductCard({ product, rank, sponsored = false, qu
             </span>
           </div>
           <h3 className="font-sans text-base sm:text-lg font-bold text-ink leading-snug line-clamp-2 group-hover:text-acid-deep transition-colors">
-            {product.name}
+            {cleanName(product.name)}
           </h3>
           <div className="mt-1.5 flex items-center gap-2.5 flex-wrap text-[13px]">
-            {product.damkemonRating != null && product.damkemonRating > 0 ? (
+            {product.damkemonRating != null && product.damkemonRating > 0 && (
               <span className="inline-flex items-center gap-1">
                 <Star className="w-3.5 h-3.5 text-yellow fill-yellow" />
                 <span className="font-semibold text-ink">{Number(product.damkemonRating).toFixed(1)}</span>
                 {product.damkemonReviews > 0 && <span className="text-gray-soft text-xs">({product.damkemonReviews.toLocaleString('en-IN')})</span>}
-              </span>
-            ) : (
-              <span className="text-gray-soft text-[11px] flex items-center gap-1">
-                <Star className="w-3 h-3 text-yellow fill-yellow/20" /> No reviews yet
               </span>
             )}
             {isMulti && savingsPct >= 5 && (
@@ -133,16 +135,15 @@ export default function SearchProductCard({ product, rank, sponsored = false, qu
                   }`}>
                     {isCheapest ? <Crown className="w-3 h-3" /> : i + 1}
                   </span>
+                  {/* Seller name owns the row — the crown + tint already say "lowest",
+                      so no LOWEST chip stealing its space. */}
                   <span className="flex-1 min-w-0 inline-flex items-center gap-1.5">
-                    <span className="text-[13px] font-semibold text-ink truncate">{sp.sellerName || sp.siteName || 'Unknown'}</span>
+                    <span className="text-[13px] font-semibold text-ink truncate min-w-[64px]">{sp.sellerName || sp.siteName || 'Unknown'}</span>
                     {sp.sellerName && (
-                      <span className="hidden lg:inline text-[10px] text-gray font-mono shrink-0">· {sp.siteName}</span>
-                    )}
-                    {isCheapest && (
-                      <span className="hidden sm:inline text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-ink text-acid">Lowest</span>
+                      <span className="hidden lg:inline text-[11px] text-ink/60 font-mono truncate max-w-[72px]">· {sp.siteName}</span>
                     )}
                     {sp.inStock === false && (
-                      <span className="text-[9px] font-mono font-bold uppercase text-red">out</span>
+                      <span className="text-[10px] font-mono font-bold uppercase text-red shrink-0">out</span>
                     )}
                   </span>
                   <span className={`font-mono text-sm font-bold shrink-0 ${isCheapest ? 'text-acid-deep' : 'text-ink'}`}>

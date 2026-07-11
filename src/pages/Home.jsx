@@ -13,8 +13,8 @@ import { useAuth } from '../auth/AuthContext';
 // import ProtectShowcase from '../components/ProtectShowcase';
 import { TrustScore, deliveryText } from '../components/TrustBadge';
 import { CategoryIcon } from '../lib/categoryIcon';
-import FeedbackPulse from '../components/FeedbackPulse';
 import LiveActivityPill from '../components/LiveActivityPill';
+import { cleanName, saneSavePct } from '../lib/display';
 import {
   ArrowRight, ShieldCheck, Flame, TrendingDown, Truck, Heart, Check,
 } from 'lucide-react';
@@ -38,19 +38,27 @@ const QUICK_CATS = [
 // Normalise a hot-drop or a catalog product into one card shape.
 function fromDrop(p) {
   return {
-    id: p.id, slug: p.slug, name: p.name, category: p.category, imageUrl: p.imageUrl,
+    id: p.id, slug: p.slug, name: cleanName(p.name), category: p.category, imageUrl: p.imageUrl,
     price: p.currentPrice, oldPrice: p.peakPrice, pct: p.dropPct, kind: 'drop', sellers: null,
   };
 }
 function fromProduct(p) {
   const sellers = Array.isArray(p.prices) ? p.prices.length : 0;
   const lo = p.lowestPrice, hi = p.highestPrice;
-  const savePct = (hi != null && lo != null && hi > lo) ? Math.round((hi - lo) / hi * 100) : 0;
+  const savePct = saneSavePct(lo, hi);
   return {
-    id: p.id, slug: p.slug, name: p.name, category: p.category, imageUrl: p.imageUrl,
+    id: p.id, slug: p.slug, name: cleanName(p.name), category: p.category, imageUrl: p.imageUrl,
     price: lo, oldPrice: savePct > 0 ? hi : null, pct: savePct, kind: 'save', sellers,
     product: p,
   };
+}
+// Hide drop badges when upstream returns a degenerate wall of identical pcts
+// (a known hot-drops bug renders every card "70%", which reads as fake).
+function guardDegeneratePcts(ds) {
+  if (ds.length >= 4 && new Set(ds.map((d) => d.pct)).size === 1) {
+    return ds.map((d) => ({ ...d, pct: 0, oldPrice: null }));
+  }
+  return ds;
 }
 
 export default function Home() {
@@ -59,13 +67,8 @@ export default function Home() {
   const [shops, setShops] = useState([]);
   const [allProducts, setAllProducts] = useState(null);   // null = loading
   const [allProductsTrust, setAllProductsTrust] = useState({});
-  const [homePulseArmed, setHomePulseArmed] = useState(false);
-
-  useEffect(() => {
-    // Arm feedback pulse after 10 seconds
-    const timer = setTimeout(() => setHomePulseArmed(true), 10000);
-    return () => clearTimeout(timer);
-  }, []);
+  // No FeedbackPulse here: its value moment is returning from a store visit,
+  // which can't happen on the homepage — a timer-armed ask is just a nag.
 
   useEffect(() => {
     // All Products Grid — grab 24 products with the most sellers (minimum 6).
@@ -88,7 +91,7 @@ export default function Home() {
     getHotDrops(10)
       .then((r) => {
         const drops = Array.isArray(r.data) ? r.data : [];
-        if (drops.length >= 4) { setDeals(drops.slice(0, 10).map(fromDrop)); return; }
+        if (drops.length >= 4) { setDeals(guardDegeneratePcts(drops.slice(0, 10).map(fromDrop))); return; }
         return getAllProducts(0, 14).then((res) => {
           const ps = (res.data?.content || []).filter((p) => p.lowestPrice != null && p.imageUrl);
           setDeals(ps.slice(0, 10).map(fromProduct));
@@ -170,9 +173,9 @@ export default function Home() {
       <section className="container-tight pt-6 sm:pt-8">
         <div className="flex items-end justify-between gap-3 mb-6 sm:mb-8">
           <div>
-            <div className="inline-flex items-center gap-1.5 bg-[#FFECE8] text-[#FF4A2A] px-2.5 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase mb-3">
+            <div className="inline-flex items-center gap-1.5 bg-[#FFECE8] text-[#C53012] px-2.5 py-1 rounded-full text-[11px] font-bold tracking-widest uppercase mb-3">
               <Flame className="w-3 h-3" /> Today's deals
-              <span className="w-1.5 h-1.5 rounded-full bg-[#FF4A2A] animate-pulse-dot ml-0.5" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C53012] animate-pulse-dot ml-0.5" />
             </div>
             <h2 className="font-sans font-extrabold text-[clamp(1.5rem,3.5vw,2.5rem)] leading-tight tracking-tight text-[#2A2A2A]">
               Deals you can check <span className="text-acid-deep">right now</span>
@@ -199,13 +202,13 @@ export default function Home() {
                     <CategoryIcon category={d.category} className="w-10 h-10 text-black/10" />
                   )}
                   {d.pct > 0 && (
-                    <span className="absolute top-3 left-3 inline-flex items-center gap-1 text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded-md bg-[#FF4A2A] text-white shadow-sm">
+                    <span className="absolute top-3 left-3 inline-flex items-center gap-1 text-[11px] font-bold tracking-wider uppercase px-2 py-1 rounded-md bg-[#D63615] text-white shadow-sm">
                       <TrendingDown className="w-3 h-3" /> {d.kind === 'drop' ? `${d.pct}%` : `save ${d.pct}%`}
                     </span>
                   )}
                 </div>
                 <div className="p-4 sm:p-5 flex-1 flex flex-col bg-white">
-                  {d.category && <span className="text-[9px] uppercase tracking-widest text-[#8C8C8C] font-bold mb-1.5">{d.category}</span>}
+                  {d.category && <span className="text-[11px] uppercase tracking-widest text-ink/60 font-bold mb-1.5">{d.category}</span>}
                   <h3 className="font-sans text-[14px] font-bold text-[#2A2A2A] leading-[1.3] line-clamp-2 group-hover:text-acid-deep transition-colors">{d.name}</h3>
                   <div className="mt-auto pt-4 flex items-baseline flex-wrap gap-x-2 gap-y-1">
                     <span className="font-sans text-[1.15rem] font-extrabold text-[#2A2A2A] tracking-tight">{fmt(d.price)}</span>
@@ -319,7 +322,6 @@ export default function Home() {
         <CloseBand />
       </section>
       
-      <FeedbackPulse armed={homePulseArmed} />
     </div>
   );
 }
@@ -340,8 +342,8 @@ function CloseBand() {
       </span>
       <div className="relative grid lg:grid-cols-2 gap-8 lg:gap-14 items-center">
         <div>
-          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-cream px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4 animate-bounce">
-            🔥 Join 10,000+ smart shoppers
+          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-cream px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
+            <Flame className="w-3.5 h-3.5 text-acid" /> Free price-drop alerts
           </div>
           <h2 className="font-sans font-extrabold text-[clamp(1.7rem,3.6vw,2.6rem)] leading-[1.05] tracking-[-0.02em]">
             Never quietly <span className="text-acid">overpay</span> again.

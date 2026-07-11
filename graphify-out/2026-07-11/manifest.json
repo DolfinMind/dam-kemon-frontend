@@ -20,8 +20,8 @@
     "semantic_hash": "bfe13b9e25d0af7959d0396aa103d88c"
   },
   "package.json": {
-    "mtime": 1783700813.670063,
-    "ast_hash": "1b8027e28efb5ab3fbf7dd11b4ceac24",
+    "mtime": 1783677860.9928255,
+    "ast_hash": "b7ecd0072532c39e0cf5f6d5b0899555",
     "semantic_hash": ""
   },
   "src/App.jsx": {
@@ -35,8 +35,8 @@
     "semantic_hash": ""
   },
   "src/api/analytics.js": {
-    "mtime": 1783684478.9217172,
-    "ast_hash": "7e50028d2168eb37cd50cc3784302b02",
+    "mtime": 1783265854.185963,
+    "ast_hash": "70595e17ea82ae60113899e4ba08b8c8",
     "semantic_hash": ""
   },
   "src/api/api.js": {
@@ -120,19 +120,19 @@
     "semantic_hash": "ab4818066580902b93554c4a7b1efec3"
   },
   "src/components/Navbar.jsx": {
-    "mtime": 1783708228.1654408,
-    "ast_hash": "ef8cf7d5fabf64e5e2b5104040fe3edc",
+    "mtime": 1783678513.359155,
+    "ast_hash": "408d4da52077053750fdd149c9fc8c10",
     "semantic_hash": ""
   },
   "src/components/NewsletterSection.jsx": {
-    "mtime": 1783708272.1477213,
-    "ast_hash": "a62e1ba5b560df7e9e2b1fdd306bb388",
-    "semantic_hash": ""
+    "mtime": 1781704129.6624691,
+    "ast_hash": "9b45a9b654653dc7ca10d2b56f316b50",
+    "semantic_hash": "9b45a9b654653dc7ca10d2b56f316b50"
   },
   "src/components/PriceComparisonTable.jsx": {
-    "mtime": 1783708421.0993378,
-    "ast_hash": "62d2164ee275150b41093ad481a4af5c",
-    "semantic_hash": ""
+    "mtime": 1782054244.9702597,
+    "ast_hash": "a1ab1dea30676b2fd7decfaec1f52ee8",
+    "semantic_hash": "a1ab1dea30676b2fd7decfaec1f52ee8"
   },
   "src/components/PriceHistoryChart.jsx": {
     "mtime": 1781540756.1586952,
@@ -145,8 +145,8 @@
     "semantic_hash": "279c8adb8e1ce273270bc3f0ea7866ad"
   },
   "src/components/ProductSEO.jsx": {
-    "mtime": 1783684478.922037,
-    "ast_hash": "fa7509b2c25961abdcf0573286929452",
+    "mtime": 1783677950.216721,
+    "ast_hash": "20615b4f73430938bb55169733110c7c",
     "semantic_hash": ""
   },
   "src/components/ProtectShowcase.jsx": {
@@ -175,9 +175,9 @@
     "semantic_hash": ""
   },
   "src/components/SearchProductCard.jsx": {
-    "mtime": 1783708351.6383579,
-    "ast_hash": "b95171d2f6ea1317621112c122f45478",
-    "semantic_hash": ""
+    "mtime": 1781632651.1664176,
+    "ast_hash": "fbcb96035b791c8a7bb62875910a58bd",
+    "semantic_hash": "fbcb96035b791c8a7bb62875910a58bd"
   },
   "src/components/SearchProductCardSkeleton.jsx": {
     "mtime": 1779264260.001425,
@@ -190,9 +190,9 @@
     "semantic_hash": "bbd18b784cf0e05754f08a00402f9f8e"
   },
   "src/components/SmartVerdict.jsx": {
-    "mtime": 1783708421.1001527,
-    "ast_hash": "ead2a0e26898063ec09880f42c29a694",
-    "semantic_hash": ""
+    "mtime": 1781633012.7157285,
+    "ast_hash": "86f69210bf403e00576329a02e231ef9",
+    "semantic_hash": "86f69210bf403e00576329a02e231ef9"
   },
   "src/components/StatsCard.jsx": {
     "mtime": 1778912389.6890318,
@@ -270,13 +270,13 @@
     "semantic_hash": "ee91568fedfd76b9fec95edfd338d064"
   },
   "src/pages/Home.jsx": {
-    "mtime": 1783708389.7557306,
-    "ast_hash": "9657b4e642e43adb69b73fa1282a5828",
+    "mtime": 1783678193.1106205,
+    "ast_hash": "945820f49ee9c1e2c36bd2151ceaaebe",
     "semantic_hash": ""
   },
   "src/pages/ProductDetail.jsx": {
-    "mtime": 1783708421.0988483,
-    "ast_hash": "5befa638f56f9b7a5e7f7b7ce78a74fc",
+    "mtime": 1783677968.4894795,
+    "ast_hash": "1b6648f11525ccdc89afb0642fcb5c60",
     "semantic_hash": ""
   },
   "src/pages/Protect.jsx": {
@@ -305,8 +305,8 @@
     "semantic_hash": "35d108c043904605f21fead0d31e2050"
   },
   "src/pages/SearchResults.jsx": {
-    "mtime": 1783707868.4423454,
-    "ast_hash": "3479dc960d30dc052395e0fcdd2cfb4e",
+    "mtime": 1783430464.8046618,
+    "ast_hash": "13b7f9237e76d5288a111ebb249a5da9",
     "semantic_hash": ""
   },
   "src/pages/Sellers.jsx": {
@@ -395,9 +395,9 @@
     "semantic_hash": ""
   },
   "vite.config.js": {
-    "mtime": 1783704035.9239497,
-    "ast_hash": "e35b7ddf56e555b4001d9f77278dcf1f",
-    "semantic_hash": ""
+    "mtime": 1783430808.0360951,
+    "ast_hash": "65832516ca170ae340c1cef08a9a5d5c",
+    "semantic_hash": "65832516ca170ae340c1cef08a9a5d5c"
   },
   ".github/workflows/production-deploy.yml": {
     "mtime": 1783427826.4390683,
@@ -495,13 +495,13 @@
     "semantic_hash": ""
   },
   "src/components/NewsletterModal.jsx": {
-    "mtime": 1783708245.0421712,
-    "ast_hash": "ab7e4413a1812e5d880b73de7b191c5c",
+    "mtime": 1783678581.8965313,
+    "ast_hash": "3bc219119a63e4038fff504697907a0a",
     "semantic_hash": ""
   },
   "src/components/SocialProofToasts.jsx": {
-    "mtime": 1783708141.5895824,
-    "ast_hash": "e390bedc3a85bd4cbb3ec34d5b219c12",
+    "mtime": 1783676239.0719364,
+    "ast_hash": "778bcfd3c553bba1d04a814b066c36bb",
     "semantic_hash": ""
   },
   "src/pages/Trending.jsx": {
@@ -522,11 +522,6 @@
   "public/og.png": {
     "mtime": 1783683110.4992793,
     "ast_hash": "35b2f750a0a8429f17638d8af780abc0",
-    "semantic_hash": ""
-  },
-  "src/lib/display.js": {
-    "mtime": 1783708127.544911,
-    "ast_hash": "3b3ce36ad59d4c1d138198832b1768a6",
     "semantic_hash": ""
   }
 }

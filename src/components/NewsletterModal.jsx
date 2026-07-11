@@ -61,7 +61,7 @@ export default function NewsletterModal({ open, onClose, isExitIntent = false })
           <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent opacity-60"></div>
           <div className="absolute bottom-8 left-8 right-8 text-white">
             <div className="inline-flex items-center gap-1.5 bg-acid/20 backdrop-blur-md text-acid-deep px-3 py-1.5 rounded-full text-xs font-bold mb-4 border border-acid/30">
-              <ShieldCheck className="w-4 h-4" /> Trusted by 15k+ Shoppers
+              <ShieldCheck className="w-4 h-4" /> Real drops only — no spam
             </div>
           </div>
         </div>
@@ -81,15 +81,14 @@ export default function NewsletterModal({ open, onClose, isExitIntent = false })
           </div>
 
           <h2 className="font-sans text-3xl sm:text-4xl font-extrabold leading-[1.1] tracking-tight text-ink mb-4">
-            {isExitIntent 
-              ? "Wait! Don't buy anything yet."
+            {isExitIntent
+              ? "Before you go — want Monday's price drops?"
               : "Don't overpay for your next gadget."}
           </h2>
-          
+
           <p className="text-gray text-[15px] sm:text-base leading-relaxed mb-8 max-w-md">
-            {isExitIntent
-              ? "Join 15,000+ smart shoppers who get our top secret tech deals every Monday. We track the market so you never overpay."
-              : "Join the top 1% of smart shoppers in Bangladesh. We track the market and send you the biggest price drops and exclusive deals every Monday morning."}
+            We track prices across Bangladesh's shops and send you the biggest
+            real drops every Monday morning. One email a week, unsubscribe anytime.
           </p>
 
           {status === 'done' ? (
@@ -134,12 +133,12 @@ export default function NewsletterModal({ open, onClose, isExitIntent = false })
                 </p>
               )}
 
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={dismiss}
                 className="text-gray hover:text-ink text-[13px] font-medium mt-4 transition-colors underline decoration-line hover:decoration-ink underline-offset-4"
               >
-                No thanks, I prefer paying full price
+                Maybe later
               </button>
             </form>
           )}

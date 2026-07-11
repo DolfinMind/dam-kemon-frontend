@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { searchProducts, getShopTrust } from '../api/api';
 import SearchProductCard from '../components/SearchProductCard';
+import { saneSavePct } from '../lib/display';
 import { SkeletonRow } from '../components/LoadingSpinner';
 import SearchProductCardSkeleton from '../components/SearchProductCardSkeleton';
 import ServiceUnavailable from '../components/ServiceUnavailable';
@@ -186,7 +187,11 @@ export default function SearchResults() {
     const low = Math.min(...lows);
     const high = Math.max(...lows);
     const avg = Math.round(lows.reduce((s, v) => s + v, 0) / lows.length);
-    return { low, high, avg, savings: high - low };
+    // Honest savings: the biggest sane within-product seller spread — not
+    // "cheapest product vs priciest product", which compares different things.
+    const savings = Math.max(0, ...sorted.map((p) =>
+      saneSavePct(p.lowestPrice, p.highestPrice) > 0 ? p.highestPrice - p.lowestPrice : 0));
+    return { low, high, avg, savings };
   }, [sorted]);
 
   // "Smart pick" — the single result that best balances seller trust, price
@@ -319,8 +324,8 @@ export default function SearchResults() {
             <div className="inline-flex items-center gap-2 bg-acid-soft border border-acid/50 text-acid-deep px-3 py-2 rounded-xl shrink-0 self-start">
               <Sparkles className="w-4 h-4" />
               <div className="text-[11px] sm:text-xs font-mono leading-tight">
-                <div className="font-bold">Save {formatPrice(stats.savings)}</div>
-                <div className="text-acid-deep/70 text-[10px]">cheapest vs priciest</div>
+                <div className="font-bold">Save up to {formatPrice(stats.savings)}</div>
+                <div className="text-acid-deep/70 text-[10px]">by comparing sellers</div>
               </div>
             </div>
           )}

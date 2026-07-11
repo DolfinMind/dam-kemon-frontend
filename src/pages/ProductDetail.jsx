@@ -19,9 +19,10 @@ import FeedbackPulse from '../components/FeedbackPulse';
 import { valueScore, tierOf, deliveryText } from '../components/TrustBadge';
 import {
   ArrowLeft, Star, Share2, Bell, ShieldCheck, Store, AlertTriangle, Heart,
-  Crown, ExternalLink, Truck, Banknote, ArrowDown, Share,
+  Crown, ExternalLink, Truck, Banknote, ArrowDown, Share, Clock,
 } from 'lucide-react';
 import { CategoryIcon } from '../lib/categoryIcon';
+import { cleanName, saneSavePct, relTime } from '../lib/display';
 
 function formatPrice(price) {
   if (!price && price !== 0) return 'N/A';
@@ -88,13 +89,17 @@ export default function ProductDetail() {
   const [showNewsletter, setShowNewsletter] = useState(false);
   useEffect(() => {
     try {
-      const n = Number(sessionStorage.getItem('dk_pv') || 0) + 1;
-      sessionStorage.setItem('dk_pv', String(n));
-      if (n >= 2) {
+      // Count distinct products viewed — a Set so remounts (and StrictMode's
+      // double effect run) can't inflate the count and fire the ask early.
+      const ids = new Set(JSON.parse(sessionStorage.getItem('dk_pv') || '[]'));
+      ids.add(id);
+      sessionStorage.setItem('dk_pv', JSON.stringify([...ids]));
+      if (ids.size >= 2) {
         if (localStorage.getItem('dk_nl')) return;
         if (Date.now() - Number(localStorage.getItem('dk_nl_x') || 0) < 14 * 24 * 3600 * 1000) return;
-        // Delay popup slightly for a smoother UX
-        setTimeout(() => setShowNewsletter(true), 2500);
+        // Drives only the inline card below the price table — the modal ask
+        // lives solely in ExitIntentModal now (10s dwell, once per session).
+        setShowNewsletter(true);
       }
     } catch { /* private mode */ }
   }, [id]);
@@ -110,15 +115,7 @@ export default function ProductDetail() {
       }
     };
     document.addEventListener('visibilitychange', onVis);
-
-    const timer = setTimeout(() => {
-      setPulseArmed(true);
-    }, 10000);
-
-    return () => {
-      document.removeEventListener('visibilitychange', onVis);
-      clearTimeout(timer);
-    };
+    return () => document.removeEventListener('visibilitychange', onVis);
   }, []);
 
   const { user } = useAuth();
@@ -232,7 +229,17 @@ export default function ProductDetail() {
 
   // ── Decision math for the hero "best deal" champion ───────────────────────
   const pid = product?.id || id;
-  const prices = product?.prices || [];
+  // One row per seller — duplicate listings keep only their cheapest price.
+  const prices = useMemo(() => {
+    const sorted = [...(product?.prices || [])].sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
+    const seen = new Set();
+    return sorted.filter((p) => {
+      const key = p.sellerId || `${p.siteSlug || p.siteName}|${p.sellerName || ''}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }, [product?.prices]);
   const lowestPrice = useMemo(() => {
     const vals = prices.map((p) => p.price).filter((v) => v != null);
     return vals.length ? Math.min(...vals) : (product?.lowestPrice ?? null);
@@ -241,7 +248,8 @@ export default function ProductDetail() {
     const vals = prices.map((p) => p.price).filter((v) => v != null);
     return vals.length ? Math.max(...vals) : (product?.highestPrice ?? null);
   }, [prices, product?.highestPrice]);
-  const savings = highestPrice && lowestPrice ? highestPrice - lowestPrice : 0;
+  // Hidden when the spread is implausible for one product (bad match, not a deal).
+  const savings = saneSavePct(lowestPrice, highestPrice) > 0 ? highestPrice - lowestPrice : 0;
   const sellerCount = prices.length;
   const cheapest = prices.find((p) => p.price === lowestPrice) || null;
 
@@ -346,17 +354,16 @@ export default function ProductDetail() {
             </span>
 
             <h1 className="font-sans text-3xl sm:text-4xl lg:text-5xl font-extrabold text-ink leading-[1.05] tracking-[-0.03em] mb-4">
-              {product.name}
+              {cleanName(product.name)}
             </h1>
 
-            {/* Simulated Scarcity/Demand Badge */}
-            <div className="inline-flex items-center gap-1.5 bg-red-soft text-red px-2.5 py-1 rounded-full text-xs font-bold mb-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
-              <span className="relative flex w-1.5 h-1.5">
-                <span className="absolute inset-0 bg-red rounded-full animate-ping opacity-75" />
-                <span className="relative w-1.5 h-1.5 bg-red rounded-full" />
-              </span>
-              🔥 Trending: {Math.floor(Math.random() * 20) + 5} people viewing this
-            </div>
+            {/* Real freshness signal — when we last confirmed these prices. */}
+            {relTime(product.lastScraped || product.updatedAt) && (
+              <div className="inline-flex items-center gap-1.5 bg-acid-soft text-acid-deep px-2.5 py-1 rounded-full text-xs font-bold mb-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                <Clock className="w-3.5 h-3.5" />
+                Prices checked {relTime(product.lastScraped || product.updatedAt)}
+              </div>
+            )}
 
             <div className="flex flex-wrap items-center gap-4">
               {avgOurRating != null ? (
@@ -413,7 +420,7 @@ export default function ProductDetail() {
                 <button
                   onClick={() => {
                     trackClick(pid, 'whatsapp-share');
-                    const text = `🔥 Just found a massive deal on ${product.name}! Lowest price is ${formatPrice(lowestPrice)}. Check it out here: ${window.location.href}`;
+                    const text = `🔥 Just found a massive deal on ${cleanName(product.name)}! Lowest price is ${formatPrice(lowestPrice)}. Check it out here: ${window.location.href}`;
                     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
                   }}
                   className="text-sm font-bold text-green flex items-center gap-1.5 transition-colors bg-green/10 px-3 py-1.5 rounded-full hover:bg-green/20"
@@ -464,7 +471,7 @@ export default function ProductDetail() {
                   <div className="flex flex-wrap items-center gap-2">
                     {champTier && (
                       <span className={`inline-flex items-center gap-1 text-[11px] font-mono font-medium ${champTier.text}`}>
-                        <ShieldCheck className="w-3.5 h-3.5" /> {champScore}/100 DamKemon score
+                        <ShieldCheck className="w-3.5 h-3.5" /> {champScore}/100 Damkemon score
                       </span>
                     )}
                     {champDelivery && (
@@ -654,7 +661,6 @@ export default function ProductDetail() {
         </div>
       )}
       <FeedbackPulse armed={pulseArmed} />
-      <NewsletterModal open={showNewsletter} onClose={() => setShowNewsletter(false)} />
     </div>
   );
 }
