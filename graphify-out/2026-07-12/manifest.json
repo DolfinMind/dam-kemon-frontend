@@ -325,8 +325,8 @@
     "semantic_hash": "621b4a334460333b93b9e27d547c4522"
   },
   "src/pages/admin/AdminAnalytics.jsx": {
-    "mtime": 1783868480.5439072,
-    "ast_hash": "6bd429f91b5e275bc6f12368576619be",
+    "mtime": 1783867411.2989564,
+    "ast_hash": "20079dcd1a3a50c824615c7354fdaff0",
     "semantic_hash": ""
   },
   "src/pages/admin/AdminAuditLog.jsx": {

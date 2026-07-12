@@ -8,7 +8,7 @@ import {
   Radio, Users, Activity, Eye, Search as SearchIcon, MousePointerClick,
   Globe, Server, Clock, TrendingUp, Map as MapIcon,
   Store, Package, Layers, Crown, Filter, MessageSquare, AlertTriangle,
-  Trophy, SearchX, Award, Smartphone, ExternalLink
+  Trophy, SearchX, Award, Smartphone, ExternalLink, Loader2
 } from 'lucide-react';
 import {
   analyticsOverview, analyticsHourly, analyticsDailyUsers,
@@ -33,6 +33,13 @@ function timeAgo(ts) {
 const LEADERBOARD_RANGES = [{ label: '24h', days: 1 }, { label: '7d', days: 7 }, { label: '30d', days: 30 }];
 const DAILY_RANGES = [{ label: '14d', days: 14 }, { label: '30d', days: 30 }, { label: '90d', days: 90 }];
 
+const SUBTABS = [
+  { id: 'overview', label: 'Overview', icon: Activity },
+  { id: 'search', label: 'Search', icon: Trophy },
+  { id: 'outbound', label: 'Outbound', icon: MousePointerClick },
+  { id: 'audience', label: 'Audience', icon: Globe },
+];
+
 export default function AdminAnalytics() {
   const [overview, setOverview] = useState(null);
   const [hourly, setHourly] = useState(null);
@@ -52,31 +59,60 @@ export default function AdminAnalytics() {
   const [referrers, setReferrers] = useState([]);
   const [windowDays, setWindowDays] = useState(7);
   const [dailyDays, setDailyDays] = useState(14);
+  const [tab, setTab] = useState('overview');
+  const [loading, setLoading] = useState(false);
   const [live, setLive] = useState(true);
   const liveRef = useRef(live);
   liveRef.current = live;
 
-  // Leaderboards + histogram — refetch when the window changes.
+  // ponytail: fetch one sub-tab's aggregations at a time instead of firing all
+  // ~14 at once — the concurrent burst was what made this page crawl. Refetches
+  // on tab activation / window change; add per-(tab,window) memo if that proves
+  // wasteful under real admin use.
   useEffect(() => {
-    analyticsHourly(windowDays).then((r) => setHourly(r.data)).catch(() => {});
-    analyticsTopSearches(windowDays, 25).then((r) => setTopSearches(r.data || [])).catch(() => {});
-    analyticsTopIps(windowDays, 25).then((r) => setTopIps(r.data || [])).catch(() => {});
-    analyticsTopPaths(windowDays, 12).then((r) => setTopPaths(r.data || [])).catch(() => {});
-    analyticsFunnel(windowDays).then((r) => setFunnel(r.data)).catch(() => {});
-    analyticsShopClicksByCategory(windowDays, 12, 5).then((r) => setShopCat(r.data || [])).catch(() => {});
-    analyticsTopShops(windowDays, 15).then((r) => setTopShops(r.data || [])).catch(() => {});
-    analyticsTopProducts(windowDays, 15).then((r) => setTopProducts(r.data || [])).catch(() => {});
-    analyticsTopConvertingSearches(windowDays, 15).then((r) => setConvSearches(r.data || [])).catch(() => {});
-    analyticsResultShops(windowDays, 15).then((r) => setResultShops(r.data || [])).catch(() => {});
-    analyticsZeroResultSearches(windowDays, 25).then((r) => setZeroSearches(r.data || [])).catch(() => {});
-    analyticsShopPriceWins(15).then((r) => setPriceWins(r.data || [])).catch(() => {});
-    analyticsDevices(windowDays).then((r) => setDevices(r.data)).catch(() => {});
-    analyticsReferrers(windowDays, 15).then((r) => setReferrers(r.data || [])).catch(() => {});
-  }, [windowDays]);
+    if (tab !== 'overview') return;
+    setLoading(true);
+    analyticsHourly(windowDays).then((r) => setHourly(r.data)).catch(() => {}).finally(() => setLoading(false));
+  }, [tab, windowDays]);
 
   useEffect(() => {
+    if (tab !== 'overview') return;
     analyticsDailyUsers(dailyDays).then((r) => setDaily(r.data || [])).catch(() => {});
-  }, [dailyDays]);
+  }, [tab, dailyDays]);
+
+  useEffect(() => {
+    if (tab !== 'search') return;
+    setLoading(true);
+    Promise.all([
+      analyticsResultShops(windowDays, 15).then((r) => setResultShops(r.data || [])).catch(() => {}),
+      analyticsZeroResultSearches(windowDays, 25).then((r) => setZeroSearches(r.data || [])).catch(() => {}),
+      analyticsShopPriceWins(15).then((r) => setPriceWins(r.data || [])).catch(() => {}),
+      analyticsTopSearches(windowDays, 25).then((r) => setTopSearches(r.data || [])).catch(() => {}),
+    ]).finally(() => setLoading(false));
+  }, [tab, windowDays]);
+
+  useEffect(() => {
+    if (tab !== 'outbound') return;
+    setLoading(true);
+    Promise.all([
+      analyticsFunnel(windowDays).then((r) => setFunnel(r.data)).catch(() => {}),
+      analyticsShopClicksByCategory(windowDays, 12, 5).then((r) => setShopCat(r.data || [])).catch(() => {}),
+      analyticsTopShops(windowDays, 15).then((r) => setTopShops(r.data || [])).catch(() => {}),
+      analyticsTopProducts(windowDays, 15).then((r) => setTopProducts(r.data || [])).catch(() => {}),
+      analyticsTopConvertingSearches(windowDays, 15).then((r) => setConvSearches(r.data || [])).catch(() => {}),
+    ]).finally(() => setLoading(false));
+  }, [tab, windowDays]);
+
+  useEffect(() => {
+    if (tab !== 'audience') return;
+    setLoading(true);
+    Promise.all([
+      analyticsTopIps(windowDays, 25).then((r) => setTopIps(r.data || [])).catch(() => {}),
+      analyticsTopPaths(windowDays, 12).then((r) => setTopPaths(r.data || [])).catch(() => {}),
+      analyticsDevices(windowDays).then((r) => setDevices(r.data)).catch(() => {}),
+      analyticsReferrers(windowDays, 15).then((r) => setReferrers(r.data || [])).catch(() => {}),
+    ]).finally(() => setLoading(false));
+  }, [tab, windowDays]);
 
   // Live counters — poll while "live" is on.
   useEffect(() => {
@@ -128,12 +164,28 @@ export default function AdminAnalytics() {
         <Kpi icon={Activity} label="Search Conv. Rate" value={`${overview?.searchConversionRate || 0}%`} hint="today" />
       </section>
 
+      {/* ── sub-tabs: one group loads at a time ── */}
+      <nav className="flex gap-1 border-b border-line overflow-x-auto no-scrollbar">
+        {SUBTABS.map((t) => (
+          <button
+            key={t.id}
+            onClick={() => setTab(t.id)}
+            className={`inline-flex items-center gap-1.5 px-3 sm:px-4 py-2.5 text-sm font-semibold whitespace-nowrap border-b-2 transition-colors ${
+              tab === t.id ? 'text-ink border-ink' : 'text-gray border-transparent hover:text-ink'
+            }`}
+          >
+            {tab === t.id && loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <t.icon className="w-4 h-4" />} {t.label}
+          </button>
+        ))}
+      </nav>
+
       {/* ── window selector ── */}
       <div className="flex items-center gap-2 text-xs">
         <span className="text-gray font-mono uppercase tracking-wider">Window</span>
         <RangeToggle ranges={LEADERBOARD_RANGES} value={windowDays} onChange={setWindowDays} />
       </div>
 
+      {tab === 'overview' && (<>
       {/* ── peak hour ── */}
       <section className="card-soft p-5">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
@@ -220,6 +272,9 @@ export default function AdminAnalytics() {
         )}
       </section>
 
+      </>)}
+
+      {tab === 'search' && (<>
       {/* ════════ Search result intelligence ════════ */}
       <div className="pt-2 border-t border-line">
         <h3 className="font-serif text-lg font-semibold inline-flex items-center gap-2">
@@ -340,6 +395,9 @@ export default function AdminAnalytics() {
         )}
       </section>
 
+      </>)}
+
+      {tab === 'outbound' && (<>
       {/* ════════ Outbound clicks & conversion ════════ */}
       <div className="pt-2 border-t border-line">
         <h3 className="font-serif text-lg font-semibold inline-flex items-center gap-2">
@@ -506,6 +564,9 @@ export default function AdminAnalytics() {
         )}
       </section>
 
+      </>)}
+
+      {tab === 'audience' && (<>
       {/* ── most searched + top IPs ── */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div>
@@ -657,7 +718,7 @@ export default function AdminAnalytics() {
           </div>
         )}
       </section>
-
+      </>)}
 
     </div>
   );
