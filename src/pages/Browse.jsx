@@ -118,7 +118,7 @@ export default function Browse() {
           <p className="text-gray text-sm mt-1">
             {total != null
               ? <><span className="font-mono text-ink">{total.toLocaleString('en-IN')}</span> products{category ? ` in ${category}` : ' across every shop'} — cheapest seller, trust &amp; delivery on each.</>
-              : 'Every product on Damkemon, with the smart-buy signals on each.'}
+              : 'Every product on Damkemon, with its cheapest shops and confidence signals.'}
           </p>
         </div>
 

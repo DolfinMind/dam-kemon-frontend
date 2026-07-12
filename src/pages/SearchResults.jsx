@@ -2,14 +2,12 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { searchProducts, getShopTrust } from '../api/api';
 import SearchProductCard from '../components/SearchProductCard';
-import { saneSavePct } from '../lib/display';
-import { SkeletonRow } from '../components/LoadingSpinner';
 import SearchProductCardSkeleton from '../components/SearchProductCardSkeleton';
 import ServiceUnavailable from '../components/ServiceUnavailable';
 import NewsletterInline from '../components/NewsletterInline';
 import {
-  Search, ArrowUpDown, ArrowLeft, Sparkles, TrendingDown,
-  TrendingUp, Equal, AlertTriangle, RefreshCw, Lightbulb,
+  Search, ArrowUpDown, ArrowLeft, Sparkles,
+  AlertTriangle, RefreshCw, Lightbulb,
 } from 'lucide-react';
 
 const filterOptions = [
@@ -25,11 +23,6 @@ const sortOptions = [
   { id: 'price_desc', label: 'Highest first' },
   { id: 'rating',     label: 'Top rated' },
 ];
-
-function formatPrice(price) {
-  if (!price && price !== 0) return 'N/A';
-  return '৳' + Number(price).toLocaleString('en-IN');
-}
 
 export default function SearchResults() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -181,44 +174,6 @@ export default function SearchResults() {
     return arr;
   }, [filtered, sortBy]);
 
-  const stats = useMemo(() => {
-    const lows = sorted.map((p) => p.lowestPrice).filter((v) => v != null);
-    if (lows.length === 0) return null;
-    const low = Math.min(...lows);
-    const high = Math.max(...lows);
-    const avg = Math.round(lows.reduce((s, v) => s + v, 0) / lows.length);
-    // Honest savings: the biggest sane within-product seller spread — not
-    // "cheapest product vs priciest product", which compares different things.
-    const savings = Math.max(0, ...sorted.map((p) =>
-      saneSavePct(p.lowestPrice, p.highestPrice) > 0 ? p.highestPrice - p.lowestPrice : 0));
-    return { low, high, avg, savings };
-  }, [sorted]);
-
-  // "Smart pick" — the single result that best balances seller trust, price
-  // and delivery (not just relevance or cheapest). Needs trust data + at least
-  // two comparable results, so it only appears once profiles have loaded.
-  const smartPickId = useMemo(() => {
-    const rows = sorted.map((p) => {
-      const ps = (p.prices || []).slice().sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
-      const cheap = ps[0];
-      return { id: p.id, price: cheap?.price ?? null, t: cheap ? trust[cheap.siteSlug || cheap.siteName] : null };
-    }).filter((r) => r.id && r.price != null);
-    if (rows.length < 2 || !rows.some((r) => r.t)) return null;
-    const prices = rows.map((r) => r.price);
-    const min = Math.min(...prices), max = Math.max(...prices);
-    const span = max - min || 1;
-    let best = null, bestScore = -Infinity;
-    for (const r of rows) {
-      const trustN = (r.t?.trustScore ?? 60) / 100;
-      const priceAdv = (max - r.price) / span; // 1 = cheapest, 0 = priciest
-      const dmid = r.t ? (r.t.avgReportedDelivery ?? (((r.t.deliveryDaysMin ?? 3) + (r.t.deliveryDaysMax ?? 7)) / 2)) : 5;
-      const delN = Math.max(0, Math.min(1, 1 - dmid / 10));
-      const score = 0.5 * trustN + 0.3 * priceAdv + 0.2 * delN;
-      if (score > bestScore) { bestScore = score; best = r.id; }
-    }
-    return best;
-  }, [sorted, trust]);
-
   if (!query) {
     return (
       <div className="container-tight py-16 sm:py-24 text-center">
@@ -304,31 +259,7 @@ export default function SearchResults() {
                 )}
               </div>
             )}
-            {!loading && !error && stats && (
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] sm:text-xs text-gray mt-2">
-                <span className="inline-flex items-center gap-1">
-                  <TrendingDown className="w-3 h-3 text-green" /> Low <span className="text-green font-bold">{formatPrice(stats.low)}</span>
-                </span>
-                <span className="text-line-strong">·</span>
-                <span className="inline-flex items-center gap-1">
-                  <TrendingUp className="w-3 h-3 text-red" /> High <span className="text-red font-bold">{formatPrice(stats.high)}</span>
-                </span>
-                <span className="text-line-strong">·</span>
-                <span className="inline-flex items-center gap-1">
-                  <Equal className="w-3 h-3" /> Avg <span className="text-ink font-bold">{formatPrice(stats.avg)}</span>
-                </span>
-              </div>
-            )}
           </div>
-          {!loading && !error && stats && stats.savings > 0 && (
-            <div className="inline-flex items-center gap-2 bg-acid-soft border border-acid/50 text-acid-deep px-3 py-2 rounded-xl shrink-0 self-start">
-              <Sparkles className="w-4 h-4" />
-              <div className="text-[11px] sm:text-xs font-mono leading-tight">
-                <div className="font-bold">Save up to {formatPrice(stats.savings)}</div>
-                <div className="text-acid-deep/70 text-[10px]">by comparing sellers</div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
@@ -460,11 +391,9 @@ export default function SearchResults() {
               <div key={p.id || p.slug || i} className="mb-3 sm:mb-4 break-inside-avoid">
                 <SearchProductCard
                   product={p}
-                  rank={i + 1}
                   query={query}
                   sponsored={!!meta?.sponsoredProductIds?.includes(p.id)}
                   trust={trust}
-                  smartPick={!!smartPickId && p.id === smartPickId}
                 />
               </div>
             ))}

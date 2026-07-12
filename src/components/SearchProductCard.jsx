@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ExternalLink, Crown, Store, Star, TrendingDown, ChevronRight, Megaphone, Sparkles } from 'lucide-react';
+import { ExternalLink, Crown, Store, Star, TrendingDown, ChevronRight, Megaphone } from 'lucide-react';
 import { trackClick } from '../api/analytics';
 import { affiliateUrl } from '../api/api';
 import { CategoryIcon } from '../lib/categoryIcon';
@@ -11,17 +11,18 @@ function fmt(p) {
   return '৳' + Number(p).toLocaleString('en-IN');
 }
 
-// Seller rows surfaced directly on the card; the rest live on the detail page.
-const VISIBLE_SELLERS = 4;
+// Discovery pages only need enough shop evidence to make the spread tangible.
+// The full seller list and fulfilment detail live on the product page.
+const VISIBLE_SHOPS = 2;
 
 /**
  * Product-centric comparison card. The product sits in a compact header
  * (thumbnail + title + rating); the seller line-up — the real value on a
  * price-comparison site — runs full-width below, ranked cheapest-first, each
- * price tappable straight through to the shop. "Compare N prices" opens the
+ * price tappable straight through to the shop. "Compare N shops" opens the
  * detail page with the full trust/delivery breakdown.
  */
-export default function SearchProductCard({ product, rank, sponsored = false, query, trust = {}, smartPick = false }) {
+export default function SearchProductCard({ product, sponsored = false, query, trust = {} }) {
   const navigate = useNavigate();
   let prices = Array.isArray(product.prices) ? [...product.prices] : [];
   prices.sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
@@ -34,16 +35,16 @@ export default function SearchProductCard({ product, rank, sponsored = false, qu
     return true;
   });
   const cheapest = prices[0];
-  const highest = prices[prices.length - 1];
+  const numericPrices = prices.map((offer) => Number(offer.price)).filter((price) => Number.isFinite(price));
+  const highestPrice = numericPrices.length ? Math.max(...numericPrices) : null;
   const sellerCount = prices.length;
   const isMulti = sellerCount > 1;
-  const savingsPct = saneSavePct(cheapest?.price, highest?.price);
+  const priceSpread = cheapest?.price != null && highestPrice != null ? highestPrice - cheapest.price : 0;
+  const savingsPct = saneSavePct(cheapest?.price, highestPrice);
 
   const detailHref = `/product/${product.id || product.slug || ''}`;
   const goToDetail = () => navigate(detailHref, { state: { product } });
 
-  const rating = product.averageRating;
-  const totalReviews = product.totalReviews;
   const cheapestTrust = cheapest ? trust[cheapest.siteSlug || cheapest.siteName] || null : null;
 
   return (
@@ -52,11 +53,11 @@ export default function SearchProductCard({ product, rank, sponsored = false, qu
       tabIndex={0}
       onClick={goToDetail}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goToDetail(); } }}
-      className="card-soft p-4 sm:p-5 flex flex-col gap-4 group hover:shadow-[var(--shadow-lift)] hover:border-line-strong transition-all cursor-pointer"
+      className="card-soft p-4 flex flex-col gap-3 group hover:shadow-[var(--shadow-lift)] hover:border-line-strong transition-all cursor-pointer"
     >
       {/* Header — compact product identity */}
       <div className="flex items-start gap-3.5 sm:gap-4">
-        <div className="relative w-[72px] h-[72px] sm:w-24 sm:h-24 rounded-xl bg-surface-alt ring-1 ring-line p-1.5 flex items-center justify-center shrink-0 overflow-hidden">
+        <div className="relative w-[68px] h-[68px] sm:w-20 sm:h-20 rounded-xl bg-surface-alt ring-1 ring-line p-1.5 flex items-center justify-center shrink-0 overflow-hidden">
           {product.imageUrl ? (
             <img
               src={product.imageUrl}
@@ -67,15 +68,11 @@ export default function SearchProductCard({ product, rank, sponsored = false, qu
           ) : (
             <CategoryIcon category={product.category} className="w-9 h-9 text-ink/25" />
           )}
-          {sponsored ? (
+          {sponsored && (
             <span className="absolute -top-1.5 -left-1.5 inline-flex items-center justify-center w-6 h-6 rounded-full bg-yellow text-ink shadow-[var(--shadow-soft)]" title="Sponsored">
               <Megaphone className="w-3 h-3" />
             </span>
-          ) : smartPick ? (
-            <span className="absolute -top-1.5 -left-1.5 inline-flex items-center justify-center w-6 h-6 rounded-full bg-acid text-ink shadow-[var(--shadow-soft)]" title="Smart pick">
-              <Sparkles className="w-3 h-3" />
-            </span>
-          ) : null}
+          )}
         </div>
 
         <div className="flex-1 min-w-0">
@@ -86,7 +83,7 @@ export default function SearchProductCard({ product, rank, sponsored = false, qu
             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
               isMulti ? 'bg-acid-soft text-acid-deep' : 'bg-cream-soft text-ink/60'
             }`}>
-              <Store className="w-3 h-3" /> {isMulti ? `${sellerCount} sellers` : '1 seller'}
+              <Store className="w-3 h-3" /> {isMulti ? `${sellerCount} shops` : '1 shop'}
             </span>
           </div>
           <h3 className="font-sans text-base sm:text-lg font-bold text-ink leading-snug line-clamp-2 group-hover:text-acid-deep transition-colors">
@@ -113,8 +110,11 @@ export default function SearchProductCard({ product, rank, sponsored = false, qu
       {cheapest && (
         <div>
           <div className="space-y-1.5">
-            {prices.slice(0, VISIBLE_SELLERS).map((sp, i) => {
+            {prices.slice(0, VISIBLE_SHOPS).map((sp, i) => {
               const isCheapest = i === 0;
+              const delta = !isCheapest && sp.price != null && cheapest.price != null
+                ? sp.price - cheapest.price
+                : null;
               return (
                 <a
                   key={`${sp.siteSlug || sp.siteName}-${i}`}
@@ -124,30 +124,38 @@ export default function SearchProductCard({ product, rank, sponsored = false, qu
                   target="_blank"
                   rel="noopener noreferrer sponsored"
                   onClick={(e) => { e.stopPropagation(); trackClick(product.id, sp.siteSlug || sp.siteName); }}
-                  className={`group/seller flex items-center gap-2.5 rounded-xl px-3 py-2 border transition-colors ${
+                  className={`group/seller flex items-center gap-2.5 rounded-xl border px-3 py-2.5 transition-colors ${
                     isCheapest
-                      ? 'bg-acid-soft border-acid/40 hover:bg-acid/20'
+                      ? 'border-acid/45 border-l-[3px] border-l-acid bg-acid-soft/45 hover:bg-acid-soft/70'
                       : 'bg-white border-line hover:border-line-strong'
                   }`}
                 >
-                  <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-mono font-bold shrink-0 ${
-                    isCheapest ? 'bg-ink text-acid' : 'bg-cream-soft text-ink/50'
-                  }`}>
-                    {isCheapest ? <Crown className="w-3 h-3" /> : i + 1}
-                  </span>
-                  {/* Seller name owns the row — the crown + tint already say "lowest",
-                      so no LOWEST chip stealing its space. */}
-                  <span className="flex-1 min-w-0 inline-flex items-center gap-1.5">
-                    <span className="text-[13px] font-semibold text-ink truncate min-w-[64px]">{sp.sellerName || sp.siteName || 'Unknown'}</span>
-                    {sp.sellerName && (
-                      <span className="hidden lg:inline text-[11px] text-ink/60 font-mono truncate max-w-[72px]">· {sp.siteName}</span>
+                  <span className="min-w-0 flex-1">
+                    {isCheapest && (
+                      <span className="mb-1 inline-flex items-center gap-1 rounded-full bg-acid px-2 py-0.5 font-mono text-[8px] font-extrabold uppercase tracking-[0.1em] text-ink">
+                        <Crown className="h-2.5 w-2.5" /> Damkemon Pick
+                      </span>
                     )}
-                    {sp.inStock === false && (
-                      <span className="text-[10px] font-mono font-bold uppercase text-red shrink-0">out</span>
+                    <span className="flex min-w-0 items-center gap-1.5">
+                      <span className="truncate text-[13px] font-extrabold text-ink">{sp.sellerName || sp.siteName || 'Unknown'}</span>
+                      {sp.sellerName && (
+                        <span className="hidden truncate font-mono text-[10px] text-ink/55 sm:inline">via {sp.siteName}</span>
+                      )}
+                      {sp.inStock === false && (
+                        <span className="shrink-0 font-mono text-[9px] font-bold uppercase text-red">out</span>
+                      )}
+                    </span>
+                    {isCheapest && cheapestTrust && (
+                      <TrustBadge trust={cheapestTrust} variant="compact" className="mt-1" />
                     )}
                   </span>
-                  <span className={`font-mono text-sm font-bold shrink-0 ${isCheapest ? 'text-acid-deep' : 'text-ink'}`}>
-                    {fmt(sp.price)}
+                  <span className="shrink-0 text-right">
+                    <span className={`block font-mono text-sm font-extrabold ${isCheapest ? 'text-acid-deep' : 'text-ink'}`}>
+                      {fmt(sp.price)}
+                    </span>
+                    <span className={`mt-0.5 block font-mono text-[9px] font-semibold ${isCheapest ? 'text-green' : 'text-gray'}`}>
+                      {isCheapest ? 'Lowest price' : delta > 0 ? `+${fmt(delta)}` : 'Same price'}
+                    </span>
                   </span>
                   <ExternalLink className="w-3 h-3 text-gray-soft shrink-0 group-hover/seller:text-ink transition-colors" />
                 </a>
@@ -155,22 +163,16 @@ export default function SearchProductCard({ product, rank, sponsored = false, qu
             })}
           </div>
 
-          {cheapestTrust && (
-            <div className="mt-2">
-              <TrustBadge trust={cheapestTrust} variant="compact" />
-            </div>
-          )}
-
           <div className="flex items-center justify-between gap-2 mt-2.5 pt-2.5 border-t border-line">
             <span className="text-[12px] text-gray">
-              {sellerCount > VISIBLE_SELLERS
-                ? <>+{sellerCount - VISIBLE_SELLERS} more {sellerCount - VISIBLE_SELLERS === 1 ? 'seller' : 'sellers'}</>
+              {sellerCount > VISIBLE_SHOPS
+                ? <>+{sellerCount - VISIBLE_SHOPS} more {sellerCount - VISIBLE_SHOPS === 1 ? 'shop' : 'shops'}</>
                 : isMulti
-                ? <>Cheapest at <span className="font-semibold text-ink">{cheapest.siteName}</span></>
-                : <>Only on <span className="font-semibold text-ink">{cheapest.siteName}</span></>}
+                ? <>{fmt(priceSpread)} shop spread</>
+                : <>Only at <span className="font-semibold text-ink">{cheapest.siteName}</span></>}
             </span>
             <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-ink bg-acid px-3.5 py-1.5 rounded-full hover:brightness-95 hover:-translate-y-0.5 transition-all shrink-0 shadow-sm">
-              {isMulti ? `Compare ${sellerCount} prices` : 'View details'}
+              {isMulti ? `Compare ${sellerCount} shops` : 'View details'}
               <ChevronRight className="w-3.5 h-3.5" />
             </span>
           </div>
