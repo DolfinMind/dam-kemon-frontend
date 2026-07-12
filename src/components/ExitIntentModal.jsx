@@ -1,15 +1,18 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import NewsletterModal from './NewsletterModal';
 import { useAuth } from '../auth/AuthContext';
 
 export default function ExitIntentModal() {
   const { user } = useAuth();
+  const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
+  const authPage = pathname.startsWith('/sign-in') || pathname.startsWith('/sign-up');
   
   useEffect(() => {
     // Only show if not logged in, max once per session, never for subscribers,
     // and snoozed 14 days after a dismissal.
-    if (user) return;
+    if (user || authPage) return;
     try {
       if (sessionStorage.getItem('dk_exit_shown')) return;
       if (localStorage.getItem('dk_nl')) return;
@@ -23,7 +26,7 @@ export default function ExitIntentModal() {
       try { sessionStorage.setItem('dk_exit_shown', '1'); } catch { /* ignore */ }
     }, 10000);
     return () => clearTimeout(t);
-  }, [user]);
+  }, [user, authPage]);
 
   if (!open) return null;
 

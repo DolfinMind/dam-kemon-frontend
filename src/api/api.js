@@ -122,8 +122,8 @@ export const getProductReviews = (idOrSlug) =>
   api.get(`/products/${idOrSlug}/reviews`);
 
 /**
- * Submit a community review. Anonymous — the X-Anon-Id header (added by the
- * request interceptor) is the identity, one review per product. Payload:
+ * Submit a community review. The signed-in user is the identity, one review
+ * per product. Payload:
  * { rating, title, content, reviewerName, shopSlug, siteName,
  *   deliveryDaysReported, wouldRecommend, trustVote }.
  */
@@ -134,8 +134,14 @@ export const postProductReview = (idOrSlug, payload) =>
 export const postDeliveryReport = (idOrSlug, payload) =>
   api.post(`/products/${idOrSlug}/delivery-report`, payload);
 
-/** Upvote a review as helpful. */
-export const markReviewHelpful = (id) => api.post(`/reviews/${id}/helpful`);
+/** Validated member vote: +1 / -1. Repeating the same value toggles it off. */
+export const voteReview = (id, value) => api.post(`/reviews/${id}/vote`, { value });
+export const getReviewVotes = (ids) => api.get('/reviews/votes', {
+  params: { ids: Array.isArray(ids) ? ids.join(',') : ids },
+});
+
+/** Reviews written by the signed-in user, newest first. */
+export const getMyReviews = () => api.get('/reviews/me');
 
 /** "দরদাম" shopping assistant — { reply, products[], trust{}, suggestions[] }. */
 export const assistantChat = (message) => api.post('/assistant/chat', { message });

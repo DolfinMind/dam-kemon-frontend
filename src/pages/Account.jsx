@@ -7,10 +7,10 @@ import {
   listNotifications, markNotificationsRead,
   resendVerification, updateProfile,
 } from '../api/auth';
-import { accountSearchHistory } from '../api/api';
+import { accountSearchHistory, getMyReviews } from '../api/api';
 import {
   User as UserIcon, Bell, Heart, LogOut, Plus, X, ArrowRight, Search as SearchIcon, History, TrendingDown, Inbox,
-  MailWarning, Check,
+  MailWarning, Check, Award, MessageSquare, BadgeCheck,
 } from 'lucide-react';
 
 // Bangladesh's 64 districts — the profile's location dropdown.
@@ -54,7 +54,13 @@ export default function Account() {
               <h1 className="font-serif text-2xl sm:text-3xl font-semibold leading-none">
                 {user.displayName || user.email}
               </h1>
-              <p className="text-xs text-gray mt-1">{user.email}{user.role === 'admin' && <span className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red/15 text-red font-mono text-[10px] uppercase tracking-wider">admin</span>}</p>
+              <p className="text-xs text-gray mt-1 flex items-center gap-2 flex-wrap">
+                {user.email}
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-acid-soft text-acid-deep font-mono text-[10px] font-bold" title="Community reputation">
+                  <Award className="w-3 h-3" /> {user.reputation || 1} points
+                </span>
+                {user.role === 'admin' && <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red/15 text-red font-mono text-[10px] uppercase tracking-wider">admin</span>}
+              </p>
             </div>
           </div>
         </div>
@@ -86,6 +92,9 @@ export default function Account() {
         <TabBtn active={tab === 'history'} onClick={() => setTab('history')} icon={History}>
           History
         </TabBtn>
+        <TabBtn active={tab === 'contributions'} onClick={() => setTab('contributions')} icon={Award}>
+          Contributions
+        </TabBtn>
         <TabBtn active={tab === 'profile'} onClick={() => setTab('profile')} icon={UserIcon}>
           Profile
         </TabBtn>
@@ -95,6 +104,7 @@ export default function Account() {
       {tab === 'saved-searches' && <SavedSearchesTab />}
       {tab === 'wishlist' && <WishlistTab />}
       {tab === 'history' && <HistoryTab />}
+      {tab === 'contributions' && <ContributionsTab />}
       {tab === 'profile' && <ProfileTab />}
     </div>
   );
@@ -277,6 +287,77 @@ function TabBtn({ active, onClick, icon: Icon, children }) {
   );
 }
 
+function ContributionsTab() {
+  const { user } = useAuth();
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getMyReviews()
+      .then((r) => setReviews(Array.isArray(r.data) ? r.data : []))
+      .catch(() => setReviews([]))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <p className="text-gray text-sm">Loading…</p>;
+  const trusted = reviews.filter((r) => r.trusted || r.verified).length;
+  const netScore = reviews.reduce((sum, r) => sum + (r.score || 0), 0);
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-3 gap-3">
+        {[
+          ['Reputation', user?.reputation || 1],
+          ['Reviews', reviews.length],
+          ['Trusted', trusted],
+        ].map(([label, value]) => (
+          <div key={label} className="card-soft p-4 text-center">
+            <div className="font-serif text-2xl font-bold text-ink">{value}</div>
+            <div className="text-[10px] font-mono uppercase tracking-wider text-gray mt-1">{label}</div>
+          </div>
+        ))}
+      </div>
+      <div className="rounded-2xl bg-ink text-cream p-4 flex items-start gap-3">
+        <Award className="w-5 h-5 text-acid shrink-0 mt-0.5" />
+        <p className="text-sm text-cream/75 leading-relaxed">
+          Helpful review upvotes earn <strong className="text-cream">+10</strong>; downvotes cost <strong className="text-cream">2</strong>.
+          Reviews become trusted at 5 net votes and 50 reputation, or instantly with a verified purchase. Your reviews have {netScore} net points.
+        </p>
+      </div>
+      {!reviews.length ? (
+        <div className="card-soft py-12 text-center">
+          <MessageSquare className="w-9 h-9 text-ink/20 mx-auto mb-3" />
+          <p className="text-sm text-gray">Your product reviews will appear here.</p>
+        </div>
+      ) : (
+        <ul className="space-y-2.5">
+          {reviews.map((r) => (
+            <li key={r.id} className="card-soft p-4 flex items-start gap-3">
+              <div className="w-12 text-center shrink-0">
+                <div className="font-mono text-lg font-bold text-ink">{r.score || 0}</div>
+                <div className="font-mono text-[9px] uppercase text-gray">points</div>
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Link to={`/product/${r.productId}`} className="font-semibold text-sm text-ink hover:text-red transition-colors">
+                    {r.title || 'Your product review'}
+                  </Link>
+                  {(r.trusted || r.verified) && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-acid-soft text-acid-deep px-2 py-0.5 text-[9px] font-mono uppercase font-bold">
+                      <BadgeCheck className="w-3 h-3" /> Trusted
+                    </span>
+                  )}
+                </div>
+                {r.content && <p className="text-sm text-gray mt-1 line-clamp-2">{r.content}</p>}
+                <p className="text-[10px] font-mono text-gray mt-2">{r.upvoteCount || 0} up · {r.downvoteCount || 0} down</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 function SavedSearchesTab() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -330,7 +411,7 @@ function SavedSearchesTab() {
         <div className="text-center py-12 card-soft">
           <Bell className="w-10 h-10 text-ink/20 mx-auto mb-3" />
           <p className="text-gray text-sm">No saved searches yet.</p>
-          <p className="text-gray text-xs mt-1">Add one above and we'll email you when prices drop.</p>
+          <p className="text-gray text-xs mt-1">Add one above and we’ll email you when prices drop.</p>
         </div>
       ) : (
         <ul className="space-y-2">
@@ -377,7 +458,7 @@ function HistoryTab() {
       <div className="text-center py-12 card-soft">
         <History className="w-10 h-10 text-ink/20 mx-auto mb-3" />
         <p className="text-gray text-sm">No searches recorded yet.</p>
-        <p className="text-gray text-xs mt-1">We only keep your history when you're signed in.</p>
+        <p className="text-gray text-xs mt-1">We only keep your history when you’re signed in.</p>
       </div>
     );
   }

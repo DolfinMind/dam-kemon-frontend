@@ -23,23 +23,24 @@ export default function ProductSEO({ product }) {
     : (product.imageUrl || '');
   const url = typeof window !== 'undefined' ? window.location.href : '';
 
-  // JSON-LD
+  // JSON-LD. AggregateOffer (not per-seller offers): the visible offer list is
+  // capped for signed-out visitors — and Googlebot browses signed out — so
+  // per-seller markup would drift from the page. lowPrice/highPrice/offerCount
+  // are index-time fields, true in both the gated and the full view.
+  const offerCount = product.totalSellerCount ?? (product.prices || []).length;
   const ld = {
     '@context': 'https://schema.org/',
     '@type': 'Product',
     name: product.name,
     image: product.imageUrl ? [product.imageUrl] : undefined,
     description: product.description || undefined,
-    offers: (product.prices || []).map((p) => ({
-      '@type': 'Offer',
-      url: p.productUrl,
-      priceCurrency: p.currency || 'BDT',
-      price: p.price,
-      availability: p.inStock === false
-        ? 'https://schema.org/OutOfStock'
-        : 'https://schema.org/InStock',
-      seller: { '@type': 'Organization', name: p.siteName },
-    })),
+    offers: product.lowestPrice != null ? {
+      '@type': 'AggregateOffer',
+      priceCurrency: 'BDT',
+      lowPrice: product.lowestPrice,
+      highPrice: product.highestPrice ?? product.lowestPrice,
+      offerCount: offerCount || undefined,
+    } : undefined,
   };
   
   if (product.averageRating > 0 && product.totalReviews > 0) {

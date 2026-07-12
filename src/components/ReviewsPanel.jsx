@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Star, ThumbsUp, ThumbsDown, Send, CheckCircle2, Truck, MessageSquare, Loader2, PenLine, BadgeCheck,
 } from 'lucide-react';
-import { getProductReviews, postProductReview, postDeliveryReport, markReviewHelpful } from '../api/api';
+import { getProductReviews, getReviewVotes, postProductReview, postDeliveryReport, voteReview } from '../api/api';
+import { useAuth } from '../auth/AuthContext';
+import SignupGate from './SignupGate';
 
 function fmtDate(v) {
   if (!v) return '';
@@ -13,20 +16,25 @@ function fmtDate(v) {
 }
 
 const emptyForm = {
-  rating: 0, reviewerName: '', shopSlug: '', siteName: '',
+  rating: 0, shopSlug: '', siteName: '',
   title: '', content: '', deliveryDaysReported: '', wouldRecommend: null, trustVote: null,
 };
 
 /**
- * Community reviews + trust submission. Anonymous (the X-Anon-Id header is the
- * identity, one review per product). A submitted review feeds the seller's
+ * Community reviews + trust submission. Reviews use the signed-in member as
+ * identity (one review per product). A submitted review feeds the seller's
  * trust score, so the form collects the decision signals — star rating, the
  * seller bought from, delivery time, would-recommend, and a trust vote — not
  * just free text. On success we hand the updated trust profile back up so the
  * comparison table refreshes live.
  */
 export default function ReviewsPanel({ productId, product, onTrustUpdated, initialVisible = 3 }) {
+  const { user } = useAuth();
   const [reviews, setReviews] = useState([]);
+  const [myVotes, setMyVotes] = useState({});
+  // True stored count — the API caps the anonymous body at 3 and reports the
+  // real total in a header, so the gate can honestly say "all N reviews".
+  const [totalStored, setTotalStored] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(emptyForm);
@@ -48,16 +56,26 @@ export default function ReviewsPanel({ productId, product, onTrustUpdated, initi
         if (alive) {
           const data = Array.isArray(r.data) ? r.data : [];
           setReviews(data);
+          setTotalStored(Number(r.headers?.['x-total-reviews']) || data.length);
+          if (user) {
+            const ids = data.map((review) => review.id).filter(Boolean);
+            if (ids.length) getReviewVotes(ids).then((votes) => {
+              if (alive) setMyVotes(votes.data || {});
+            }).catch(() => {});
+          } else {
+            setMyVotes({});
+          }
         }
       })
       .catch(() => {
         if (alive) {
           setReviews([]);
+          setTotalStored(0);
         }
       })
       .finally(() => { if (alive) setLoading(false); });
     return () => { alive = false; };
-  }, [productId]);
+  }, [productId, user]);
 
   const rated = reviews.filter((r) => r.rating != null);
   const avg = rated.length ? rated.reduce((s, r) => s + r.rating, 0) / rated.length : null;
@@ -73,7 +91,7 @@ export default function ReviewsPanel({ productId, product, onTrustUpdated, initi
     try {
       const payload = {
         rating: form.rating,
-        reviewerName: form.reviewerName || undefined,
+        reviewerName: user?.displayName || undefined,
         shopSlug: form.shopSlug || undefined,
         siteName: form.siteName || undefined,
         title: form.title || undefined,
@@ -137,14 +155,20 @@ export default function ReviewsPanel({ productId, product, onTrustUpdated, initi
             <h3 className="font-serif text-lg font-bold text-ink">Community reviews</h3>
             <p className="text-xs text-gray inline-flex items-center gap-1">
               <MessageSquare className="w-3 h-3" />
-              {rated.length} {rated.length === 1 ? 'review' : 'reviews'} from real buyers
+              {Math.max(totalStored, rated.length)} buyer {Math.max(totalStored, rated.length) === 1 ? 'review' : 'reviews'}
             </p>
           </div>
         </div>
         {!showForm && !done && (
-          <button onClick={() => setShowForm(true)} className="btn-primary">
-            <PenLine className="w-4 h-4" /> Write a review
-          </button>
+          user ? (
+            <button onClick={() => setShowForm(true)} className="btn-primary">
+              <PenLine className="w-4 h-4" /> Write a review
+            </button>
+          ) : (
+            <Link to={`/sign-up?next=${encodeURIComponent(`/product/${productId}`)}`} className="btn-primary">
+              <PenLine className="w-4 h-4" /> Sign up to review
+            </Link>
+          )
         )}
         {done && (
           <span className="inline-flex items-center gap-1.5 text-green text-sm font-semibold">
@@ -277,15 +301,6 @@ export default function ReviewsPanel({ productId, product, onTrustUpdated, initi
             />
           </div>
 
-          <div className="flex items-center gap-2">
-            <input
-              type="text" value={form.reviewerName} maxLength={60}
-              onChange={(e) => setField('reviewerName', e.target.value)}
-              placeholder="Your name (optional)"
-              className="flex-1 bg-white border border-line rounded-2xl px-3 py-2.5 text-sm text-ink focus:outline-none focus:border-ink/40"
-            />
-          </div>
-
           {error && <p className="text-red text-sm">{error}</p>}
 
           <div className="flex items-center gap-2">
@@ -312,8 +327,14 @@ export default function ReviewsPanel({ productId, product, onTrustUpdated, initi
         </div>
       ) : (
         <div className="space-y-2.5">
-          {visibleReviews.map((r, i) => <ReviewCard key={r.id || i} r={r} />)}
-          {reviews.length > initialVisible && (
+          {visibleReviews.map((r, i) => <ReviewCard key={r.id || i} r={r} user={user} initialVote={myVotes[r.id] || 0} />)}
+          {!user && totalStored > reviews.length ? (
+            <SignupGate
+              compact
+              title={`Read all ${totalStored} buyer reviews`}
+              subtitle="Delivery times, genuineness, after-sales — free members see every review."
+            />
+          ) : reviews.length > initialVisible && (
             <button
               type="button"
               onClick={() => setShowAll((v) => !v)}
@@ -348,27 +369,52 @@ function RecToggle({ active, onClick, label, tone }) {
   );
 }
 
-function ReviewCard({ r }) {
+function ReviewCard({ r, user, initialVote }) {
   const isCommunity = r.source === 'community';
-  const storeKey = `dk_helpful_${r.id}`;
-  const [helpful, setHelpful] = useState(r.helpfulCount || 0);
-  const [voted, setVoted] = useState(() => {
-    try { return !!localStorage.getItem(storeKey); } catch { return false; }
-  });
+  const [score, setScore] = useState(r.score || 0);
+  const [upvotes, setUpvotes] = useState(r.upvoteCount || r.helpfulCount || 0);
+  const [downvotes, setDownvotes] = useState(r.downvoteCount || 0);
+  const [myVote, setMyVote] = useState(initialVote || 0);
+  const [trusted, setTrusted] = useState(Boolean(r.trusted));
+  const [busy, setBusy] = useState(false);
+  const [voteError, setVoteError] = useState(null);
 
-  const voteHelpful = async () => {
-    if (voted || !r.id) return;
-    setVoted(true);
-    setHelpful((n) => n + 1);
-    try { localStorage.setItem(storeKey, '1'); } catch { /* ignore */ }
+  useEffect(() => setMyVote(initialVote || 0), [initialVote]);
+
+  const vote = async (value) => {
+    if (!user || busy || !r.id || !r.userId) return;
+    setBusy(true);
+    setVoteError(null);
     try {
-      const res = await markReviewHelpful(r.id);
-      if (res.data?.helpfulCount != null) setHelpful(res.data.helpfulCount);
-    } catch { /* optimistic; leave as-is */ }
+      const { data } = await voteReview(r.id, value);
+      setMyVote(data.vote || 0);
+      setScore(data.score || 0);
+      setUpvotes(data.upvoteCount || 0);
+      setDownvotes(data.downvoteCount || 0);
+      setTrusted(Boolean(data.trusted));
+    } catch (err) {
+      setVoteError(err.response?.data?.error || 'Vote failed');
+    } finally { setBusy(false); }
   };
 
   return (
-    <div className="card-soft p-4">
+    <div className="card-soft p-4 flex items-start gap-3">
+      {isCommunity && r.userId && (
+        <div className="w-10 shrink-0 flex flex-col items-center gap-0.5" aria-label={`${score} points`}>
+          <button type="button" onClick={() => vote(1)} disabled={!user || busy || user.id === r.userId}
+            aria-pressed={myVote === 1} title={user ? 'Upvote useful review' : 'Sign in to vote'}
+            className={`p-1 rounded-lg transition-colors disabled:opacity-30 ${myVote === 1 ? 'bg-acid text-ink' : 'text-gray hover:bg-acid-soft hover:text-ink'}`}>
+            <ThumbsUp className="w-4 h-4" />
+          </button>
+          <span className="font-mono text-sm font-bold text-ink">{score}</span>
+          <button type="button" onClick={() => vote(-1)} disabled={!user || busy || user.id === r.userId}
+            aria-pressed={myVote === -1} title={user ? 'Downvote inaccurate review' : 'Sign in to vote'}
+            className={`p-1 rounded-lg transition-colors disabled:opacity-30 ${myVote === -1 ? 'bg-red-soft text-red' : 'text-gray hover:bg-red-soft hover:text-red'}`}>
+            <ThumbsDown className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+      <div className="min-w-0 flex-1">
       <div className="flex items-start justify-between gap-3 mb-1.5">
         <div className="flex items-center gap-2 min-w-0">
           <div className="w-8 h-8 rounded-full bg-cream-soft flex items-center justify-center font-serif font-bold text-ink/60 shrink-0">
@@ -380,6 +426,11 @@ function ReviewCard({ r }) {
               {r.verified && (
                 <span className="inline-flex items-center gap-0.5 text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-green text-white" title="Bought via Damkemon">
                   <BadgeCheck className="w-2.5 h-2.5" /> Verified
+                </span>
+              )}
+              {trusted && !r.verified && (
+                <span className="inline-flex items-center gap-0.5 text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-acid text-ink" title="Trusted by community score and author reputation">
+                  <BadgeCheck className="w-2.5 h-2.5" /> Trusted
                 </span>
               )}
             </div>
@@ -423,16 +474,13 @@ function ReviewCard({ r }) {
         {r.trustVote === 'down' && (
           <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-red-soft text-red">Distrusts seller</span>
         )}
-        <button
-          onClick={voteHelpful}
-          disabled={voted}
-          className={`ml-auto inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full border transition-colors ${
-            voted ? 'border-green/30 text-green bg-green-soft' : 'border-line text-gray hover:border-line-strong hover:text-ink'
-          }`}
-          title={voted ? 'Thanks for the feedback' : 'Was this helpful?'}
-        >
-          <ThumbsUp className="w-3 h-3" /> Helpful{helpful > 0 ? ` · ${helpful}` : ''}
-        </button>
+        {isCommunity && r.userId && (
+          <span className="ml-auto text-[10px] font-mono text-gray" title={`${downvotes} downvotes`}>
+            {upvotes} up · {downvotes} down
+          </span>
+        )}
+      </div>
+      {voteError && <p className="text-red text-[11px] mt-2">{voteError}</p>}
       </div>
     </div>
   );

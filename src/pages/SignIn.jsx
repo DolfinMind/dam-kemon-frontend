@@ -1,25 +1,28 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { passwordLogin } from '../api/auth';
 import { useAuth } from '../auth/AuthContext';
 import GoogleSignInButton from '../components/GoogleSignInButton';
-import { ArrowLeft, AlertCircle, KeyRound } from 'lucide-react';
+import AuthLayout, { Stagger, Field } from '../components/AuthLayout';
+import { AlertCircle, CheckCircle2 } from 'lucide-react';
 
 /**
  * Sign-in for everyone: regular users type their email, the owner a
  * username — one field, one endpoint, server returns a 30-day JWT. After
  * success we honor a {@code ?next=...} query param so pages that gate
  * behind auth can round-trip the user back to themselves. Falls back to
- * /admin for admin role, /account otherwise.
+ * /admin for admin role, /account otherwise. Navigation watches `user`
+ * (not a callback) so it works no matter which GSI surface signed us in.
  */
 export default function SignIn() {
-  const { signIn } = useAuth();
+  const { signIn, user } = useAuth();
   const navigate = useNavigate();
   const [search] = useSearchParams();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
+  const [complete, setComplete] = useState(false);
   const justReset = search.get('reset') === '1';
 
   // Whitelist next= targets — only relative paths starting with "/" to
@@ -27,14 +30,12 @@ export default function SignIn() {
   const rawNext = search.get('next');
   const next = (rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//')) ? rawNext : null;
 
-  const finishSignIn = (data) => {
-    signIn(data.token, data.user);
-    if (next) {
-      navigate(next);
-    } else {
-      navigate(data.user?.role === 'admin' ? '/admin' : '/account');
-    }
-  };
+  useEffect(() => {
+    if (!user) return undefined;
+    setComplete(true);
+    const timer = setTimeout(() => navigate(next || (user.role === 'admin' ? '/admin' : '/account')), 1050);
+    return () => clearTimeout(timer);
+  }, [user, next, navigate]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -42,7 +43,7 @@ export default function SignIn() {
     setBusy(true);
     try {
       const r = await passwordLogin(username, password);
-      finishSignIn(r.data);
+      signIn(r.data.token, r.data.user); // the user-watch effect navigates
     } catch (err) {
       setError(err.response?.data?.error || 'Could not sign in. Check your email and password.');
     } finally {
@@ -51,79 +52,78 @@ export default function SignIn() {
   };
 
   return (
-    <div className="container-tight py-10 sm:py-14 lg:py-16 max-w-md">
-      <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-gray hover:text-ink mb-6">
-        <ArrowLeft className="w-4 h-4" /> Back
-      </Link>
-
-      <div className="text-center mb-6">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-lime/30 mb-4">
-          <KeyRound className="w-6 h-6 text-ink" />
-        </div>
-        <h1 className="font-serif text-3xl sm:text-4xl font-semibold leading-tight mb-2">
-          Sign in
+    <AuthLayout complete={complete} completeLabel="Welcome back">
+      <Stagger i={0} className="text-center mb-8">
+        <h1 className="font-serif text-3xl sm:text-[2.1rem] font-semibold tracking-tight leading-tight mb-2">
+          Welcome back
         </h1>
-        <p className="text-gray text-[15px]">Track prices, wishlists and drop alerts.</p>
-      </div>
+        <p className="text-gray text-[15px]">Sign in to continue to Damkemon.</p>
+      </Stagger>
 
       {justReset && (
-        <div className="mb-4 bg-acid/20 border border-acid/50 text-ink px-4 py-3 rounded-xl text-sm text-center">
-          Password updated — sign in with your new password.
-        </div>
+        <Stagger i={1}>
+          <div className="mb-4 flex items-center justify-center gap-2 bg-acid/20 border border-acid/50 text-ink px-4 py-3 rounded-xl text-sm">
+            <CheckCircle2 className="w-4 h-4 shrink-0" />
+            Password updated — sign in with your new password.
+          </div>
+        </Stagger>
       )}
 
-      <form onSubmit={onSubmit} className="card-soft p-6 sm:p-8 space-y-4">
-        <label className="block">
-          <span className="block text-xs font-mono uppercase tracking-wider text-gray mb-1.5">Email or username</span>
-          <input
+      <Stagger i={1}>
+        <form onSubmit={onSubmit} className="space-y-4">
+          {/* Google first — one click, no password. Email lives below the divider. */}
+          <GoogleSignInButton
+            featured
+            divider="below"
+            onSuccess={(d) => signIn(d.token, d.user)}
+            onError={setError}
+          />
+
+          <Field
+            label="Email or username"
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             autoComplete="username"
             required
             autoFocus
-            className="w-full bg-white border border-line rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-ink"
           />
-        </label>
-        <label className="block">
-          <span className="block text-xs font-mono uppercase tracking-wider text-gray mb-1.5">Password</span>
-          <input
+          <Field
+            label="Password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
             required
-            className="w-full bg-white border border-line rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-ink"
           />
-        </label>
 
-        {error && (
-          <div className="flex items-start gap-2 bg-red/10 border border-red/20 text-red px-3 py-2 rounded-lg text-sm">
-            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-            <span>{error}</span>
-          </div>
-        )}
+          {error && (
+            // key replays the shake when the message changes on retry
+            <div key={error} className="animate-shake flex items-start gap-2 bg-red/10 border border-red/20 text-red px-3 py-2 rounded-lg text-sm">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <span>{error}</span>
+            </div>
+          )}
 
-        <button
-          type="submit"
-          disabled={busy}
-          className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-ink text-cream font-semibold text-sm hover:bg-red disabled:opacity-50 disabled:cursor-wait transition-colors"
-        >
-          {busy ? 'Signing in…' : 'Sign in'}
-        </button>
-
-        <div className="flex items-center justify-between text-sm">
-          <Link to="/forgot-password" className="text-gray hover:text-ink">Forgot password?</Link>
-          <Link
-            to={next ? `/sign-up?next=${encodeURIComponent(next)}` : '/sign-up'}
-            className="font-semibold text-ink hover:text-red"
+          <button
+            type="submit"
+            disabled={busy}
+            className="h-12 w-full inline-flex items-center justify-center gap-2 px-5 rounded-2xl border border-line-strong bg-white/80 text-ink font-semibold text-sm hover:bg-white hover:border-ink/25 hover:-translate-y-px active:scale-[0.98] disabled:opacity-50 disabled:cursor-wait transition-all shadow-[var(--shadow-soft)]"
           >
-            Create an account
-          </Link>
-        </div>
+            {busy ? 'Signing in…' : 'Continue with email'}
+          </button>
 
-        <GoogleSignInButton onSuccess={finishSignIn} onError={setError} />
-      </form>
-    </div>
+          <div className="flex items-center justify-between pt-1 text-sm">
+            <Link to="/forgot-password" className="text-gray hover:text-ink transition-colors">Forgot password?</Link>
+            <Link
+              to={next ? `/sign-up?next=${encodeURIComponent(next)}` : '/sign-up'}
+              className="font-semibold text-ink hover:text-red transition-colors"
+            >
+              Create an account
+            </Link>
+          </div>
+        </form>
+      </Stagger>
+    </AuthLayout>
   );
 }

@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react';
-import { Crown, ExternalLink, Star, ShieldCheck, Truck, Banknote, ChevronDown, ChevronUp } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Crown, ExternalLink, Star, ShieldCheck, Truck, Banknote, ChevronDown, ChevronUp, Lock } from 'lucide-react';
 import { trackClick } from '../api/analytics';
 import { affiliateUrl } from '../api/api';
 import { tierOf, deliveryText } from './TrustBadge';
+import { useAuth } from '../auth/AuthContext';
 
 function formatPrice(price) {
   if (!price && price !== 0) return 'N/A';
@@ -64,8 +66,11 @@ function Signal({ Icon, tone, children, title }) {
  *    + sales) plus this listing's rating and units sold.
  *  - For a first-party shop we show the shop's trust score, delivery and COD.
  */
-export default function PriceComparisonTable({ prices = [], productId, trust = {}, sellerTrust = {}, recommended = null }) {
+export default function PriceComparisonTable({ prices = [], productId, trust = {}, sellerTrust = {}, recommended = null, totalCount = null }) {
   const [expanded, setExpanded] = useState(false);
+  const { user } = useAuth();
+  const { pathname, search } = useLocation();
+  const signupUrl = `/sign-up?next=${encodeURIComponent(pathname + search)}`;
 
   // Defensive de-dup: the same seller/offer must never appear twice in one
   // comparison set (item 1). Identity = the offer URL, else siteSlug+seller+price.
@@ -124,6 +129,60 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
 
       <div className="divide-y divide-line">
         {visible.map(({ it, mt, st, key, isRecommended }) => {
+          // Signed-out teaser row: the true lowest price with the shop behind
+          // it locked. Clicks go to signup, not the store — this reveal is the
+          // whole membership pitch, so it keeps the Pick styling and price.
+          if (it.locked) {
+            return (
+              <Link
+                key={key}
+                to={signupUrl}
+                className="group grid grid-cols-[minmax(0,1fr)_auto] lg:grid-cols-[minmax(180px,1.2fr)_minmax(200px,1fr)_minmax(130px,.7fr)_minmax(170px,auto)] items-center gap-x-3 gap-y-2 px-4 sm:px-5 py-4 border-l-4 border-l-acid bg-acid-soft/35 hover:bg-acid-soft/55 transition-colors"
+              >
+                <div className="min-w-0">
+                  {isRecommended && (
+                    <span className="mb-1.5 inline-flex items-center gap-1 rounded-full bg-acid px-2 py-0.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.1em] text-ink">
+                      <Crown className="h-2.5 w-2.5" /> Damkemon Pick
+                    </span>
+                  )}
+                  <h4 className="font-sans text-[15px] sm:text-base font-extrabold tracking-tight leading-tight text-ink inline-flex items-center gap-1.5">
+                    <Lock className="w-4 h-4 shrink-0 text-ink/60" />
+                    <span className="blur-[6px] select-none" aria-hidden="true">Hidden Shop Ltd</span>
+                  </h4>
+                  <div className="mt-1 text-[10px] font-mono font-bold text-acid-deep">
+                    Create a free account to reveal this shop
+                  </div>
+                </div>
+
+                <div className="col-start-1 lg:col-start-auto flex flex-wrap items-center gap-1.5">
+                  {it.rating != null && it.rating > 0 && (
+                    <span className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-mono font-medium bg-yellow-soft text-ink">
+                      <Star className="w-3 h-3 shrink-0 text-yellow fill-yellow" />
+                      {Number(it.rating).toFixed(1)}
+                      {it.reviewCount > 0 && <span className="text-gray">({it.reviewCount})</span>}
+                      {it.soldCount > 0 && <span className="hidden sm:inline text-gray">· {fmtSold(it.soldCount)} sold</span>}
+                    </span>
+                  )}
+                </div>
+
+                <div className="hidden lg:block" />
+
+                <div className="row-start-1 row-span-2 col-start-2 lg:row-auto lg:col-auto flex items-center justify-end gap-3 text-right">
+                  <div>
+                    <div className="font-mono text-[19px] sm:text-[21px] font-bold leading-none text-ink">{formatPrice(it.price)}</div>
+                    <div className="mt-1 text-[9px] sm:text-[10px] font-mono leading-tight">
+                      <span className="font-bold text-green">Lowest price</span>
+                    </div>
+                  </div>
+                  <span className="hidden sm:inline-flex items-center gap-1.5 shrink-0 rounded-full px-3.5 py-2 text-xs font-bold bg-ink text-cream group-hover:bg-ink-soft transition-colors">
+                    Unlock free <Lock className="w-3.5 h-3.5" />
+                  </span>
+                  <Lock className="sm:hidden w-4 h-4 text-gray group-hover:text-ink" />
+                </div>
+              </Link>
+            );
+          }
+
           const isFb = isFacebookSeller(it.siteName);
           const discount = it.originalPrice && it.price
             ? Math.round(((it.originalPrice - it.price) / it.originalPrice) * 100) : 0;
@@ -220,7 +279,14 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
         })}
       </div>
 
-      {sorted.length > 4 && (
+      {!user && (totalCount ?? offers.length) > sorted.length ? (
+        <Link
+          to={signupUrl}
+          className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-3 border-t border-line text-xs font-bold text-ink bg-acid-soft/40 hover:bg-acid-soft/70 transition-colors"
+        >
+          <Lock className="w-4 h-4" /> Sign up free to compare all {totalCount ?? offers.length} shops
+        </Link>
+      ) : sorted.length > 4 && (
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}

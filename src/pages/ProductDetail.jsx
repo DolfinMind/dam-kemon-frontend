@@ -14,6 +14,7 @@ import ProductSEO from '../components/ProductSEO';
 import ServiceUnavailable from '../components/ServiceUnavailable';
 import NewsletterInline from '../components/NewsletterInline';
 import FeedbackPulse from '../components/FeedbackPulse';
+import SignupGate from '../components/SignupGate';
 import {
   ArrowLeft, Share2, Bell, Store, AlertTriangle, Heart, Clock, ChevronDown,
 } from 'lucide-react';
@@ -39,15 +40,19 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(!seedProduct);
   const [error, setError] = useState(null);
   const [retryTick, setRetryTick] = useState(0);
+  const { user } = useAuth();
 
   useEffect(() => {
     let cancelled = false;
     if (!seedProduct) setLoading(true);
     setError(null);
 
+    // History is a member feature (API 401s anonymously) — skip the call and
+    // show the signup gate instead. Signing in flips `user`, which re-runs
+    // this effect and also swaps the gated product payload for the full one.
     Promise.allSettled([
       getProduct(id),
-      getProductHistory(id),
+      user ? getProductHistory(id) : Promise.resolve({ data: [] }),
     ]).then(([productRes, historyRes]) => {
       if (cancelled) return;
       if (productRes.status === 'fulfilled') {
@@ -62,7 +67,7 @@ export default function ProductDetail() {
     });
 
     return () => { cancelled = true; };
-  }, [id, seedProduct, retryTick]);
+  }, [id, seedProduct, retryTick, user]);
 
   useEffect(() => {
     const pid = product?.id || id;
@@ -106,7 +111,6 @@ export default function ProductDetail() {
     return () => document.removeEventListener('visibilitychange', onVis);
   }, []);
 
-  const { user } = useAuth();
   const [inWishlist, setInWishlist] = useState(false);
   const [wishlistBusy, setWishlistBusy] = useState(false);
   const [alertModalOpen, setAlertModalOpen] = useState(false);
@@ -181,10 +185,11 @@ export default function ProductDetail() {
   useEffect(() => {
     const pid = product?.id || id;
     if (!pid) return;
+    if (!user) { setDailySeries([]); return; } // member feature — gated UI instead
     getDailyPriceHistory(pid, 30).then((r) => {
       setDailySeries(Array.isArray(r.data) ? r.data : []);
     }).catch(() => {});
-  }, [product?.id, id]);
+  }, [product?.id, id, user]);
 
   // Trust / delivery / genuineness profiles for every seller on this product,
   // fetched in one batched call keyed by shop slug.
@@ -233,18 +238,36 @@ export default function ProductDetail() {
     return vals.length ? Math.min(...vals) : (product?.lowestPrice ?? null);
   }, [prices, product?.lowestPrice]);
   const highestPrice = useMemo(() => {
+    // Prefer the index-time field: anonymous payloads cap prices[] at the 4
+    // cheapest, which would otherwise understate the spread.
+    if (product?.highestPrice != null) return product.highestPrice;
     const vals = prices.map((p) => p.price).filter((v) => v != null);
-    return vals.length ? Math.max(...vals) : (product?.highestPrice ?? null);
+    return vals.length ? Math.max(...vals) : null;
   }, [prices, product?.highestPrice]);
   // Hidden when the spread is implausible for one product (bad match, not a deal).
   const savings = saneSavePct(lowestPrice, highestPrice) > 0 ? highestPrice - lowestPrice : 0;
-  const sellerCount = prices.length;
+  // Anonymous payloads carry the real seller count alongside the capped list.
+  const sellerCount = product?.totalSellerCount ?? prices.length;
   const cheapest = prices.find((p) => p.price === lowestPrice) || null;
+
+  // Signed-out teaser: the 4 cheapest rows with the best offer's shop identity
+  // stripped. The API already strips fetched payloads; this also covers
+  // products seeded through router state from search results.
+  const shownPrices = useMemo(() => {
+    if (user) return prices;
+    return prices.slice(0, 4).map((p, i) => (i === 0 && p.price != null ? {
+      price: p.price, originalPrice: p.originalPrice, currency: p.currency,
+      inStock: p.inStock, rating: p.rating, reviewCount: p.reviewCount,
+      soldCount: p.soldCount, locked: true,
+    } : p));
+  }, [user, prices]);
 
   // The lowest live offer is highlighted inside the comparison itself. Keeping
   // it in the same list removes the duplicate recommendation card and lets the
-  // shopper compare price, reputation and fulfilment in one scan.
-  const pick = cheapest;
+  // shopper compare price, reputation and fulfilment in one scan. For a
+  // signed-out visitor the highlighted row is the locked one (same object, so
+  // the table's reference check still matches).
+  const pick = user ? cheapest : (shownPrices[0] || null);
 
   if (loading) {
     return (
@@ -354,11 +377,12 @@ export default function ProductDetail() {
           </div>
 
           <PriceComparisonTable
-            prices={prices}
+            prices={shownPrices}
             productId={pid}
             trust={trust}
             sellerTrust={sellerTrust}
             recommended={pick}
+            totalCount={sellerCount}
           />
 
           {showNewsletter && <div className="mt-4"><NewsletterInline /></div>}
@@ -383,7 +407,14 @@ export default function ProductDetail() {
           <ChevronDown className="w-4 h-4 text-gray transition-transform group-open:rotate-180" />
         </summary>
         <div className="border-t border-line p-3 sm:p-5">
-          <PriceHistoryChart history={history} dailySeries={dailySeries} />
+          {user ? (
+            <PriceHistoryChart history={history} dailySeries={dailySeries} />
+          ) : (
+            <SignupGate
+              title="Price history is a free member feature"
+              subtitle="See the full price timeline for this product — so a re-priced “discount” can’t fool you."
+            />
+          )}
         </div>
       </details>
 

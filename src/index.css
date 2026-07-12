@@ -165,6 +165,30 @@ body::after {
   stroke-dashoffset: 400;
   animation: scribbleIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
 }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+.animate-shake { animation: shake 0.4s ease-in-out; }
+@keyframes authSuccess { from { opacity: 0; transform: translateY(10px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes authRing { from { opacity: 0.8; transform: scale(0.65); } to { opacity: 0; transform: scale(1.3); } }
+@keyframes authCheck { 0% { opacity: 0; transform: scale(0.4) rotate(-15deg); } 70% { transform: scale(1.15) rotate(2deg); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes authProgress { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+.animate-auth-success { animation: authSuccess 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-auth-ring { animation: authRing 1s ease-out infinite; }
+.animate-auth-check { animation: authCheck 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both; }
+.animate-auth-progress { animation: authProgress 1s ease-out both; }
+
+/* Instant-finish all motion for users who ask for it; `forwards` fills still
+   apply, so entrance-animated content stays visible. */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 
 /* ========= Card system ========= */
 .card-soft {
