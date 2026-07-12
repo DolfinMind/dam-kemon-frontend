@@ -85,9 +85,9 @@
     "semantic_hash": "b5624b26c293f424507a8276e5afe7a2"
   },
   "src/components/BottomNav.jsx": {
-    "mtime": 1781450122.732649,
-    "ast_hash": "a71a6eecdb0622e4cca2db4f94d8ef30",
-    "semantic_hash": "a71a6eecdb0622e4cca2db4f94d8ef30"
+    "mtime": 1783869424.3271801,
+    "ast_hash": "f1c1df8ea12c94af80f33d8208c7a877",
+    "semantic_hash": ""
   },
   "src/components/FeedbackSection.jsx": {
     "mtime": 1781704108.337452,
@@ -130,8 +130,8 @@
     "semantic_hash": ""
   },
   "src/components/PriceComparisonTable.jsx": {
-    "mtime": 1783848122.9552016,
-    "ast_hash": "cab56faa342300efbfaa737927fe051a",
+    "mtime": 1783869778.5334048,
+    "ast_hash": "0a0d6e6804636b1eb6893800cb1880d0",
     "semantic_hash": ""
   },
   "src/components/PriceHistoryChart.jsx": {

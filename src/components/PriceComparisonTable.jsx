@@ -184,8 +184,6 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
           }
 
           const isFb = isFacebookSeller(it.siteName);
-          const discount = it.originalPrice && it.price
-            ? Math.round(((it.originalPrice - it.price) / it.originalPrice) * 100) : 0;
           const badge = sellerBadges[it.siteName];
           const name = it.sellerName || it.siteName || 'Unknown Seller';
           const score = st ? st.trustScore : (mt ? mt.trustScore : null);
@@ -266,7 +264,6 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
                     ) : delta != null && delta > 0 ? (
                       <span className="text-gray">+{formatPrice(delta)}</span>
                     ) : null}
-                    {discount > 0 && <span className="ml-1.5 font-bold text-red">−{discount}%</span>}
                   </div>
                 </div>
                 <span className={`hidden sm:inline-flex items-center gap-1.5 shrink-0 rounded-full px-3.5 py-2 text-xs font-bold transition-colors ${isRecommended ? 'bg-ink text-cream group-hover:bg-ink-soft' : 'bg-cream-soft text-ink group-hover:bg-ink group-hover:text-cream'}`}>
