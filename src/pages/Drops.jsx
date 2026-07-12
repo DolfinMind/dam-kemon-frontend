@@ -36,7 +36,7 @@ export default function Drops() {
             This week's biggest <em className="text-red">price drops</em>
           </h1>
           <p className="text-gray text-sm mt-2 max-w-xl">
-            Real drops below each product's 7-day peak, compared across sellers — so you buy at the right moment, from the right shop.
+            Real drops below each product's 7-day typical market low — so one expensive seller or bad scrape cannot fake a deal.
           </p>
         </div>
         <button onClick={share} className="btn-ghost inline-flex shrink-0" aria-label="Share this page">

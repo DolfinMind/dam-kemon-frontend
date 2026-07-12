@@ -8,7 +8,6 @@ import AssistantWidget from './components/AssistantWidget';
 import GoogleOneTap from './components/GoogleOneTap';
 import ScrollToTop from './components/ScrollToTop';
 import ExitIntentModal from './components/ExitIntentModal';
-import SocialProofToasts from './components/SocialProofToasts';
 import { AuthProvider } from './auth/AuthContext';
 import LoadingSpinner from './components/LoadingSpinner';
 import { SHOW_SAATHI, SHOW_PUBLIC_DASHBOARD, SHOW_ASSISTANT } from './config/features';
@@ -141,7 +140,6 @@ function App() {
           <BottomNav />
           <GoogleOneTap />
           <ExitIntentModal />
-          <SocialProofToasts />
           {SHOW_ASSISTANT && <AssistantWidget />}
         </div>
       </AuthProvider>

@@ -52,9 +52,9 @@ export function DropCard({ p }) {
 }
 
 /**
- * Horizontal scroller of products whose current cheapest price is at least
- * 10% below their 7-day peak. The backend rebuilds the underlying list
- * nightly; the rail renders nothing until at least 3 items qualify so a
+ * Horizontal scroller of products whose current cheapest price is materially
+ * below their 7-day typical market low. The backend rebuilds the underlying
+ * list nightly; the rail renders nothing until at least 3 items qualify so a
  * fresh deploy doesn't show an empty section.
  */
 export default function HotDropsRail() {
@@ -78,7 +78,7 @@ export default function HotDropsRail() {
             <Flame className="w-3.5 h-3.5" /> Hot drops
           </div>
           <h2 className="font-serif font-semibold text-[clamp(1.5rem,3.5vw,2.25rem)] leading-tight">
-            Prices below their <em className="text-red">7-day peak</em>
+            Prices below their <em className="text-red">7-day typical low</em>
           </h2>
         </div>
         <Link to="/browse" className="text-sm font-semibold text-ink/70 hover:text-ink inline-flex items-center gap-1.5">
