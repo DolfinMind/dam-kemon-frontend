@@ -222,9 +222,7 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
                     <span className={`text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded ${badge.color}`}>{badge.label}</span>
                   ) : isFb ? (
                     <span className="text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-blue text-white">Facebook</span>
-                  ) : (
-                    <span className="text-[10px] font-mono text-gray truncate">{it.siteName}</span>
-                  )}
+                  ) : null}
                   {it.inStock === false && <span className="text-[9px] font-mono font-bold text-red">Out of stock</span>}
                 </div>
               </div>
@@ -250,7 +248,7 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
                 )}
               </div>
 
-              <div className="hidden lg:flex flex-wrap items-center gap-1.5">
+              <div className="hidden min-w-0 lg:flex flex-wrap items-center gap-1.5 overflow-hidden">
                 {dtext && <Signal Icon={Truck}>{dtext}</Signal>}
                 {mt?.codAvailable && <Signal Icon={Banknote}>COD</Signal>}
               </div>
