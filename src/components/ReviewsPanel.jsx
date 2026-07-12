@@ -23,9 +23,9 @@ const emptyForm = {
  * trust score, so the form collects the decision signals — star rating, the
  * seller bought from, delivery time, would-recommend, and a trust vote — not
  * just free text. On success we hand the updated trust profile back up so the
- * comparison table + verdict refresh live.
+ * comparison table refreshes live.
  */
-export default function ReviewsPanel({ productId, product, onTrustUpdated, onReviewsLoaded }) {
+export default function ReviewsPanel({ productId, product, onTrustUpdated, initialVisible = 3 }) {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -33,6 +33,7 @@ export default function ReviewsPanel({ productId, product, onTrustUpdated, onRev
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [done, setDone] = useState(false);
+  const [showAll, setShowAll] = useState(false);
   const [delivery, setDelivery] = useState({ open: false, shopSlug: '', days: '', busy: false, done: false, error: null });
 
   const sellers = useMemo(() => (product?.prices || [])
@@ -47,13 +48,11 @@ export default function ReviewsPanel({ productId, product, onTrustUpdated, onRev
         if (alive) {
           const data = Array.isArray(r.data) ? r.data : [];
           setReviews(data);
-          if (onReviewsLoaded) onReviewsLoaded(data);
         }
       })
       .catch(() => {
         if (alive) {
           setReviews([]);
-          if (onReviewsLoaded) onReviewsLoaded([]);
         }
       })
       .finally(() => { if (alive) setLoading(false); });
@@ -62,6 +61,7 @@ export default function ReviewsPanel({ productId, product, onTrustUpdated, onRev
 
   const rated = reviews.filter((r) => r.rating != null);
   const avg = rated.length ? rated.reduce((s, r) => s + r.rating, 0) / rated.length : null;
+  const visibleReviews = showAll ? reviews : reviews.slice(0, initialVisible);
 
   const setField = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -87,7 +87,6 @@ export default function ReviewsPanel({ productId, product, onTrustUpdated, onRev
       if (newReview) {
         setReviews((rs) => {
           const next = [newReview, ...rs];
-          if (onReviewsLoaded) onReviewsLoaded(next);
           return next;
         });
       }
@@ -309,11 +308,20 @@ export default function ReviewsPanel({ productId, product, onTrustUpdated, onRev
             <MessageSquare className="w-7 h-7 text-ink/30" />
           </div>
           <h4 className="font-serif text-lg font-bold italic text-ink mb-1">No reviews yet</h4>
-          <p className="text-gray text-sm max-w-sm mx-auto">Be the first to rate a seller's trust, genuineness and delivery for this product.</p>
+          <p className="text-gray text-sm max-w-sm mx-auto">Be the first to rate a seller’s trust, genuineness and delivery for this product.</p>
         </div>
       ) : (
         <div className="space-y-2.5">
-          {reviews.map((r, i) => <ReviewCard key={r.id || i} r={r} />)}
+          {visibleReviews.map((r, i) => <ReviewCard key={r.id || i} r={r} />)}
+          {reviews.length > initialVisible && (
+            <button
+              type="button"
+              onClick={() => setShowAll((v) => !v)}
+              className="w-full rounded-2xl border border-line bg-white px-4 py-3 text-xs font-bold text-gray hover:text-ink hover:border-line-strong transition-colors"
+            >
+              {showAll ? 'Show fewer reviews' : `Read ${reviews.length - initialVisible} more ${reviews.length - initialVisible === 1 ? 'review' : 'reviews'}`}
+            </button>
+          )}
         </div>
       )}
     </div>
