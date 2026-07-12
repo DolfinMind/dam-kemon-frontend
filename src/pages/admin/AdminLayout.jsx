@@ -5,7 +5,7 @@ import { triggerReindex, indexStatus } from '../../api/admin';
 import {
   Shield, Database, Store, Inbox, BarChart3, FileText, LogOut, Package,
   Search as SearchIcon, Clock, HardDrive, Play, Loader2, CheckCircle2, ShieldAlert,
-  Activity, Tag, MessageSquare,
+  Activity, Tag, MessageSquare, Users,
 } from 'lucide-react';
 
 export default function AdminLayout() {
@@ -100,6 +100,7 @@ export default function AdminLayout() {
         <Tab to="/admin/offers" icon={Tag}>Offers</Tab>
         <Tab to="/admin/catalog" icon={Package}>Catalog</Tab>
         <Tab to="/admin/reviews" icon={ShieldAlert}>Reviews</Tab>
+        <Tab to="/admin/users" icon={Users}>Users</Tab>
         <Tab to="/admin/search-log" icon={SearchIcon}>Search log</Tab>
         <Tab to="/admin/traffic" icon={Activity}>Traffic</Tab>
         <Tab to="/admin/stats" icon={BarChart3}>Stats</Tab>

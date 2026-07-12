@@ -28,8 +28,12 @@ export function getAnonId() {
 function fireBeacon(path, payload) {
   const url = `${API_BASE}${path}`;
   const body = JSON.stringify({ ...payload, anonId: getAnonId() });
+  let token = null;
+  try { token = localStorage.getItem('dk_auth_token'); } catch { /* anonymous */ }
   try {
-    if (navigator.sendBeacon) {
+    // sendBeacon cannot attach Authorization. Signed-in activity uses fetch so
+    // JwtAuthFilter can link the event to the real user; guests keep the cheap beacon.
+    if (!token && navigator.sendBeacon) {
       const blob = new Blob([body], { type: 'application/json' });
       if (navigator.sendBeacon(url, blob)) return;
     }
@@ -39,7 +43,10 @@ function fireBeacon(path, payload) {
   try {
     fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
       body,
       keepalive: true,
       mode: 'cors',

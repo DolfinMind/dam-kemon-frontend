@@ -63,6 +63,12 @@ export const adminFlaggedReviews = () => api.get('/admin/reviews/flagged');
 export const adminSetReviewStatus = (id, status) =>
   api.post(`/admin/reviews/${id}/status`, { status });
 
+// ─── Users, activity & signup conversion ───
+export const adminUsers = (params = {}) => api.get('/admin/users', { params });
+export const adminUser = (id) => api.get(`/admin/users/${encodeURIComponent(id)}`);
+export const adminUserConversion = (days = 30) =>
+  api.get('/admin/users/conversion', { params: { days } });
+
 // ─── Cache ───
 export const listCaches = () => api.get('/admin/cache');
 export const flushCache = (name) => api.post(`/admin/cache/${name}/flush`);

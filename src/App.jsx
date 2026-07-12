@@ -51,6 +51,7 @@ const AdminStats = lazy(() => import('./pages/admin/AdminStats'));
 const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'));
 const AdminCatalog = lazy(() => import('./pages/admin/AdminCatalog'));
 const AdminReviews = lazy(() => import('./pages/admin/AdminReviews'));
+const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'));
 const AdminSearchLog = lazy(() => import('./pages/admin/AdminSearchLog'));
 const AdminCache = lazy(() => import('./pages/admin/AdminCache'));
 const AdminJobs = lazy(() => import('./pages/admin/AdminJobs'));
@@ -122,6 +123,8 @@ function App() {
                   <Route path="offers" element={<AdminOffers />} />
                   <Route path="catalog" element={<AdminCatalog />} />
                   <Route path="reviews" element={<AdminReviews />} />
+                  <Route path="users" element={<AdminUsers />} />
+                  <Route path="users/:id" element={<AdminUsers />} />
                   <Route path="search-log" element={<AdminSearchLog />} />
                   <Route path="traffic" element={<AdminAnalytics />} />
                   <Route path="stats" element={<AdminStats />} />
