@@ -1,7 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ExternalLink, Crown, Store, Star, TrendingDown, ChevronRight, Megaphone } from 'lucide-react';
-import { trackClick } from '../api/analytics';
-import { affiliateUrl } from '../api/api';
+import { Crown, Store, Star, TrendingDown, ChevronRight, Megaphone } from 'lucide-react';
 import { CategoryIcon } from '../lib/categoryIcon';
 import TrustBadge from './TrustBadge';
 import { cleanName, saneSavePct } from '../lib/display';
@@ -19,10 +17,10 @@ const VISIBLE_SHOPS = 2;
  * Product-centric comparison card. The product sits in a compact header
  * (thumbnail + title + rating); the seller line-up — the real value on a
  * price-comparison site — runs full-width below, ranked cheapest-first, each
- * price tappable straight through to the shop. "Compare N shops" opens the
- * detail page with the full trust/delivery breakdown.
+ * shop rows are evidence, not outbound links. Every interaction opens the
+ * detail page, where the shopper can review the full comparison before leaving.
  */
-export default function SearchProductCard({ product, sponsored = false, query, trust = {} }) {
+export default function SearchProductCard({ product, sponsored = false, trust = {} }) {
   const navigate = useNavigate();
   let prices = Array.isArray(product.prices) ? [...product.prices] : [];
   prices.sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
@@ -116,18 +114,12 @@ export default function SearchProductCard({ product, sponsored = false, query, t
                 ? sp.price - cheapest.price
                 : null;
               return (
-                <a
+                <div
                   key={`${sp.siteSlug || sp.siteName}-${i}`}
-                  href={product.id
-                    ? affiliateUrl(product.id, sp.siteSlug || sp.siteName, query, sp.productUrl)
-                    : (sp.productUrl || '#')}
-                  target="_blank"
-                  rel="noopener noreferrer sponsored"
-                  onClick={(e) => { e.stopPropagation(); trackClick(product.id, sp.siteSlug || sp.siteName); }}
-                  className={`group/seller flex items-center gap-2.5 rounded-xl border px-3 py-2.5 transition-colors ${
+                  className={`flex items-center gap-2.5 rounded-xl border px-3 py-2.5 ${
                     isCheapest
-                      ? 'border-acid/45 border-l-[3px] border-l-acid bg-acid-soft/45 hover:bg-acid-soft/70'
-                      : 'bg-white border-line hover:border-line-strong'
+                      ? 'border-acid/45 border-l-[3px] border-l-acid bg-acid-soft/45'
+                      : 'bg-white border-line'
                   }`}
                 >
                   <span className="min-w-0 flex-1">
@@ -157,8 +149,7 @@ export default function SearchProductCard({ product, sponsored = false, query, t
                       {isCheapest ? 'Lowest price' : delta > 0 ? `+${fmt(delta)}` : 'Same price'}
                     </span>
                   </span>
-                  <ExternalLink className="w-3 h-3 text-gray-soft shrink-0 group-hover/seller:text-ink transition-colors" />
-                </a>
+                </div>
               );
             })}
           </div>
