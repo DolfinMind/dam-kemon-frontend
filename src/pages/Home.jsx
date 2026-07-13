@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import {
@@ -14,6 +15,7 @@ import { useAuth } from '../auth/AuthContext';
 import { TrustScore, deliveryText } from '../components/TrustBadge';
 import { CategoryIcon } from '../lib/categoryIcon';
 import LiveActivityPill from '../components/LiveActivityPill';
+import { WovenLightHero } from '../components/ui/woven-light-hero';
 import { cleanName, saneSavePct } from '../lib/display';
 import {
   ArrowRight, ShieldCheck, Flame, TrendingDown, Truck, Heart, Check,
@@ -24,6 +26,7 @@ function fmt(p) {
   return '৳' + Number(p).toLocaleString('en-IN');
 }
 const fmtNum = (n) => (n == null ? '—' : Number(n).toLocaleString('en-IN'));
+const HERO_TITLE_WORDS = ['Dam', 'kemon?'];
 
 // Quick paths into the catalog — doubles as "what we cover", right under search.
 const QUICK_CATS = [
@@ -63,6 +66,7 @@ function guardDegeneratePcts(ds) {
 
 export default function Home() {
   const navigate = useNavigate();
+  const reduceMotion = useReducedMotion();
   const [deals, setDeals] = useState([]);
   const [shops, setShops] = useState([]);
   const [allProducts, setAllProducts] = useState(null);   // null = loading
@@ -133,19 +137,44 @@ export default function Home() {
       </Helmet>
 
       {/* ── Hero: the brand question, a search box, and nothing else ── */}
-      <section className="relative container-tight pt-6 sm:pt-10 lg:pt-14 pb-8 text-center flex flex-col items-center">
-        {/* The taka sign IS the subject — one quiet watermark, no decoration elsewhere. */}
-        <span
-          aria-hidden="true"
-          className="hidden md:block absolute -top-16 -right-8 lg:right-4 font-sans font-extrabold text-[22rem] lg:text-[28rem] leading-none text-acid/15 select-none pointer-events-none -rotate-6"
-        >
-          ৳
-        </span>
+      <section className="relative isolate container-tight pt-6 sm:pt-10 lg:pt-14 pb-8 text-center flex flex-col items-center">
+        <WovenLightHero className="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-12 h-[27rem] w-[27rem] sm:-top-20 sm:h-[34rem] sm:w-[34rem] lg:-top-24 lg:h-[42rem] lg:w-[42rem] opacity-30 z-0" />
 
-        <div className="relative">
-          <h1 className="max-w-4xl mx-auto mb-4">
-            <span className="block font-sans font-extrabold leading-[0.92] tracking-[-0.04em] text-[clamp(3.2rem,8vw,6.5rem)] text-ink">
-              Dam <span className="bg-acid px-3 -mx-1 inline-block">kemon?</span>
+        <div className="relative z-10">
+          <h1 aria-label="Dam kemon?" className="max-w-4xl mx-auto mb-4">
+            <span aria-hidden="true" className="block font-sans font-extrabold leading-[0.92] tracking-[-0.04em] text-[clamp(3.2rem,8vw,6.5rem)] text-ink">
+              {HERO_TITLE_WORDS.map((word, wordIndex) => (
+                <span
+                  key={word}
+                  className={`relative isolate inline-block ${wordIndex === 0 ? 'mr-[0.22em]' : 'px-3 -mx-1'}`}
+                >
+                  {wordIndex === 1 && (
+                    <motion.span
+                      className="absolute inset-0 z-0 origin-left bg-acid"
+                      initial={reduceMotion ? { scaleX: 1 } : { scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ delay: 0.2, duration: 0.7, ease: [0.2, 0.65, 0.3, 0.9] }}
+                    />
+                  )}
+                  <span className="relative z-10">
+                    {[...word].map((character, characterIndex) => (
+                      <motion.span
+                        key={`${word}-${characterIndex}`}
+                        className="inline-block"
+                        initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                          delay: reduceMotion ? 0 : (wordIndex * 4 + characterIndex) * 0.1 + 0.35,
+                          duration: reduceMotion ? 0 : 1.2,
+                          ease: [0.2, 0.65, 0.3, 0.9],
+                        }}
+                      >
+                        {character}
+                      </motion.span>
+                    ))}
+                  </span>
+                </span>
+              ))}
             </span>
           </h1>
 

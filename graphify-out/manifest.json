@@ -20,8 +20,8 @@
     "semantic_hash": "bfe13b9e25d0af7959d0396aa103d88c"
   },
   "package.json": {
-    "mtime": 1783832164.0983245,
-    "ast_hash": "1b8027e28efb5ab3fbf7dd11b4ceac24",
+    "mtime": 1783961947.7853491,
+    "ast_hash": "93ac20dd1f7cc4dfb1e3fa38a02846fe",
     "semantic_hash": ""
   },
   "src/App.jsx": {
@@ -270,8 +270,8 @@
     "semantic_hash": "ee91568fedfd76b9fec95edfd338d064"
   },
   "src/pages/Home.jsx": {
-    "mtime": 1783789881.9850323,
-    "ast_hash": "29ff72094876da9e18a000671061a9d8",
+    "mtime": 1783962659.4069622,
+    "ast_hash": "9d7d445618e532d185e0affac9879ce8",
     "semantic_hash": ""
   },
   "src/pages/ProductDetail.jsx": {
@@ -395,8 +395,8 @@
     "semantic_hash": ""
   },
   "vite.config.js": {
-    "mtime": 1783788377.8892848,
-    "ast_hash": "8c29e49bac8140035f5dc4da8fa367bf",
+    "mtime": 1783961570.04798,
+    "ast_hash": "139ad80773eef769b7e83391e337ed5a",
     "semantic_hash": ""
   },
   ".github/workflows/production-deploy.yml": {
@@ -542,6 +542,26 @@
   "src/pages/admin/AdminCrawler.jsx": {
     "mtime": 1783949327.0452523,
     "ast_hash": "f2817e1abecc37e229d4a8a2743ce774",
+    "semantic_hash": ""
+  },
+  "components.json": {
+    "mtime": 1783961570.0485914,
+    "ast_hash": "7b35038ff6cda26b797ccdc3bf33db60",
+    "semantic_hash": ""
+  },
+  "src/components/ui/cobe-globe-analytics.tsx": {
+    "mtime": 1783962659.40671,
+    "ast_hash": "f704af2af15d0aa030d9588f9b56503e",
+    "semantic_hash": ""
+  },
+  "tsconfig.json": {
+    "mtime": 1783961570.0482442,
+    "ast_hash": "14104c0e946fdccb8c4dabdbfb0cf645",
+    "semantic_hash": ""
+  },
+  "src/components/ui/woven-light-hero.tsx": {
+    "mtime": 1783962032.880524,
+    "ast_hash": "032cbd6a5e3691309c09f0c689d92b30",
     "semantic_hash": ""
   }
 }

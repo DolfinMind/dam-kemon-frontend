@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import { fileURLToPath, URL } from 'node:url'
 
 // Dev proxy. `/api` is the default base path; `/_dk` is the optional opaque
 // alias (set VITE_API_BASE=/_dk to use it) — both forward to the backend, with
@@ -10,6 +11,11 @@ import tailwindcss from '@tailwindcss/vite'
 // same-origin, non-self-documenting path.
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
   server: {
     port: Number(process.env.PORT) || 5173, // harness-assigned port when parallel sessions run
     proxy: {

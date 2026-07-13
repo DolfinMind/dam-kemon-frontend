@@ -20,18 +20,18 @@
     "semantic_hash": "bfe13b9e25d0af7959d0396aa103d88c"
   },
   "package.json": {
-    "mtime": 1783832164.0983245,
-    "ast_hash": "1b8027e28efb5ab3fbf7dd11b4ceac24",
+    "mtime": 1783961947.7853491,
+    "ast_hash": "93ac20dd1f7cc4dfb1e3fa38a02846fe",
     "semantic_hash": ""
   },
   "src/App.jsx": {
-    "mtime": 1783858145.0608299,
-    "ast_hash": "749a0b9010d62ef6b02bffacf7e13093",
+    "mtime": 1783949327.0446684,
+    "ast_hash": "fdb3219361f9381c454e5a8445988538",
     "semantic_hash": ""
   },
   "src/api/admin.js": {
-    "mtime": 1783858145.0594666,
-    "ast_hash": "9f5422bf2c29f1a87bbd845cc261ca8e",
+    "mtime": 1783949327.0450578,
+    "ast_hash": "cde3b7d5a6c89edd1903db1c43acdb32",
     "semantic_hash": ""
   },
   "src/api/analytics.js": {
@@ -120,8 +120,8 @@
     "semantic_hash": "ab4818066580902b93554c4a7b1efec3"
   },
   "src/components/Navbar.jsx": {
-    "mtime": 1783849476.747029,
-    "ast_hash": "ef8cf7d5fabf64e5e2b5104040fe3edc",
+    "mtime": 1783960813.3475206,
+    "ast_hash": "1c85758ba49db184942e9b16e687a7f8",
     "semantic_hash": ""
   },
   "src/components/NewsletterSection.jsx": {
@@ -130,8 +130,8 @@
     "semantic_hash": ""
   },
   "src/components/PriceComparisonTable.jsx": {
-    "mtime": 1783869778.5334048,
-    "ast_hash": "0a0d6e6804636b1eb6893800cb1880d0",
+    "mtime": 1783870843.0958068,
+    "ast_hash": "7943c1974bcf4ed341ffe728c7c00ea5",
     "semantic_hash": ""
   },
   "src/components/PriceHistoryChart.jsx": {
@@ -270,8 +270,8 @@
     "semantic_hash": "ee91568fedfd76b9fec95edfd338d064"
   },
   "src/pages/Home.jsx": {
-    "mtime": 1783789881.9850323,
-    "ast_hash": "29ff72094876da9e18a000671061a9d8",
+    "mtime": 1783962198.0620537,
+    "ast_hash": "a77e79dfd9996a52cc64c387bd0f3d1a",
     "semantic_hash": ""
   },
   "src/pages/ProductDetail.jsx": {
@@ -355,8 +355,8 @@
     "semantic_hash": "9985ab27d255f206bc353ca4c6c036cd"
   },
   "src/pages/admin/AdminLayout.jsx": {
-    "mtime": 1783858145.0603874,
-    "ast_hash": "a2c67dd79617d27f7fb3681f5d27616f",
+    "mtime": 1783949512.5953143,
+    "ast_hash": "10bc2df318c768a74ac5502c7acdc604",
     "semantic_hash": ""
   },
   "src/pages/admin/AdminNewsletter.jsx": {
@@ -395,8 +395,8 @@
     "semantic_hash": ""
   },
   "vite.config.js": {
-    "mtime": 1783788377.8892848,
-    "ast_hash": "8c29e49bac8140035f5dc4da8fa367bf",
+    "mtime": 1783961570.04798,
+    "ast_hash": "139ad80773eef769b7e83391e337ed5a",
     "semantic_hash": ""
   },
   ".github/workflows/production-deploy.yml": {
@@ -537,6 +537,31 @@
   "src/pages/admin/AdminUsers.jsx": {
     "mtime": 1783858311.856969,
     "ast_hash": "549ec8a58aaaa97292e597386ff91163",
+    "semantic_hash": ""
+  },
+  "src/pages/admin/AdminCrawler.jsx": {
+    "mtime": 1783949327.0452523,
+    "ast_hash": "f2817e1abecc37e229d4a8a2743ce774",
+    "semantic_hash": ""
+  },
+  "components.json": {
+    "mtime": 1783961570.0485914,
+    "ast_hash": "7b35038ff6cda26b797ccdc3bf33db60",
+    "semantic_hash": ""
+  },
+  "src/components/ui/cobe-globe-analytics.tsx": {
+    "mtime": 1783962304.5628273,
+    "ast_hash": "7a20b98f875982feacdac2daf20bd7b2",
+    "semantic_hash": ""
+  },
+  "tsconfig.json": {
+    "mtime": 1783961570.0482442,
+    "ast_hash": "14104c0e946fdccb8c4dabdbfb0cf645",
+    "semantic_hash": ""
+  },
+  "src/components/ui/woven-light-hero.tsx": {
+    "mtime": 1783962032.880524,
+    "ast_hash": "032cbd6a5e3691309c09f0c689d92b30",
     "semantic_hash": ""
   }
 }
