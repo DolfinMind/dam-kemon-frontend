@@ -155,17 +155,29 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* Mobile hamburger */}
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="lg:hidden w-10 h-10 -mr-1 flex items-center justify-center rounded-full hover:bg-ink/5 active:scale-95 transition-all"
-              aria-label="Toggle menu"
-            >
-              <div className="relative w-5 h-5">
-                <Menu className={`absolute inset-0 w-5 h-5 transition-all ${mobileOpen ? 'rotate-180 opacity-0' : 'rotate-0 opacity-100'}`} />
-                <X className={`absolute inset-0 w-5 h-5 transition-all ${mobileOpen ? 'rotate-0 opacity-100' : '-rotate-180 opacity-0'}`} />
-              </div>
-            </button>
+            <div className="lg:hidden flex items-center gap-1">
+              {!user && (
+                <>
+                  <Link to="/sign-in" className="text-sm font-medium text-ink/70 hover:text-ink px-2 py-2 rounded-full hover:bg-cream transition-colors whitespace-nowrap">
+                    Sign in
+                  </Link>
+                  <Link to="/sign-up" className="text-sm font-bold text-ink bg-acid hover:brightness-95 px-3 py-2 rounded-full transition-all whitespace-nowrap">
+                    Sign up
+                  </Link>
+                </>
+              )}
+              {/* Mobile hamburger */}
+              <button
+                onClick={() => setMobileOpen(!mobileOpen)}
+                className="w-10 h-10 -mr-1 flex items-center justify-center rounded-full hover:bg-ink/5 active:scale-95 transition-all"
+                aria-label="Toggle menu"
+              >
+                <div className="relative w-5 h-5">
+                  <Menu className={`absolute inset-0 w-5 h-5 transition-all ${mobileOpen ? 'rotate-180 opacity-0' : 'rotate-0 opacity-100'}`} />
+                  <X className={`absolute inset-0 w-5 h-5 transition-all ${mobileOpen ? 'rotate-0 opacity-100' : '-rotate-180 opacity-0'}`} />
+                </div>
+              </button>
+            </div>
           </div>
         </div>
       </nav>
