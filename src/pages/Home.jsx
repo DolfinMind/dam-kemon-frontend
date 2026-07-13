@@ -3,10 +3,11 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import {
-  getHotDrops, getAllProducts, getMostSellers, getShowcase,
+  getHotDrops, getAllProducts, getMostSellers,
   getShops, getShopTrust, subscribeNewsletter,
 } from '../api/api';
 import SearchBar from '../components/SearchBar';
+import HomeProductCard, { HomeProductCardSkeleton } from '../components/HomeProductCard';
 import SearchProductCard from '../components/SearchProductCard';
 import SearchProductCardSkeleton from '../components/SearchProductCardSkeleton';
 import { useAuth } from '../auth/AuthContext';
@@ -14,7 +15,6 @@ import { useAuth } from '../auth/AuthContext';
 // import ProtectShowcase from '../components/ProtectShowcase';
 import { TrustScore, deliveryText } from '../components/TrustBadge';
 import { CategoryIcon } from '../lib/categoryIcon';
-import LiveActivityPill from '../components/LiveActivityPill';
 import { WovenLightHero } from '../components/ui/woven-light-hero';
 import { cleanName, saneSavePct } from '../lib/display';
 import {
@@ -42,7 +42,7 @@ const QUICK_CATS = [
 function fromDrop(p) {
   return {
     id: p.id, slug: p.slug, name: cleanName(p.name), category: p.category, imageUrl: p.imageUrl,
-    price: p.currentPrice, oldPrice: p.peakPrice, pct: p.dropPct, kind: 'drop', sellers: null,
+    price: p.currentPrice, pct: p.dropPct, kind: 'drop', sellers: p.sellerCount || 0, offers: [],
   };
 }
 function fromProduct(p) {
@@ -51,7 +51,8 @@ function fromProduct(p) {
   const savePct = saneSavePct(lo, hi);
   return {
     id: p.id, slug: p.slug, name: cleanName(p.name), category: p.category, imageUrl: p.imageUrl,
-    price: lo, oldPrice: savePct > 0 ? hi : null, pct: savePct, kind: 'save', sellers,
+    price: lo, pct: savePct, kind: 'save', sellers, offers: p.prices || [],
+    rating: p.damkemonRating, reviews: p.damkemonReviews,
     product: p,
   };
 }
@@ -59,7 +60,7 @@ function fromProduct(p) {
 // (a known hot-drops bug renders every card "70%", which reads as fake).
 function guardDegeneratePcts(ds) {
   if (ds.length >= 4 && new Set(ds.map((d) => d.pct)).size === 1) {
-    return ds.map((d) => ({ ...d, pct: 0, oldPrice: null }));
+    return ds.map((d) => ({ ...d, pct: 0 }));
   }
   return ds;
 }
@@ -203,7 +204,7 @@ export default function Home() {
         <div className="flex items-end justify-between gap-3 mb-6 sm:mb-8">
           <div>
             <div className="inline-flex items-center gap-1.5 bg-[#FFECE8] text-[#C53012] px-2.5 py-1 rounded-full text-[11px] font-bold tracking-widest uppercase mb-3">
-              <Flame className="w-3 h-3" /> Today's deals
+              <Flame className="w-3 h-3" /> Today&apos;s deals
               <span className="w-1.5 h-1.5 rounded-full bg-[#C53012] animate-pulse-dot ml-0.5" />
             </div>
             <h2 className="font-sans font-extrabold text-[clamp(1.5rem,3.5vw,2.5rem)] leading-tight tracking-tight text-[#2A2A2A]">
@@ -215,45 +216,46 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="flex gap-4 sm:gap-5 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 pb-4">
+        <div className="flex gap-4 sm:gap-5 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 pb-5">
           {(deals.length ? deals : Array.from({ length: 6 })).slice(0, 10).map((d, i) => (
             d ? (
-              <Link
-                key={d.id}
-                to={`/product/${d.id || d.slug}`}
-                state={d.product ? { product: d.product } : undefined}
-                className="group snap-start shrink-0 w-[170px] sm:w-[220px] bg-white rounded-[1.25rem] overflow-hidden flex flex-col shadow-[0_4px_20px_rgb(0,0,0,0.04)] border border-black/[0.03] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300"
-              >
-                <div className="relative aspect-square bg-[#F8F8F6] flex items-center justify-center p-5 overflow-hidden">
-                  {d.imageUrl ? (
-                    <img src={d.imageUrl} alt={d.name} className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-110" onError={(e) => { e.target.style.display = 'none'; }} />
-                  ) : (
-                    <CategoryIcon category={d.category} className="w-10 h-10 text-black/10" />
-                  )}
-                  {d.pct > 0 && (
-                    <span className="absolute top-3 left-3 inline-flex items-center gap-1 text-[11px] font-bold tracking-wider uppercase px-2 py-1 rounded-md bg-[#D63615] text-white shadow-sm">
-                      <TrendingDown className="w-3 h-3" /> {d.kind === 'drop' ? `${d.pct}%` : `save ${d.pct}%`}
-                    </span>
-                  )}
-                </div>
-                <div className="p-4 sm:p-5 flex-1 flex flex-col bg-white">
-                  {d.category && <span className="text-[11px] uppercase tracking-widest text-ink/60 font-bold mb-1.5">{d.category}</span>}
-                  <h3 className="font-sans text-[14px] font-bold text-[#2A2A2A] leading-[1.3] line-clamp-2 group-hover:text-acid-deep transition-colors">{d.name}</h3>
-                  <div className="mt-auto pt-4 flex items-baseline flex-wrap gap-x-2 gap-y-1">
-                    <span className="font-sans text-[1.15rem] font-extrabold text-[#2A2A2A] tracking-tight">{fmt(d.price)}</span>
-                    {/* ponytail: cut price hidden per request — only show the live price. */}
+              <div key={d.id} className="contents">
+                <Link
+                  to={`/product/${d.id || d.slug}`}
+                  state={d.product ? { product: d.product } : undefined}
+                  className="group snap-start flex w-[170px] shrink-0 flex-col overflow-hidden rounded-[1.25rem] border border-black/[0.03] bg-white shadow-[0_4px_20px_rgb(0,0,0,0.04)] transition-all duration-300 sm:w-[220px] md:hidden"
+                >
+                  <div className="relative flex aspect-square items-center justify-center overflow-hidden bg-[#F8F8F6] p-5">
+                    {d.imageUrl ? (
+                      <img src={d.imageUrl} alt={d.name} className="h-full w-full object-contain mix-blend-multiply" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                    ) : (
+                      <CategoryIcon category={d.category} className="h-10 w-10 text-black/10" />
+                    )}
+                    {d.pct > 0 && (
+                      <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-md bg-[#D63615] px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+                        <TrendingDown className="h-3 w-3" /> {d.kind === 'drop' ? `${d.pct}%` : `save ${d.pct}%`}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-1 flex-col bg-white p-4">
+                    {d.category && <span className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-ink/60">{d.category}</span>}
+                    <h3 className="line-clamp-2 text-[14px] font-bold leading-[1.3] text-[#2A2A2A]">{d.name}</h3>
+                    <span className="mt-auto pt-4 text-[1.05rem] font-extrabold tracking-tight text-[#2A2A2A]">{fmt(d.price)}</span>
+                  </div>
+                </Link>
+                <HomeProductCard item={d} className="hidden w-[285px] shrink-0 snap-start md:flex" />
+              </div>
+            ) : (
+              <div key={i} className="contents">
+                <div className="w-[170px] shrink-0 snap-start overflow-hidden rounded-[1.25rem] border border-black/[0.03] bg-white shadow-[0_4px_20px_rgb(0,0,0,0.04)] sm:w-[220px] md:hidden">
+                  <div className="aspect-square animate-pulse bg-[#F8F8F6]" />
+                  <div className="space-y-3 p-4">
+                    <div className="h-2 w-1/3 animate-pulse rounded bg-black/5" />
+                    <div className="h-4 animate-pulse rounded bg-black/5" />
+                    <div className="h-5 w-1/2 animate-pulse rounded bg-black/5" />
                   </div>
                 </div>
-              </Link>
-            ) : (
-              <div key={i} className="snap-start shrink-0 w-[170px] sm:w-[220px] bg-white rounded-[1.25rem] overflow-hidden border border-black/[0.03] shadow-[0_4px_20px_rgb(0,0,0,0.04)]">
-                <div className="aspect-square bg-[#F8F8F6] animate-pulse" />
-                <div className="p-5 space-y-3">
-                  <div className="h-2 w-1/3 rounded bg-black/5 animate-pulse" />
-                  <div className="h-4 rounded bg-black/5 animate-pulse" />
-                  <div className="h-4 w-2/3 rounded bg-black/5 animate-pulse" />
-                  <div className="h-5 w-1/2 rounded bg-black/5 animate-pulse mt-4" />
-                </div>
+                <HomeProductCardSkeleton className="hidden w-[285px] shrink-0 snap-start md:block" />
               </div>
             )
           ))}
@@ -285,14 +287,20 @@ export default function Home() {
         {allProducts === null ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {[...Array(8)].map((_, i) => (
-              <SearchProductCardSkeleton key={i} />
+              <div key={i} className="contents">
+                <div className="md:hidden"><SearchProductCardSkeleton /></div>
+                <HomeProductCardSkeleton className="hidden md:block" />
+              </div>
             ))}
           </div>
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
               {allProducts.map((p) => (
-                <SearchProductCard key={p.id || p.slug} product={p} trust={allProductsTrust} />
+                <div key={p.id || p.slug} className="contents">
+                  <div className="md:hidden"><SearchProductCard product={p} trust={allProductsTrust} /></div>
+                  <HomeProductCard className="hidden md:flex" item={fromProduct(p)} trust={allProductsTrust} />
+                </div>
               ))}
             </div>
             
