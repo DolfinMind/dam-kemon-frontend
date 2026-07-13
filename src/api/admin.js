@@ -79,6 +79,13 @@ export const listJobs = () => api.get('/admin/jobs');
 export const runJob = (id) => api.post(`/admin/jobs/${id}/run`);
 export const jobRuns = (id) => api.get(`/admin/jobs/${id}/runs`);
 
+// ─── Remote Python crawler ───
+export const crawlerStatus = () => api.get('/admin/crawler/status');
+export const crawlerLogs = (lines = 300) =>
+  api.get('/admin/crawler/logs', { params: { lines } });
+export const crawlerAction = (action) =>
+  api.post(`/admin/crawler/actions/${encodeURIComponent(action)}`);
+
 // ─── Search log + latency ───
 export const recentSearches = (limit = 200) =>
   api.get('/admin/stats/recent-searches', { params: { limit } });

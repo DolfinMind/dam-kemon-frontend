@@ -6,6 +6,7 @@ import {
   Shield, Database, Store, Inbox, BarChart3, FileText, LogOut, Package,
   Search as SearchIcon, Clock, HardDrive, Play, Loader2, CheckCircle2, ShieldAlert,
   Activity, Tag, MessageSquare, Users,
+  Server,
 } from 'lucide-react';
 
 export default function AdminLayout() {
@@ -95,6 +96,7 @@ export default function AdminLayout() {
 
       <nav className="flex gap-1 sm:gap-2 mb-6 border-b border-line overflow-x-auto no-scrollbar">
         <Tab to="/admin/indexer" icon={Database}>Indexer</Tab>
+        <Tab to="/admin/crawler" icon={Server}>Crawler</Tab>
         <Tab to="/admin/shops" icon={Store}>Shops</Tab>
         <Tab to="/admin/pending-shops" icon={Inbox}>Pending</Tab>
         <Tab to="/admin/offers" icon={Tag}>Offers</Tab>
