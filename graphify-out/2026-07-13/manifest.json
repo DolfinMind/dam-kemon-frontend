@@ -25,13 +25,13 @@
     "semantic_hash": ""
   },
   "src/App.jsx": {
-    "mtime": 1783949327.0446684,
-    "ast_hash": "fdb3219361f9381c454e5a8445988538",
+    "mtime": 1783858145.0608299,
+    "ast_hash": "749a0b9010d62ef6b02bffacf7e13093",
     "semantic_hash": ""
   },
   "src/api/admin.js": {
-    "mtime": 1783949327.0450578,
-    "ast_hash": "cde3b7d5a6c89edd1903db1c43acdb32",
+    "mtime": 1783858145.0594666,
+    "ast_hash": "9f5422bf2c29f1a87bbd845cc261ca8e",
     "semantic_hash": ""
   },
   "src/api/analytics.js": {
@@ -130,8 +130,8 @@
     "semantic_hash": ""
   },
   "src/components/PriceComparisonTable.jsx": {
-    "mtime": 1783870843.0958068,
-    "ast_hash": "7943c1974bcf4ed341ffe728c7c00ea5",
+    "mtime": 1783869778.5334048,
+    "ast_hash": "0a0d6e6804636b1eb6893800cb1880d0",
     "semantic_hash": ""
   },
   "src/components/PriceHistoryChart.jsx": {
@@ -355,8 +355,8 @@
     "semantic_hash": "9985ab27d255f206bc353ca4c6c036cd"
   },
   "src/pages/admin/AdminLayout.jsx": {
-    "mtime": 1783949512.5953143,
-    "ast_hash": "10bc2df318c768a74ac5502c7acdc604",
+    "mtime": 1783858145.0603874,
+    "ast_hash": "a2c67dd79617d27f7fb3681f5d27616f",
     "semantic_hash": ""
   },
   "src/pages/admin/AdminNewsletter.jsx": {
@@ -537,11 +537,6 @@
   "src/pages/admin/AdminUsers.jsx": {
     "mtime": 1783858311.856969,
     "ast_hash": "549ec8a58aaaa97292e597386ff91163",
-    "semantic_hash": ""
-  },
-  "src/pages/admin/AdminCrawler.jsx": {
-    "mtime": 1783949327.0452523,
-    "ast_hash": "f2817e1abecc37e229d4a8a2743ce774",
     "semantic_hash": ""
   }
 }

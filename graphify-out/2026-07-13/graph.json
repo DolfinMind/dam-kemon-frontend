@@ -583,20 +583,10 @@
       "norm_label": "adminindexer"
     },
     {
-      "label": "AdminCrawler",
-      "file_type": "code",
-      "source_file": "src/App.jsx",
-      "source_location": "L46",
-      "_origin": "ast",
-      "id": "src_app_admincrawler",
-      "community": 1,
-      "norm_label": "admincrawler"
-    },
-    {
       "label": "AdminShops",
       "file_type": "code",
       "source_file": "src/App.jsx",
-      "source_location": "L47",
+      "source_location": "L46",
       "_origin": "ast",
       "id": "src_app_adminshops",
       "community": 1,
@@ -606,7 +596,7 @@
       "label": "AdminPendingShops",
       "file_type": "code",
       "source_file": "src/App.jsx",
-      "source_location": "L48",
+      "source_location": "L47",
       "_origin": "ast",
       "id": "src_app_adminpendingshops",
       "community": 1,
@@ -616,7 +606,7 @@
       "label": "AdminOffers",
       "file_type": "code",
       "source_file": "src/App.jsx",
-      "source_location": "L49",
+      "source_location": "L48",
       "_origin": "ast",
       "id": "src_app_adminoffers",
       "community": 1,
@@ -626,7 +616,7 @@
       "label": "AdminAuditLog",
       "file_type": "code",
       "source_file": "src/App.jsx",
-      "source_location": "L50",
+      "source_location": "L49",
       "_origin": "ast",
       "id": "src_app_adminauditlog",
       "community": 1,
@@ -636,7 +626,7 @@
       "label": "AdminStats",
       "file_type": "code",
       "source_file": "src/App.jsx",
-      "source_location": "L51",
+      "source_location": "L50",
       "_origin": "ast",
       "id": "src_app_adminstats",
       "community": 1,
@@ -646,7 +636,7 @@
       "label": "AdminAnalytics",
       "file_type": "code",
       "source_file": "src/App.jsx",
-      "source_location": "L52",
+      "source_location": "L51",
       "_origin": "ast",
       "id": "src_app_adminanalytics",
       "community": 1,
@@ -656,7 +646,7 @@
       "label": "AdminCatalog",
       "file_type": "code",
       "source_file": "src/App.jsx",
-      "source_location": "L53",
+      "source_location": "L52",
       "_origin": "ast",
       "id": "src_app_admincatalog",
       "community": 1,
@@ -666,7 +656,7 @@
       "label": "AdminReviews",
       "file_type": "code",
       "source_file": "src/App.jsx",
-      "source_location": "L54",
+      "source_location": "L53",
       "_origin": "ast",
       "id": "src_app_adminreviews",
       "community": 1,
@@ -676,7 +666,7 @@
       "label": "AdminUsers",
       "file_type": "code",
       "source_file": "src/App.jsx",
-      "source_location": "L55",
+      "source_location": "L54",
       "_origin": "ast",
       "id": "src_app_adminusers",
       "community": 1,
@@ -686,7 +676,7 @@
       "label": "AdminSearchLog",
       "file_type": "code",
       "source_file": "src/App.jsx",
-      "source_location": "L56",
+      "source_location": "L55",
       "_origin": "ast",
       "id": "src_app_adminsearchlog",
       "community": 1,
@@ -696,7 +686,7 @@
       "label": "AdminCache",
       "file_type": "code",
       "source_file": "src/App.jsx",
-      "source_location": "L57",
+      "source_location": "L56",
       "_origin": "ast",
       "id": "src_app_admincache",
       "community": 1,
@@ -706,7 +696,7 @@
       "label": "AdminJobs",
       "file_type": "code",
       "source_file": "src/App.jsx",
-      "source_location": "L58",
+      "source_location": "L57",
       "_origin": "ast",
       "id": "src_app_adminjobs",
       "community": 1,
@@ -716,7 +706,7 @@
       "label": "AdminNewsletter",
       "file_type": "code",
       "source_file": "src/App.jsx",
-      "source_location": "L59",
+      "source_location": "L58",
       "_origin": "ast",
       "id": "src_app_adminnewsletter",
       "community": 1,
@@ -726,7 +716,7 @@
       "label": "AdminFeedback",
       "file_type": "code",
       "source_file": "src/App.jsx",
-      "source_location": "L60",
+      "source_location": "L59",
       "_origin": "ast",
       "id": "src_app_adminfeedback",
       "community": 1,
@@ -736,7 +726,7 @@
       "label": "PageFallback()",
       "file_type": "code",
       "source_file": "src/App.jsx",
-      "source_location": "L62",
+      "source_location": "L61",
       "_origin": "ast",
       "id": "src_app_pagefallback",
       "community": 1,
@@ -746,7 +736,7 @@
       "label": "PageTracker()",
       "file_type": "code",
       "source_file": "src/App.jsx",
-      "source_location": "L72",
+      "source_location": "L71",
       "_origin": "ast",
       "id": "src_app_pagetracker",
       "community": 6,
@@ -756,7 +746,7 @@
       "label": "App()",
       "file_type": "code",
       "source_file": "src/App.jsx",
-      "source_location": "L80",
+      "source_location": "L79",
       "_origin": "ast",
       "id": "src_app_app",
       "community": 56,
@@ -769,7 +759,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_api_admin",
-      "community": 5,
+      "community": 8,
       "norm_label": "admin.js"
     },
     {
@@ -1069,7 +1059,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "src_api_admin_listcaches",
-      "community": 30,
+      "community": 8,
       "norm_label": "listcaches()"
     },
     {
@@ -1079,7 +1069,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "src_api_admin_flushcache",
-      "community": 30,
+      "community": 8,
       "norm_label": "flushcache()"
     },
     {
@@ -1089,7 +1079,7 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "src_api_admin_flushallcaches",
-      "community": 30,
+      "community": 8,
       "norm_label": "flushallcaches()"
     },
     {
@@ -1123,40 +1113,10 @@
       "norm_label": "jobruns()"
     },
     {
-      "label": "crawlerStatus()",
-      "file_type": "code",
-      "source_file": "src/api/admin.js",
-      "source_location": "L83",
-      "_origin": "ast",
-      "id": "src_api_admin_crawlerstatus",
-      "community": 26,
-      "norm_label": "crawlerstatus()"
-    },
-    {
-      "label": "crawlerLogs()",
-      "file_type": "code",
-      "source_file": "src/api/admin.js",
-      "source_location": "L84",
-      "_origin": "ast",
-      "id": "src_api_admin_crawlerlogs",
-      "community": 26,
-      "norm_label": "crawlerlogs()"
-    },
-    {
-      "label": "crawlerAction()",
-      "file_type": "code",
-      "source_file": "src/api/admin.js",
-      "source_location": "L86",
-      "_origin": "ast",
-      "id": "src_api_admin_crawleraction",
-      "community": 26,
-      "norm_label": "crawleraction()"
-    },
-    {
       "label": "recentSearches()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L90",
+      "source_location": "L83",
       "_origin": "ast",
       "id": "src_api_admin_recentsearches",
       "community": 22,
@@ -1166,7 +1126,7 @@
       "label": "searchLatency()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L92",
+      "source_location": "L85",
       "_origin": "ast",
       "id": "src_api_admin_searchlatency",
       "community": 22,
@@ -1176,7 +1136,7 @@
       "label": "recentSuggestClicks()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L93",
+      "source_location": "L86",
       "_origin": "ast",
       "id": "src_api_admin_recentsuggestclicks",
       "community": 22,
@@ -1186,7 +1146,7 @@
       "label": "analyticsOverview()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L97",
+      "source_location": "L90",
       "_origin": "ast",
       "id": "src_api_admin_analyticsoverview",
       "community": 5,
@@ -1196,7 +1156,7 @@
       "label": "analyticsTopSearches()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L98",
+      "source_location": "L91",
       "_origin": "ast",
       "id": "src_api_admin_analyticstopsearches",
       "community": 5,
@@ -1206,7 +1166,7 @@
       "label": "analyticsHourly()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L100",
+      "source_location": "L93",
       "_origin": "ast",
       "id": "src_api_admin_analyticshourly",
       "community": 5,
@@ -1216,7 +1176,7 @@
       "label": "analyticsDailyUsers()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L102",
+      "source_location": "L95",
       "_origin": "ast",
       "id": "src_api_admin_analyticsdailyusers",
       "community": 5,
@@ -1226,7 +1186,7 @@
       "label": "analyticsTopIps()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L104",
+      "source_location": "L97",
       "_origin": "ast",
       "id": "src_api_admin_analyticstopips",
       "community": 5,
@@ -1236,7 +1196,7 @@
       "label": "analyticsTopPaths()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L106",
+      "source_location": "L99",
       "_origin": "ast",
       "id": "src_api_admin_analyticstoppaths",
       "community": 5,
@@ -1246,17 +1206,17 @@
       "label": "analyticsRequests()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L108",
+      "source_location": "L101",
       "_origin": "ast",
       "id": "src_api_admin_analyticsrequests",
-      "community": 5,
+      "community": 8,
       "norm_label": "analyticsrequests()"
     },
     {
       "label": "analyticsDevices()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L110",
+      "source_location": "L103",
       "_origin": "ast",
       "id": "src_api_admin_analyticsdevices",
       "community": 5,
@@ -1266,7 +1226,7 @@
       "label": "analyticsReferrers()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L112",
+      "source_location": "L105",
       "_origin": "ast",
       "id": "src_api_admin_analyticsreferrers",
       "community": 5,
@@ -1276,7 +1236,7 @@
       "label": "analyticsFunnel()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L116",
+      "source_location": "L109",
       "_origin": "ast",
       "id": "src_api_admin_analyticsfunnel",
       "community": 5,
@@ -1286,7 +1246,7 @@
       "label": "analyticsShopClicksByCategory()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L118",
+      "source_location": "L111",
       "_origin": "ast",
       "id": "src_api_admin_analyticsshopclicksbycategory",
       "community": 5,
@@ -1296,7 +1256,7 @@
       "label": "analyticsTopShops()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L120",
+      "source_location": "L113",
       "_origin": "ast",
       "id": "src_api_admin_analyticstopshops",
       "community": 5,
@@ -1306,7 +1266,7 @@
       "label": "analyticsTopProducts()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L122",
+      "source_location": "L115",
       "_origin": "ast",
       "id": "src_api_admin_analyticstopproducts",
       "community": 5,
@@ -1316,7 +1276,7 @@
       "label": "analyticsTopConvertingSearches()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L124",
+      "source_location": "L117",
       "_origin": "ast",
       "id": "src_api_admin_analyticstopconvertingsearches",
       "community": 5,
@@ -1326,7 +1286,7 @@
       "label": "analyticsResultShops()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L128",
+      "source_location": "L121",
       "_origin": "ast",
       "id": "src_api_admin_analyticsresultshops",
       "community": 5,
@@ -1336,7 +1296,7 @@
       "label": "analyticsZeroResultSearches()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L130",
+      "source_location": "L123",
       "_origin": "ast",
       "id": "src_api_admin_analyticszeroresultsearches",
       "community": 5,
@@ -1346,7 +1306,7 @@
       "label": "analyticsShopPriceWins()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L132",
+      "source_location": "L125",
       "_origin": "ast",
       "id": "src_api_admin_analyticsshoppricewins",
       "community": 5,
@@ -1356,7 +1316,7 @@
       "label": "newsletterAnalytics()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L136",
+      "source_location": "L129",
       "_origin": "ast",
       "id": "src_api_admin_newsletteranalytics",
       "community": 45,
@@ -1366,7 +1326,7 @@
       "label": "listSubscribers()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L137",
+      "source_location": "L130",
       "_origin": "ast",
       "id": "src_api_admin_listsubscribers",
       "community": 45,
@@ -1376,7 +1336,7 @@
       "label": "triggerNewsletter()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L139",
+      "source_location": "L132",
       "_origin": "ast",
       "id": "src_api_admin_triggernewsletter",
       "community": 45,
@@ -1386,7 +1346,7 @@
       "label": "getFeedback()",
       "file_type": "code",
       "source_file": "src/api/admin.js",
-      "source_location": "L141",
+      "source_location": "L134",
       "_origin": "ast",
       "id": "src_api_admin_getfeedback",
       "community": 3,
@@ -1519,7 +1479,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "src_api_api_getproduct",
-      "community": 18,
+      "community": 7,
       "norm_label": "getproduct()"
     },
     {
@@ -1529,7 +1489,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "src_api_api_getproducthistory",
-      "community": 18,
+      "community": 7,
       "norm_label": "getproducthistory()"
     },
     {
@@ -1549,7 +1509,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "src_api_api_getdashboardstats",
-      "community": 3,
+      "community": 28,
       "norm_label": "getdashboardstats()"
     },
     {
@@ -1569,7 +1529,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "src_api_api_getallproducts",
-      "community": 7,
+      "community": 26,
       "norm_label": "getallproducts()"
     },
     {
@@ -1589,7 +1549,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "src_api_api_getcategories",
-      "community": 7,
+      "community": 26,
       "norm_label": "getcategories()"
     },
     {
@@ -1649,7 +1609,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "src_api_api_getlivestats",
-      "community": 7,
+      "community": 28,
       "norm_label": "getlivestats()"
     },
     {
@@ -1729,7 +1689,7 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "src_api_api_getshoptrust",
-      "community": 7,
+      "community": 26,
       "norm_label": "getshoptrust()"
     },
     {
@@ -1739,7 +1699,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "src_api_api_getsellertrust",
-      "community": 18,
+      "community": 7,
       "norm_label": "getsellertrust()"
     },
     {
@@ -1879,7 +1839,7 @@
       "source_location": "L164",
       "_origin": "ast",
       "id": "src_api_api_getdailypricehistory",
-      "community": 18,
+      "community": 7,
       "norm_label": "getdailypricehistory()"
     },
     {
@@ -1899,7 +1859,7 @@
       "source_location": "L176",
       "_origin": "ast",
       "id": "src_api_api_affiliateurl",
-      "community": 0,
+      "community": 6,
       "norm_label": "affiliateurl()"
     },
     {
@@ -1909,7 +1869,7 @@
       "source_location": "L190",
       "_origin": "ast",
       "id": "src_api_api_submitoffer",
-      "community": 18,
+      "community": 7,
       "norm_label": "submitoffer()"
     },
     {
@@ -1949,7 +1909,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_api_auth_getauthtoken",
-      "community": 12,
+      "community": 44,
       "norm_label": "getauthtoken()"
     },
     {
@@ -1959,7 +1919,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_api_auth_setauthtoken",
-      "community": 12,
+      "community": 44,
       "norm_label": "setauthtoken()"
     },
     {
@@ -1969,7 +1929,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "src_api_auth_passwordlogin",
-      "community": 12,
+      "community": 40,
       "norm_label": "passwordlogin()"
     },
     {
@@ -1989,7 +1949,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "src_api_auth_googlelogin",
-      "community": 40,
+      "community": 57,
       "norm_label": "googlelogin()"
     },
     {
@@ -1999,7 +1959,7 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "src_api_auth_getauthconfig",
-      "community": 40,
+      "community": 57,
       "norm_label": "getauthconfig()"
     },
     {
@@ -2009,7 +1969,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "src_api_auth_verifyemail",
-      "community": 12,
+      "community": 30,
       "norm_label": "verifyemail()"
     },
     {
@@ -2059,7 +2019,7 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "src_api_auth_getme",
-      "community": 12,
+      "community": 44,
       "norm_label": "getme()"
     },
     {
@@ -2069,7 +2029,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "src_api_auth_signout",
-      "community": 12,
+      "community": 44,
       "norm_label": "signout()"
     },
     {
@@ -2119,7 +2079,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "src_api_auth_addtowishlist",
-      "community": 18,
+      "community": 7,
       "norm_label": "addtowishlist()"
     },
     {
@@ -2169,7 +2129,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "src_api_auth_saathisignup",
-      "community": 58,
+      "community": 12,
       "norm_label": "saathisignup()"
     },
     {
@@ -2179,7 +2139,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "src_api_auth_saathime",
-      "community": 58,
+      "community": 12,
       "norm_label": "saathime()"
     },
     {
@@ -2259,7 +2219,7 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "src_api_auth_saathistats",
-      "community": 12,
+      "community": 4,
       "norm_label": "saathistats()"
     },
     {
@@ -2269,7 +2229,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "src_api_auth_saathipublicprofile",
-      "community": 43,
+      "community": 12,
       "norm_label": "saathipublicprofile()"
     },
     {
@@ -2289,7 +2249,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "src_api_auth_saathidisconnectmessenger",
-      "community": 12,
+      "community": 4,
       "norm_label": "saathidisconnectmessenger()"
     },
     {
@@ -2409,7 +2369,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_auth_authcontext",
-      "community": 12,
+      "community": 44,
       "norm_label": "authcontext.jsx"
     },
     {
@@ -2419,7 +2379,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_auth_authcontext_authcontext",
-      "community": 12,
+      "community": 44,
       "norm_label": "authcontext"
     },
     {
@@ -2429,7 +2389,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_auth_authcontext_authprovider",
-      "community": 12,
+      "community": 44,
       "norm_label": "authprovider()"
     },
     {
@@ -2439,7 +2399,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "src_auth_authcontext_useauth",
-      "community": 40,
+      "community": 30,
       "norm_label": "useauth()"
     },
     {
@@ -2449,7 +2409,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_addoffer",
-      "community": 18,
+      "community": 7,
       "norm_label": "addoffer.jsx"
     },
     {
@@ -2459,7 +2419,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_components_addoffer_addoffer",
-      "community": 18,
+      "community": 7,
       "norm_label": "addoffer()"
     },
     {
@@ -2639,7 +2599,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_feedbackpulse",
-      "community": 18,
+      "community": 7,
       "norm_label": "feedbackpulse.jsx"
     },
     {
@@ -2649,7 +2609,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_components_feedbackpulse_eligible",
-      "community": 18,
+      "community": 7,
       "norm_label": "eligible()"
     },
     {
@@ -2659,7 +2619,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_components_feedbackpulse_feedbackpulse",
-      "community": 18,
+      "community": 7,
       "norm_label": "feedbackpulse()"
     },
     {
@@ -2709,7 +2669,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_googleonetap",
-      "community": 40,
+      "community": 57,
       "norm_label": "googleonetap.jsx"
     },
     {
@@ -2719,7 +2679,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_components_googleonetap_googleonetap",
-      "community": 40,
+      "community": 57,
       "norm_label": "googleonetap()"
     },
     {
@@ -2729,7 +2689,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_googlesigninbutton",
-      "community": 40,
+      "community": 57,
       "norm_label": "googlesigninbutton.jsx"
     },
     {
@@ -2749,7 +2709,7 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "src_components_googlesigninbutton_googlemark",
-      "community": 40,
+      "community": 57,
       "norm_label": "googlemark()"
     },
     {
@@ -2819,7 +2779,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_liveactivitypill",
-      "community": 7,
+      "community": 28,
       "norm_label": "liveactivitypill.jsx"
     },
     {
@@ -2829,7 +2789,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_liveactivitypill_liveactivitypill",
-      "community": 7,
+      "community": 28,
       "norm_label": "liveactivitypill()"
     },
     {
@@ -2969,7 +2929,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_pricecomparisontable",
-      "community": 0,
+      "community": 6,
       "norm_label": "pricecomparisontable.jsx"
     },
     {
@@ -2979,7 +2939,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_pricecomparisontable_formatprice",
-      "community": 0,
+      "community": 6,
       "norm_label": "formatprice()"
     },
     {
@@ -2989,7 +2949,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_components_pricecomparisontable_fmtsold",
-      "community": 0,
+      "community": 6,
       "norm_label": "fmtsold()"
     },
     {
@@ -2999,7 +2959,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_components_pricecomparisontable_sellerbadges",
-      "community": 0,
+      "community": 6,
       "norm_label": "sellerbadges"
     },
     {
@@ -3009,7 +2969,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "src_components_pricecomparisontable_isfacebookseller",
-      "community": 0,
+      "community": 6,
       "norm_label": "isfacebookseller()"
     },
     {
@@ -3019,7 +2979,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "src_components_pricecomparisontable_slugof",
-      "community": 0,
+      "community": 6,
       "norm_label": "slugof()"
     },
     {
@@ -3029,7 +2989,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_components_pricecomparisontable_offerkey",
-      "community": 0,
+      "community": 6,
       "norm_label": "offerkey()"
     },
     {
@@ -3039,7 +2999,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "src_components_pricecomparisontable_sameoffer",
-      "community": 0,
+      "community": 6,
       "norm_label": "sameoffer()"
     },
     {
@@ -3049,7 +3009,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "src_components_pricecomparisontable_signal",
-      "community": 0,
+      "community": 6,
       "norm_label": "signal()"
     },
     {
@@ -3059,7 +3019,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "src_components_pricecomparisontable_pricecomparisontable",
-      "community": 0,
+      "community": 6,
       "norm_label": "pricecomparisontable()"
     },
     {
@@ -3069,7 +3029,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_pricehistorychart",
-      "community": 18,
+      "community": 43,
       "norm_label": "pricehistorychart.jsx"
     },
     {
@@ -3079,7 +3039,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_components_pricehistorychart_ranges",
-      "community": 18,
+      "community": 43,
       "norm_label": "ranges"
     },
     {
@@ -3089,7 +3049,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_components_pricehistorychart_formatprice",
-      "community": 18,
+      "community": 43,
       "norm_label": "formatprice()"
     },
     {
@@ -3099,7 +3059,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "src_components_pricehistorychart_datekey",
-      "community": 18,
+      "community": 43,
       "norm_label": "datekey()"
     },
     {
@@ -3109,7 +3069,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "src_components_pricehistorychart_displaydate",
-      "community": 18,
+      "community": 43,
       "norm_label": "displaydate()"
     },
     {
@@ -3119,7 +3079,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "src_components_pricehistorychart_median",
-      "community": 18,
+      "community": 43,
       "norm_label": "median()"
     },
     {
@@ -3129,7 +3089,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "src_components_pricehistorychart_pricetooltip",
-      "community": 18,
+      "community": 43,
       "norm_label": "pricetooltip()"
     },
     {
@@ -3139,7 +3099,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "src_components_pricehistorychart_pricehistorychart",
-      "community": 18,
+      "community": 43,
       "norm_label": "pricehistorychart()"
     },
     {
@@ -3189,7 +3149,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_productseo",
-      "community": 18,
+      "community": 7,
       "norm_label": "productseo.jsx"
     },
     {
@@ -3199,7 +3159,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_components_productseo_productseo",
-      "community": 18,
+      "community": 7,
       "norm_label": "productseo()"
     },
     {
@@ -3429,7 +3389,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_serviceunavailable",
-      "community": 7,
+      "community": 0,
       "norm_label": "serviceunavailable.jsx"
     },
     {
@@ -3439,7 +3399,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_components_serviceunavailable_serviceunavailable",
-      "community": 7,
+      "community": 0,
       "norm_label": "serviceunavailable()"
     },
     {
@@ -3449,7 +3409,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_signupgate",
-      "community": 40,
+      "community": 30,
       "norm_label": "signupgate.jsx"
     },
     {
@@ -3459,7 +3419,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_components_signupgate_member_benefits",
-      "community": 40,
+      "community": 30,
       "norm_label": "member_benefits"
     },
     {
@@ -3469,7 +3429,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_components_signupgate_signupgate",
-      "community": 40,
+      "community": 30,
       "norm_label": "signupgate()"
     },
     {
@@ -3849,7 +3809,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_lib_display_reltime",
-      "community": 18,
+      "community": 7,
       "norm_label": "reltime()"
     },
     {
@@ -3919,7 +3879,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "src_pages_account_account",
-      "community": 40,
+      "community": 30,
       "norm_label": "account()"
     },
     {
@@ -4009,7 +3969,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_pages_browse",
-      "community": 7,
+      "community": 26,
       "norm_label": "browse.jsx"
     },
     {
@@ -4019,7 +3979,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_pages_browse_sortoptions",
-      "community": 7,
+      "community": 26,
       "norm_label": "sortoptions"
     },
     {
@@ -4029,7 +3989,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_pages_browse_browse",
-      "community": 7,
+      "community": 26,
       "norm_label": "browse()"
     },
     {
@@ -4039,7 +3999,7 @@
       "source_location": "L228",
       "_origin": "ast",
       "id": "src_pages_browse_chip",
-      "community": 7,
+      "community": 26,
       "norm_label": "chip()"
     },
     {
@@ -4139,7 +4099,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_pages_dashboard",
-      "community": 3,
+      "community": 28,
       "norm_label": "dashboard.jsx"
     },
     {
@@ -4149,7 +4109,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_pages_dashboard_fmt",
-      "community": 3,
+      "community": 28,
       "norm_label": "fmt()"
     },
     {
@@ -4159,7 +4119,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_pages_dashboard_bdt",
-      "community": 3,
+      "community": 28,
       "norm_label": "bdt()"
     },
     {
@@ -4169,7 +4129,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "src_pages_dashboard_dashboard",
-      "community": 3,
+      "community": 28,
       "norm_label": "dashboard()"
     },
     {
@@ -4179,7 +4139,7 @@
       "source_location": "L320",
       "_origin": "ast",
       "id": "src_pages_dashboard_herostat",
-      "community": 3,
+      "community": 28,
       "norm_label": "herostat()"
     },
     {
@@ -4399,7 +4359,7 @@
       "source_location": "L333",
       "_origin": "ast",
       "id": "src_pages_home_closeband",
-      "community": 40,
+      "community": 7,
       "norm_label": "closeband()"
     },
     {
@@ -4419,7 +4379,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_pages_productdetail",
-      "community": 18,
+      "community": 7,
       "norm_label": "productdetail.jsx"
     },
     {
@@ -4429,7 +4389,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_pages_productdetail_formatprice",
-      "community": 18,
+      "community": 7,
       "norm_label": "formatprice()"
     },
     {
@@ -4439,7 +4399,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "src_pages_productdetail_productdetail",
-      "community": 18,
+      "community": 7,
       "norm_label": "productdetail()"
     },
     {
@@ -4579,7 +4539,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "src_pages_saathidashboard_saathidashboard",
-      "community": 40,
+      "community": 30,
       "norm_label": "saathidashboard()"
     },
     {
@@ -4759,7 +4719,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_pages_saathiprofile",
-      "community": 43,
+      "community": 12,
       "norm_label": "saathiprofile.jsx"
     },
     {
@@ -4769,7 +4729,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_pages_saathiprofile_fmt",
-      "community": 43,
+      "community": 12,
       "norm_label": "fmt()"
     },
     {
@@ -4779,7 +4739,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_pages_saathiprofile_saathiprofile",
-      "community": 43,
+      "community": 12,
       "norm_label": "saathiprofile()"
     },
     {
@@ -4789,7 +4749,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_pages_saathisignup",
-      "community": 58,
+      "community": 12,
       "norm_label": "saathisignup.jsx"
     },
     {
@@ -4799,7 +4759,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "src_pages_saathisignup_saathisignup",
-      "community": 58,
+      "community": 30,
       "norm_label": "saathisignup()"
     },
     {
@@ -4809,7 +4769,7 @@
       "source_location": "L168",
       "_origin": "ast",
       "id": "src_pages_saathisignup_field",
-      "community": 58,
+      "community": 12,
       "norm_label": "field()"
     },
     {
@@ -4819,7 +4779,7 @@
       "source_location": "L177",
       "_origin": "ast",
       "id": "src_pages_saathisignup_perk",
-      "community": 58,
+      "community": 12,
       "norm_label": "perk()"
     },
     {
@@ -4959,7 +4919,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_pages_signin_signin",
-      "community": 40,
+      "community": 30,
       "norm_label": "signin()"
     },
     {
@@ -4979,7 +4939,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_pages_signup_signup",
-      "community": 40,
+      "community": 30,
       "norm_label": "signup()"
     },
     {
@@ -5079,7 +5039,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_pages_verifyemail",
-      "community": 12,
+      "community": 30,
       "norm_label": "verifyemail.jsx"
     },
     {
@@ -5089,7 +5049,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_pages_verifyemail_verifyemail",
-      "community": 12,
+      "community": 30,
       "norm_label": "verifyemail()"
     },
     {
@@ -5109,7 +5069,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_pages_admin_adminanalytics_num",
-      "community": 44,
+      "community": 5,
       "norm_label": "num()"
     },
     {
@@ -5159,7 +5119,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "src_pages_admin_adminanalytics_adminanalytics",
-      "community": 44,
+      "community": 5,
       "norm_label": "adminanalytics()"
     },
     {
@@ -5179,7 +5139,7 @@
       "source_location": "L739",
       "_origin": "ast",
       "id": "src_pages_admin_adminanalytics_funnelstage",
-      "community": 44,
+      "community": 5,
       "norm_label": "funnelstage()"
     },
     {
@@ -5229,7 +5189,7 @@
       "source_location": "L796",
       "_origin": "ast",
       "id": "src_pages_admin_adminanalytics_row",
-      "community": 44,
+      "community": 5,
       "norm_label": "row()"
     },
     {
@@ -5259,7 +5219,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_pages_admin_admincache",
-      "community": 30,
+      "community": 8,
       "norm_label": "admincache.jsx"
     },
     {
@@ -5269,7 +5229,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_pages_admin_admincache_admincache",
-      "community": 30,
+      "community": 8,
       "norm_label": "admincache()"
     },
     {
@@ -5331,66 +5291,6 @@
       "id": "src_pages_admin_admincatalog_editfield",
       "community": 17,
       "norm_label": "editfield()"
-    },
-    {
-      "label": "AdminCrawler.jsx",
-      "file_type": "code",
-      "source_file": "src/pages/admin/AdminCrawler.jsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_pages_admin_admincrawler",
-      "community": 26,
-      "norm_label": "admincrawler.jsx"
-    },
-    {
-      "label": "errorMessage()",
-      "file_type": "code",
-      "source_file": "src/pages/admin/AdminCrawler.jsx",
-      "source_location": "L6",
-      "_origin": "ast",
-      "id": "src_pages_admin_admincrawler_errormessage",
-      "community": 26,
-      "norm_label": "errormessage()"
-    },
-    {
-      "label": "AdminCrawler()",
-      "file_type": "code",
-      "source_file": "src/pages/admin/AdminCrawler.jsx",
-      "source_location": "L11",
-      "_origin": "ast",
-      "id": "src_pages_admin_admincrawler_admincrawler",
-      "community": 26,
-      "norm_label": "admincrawler()"
-    },
-    {
-      "label": "Stat()",
-      "file_type": "code",
-      "source_file": "src/pages/admin/AdminCrawler.jsx",
-      "source_location": "L171",
-      "_origin": "ast",
-      "id": "src_pages_admin_admincrawler_stat",
-      "community": 26,
-      "norm_label": "stat()"
-    },
-    {
-      "label": "ActionButton()",
-      "file_type": "code",
-      "source_file": "src/pages/admin/AdminCrawler.jsx",
-      "source_location": "L180",
-      "_origin": "ast",
-      "id": "src_pages_admin_admincrawler_actionbutton",
-      "community": 26,
-      "norm_label": "actionbutton()"
-    },
-    {
-      "label": "formatMemory()",
-      "file_type": "code",
-      "source_file": "src/pages/admin/AdminCrawler.jsx",
-      "source_location": "L194",
-      "_origin": "ast",
-      "id": "src_pages_admin_admincrawler_formatmemory",
-      "community": 26,
-      "norm_label": "formatmemory()"
     },
     {
       "label": "AdminFeedback.jsx",
@@ -5496,7 +5396,7 @@
       "label": "AdminLayout()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminLayout.jsx",
-      "source_location": "L13",
+      "source_location": "L11",
       "_origin": "ast",
       "id": "src_pages_admin_adminlayout_adminlayout",
       "community": 15,
@@ -5506,7 +5406,7 @@
       "label": "Tab()",
       "file_type": "code",
       "source_file": "src/pages/admin/AdminLayout.jsx",
-      "source_location": "L122",
+      "source_location": "L119",
       "_origin": "ast",
       "id": "src_pages_admin_adminlayout_tab",
       "community": 15,
@@ -6869,7 +6769,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.jsx",
-      "source_location": "L52",
+      "source_location": "L51",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_adminanalytics",
@@ -6879,7 +6779,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.jsx",
-      "source_location": "L50",
+      "source_location": "L49",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_adminauditlog",
@@ -6889,7 +6789,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.jsx",
-      "source_location": "L57",
+      "source_location": "L56",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_admincache",
@@ -6899,7 +6799,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.jsx",
-      "source_location": "L53",
+      "source_location": "L52",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_admincatalog",
@@ -6909,17 +6809,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.jsx",
-      "source_location": "L46",
-      "weight": 1.0,
-      "source": "src_app",
-      "target": "src_app_admincrawler",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/App.jsx",
-      "source_location": "L60",
+      "source_location": "L59",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_adminfeedback",
@@ -6939,7 +6829,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.jsx",
-      "source_location": "L58",
+      "source_location": "L57",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_adminjobs",
@@ -6959,7 +6849,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.jsx",
-      "source_location": "L59",
+      "source_location": "L58",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_adminnewsletter",
@@ -6969,7 +6859,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.jsx",
-      "source_location": "L49",
+      "source_location": "L48",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_adminoffers",
@@ -6979,7 +6869,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.jsx",
-      "source_location": "L48",
+      "source_location": "L47",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_adminpendingshops",
@@ -6989,7 +6879,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.jsx",
-      "source_location": "L54",
+      "source_location": "L53",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_adminreviews",
@@ -6999,7 +6889,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.jsx",
-      "source_location": "L56",
+      "source_location": "L55",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_adminsearchlog",
@@ -7009,7 +6899,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.jsx",
-      "source_location": "L47",
+      "source_location": "L46",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_adminshops",
@@ -7019,7 +6909,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.jsx",
-      "source_location": "L51",
+      "source_location": "L50",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_adminstats",
@@ -7029,7 +6919,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.jsx",
-      "source_location": "L55",
+      "source_location": "L54",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_adminusers",
@@ -7039,7 +6929,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.jsx",
-      "source_location": "L80",
+      "source_location": "L79",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_app",
@@ -7109,7 +6999,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.jsx",
-      "source_location": "L62",
+      "source_location": "L61",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_pagefallback",
@@ -7119,7 +7009,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.jsx",
-      "source_location": "L72",
+      "source_location": "L71",
       "weight": 1.0,
       "source": "src_app",
       "target": "src_app_pagetracker",
@@ -7484,7 +7374,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/App.jsx",
-      "source_location": "L75",
+      "source_location": "L74",
       "weight": 1.0,
       "source": "src_app_pagetracker",
       "target": "src_api_analytics_trackpageview",
@@ -7615,7 +7505,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L102",
+      "source_location": "L95",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticsdailyusers",
@@ -7625,7 +7515,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L110",
+      "source_location": "L103",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticsdevices",
@@ -7635,7 +7525,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L116",
+      "source_location": "L109",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticsfunnel",
@@ -7645,7 +7535,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L100",
+      "source_location": "L93",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticshourly",
@@ -7655,7 +7545,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L97",
+      "source_location": "L90",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticsoverview",
@@ -7665,7 +7555,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L112",
+      "source_location": "L105",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticsreferrers",
@@ -7675,7 +7565,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L108",
+      "source_location": "L101",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticsrequests",
@@ -7685,7 +7575,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L128",
+      "source_location": "L121",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticsresultshops",
@@ -7695,7 +7585,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L118",
+      "source_location": "L111",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticsshopclicksbycategory",
@@ -7705,7 +7595,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L132",
+      "source_location": "L125",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticsshoppricewins",
@@ -7715,7 +7605,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L124",
+      "source_location": "L117",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticstopconvertingsearches",
@@ -7725,7 +7615,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L104",
+      "source_location": "L97",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticstopips",
@@ -7735,7 +7625,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L106",
+      "source_location": "L99",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticstoppaths",
@@ -7745,7 +7635,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L122",
+      "source_location": "L115",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticstopproducts",
@@ -7755,7 +7645,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L98",
+      "source_location": "L91",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticstopsearches",
@@ -7765,7 +7655,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L120",
+      "source_location": "L113",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticstopshops",
@@ -7775,7 +7665,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L130",
+      "source_location": "L123",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_analyticszeroresultsearches",
@@ -7809,36 +7699,6 @@
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_bulksetshopstatus",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/api/admin.js",
-      "source_location": "L86",
-      "weight": 1.0,
-      "source": "src_api_admin",
-      "target": "src_api_admin_crawleraction",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/api/admin.js",
-      "source_location": "L84",
-      "weight": 1.0,
-      "source": "src_api_admin",
-      "target": "src_api_admin_crawlerlogs",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/api/admin.js",
-      "source_location": "L83",
-      "weight": 1.0,
-      "source": "src_api_admin",
-      "target": "src_api_admin_crawlerstatus",
       "confidence_score": 1.0
     },
     {
@@ -7885,7 +7745,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L141",
+      "source_location": "L134",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_getfeedback",
@@ -7975,7 +7835,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L137",
+      "source_location": "L130",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_listsubscribers",
@@ -7985,7 +7845,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L136",
+      "source_location": "L129",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_newsletteranalytics",
@@ -7995,7 +7855,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L90",
+      "source_location": "L83",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_recentsearches",
@@ -8005,7 +7865,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L93",
+      "source_location": "L86",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_recentsuggestclicks",
@@ -8075,7 +7935,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L92",
+      "source_location": "L85",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_searchlatency",
@@ -8105,7 +7965,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/api/admin.js",
-      "source_location": "L139",
+      "source_location": "L132",
       "weight": 1.0,
       "source": "src_api_admin",
       "target": "src_api_admin_triggernewsletter",
@@ -8180,17 +8040,6 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "src/pages/admin/AdminCrawler.jsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "source": "src_pages_admin_admincrawler",
-      "target": "src_api_admin",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminFeedback.jsx",
       "source_location": "L2",
       "weight": 1.0,
@@ -8225,7 +8074,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminLayout.jsx",
-      "source_location": "L5",
+      "source_location": "L4",
       "weight": 1.0,
       "source": "src_pages_admin_adminlayout",
       "target": "src_api_admin",
@@ -8335,7 +8184,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminLayout.jsx",
-      "source_location": "L5",
+      "source_location": "L4",
       "weight": 1.0,
       "source": "src_pages_admin_adminlayout",
       "target": "src_api_admin_triggerreindex",
@@ -8357,7 +8206,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminLayout.jsx",
-      "source_location": "L5",
+      "source_location": "L4",
       "weight": 1.0,
       "source": "src_pages_admin_adminlayout",
       "target": "src_api_admin_indexstatus",
@@ -8757,39 +8606,6 @@
       "weight": 1.0,
       "source": "src_pages_admin_adminjobs",
       "target": "src_api_admin_jobruns",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/pages/admin/AdminCrawler.jsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "source": "src_pages_admin_admincrawler",
-      "target": "src_api_admin_crawlerstatus",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/pages/admin/AdminCrawler.jsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "source": "src_pages_admin_admincrawler",
-      "target": "src_api_admin_crawlerlogs",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/pages/admin/AdminCrawler.jsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "source": "src_pages_admin_admincrawler",
-      "target": "src_api_admin_crawleraction",
       "confidence_score": 1.0
     },
     {
@@ -12351,7 +12167,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminLayout.jsx",
-      "source_location": "L4",
+      "source_location": "L3",
       "weight": 1.0,
       "source": "src_pages_admin_adminlayout",
       "target": "src_auth_authcontext",
@@ -12626,7 +12442,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminLayout.jsx",
-      "source_location": "L4",
+      "source_location": "L3",
       "weight": 1.0,
       "source": "src_pages_admin_adminlayout",
       "target": "src_auth_authcontext_useauth",
@@ -12638,7 +12454,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/pages/admin/AdminLayout.jsx",
-      "source_location": "L14",
+      "source_location": "L12",
       "weight": 1.0,
       "source": "src_pages_admin_adminlayout_adminlayout",
       "target": "src_auth_authcontext_useauth"
@@ -16981,67 +16797,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "src/pages/admin/AdminCrawler.jsx",
-      "source_location": "L180",
-      "weight": 1.0,
-      "source": "src_pages_admin_admincrawler",
-      "target": "src_pages_admin_admincrawler_actionbutton",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/pages/admin/AdminCrawler.jsx",
-      "source_location": "L11",
-      "weight": 1.0,
-      "source": "src_pages_admin_admincrawler",
-      "target": "src_pages_admin_admincrawler_admincrawler",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/pages/admin/AdminCrawler.jsx",
-      "source_location": "L6",
-      "weight": 1.0,
-      "source": "src_pages_admin_admincrawler",
-      "target": "src_pages_admin_admincrawler_errormessage",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/pages/admin/AdminCrawler.jsx",
-      "source_location": "L194",
-      "weight": 1.0,
-      "source": "src_pages_admin_admincrawler",
-      "target": "src_pages_admin_admincrawler_formatmemory",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/pages/admin/AdminCrawler.jsx",
-      "source_location": "L171",
-      "weight": 1.0,
-      "source": "src_pages_admin_admincrawler",
-      "target": "src_pages_admin_admincrawler_stat",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/pages/admin/AdminCrawler.jsx",
-      "source_location": "L89",
-      "weight": 1.0,
-      "source": "src_pages_admin_admincrawler_admincrawler",
-      "target": "src_pages_admin_admincrawler_formatmemory",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminFeedback.jsx",
       "source_location": "L7",
       "weight": 1.0,
@@ -17103,7 +16858,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminLayout.jsx",
-      "source_location": "L13",
+      "source_location": "L11",
       "weight": 1.0,
       "source": "src_pages_admin_adminlayout",
       "target": "src_pages_admin_adminlayout_adminlayout",
@@ -17113,7 +16868,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/admin/AdminLayout.jsx",
-      "source_location": "L122",
+      "source_location": "L119",
       "weight": 1.0,
       "source": "src_pages_admin_adminlayout",
       "target": "src_pages_admin_adminlayout_tab",
@@ -18026,5 +17781,5 @@
       "source_file": ".github/workflows/production-deploy.yml"
     }
   ],
-  "built_at_commit": "0775925e9156862469aaade174815cddcaeba3d9"
+  "built_at_commit": "e5a16a28969f083f7141a4caf7e2e717dc33c952"
 }
