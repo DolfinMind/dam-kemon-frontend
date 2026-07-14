@@ -13,11 +13,11 @@ export default function HomeProductCard({ item, trust = {}, className = '' }) {
     ? [...item.offers]
         .filter((offer) => Number.isFinite(Number(offer.price)))
         .sort((a, b) => Number(a.price) - Number(b.price))
-        .slice(0, 2)
+        .slice(1, 3)
     : [];
   const sellerCount = item.sellers || offers.length;
-  const cheapest = offers[0];
-  const cheapestTrust = cheapest ? trust[cheapest.siteSlug || cheapest.siteName] : null;
+  const previewOffer = offers[0];
+  const previewTrust = previewOffer ? trust[previewOffer.siteSlug || previewOffer.siteName] : null;
   const href = `/product/${item.id || item.slug}`;
 
   return (
@@ -107,21 +107,18 @@ export default function HomeProductCard({ item, trust = {}, className = '' }) {
           <div className="pointer-events-none relative z-10 mt-4 space-y-2">
             {offers.map((offer, index) => {
               const seller = offer.sellerName || offer.siteName || 'Unknown seller';
-              const isLowest = index === 0;
               return (
                 <div
                   key={`${offer.sellerId || offer.siteSlug || offer.siteName}-${index}`}
-                  className={`flex items-center gap-2.5 rounded-xl border px-3 py-2.5 ${isLowest ? 'border-acid/45 bg-acid/10' : 'border-white/10 bg-white/[0.045]'}`}
+                  className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/[0.045] px-3 py-2.5"
                 >
-                  <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${isLowest ? 'bg-acid text-ink' : 'bg-white/10 text-white/65'}`}>
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-white/65">
                     <Store className="h-3.5 w-3.5" />
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-xs font-extrabold text-white">{seller}</span>
                     <span className="block truncate text-[9px] font-semibold uppercase tracking-wider text-white/40">
-                      {isLowest
-                        ? cheapestTrust?.trustScore != null ? `Lowest · Trust ${cheapestTrust.trustScore}` : 'Lowest price'
-                        : offer.sellerName && offer.siteName ? `via ${offer.siteName}` : 'Alternative seller'}
+                      {offer.sellerName && offer.siteName ? `via ${offer.siteName}` : 'Preview seller'}
                     </span>
                   </span>
                   <span className="shrink-0 text-sm font-extrabold text-white">{formatPrice(offer.price)}</span>
@@ -146,10 +143,10 @@ export default function HomeProductCard({ item, trust = {}, className = '' }) {
         )}
 
         <div className="pointer-events-none relative z-10 mt-auto pt-4">
-          {cheapestTrust?.trustScore != null && (
+          {previewTrust?.trustScore != null && (
             <div className="mb-2.5 flex items-center gap-1.5 text-[10px] font-semibold text-white/55">
               <ShieldCheck className="h-3.5 w-3.5 text-acid" />
-              Cheapest seller trust score: {cheapestTrust.trustScore}/100
+              Preview seller trust score: {previewTrust.trustScore}/100
             </div>
           )}
           <span className="flex w-full items-center justify-center gap-2 rounded-xl bg-acid px-2.5 py-3 text-center text-[10px] font-extrabold uppercase leading-tight tracking-[0.06em] text-ink shadow-[0_10px_30px_-12px_rgba(159,226,49,0.75)]">

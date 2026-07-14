@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { Crown, Store, Star, TrendingDown, ChevronRight, Megaphone } from 'lucide-react';
+import { Store, Star, TrendingDown, ChevronRight, Megaphone } from 'lucide-react';
 import { CategoryIcon } from '../lib/categoryIcon';
-import TrustBadge from './TrustBadge';
 import { cleanName, saneSavePct } from '../lib/display';
 
 function fmt(p) {
@@ -20,7 +19,7 @@ const VISIBLE_SHOPS = 2;
  * shop rows are evidence, not outbound links. Every interaction opens the
  * detail page, where the shopper can review the full comparison before leaving.
  */
-export default function SearchProductCard({ product, sponsored = false, trust = {} }) {
+export default function SearchProductCard({ product, sponsored = false }) {
   const navigate = useNavigate();
   let prices = Array.isArray(product.prices) ? [...product.prices] : [];
   prices.sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
@@ -33,6 +32,7 @@ export default function SearchProductCard({ product, sponsored = false, trust = 
     return true;
   });
   const cheapest = prices[0];
+  const previewPrices = prices.slice(1, VISIBLE_SHOPS + 1);
   const numericPrices = prices.map((offer) => Number(offer.price)).filter((price) => Number.isFinite(price));
   const highestPrice = numericPrices.length ? Math.max(...numericPrices) : null;
   const sellerCount = prices.length;
@@ -42,8 +42,6 @@ export default function SearchProductCard({ product, sponsored = false, trust = 
 
   const detailHref = `/product/${product.id || product.slug || ''}`;
   const goToDetail = () => navigate(detailHref, { state: { product } });
-
-  const cheapestTrust = cheapest ? trust[cheapest.siteSlug || cheapest.siteName] || null : null;
 
   return (
     <div
@@ -105,29 +103,19 @@ export default function SearchProductCard({ product, sponsored = false, trust = 
       </div>
 
       {/* Sellers — the value, full width */}
-      {cheapest && (
+      {previewPrices.length > 0 && (
         <div>
           <div className="space-y-1.5">
-            {prices.slice(0, VISIBLE_SHOPS).map((sp, i) => {
-              const isCheapest = i === 0;
-              const delta = !isCheapest && sp.price != null && cheapest.price != null
+            {previewPrices.map((sp, i) => {
+              const delta = sp.price != null && cheapest?.price != null
                 ? sp.price - cheapest.price
                 : null;
               return (
                 <div
                   key={`${sp.siteSlug || sp.siteName}-${i}`}
-                  className={`flex items-center gap-2.5 rounded-xl border px-3 py-2.5 ${
-                    isCheapest
-                      ? 'border-acid/45 border-l-[3px] border-l-acid bg-acid-soft/45'
-                      : 'bg-white border-line'
-                  }`}
+                  className="flex items-center gap-2.5 rounded-xl border border-line bg-white px-3 py-2.5"
                 >
                   <span className="min-w-0 flex-1">
-                    {isCheapest && (
-                      <span className="mb-1 inline-flex items-center gap-1 rounded-full bg-acid px-2 py-0.5 font-mono text-[8px] font-extrabold uppercase tracking-[0.1em] text-ink">
-                        <Crown className="h-2.5 w-2.5" /> Damkemon Pick
-                      </span>
-                    )}
                     <span className="flex min-w-0 items-center gap-1.5">
                       <span className="truncate text-[13px] font-extrabold text-ink">{sp.sellerName || sp.siteName || 'Unknown'}</span>
                       {sp.sellerName && (
@@ -137,16 +125,13 @@ export default function SearchProductCard({ product, sponsored = false, trust = 
                         <span className="shrink-0 font-mono text-[9px] font-bold uppercase text-red">out</span>
                       )}
                     </span>
-                    {isCheapest && cheapestTrust && (
-                      <TrustBadge trust={cheapestTrust} variant="compact" className="mt-1" />
-                    )}
                   </span>
                   <span className="shrink-0 text-right">
-                    <span className={`block font-mono text-sm font-extrabold ${isCheapest ? 'text-acid-deep' : 'text-ink'}`}>
+                    <span className="block font-mono text-sm font-extrabold text-ink">
                       {fmt(sp.price)}
                     </span>
-                    <span className={`mt-0.5 block font-mono text-[9px] font-semibold ${isCheapest ? 'text-green' : 'text-gray'}`}>
-                      {isCheapest ? 'Lowest price' : delta > 0 ? `+${fmt(delta)}` : 'Same price'}
+                    <span className="mt-0.5 block font-mono text-[9px] font-semibold text-gray">
+                      {delta > 0 ? `+${fmt(delta)}` : 'Same price'}
                     </span>
                   </span>
                 </div>
