@@ -42,8 +42,6 @@ const SaathiSignup = SHOW_SAATHI ? lazy(() => import('./pages/SaathiSignup')) : 
 const SaathiDashboard = SHOW_SAATHI ? lazy(() => import('./pages/SaathiDashboard')) : null;
 const SaathiProfile = SHOW_SAATHI ? lazy(() => import('./pages/SaathiProfile')) : null;
 const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'));
-const AdminIndexer = lazy(() => import('./pages/admin/AdminIndexer'));
-const AdminCrawler = lazy(() => import('./pages/admin/AdminCrawler'));
 const AdminShops = lazy(() => import('./pages/admin/AdminShops'));
 const AdminPendingShops = lazy(() => import('./pages/admin/AdminPendingShops'));
 const AdminOffers = lazy(() => import('./pages/admin/AdminOffers'));
@@ -117,9 +115,7 @@ function App() {
                 <Route path="/account" element={<Account />} />
                 {SHOW_PUBLIC_DASHBOARD && <Route path="/dashboard" element={<Dashboard />} />}
                 <Route path="/admin" element={<AdminLayout />}>
-                  <Route index element={<AdminIndexer />} />
-                  <Route path="indexer" element={<AdminIndexer />} />
-                  <Route path="crawler" element={<AdminCrawler />} />
+                  <Route index element={<AdminAnalytics />} />
                   <Route path="shops" element={<AdminShops />} />
                   <Route path="pending-shops" element={<AdminPendingShops />} />
                   <Route path="offers" element={<AdminOffers />} />
