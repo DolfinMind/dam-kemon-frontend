@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Activity, Play, RefreshCw, RotateCw, Square, Terminal } from 'lucide-react';
 import { crawlerAction, crawlerLogs, crawlerStatus } from '../../api/admin';

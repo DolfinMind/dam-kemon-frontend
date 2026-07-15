@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import { cleanName, formatBdt } from '../lib/display';
 
 /**
  * Injects:
@@ -10,18 +11,20 @@ export default function ProductSEO({ product }) {
   if (!product) return null;
 
   // Price in the title = the CTR lever on "<name> price in bangladesh" SERPs.
-  const fromPrice = product.lowestPrice != null
-    ? ` — from ৳${Number(product.lowestPrice).toLocaleString('en-IN')}`
-    : '';
-  const title = `${product.name} Price in Bangladesh${fromPrice} - Damkemon`;
-  const description = (product.description || `Compare ${product.name} prices across Bangladesh shops. Lowest price is ৳${product.lowestPrice}.`).slice(0, 240);
+  const name = cleanName(product.name);
+  const fromPrice = product.lowestPrice != null ? ` — from ${formatBdt(product.lowestPrice)}` : '';
+  const title = `${name} Price in Bangladesh${fromPrice} | Damkemon`;
+  const description = (product.description
+    || `Compare ${name} prices across Bangladesh shops${product.lowestPrice != null ? `. Lowest price: ${formatBdt(product.lowestPrice)}` : ''}.`).slice(0, 240);
   const apiBase = import.meta.env.VITE_API_URL
     ? import.meta.env.VITE_API_URL.replace(/\/$/, '')
     : (typeof window !== 'undefined' ? window.location.origin : '');
   const image = product.id
     ? `${apiBase}/api/og/product/${product.id}.png`
     : (product.imageUrl || '');
-  const url = typeof window !== 'undefined' ? window.location.href : '';
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://damkemon.com';
+  const canonicalId = product.slug || product.id;
+  const url = canonicalId ? `${origin}/product/${encodeURIComponent(canonicalId)}` : origin;
 
   // JSON-LD. AggregateOffer (not per-seller offers): the visible offer list is
   // capped for signed-out visitors — and Googlebot browses signed out — so
@@ -32,13 +35,14 @@ export default function ProductSEO({ product }) {
     '@context': 'https://schema.org/',
     '@type': 'Product',
     name: product.name,
+    url,
     image: product.imageUrl ? [product.imageUrl] : undefined,
     description: product.description || undefined,
     offers: product.lowestPrice != null ? {
       '@type': 'AggregateOffer',
       priceCurrency: 'BDT',
-      lowPrice: product.lowestPrice,
-      highPrice: product.highestPrice ?? product.lowestPrice,
+      lowPrice: Math.round(product.lowestPrice),
+      highPrice: Math.round(product.highestPrice ?? product.lowestPrice),
       offerCount: offerCount || undefined,
     } : undefined,
   };
@@ -55,6 +59,7 @@ export default function ProductSEO({ product }) {
     <Helmet>
       <title>{title}</title>
       <meta name="description" content={description} />
+      <link rel="canonical" href={url} />
       
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />

@@ -40,7 +40,7 @@ export default function AdminNewsletter() {
       setSentOk(!!res.data.success);
       setSentMessage(res.data.message || (res.data.success ? 'Newsletter sent.' : 'Nothing was sent.'));
       if (res.data.success) load(page);   // refresh stats after a real send
-    } catch (err) {
+    } catch {
       setSentOk(false);
       setSentMessage('Failed to trigger newsletter.');
     } finally {

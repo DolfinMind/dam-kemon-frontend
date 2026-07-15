@@ -1,11 +1,10 @@
-/* eslint-disable react/prop-types */
 import { Link } from 'react-router-dom';
 import { ArrowRight, ShieldCheck, Star, Store, TrendingDown } from 'lucide-react';
 import { CategoryIcon } from '../lib/categoryIcon';
+import { formatBdt } from '../lib/display';
 
 function formatPrice(price) {
-  if (price == null) return 'Price unavailable';
-  return `৳${Number(price).toLocaleString('en-IN')}`;
+  return formatBdt(price, 'Price unavailable');
 }
 
 export default function HomeProductCard({ item, trust = {}, className = '' }) {
@@ -13,7 +12,7 @@ export default function HomeProductCard({ item, trust = {}, className = '' }) {
     ? [...item.offers]
         .filter((offer) => Number.isFinite(Number(offer.price)))
         .sort((a, b) => Number(a.price) - Number(b.price))
-        .slice(1, 3)
+        .slice(0, 2)
     : [];
   const sellerCount = item.sellers || offers.length;
   const previewOffer = offers[0];
@@ -146,7 +145,7 @@ export default function HomeProductCard({ item, trust = {}, className = '' }) {
           {previewTrust?.trustScore != null && (
             <div className="mb-2.5 flex items-center gap-1.5 text-[10px] font-semibold text-white/55">
               <ShieldCheck className="h-3.5 w-3.5 text-acid" />
-              Preview seller trust score: {previewTrust.trustScore}/100
+              Preview seller score: {previewTrust.trustScore}/100
             </div>
           )}
           <span className="flex w-full items-center justify-center gap-2 rounded-xl bg-acid px-2.5 py-3 text-center text-[10px] font-extrabold uppercase leading-tight tracking-[0.06em] text-ink shadow-[0_10px_30px_-12px_rgba(159,226,49,0.75)]">

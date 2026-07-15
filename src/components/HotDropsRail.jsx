@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import { Flame, ArrowRight } from 'lucide-react';
 import { getHotDrops } from '../api/api';
 import { CategoryIcon } from '../lib/categoryIcon';
+import { formatBdt } from '../lib/display';
 
 function fmt(p) {
-  if (p == null) return 'N/A';
-  return '৳' + Number(p).toLocaleString('en-IN');
+  return formatBdt(p);
 }
 
 /** One hot-drop card; shared by this rail and the public /drops page. */

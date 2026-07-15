@@ -19,7 +19,7 @@ const GSI_SRC = 'https://accounts.google.com/gsi/client';
  * compact placements like the navbar.
  *
  * GSI has ONE global callback (last initialize wins across this button and
- * GoogleOneTap) — every mount must therefore keep onSuccess equivalent to
+ * other Google sign-in surfaces) — every mount must therefore keep onSuccess equivalent to
  * signIn(token, user); pages that need to redirect afterwards watch `user`
  * instead of relying on their own callback firing.
  */

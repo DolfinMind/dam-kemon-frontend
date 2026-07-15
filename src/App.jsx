@@ -1,13 +1,12 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { trackPageView } from './api/analytics';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import BottomNav from './components/BottomNav';
 import AssistantWidget from './components/AssistantWidget';
-import GoogleOneTap from './components/GoogleOneTap';
 import ScrollToTop from './components/ScrollToTop';
-import ExitIntentModal from './components/ExitIntentModal';
 import { AuthProvider } from './auth/AuthContext';
 import LoadingSpinner from './components/LoadingSpinner';
 import { SHOW_SAATHI, SHOW_PUBLIC_DASHBOARD, SHOW_ASSISTANT } from './config/features';
@@ -20,7 +19,6 @@ import SearchResults from './pages/SearchResults';
 const ProductDetail = lazy(() => import('./pages/ProductDetail'));
 const Browse = lazy(() => import('./pages/Browse'));
 const Drops = lazy(() => import('./pages/Drops'));
-const Protect = lazy(() => import('./pages/Protect'));
 const Compare = lazy(() => import('./pages/Compare'));
 const Trending = lazy(() => import('./pages/Trending'));
 const Sellers = lazy(() => import('./pages/Sellers'));
@@ -77,11 +75,34 @@ function PageTracker() {
   return null;
 }
 
+function RouteRobots() {
+  const { pathname } = useLocation();
+  const privateRoute = pathname.startsWith('/admin')
+    || pathname.startsWith('/account')
+    || ['/sign-in', '/sign-up', '/verify-email', '/forgot-password', '/reset-password']
+      .some((path) => pathname.startsWith(path));
+  const utilityRoute = ['/search', '/compare', '/submit-shop', '/sellers']
+    .some((path) => pathname.startsWith(path));
+  const fixedCanonical = new Set(['/drops', '/trending']).has(pathname)
+    ? `https://damkemon.com${pathname}`
+    : null;
+  return (
+    <Helmet>
+      <meta
+        name="robots"
+        content={privateRoute ? 'noindex, nofollow' : utilityRoute ? 'noindex, follow' : 'index, follow'}
+      />
+      {fixedCanonical && <link rel="canonical" href={fixedCanonical} />}
+    </Helmet>
+  );
+}
+
 function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
       <PageTracker />
+      <RouteRobots />
       <AuthProvider>
         <div className="min-h-screen flex flex-col bg-cream">
           <Navbar />
@@ -91,13 +112,14 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/search" element={<SearchResults />} />
                 <Route path="/browse" element={<Browse />} />
+                <Route path="/category/:category" element={<Browse />} />
                 <Route path="/drops" element={<Drops />} />
-                <Route path="/protect" element={<Protect />} />
                 <Route path="/trending" element={<Trending />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/compare" element={<Compare />} />
                 <Route path="/sellers" element={<Sellers />} />
                 <Route path="/guides" element={<Guides />} />
+                <Route path="/guides/buying-from-unknown-seller-use-protect" element={<Navigate to="/guides/buying-from-unknown-seller-check-risk" replace />} />
                 <Route path="/guides/:slug" element={<GuideDetail />} />
                 <Route path="/submit-shop" element={<SubmitShop />} />
                 {SHOW_SAATHI && (
@@ -143,8 +165,6 @@ function App() {
           </main>
           <Footer />
           <BottomNav />
-          <GoogleOneTap />
-          <ExitIntentModal />
           {SHOW_ASSISTANT && <AssistantWidget />}
         </div>
       </AuthProvider>

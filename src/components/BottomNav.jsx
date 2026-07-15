@@ -12,7 +12,7 @@ const tabs = [
 ];
 
 export default function BottomNav() {
-  const { pathname, search } = useLocation();
+  const { pathname } = useLocation();
   const [show, setShow] = useState(true);
   const [lastY, setLastY] = useState(0);
 

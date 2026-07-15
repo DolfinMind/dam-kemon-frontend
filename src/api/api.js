@@ -146,16 +146,6 @@ export const getMyReviews = () => api.get('/reviews/me');
 /** "দরদাম" shopping assistant — { reply, products[], trust{}, suggestions[] }. */
 export const assistantChat = (message) => api.post('/assistant/chat', { message });
 
-// ─── Damkemon Protect (buyer protection) ───
-/** Scam-risk verdict for a purchase. { sellerName?, shopSlug?, productId?, amount?, paymentMethod }. */
-export const protectAssess = (payload) => api.post('/protect/assess', payload);
-/** Open a protected order; returns { order, risk } with a protection code. */
-export const protectCreateOrder = (payload) => api.post('/protect/orders', payload);
-export const protectGetOrder = (code) => api.get(`/protect/orders/${encodeURIComponent(code)}`);
-export const protectConfirmOrder = (code) => api.post(`/protect/orders/${encodeURIComponent(code)}/confirm`);
-export const protectDisputeOrder = (code, reason) =>
-  api.post(`/protect/orders/${encodeURIComponent(code)}/dispute`, { reason });
-
 /** Hydrate a list of product ids — used by the recently-viewed rail. */
 export const getProductsByIds = (ids) =>
   api.get('/products/by-ids', { params: { ids: Array.isArray(ids) ? ids.join(',') : ids } });

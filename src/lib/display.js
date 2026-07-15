@@ -27,3 +27,10 @@ export const saneSavePct = (lo, hi) => {
   const pct = Math.round(((hi - lo) / hi) * 100);
   return pct > 60 ? 0 : pct;
 };
+
+// BDT has no everyday fractional unit. Scraper averages occasionally arrive as
+// decimals; round at the display boundary without mutating comparison data.
+export const formatBdt = (value, fallback = 'N/A') => {
+  const n = Number(value);
+  return Number.isFinite(n) ? `৳${Math.round(n).toLocaleString('en-IN')}` : fallback;
+};

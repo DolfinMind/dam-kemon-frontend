@@ -19,6 +19,10 @@ export function getAnonId() {
         : `anon-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
       localStorage.setItem(ANON_KEY, id);
     }
+    // A same-site cookie lets normal <a> navigations to /api/r carry the same
+    // anonymous attribution without exposing the id in a shareable URL.
+    const secure = location.protocol === 'https:' ? '; Secure' : '';
+    document.cookie = `${ANON_KEY}=${encodeURIComponent(id)}; Max-Age=31536000; Path=/; SameSite=Lax${secure}`;
     return id;
   } catch {
     return null;

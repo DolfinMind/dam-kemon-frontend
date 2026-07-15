@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Mail, Check, X } from 'lucide-react';
 import { subscribeNewsletter, getHeadlineStats } from '../api/api';
-import { trackClick } from '../api/analytics';
 
 const SNOOZE_MS = 14 * 24 * 3600 * 1000; // dismissed → quiet for 14 days
 
@@ -41,7 +40,6 @@ export default function NewsletterInline({ title = "Get Monday's biggest price d
     try {
       await subscribeNewsletter(email);
       try { localStorage.setItem('dk_nl', '1'); } catch { /* private mode */ }
-      trackClick('newsletter-subscribe', 'inline-form');
       setStatus('done');
       if (onDismiss) setTimeout(onDismiss, 2000); // Close modal automatically after 2s on success
     } catch {

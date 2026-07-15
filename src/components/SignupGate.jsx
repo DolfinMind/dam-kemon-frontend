@@ -11,7 +11,7 @@ import { useAuth } from '../auth/AuthContext';
  */
 export const MEMBER_BENEFITS = [
   { Icon: Store, text: 'Every shop selling the product — the full comparison, not just the top 4', tone: 'bg-acid-soft text-acid-deep' },
-  { Icon: LineChart, text: 'Full price history, so a fake “discount” can’t fool you', tone: 'bg-blue-soft text-blue' },
+  { Icon: LineChart, text: 'Full price history to check whether a discount is real', tone: 'bg-blue-soft text-blue' },
   { Icon: MessageSquare, text: 'All buyer reviews — delivery, genuineness, after-sales', tone: 'bg-violet/10 text-violet' },
   { Icon: Bell, text: 'Free price-drop alerts on anything you track', tone: 'bg-red-soft text-red' },
 ];

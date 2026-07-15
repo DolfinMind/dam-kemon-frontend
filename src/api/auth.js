@@ -27,12 +27,14 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// 401 → drop the token so the UI flips back to signed-out. We don't
-// auto-redirect; the consuming page decides what to do.
+// Only the authoritative session check may invalidate a token. A downstream
+// admin dependency can also answer 401; treating every 401 as an expired
+// Damkemon JWT signs the owner out of the entire panel.
 api.interceptors.response.use(
   (r) => r,
   (e) => {
-    if (e.response?.status === 401 && getAuthToken()) {
+    const requestUrl = String(e.config?.url || '').split('?')[0];
+    if (e.response?.status === 401 && requestUrl.endsWith('/auth/me') && getAuthToken()) {
       setAuthToken(null);
     }
     return Promise.reject(e);

@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { TrendingDown, Store } from 'lucide-react';
 import { CategoryIcon } from '../lib/categoryIcon';
+import { formatBdt } from '../lib/display';
 
 function formatPrice(price) {
-  if (!price && price !== 0) return 'N/A';
-  return '৳' + Number(price).toLocaleString('en-IN');
+  return formatBdt(price);
 }
 
 const gradientByCategory = {

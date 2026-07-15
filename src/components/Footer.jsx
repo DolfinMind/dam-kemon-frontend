@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { Sparkles } from 'lucide-react';
-import AlphaBadge from './AlphaBadge';
 import { SHOW_SAATHI, SHOW_PUBLIC_DASHBOARD } from '../config/features';
 
 export default function Footer() {
@@ -19,10 +18,9 @@ export default function Footer() {
               <span className="font-serif text-xl sm:text-[22px] font-bold italic text-cream">
                 dam<span className="text-red">.</span>kemon
               </span>
-              <AlphaBadge className="ml-0.5 !bg-cream/15 !text-cream !border-cream/25" />
             </Link>
             <p className="text-cream/55 text-sm leading-relaxed max-w-xs">
-              Bangladesh price comparison. Searches live BD shops, never shows fake prices.
+              Compare listed prices across Bangladesh shops. Every offer shows when it was checked—confirm final price and stock with the seller.
             </p>
           </div>
 
@@ -30,7 +28,6 @@ export default function Footer() {
             <Link to="/" className="text-cream/70 hover:text-cream text-sm transition-colors">Home</Link>
             <Link to="/guides" className="text-cream/70 hover:text-cream text-sm transition-colors">Guides</Link>
             <Link to="/compare" className="text-cream/70 hover:text-cream text-sm transition-colors">Compare</Link>
-            <Link to="/sellers" className="text-cream/70 hover:text-cream text-sm transition-colors">Shops</Link>
             {SHOW_SAATHI && <Link to="/saathi" className="text-cream/70 hover:text-cream text-sm transition-colors">Sell with us</Link>}
             <Link to="/submit-shop" className="text-cream/70 hover:text-cream text-sm transition-colors">Submit shop</Link>
             {SHOW_PUBLIC_DASHBOARD && <Link to="/dashboard" className="text-cream/70 hover:text-cream text-sm transition-colors">Dashboard</Link>}

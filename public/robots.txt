@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Allow: /api/seo/sitemap.xml
+Disallow: /admin
+Disallow: /account
+Allow: /api/r/
+Disallow: /api/
+
+Sitemap: https://damkemon.com/sitemap.xml
+Sitemap: https://damkemon.com/api/seo/sitemap.xml

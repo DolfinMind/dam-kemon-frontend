@@ -49,7 +49,9 @@ export default function AdminShops() {
         );
       });
   const loadDiag = () => diagCollections().then((r) => setDiag(r.data)).catch(() => setDiag(null));
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, [page, filter, sortBy, q]);
+  // load is intentionally driven by the query state below.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { load(); }, [page, filter, sortBy, q]);
   useEffect(() => { loadDiag(); }, []);
   useEffect(() => {
     const t = setTimeout(() => { setPage(0); setQ(searchQuery.trim()); }, 400);

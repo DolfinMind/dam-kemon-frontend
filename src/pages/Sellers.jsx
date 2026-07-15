@@ -117,7 +117,7 @@ export default function Sellers() {
               <span className="font-mono font-bold text-ink">{sellers.length.toLocaleString('en-IN')}</span> sellers —{' '}
               {typeCounts.website.toLocaleString('en-IN')} online shops,{' '}
               {typeCounts.marketplace.toLocaleString('en-IN')} marketplace storefronts,{' '}
-              {typeCounts.facebook.toLocaleString('en-IN')} F-commerce pages. Every one carries real prices we compare side by side.
+              {typeCounts.facebook.toLocaleString('en-IN')} F-commerce pages. Verification and catalog coverage vary by seller.
             </>
           )}
         </p>
