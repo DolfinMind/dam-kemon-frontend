@@ -3,7 +3,7 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, Cell, PieChart, Pie
 } from 'recharts';
-import { Filter, Plus, ChevronDown, ArrowRight, MoreHorizontal } from 'lucide-react';
+import { Filter, Plus, ChevronDown, ArrowRight, MoreHorizontal, Users } from 'lucide-react';
 
 const analyticsData = [
   { name: 'JAN', sales: 1200, average: 2000 },
