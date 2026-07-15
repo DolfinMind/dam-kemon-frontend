@@ -45,6 +45,16 @@ jobs:
           target: "/home/${{ vars.SERVER_USER }}/frontend-temp/"
           strip_components: 1
 
+      - name: Copy managed nginx routes to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ vars.SERVER_HOST }}
+          username: ${{ vars.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: "deploy/nginx/damkemon-managed-routes.conf,deploy/nginx/install-managed-routes.sh"
+          target: "/home/${{ vars.SERVER_USER }}/frontend-ops/"
+          strip_components: 2
+
       - name: Deploy frontend to web root
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -66,3 +76,10 @@ jobs:
             
             # Ensure correct permissions
             sudo chown -R www-data:www-data ${{ vars.FRONTEND_PROD_DEPLOY_PATH }}
+
+            # Keep crawler metadata and obsolete-route redirects in production.
+            # The installer discovers the active site file, validates nginx and
+            # restores the previous file automatically if validation fails.
+            bash /home/${{ vars.SERVER_USER }}/frontend-ops/install-managed-routes.sh \
+              /home/${{ vars.SERVER_USER }}/frontend-ops/damkemon-managed-routes.conf
+            rm -rf /home/${{ vars.SERVER_USER }}/frontend-ops
