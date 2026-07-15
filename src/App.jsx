@@ -97,6 +97,77 @@ function RouteRobots() {
   );
 }
 
+function AppFrame() {
+  const { pathname } = useLocation();
+  const isAdmin = pathname.startsWith('/admin');
+
+  return (
+    <div className={`min-h-screen flex flex-col ${isAdmin ? 'bg-[#e9ebef]' : 'bg-cream'}`}>
+      {!isAdmin && <Navbar />}
+      <main className={`flex-1 ${isAdmin ? '' : 'pb-20 md:pb-0'}`}>
+        <Suspense fallback={<PageFallback />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/search" element={<SearchResults />} />
+            <Route path="/browse" element={<Browse />} />
+            <Route path="/category/:category" element={<Browse />} />
+            <Route path="/drops" element={<Drops />} />
+            <Route path="/trending" element={<Trending />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="/compare" element={<Compare />} />
+            <Route path="/sellers" element={<Sellers />} />
+            <Route path="/guides" element={<Guides />} />
+            <Route path="/guides/buying-from-unknown-seller-use-protect" element={<Navigate to="/guides/buying-from-unknown-seller-check-risk" replace />} />
+            <Route path="/guides/:slug" element={<GuideDetail />} />
+            <Route path="/submit-shop" element={<SubmitShop />} />
+            {SHOW_SAATHI && (
+              <>
+                <Route path="/fcommerce/signup" element={<FcommerceSignup />} />
+                <Route path="/saathi" element={<Saathi />} />
+                <Route path="/saathi/signup" element={<SaathiSignup />} />
+                <Route path="/saathi/dashboard" element={<SaathiDashboard />} />
+                <Route path="/p/:slug" element={<SaathiProfile />} />
+              </>
+            )}
+            <Route path="/sign-in" element={<SignIn />} />
+            <Route path="/sign-up" element={<SignUp />} />
+            <Route path="/verify" element={<VerifyEmail />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/account" element={<Account />} />
+            {SHOW_PUBLIC_DASHBOARD && <Route path="/dashboard" element={<Dashboard />} />}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminIndexer />} />
+              <Route path="indexer" element={<AdminIndexer />} />
+              <Route path="crawler" element={<AdminCrawler />} />
+              <Route path="shops" element={<AdminShops />} />
+              <Route path="pending-shops" element={<AdminPendingShops />} />
+              <Route path="offers" element={<AdminOffers />} />
+              <Route path="catalog" element={<AdminCatalog />} />
+              <Route path="reviews" element={<AdminReviews />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="users/:id" element={<AdminUsers />} />
+              <Route path="search-log" element={<AdminSearchLog />} />
+              <Route path="traffic" element={<AdminAnalytics />} />
+              <Route path="stats" element={<AdminStats />} />
+              <Route path="cache" element={<AdminCache />} />
+              <Route path="jobs" element={<AdminJobs />} />
+              <Route path="audit" element={<AdminAuditLog />} />
+              <Route path="newsletter" element={<AdminNewsletter />} />
+              <Route path="feedback" element={<AdminFeedback />} />
+            </Route>
+            {/* Hidden/unknown paths (incl. gated Saathi & dashboard) → home. */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
+      </main>
+      {!isAdmin && <Footer />}
+      {!isAdmin && <BottomNav />}
+      {!isAdmin && SHOW_ASSISTANT && <AssistantWidget />}
+    </div>
+  );
+}
+
 function App() {
   return (
     <BrowserRouter>
@@ -104,69 +175,7 @@ function App() {
       <PageTracker />
       <RouteRobots />
       <AuthProvider>
-        <div className="min-h-screen flex flex-col bg-cream">
-          <Navbar />
-          <main className="flex-1 pb-20 md:pb-0">
-            <Suspense fallback={<PageFallback />}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/search" element={<SearchResults />} />
-                <Route path="/browse" element={<Browse />} />
-                <Route path="/category/:category" element={<Browse />} />
-                <Route path="/drops" element={<Drops />} />
-                <Route path="/trending" element={<Trending />} />
-                <Route path="/product/:id" element={<ProductDetail />} />
-                <Route path="/compare" element={<Compare />} />
-                <Route path="/sellers" element={<Sellers />} />
-                <Route path="/guides" element={<Guides />} />
-                <Route path="/guides/buying-from-unknown-seller-use-protect" element={<Navigate to="/guides/buying-from-unknown-seller-check-risk" replace />} />
-                <Route path="/guides/:slug" element={<GuideDetail />} />
-                <Route path="/submit-shop" element={<SubmitShop />} />
-                {SHOW_SAATHI && (
-                  <>
-                    <Route path="/fcommerce/signup" element={<FcommerceSignup />} />
-                    <Route path="/saathi" element={<Saathi />} />
-                    <Route path="/saathi/signup" element={<SaathiSignup />} />
-                    <Route path="/saathi/dashboard" element={<SaathiDashboard />} />
-                    <Route path="/p/:slug" element={<SaathiProfile />} />
-                  </>
-                )}
-                <Route path="/sign-in" element={<SignIn />} />
-                <Route path="/sign-up" element={<SignUp />} />
-                <Route path="/verify" element={<VerifyEmail />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/account" element={<Account />} />
-                {SHOW_PUBLIC_DASHBOARD && <Route path="/dashboard" element={<Dashboard />} />}
-                <Route path="/admin" element={<AdminLayout />}>
-                  <Route index element={<AdminIndexer />} />
-                  <Route path="indexer" element={<AdminIndexer />} />
-                  <Route path="crawler" element={<AdminCrawler />} />
-                  <Route path="shops" element={<AdminShops />} />
-                  <Route path="pending-shops" element={<AdminPendingShops />} />
-                  <Route path="offers" element={<AdminOffers />} />
-                  <Route path="catalog" element={<AdminCatalog />} />
-                  <Route path="reviews" element={<AdminReviews />} />
-                  <Route path="users" element={<AdminUsers />} />
-                  <Route path="users/:id" element={<AdminUsers />} />
-                  <Route path="search-log" element={<AdminSearchLog />} />
-                  <Route path="traffic" element={<AdminAnalytics />} />
-                  <Route path="stats" element={<AdminStats />} />
-                  <Route path="cache" element={<AdminCache />} />
-                  <Route path="jobs" element={<AdminJobs />} />
-                  <Route path="audit" element={<AdminAuditLog />} />
-                  <Route path="newsletter" element={<AdminNewsletter />} />
-                  <Route path="feedback" element={<AdminFeedback />} />
-                </Route>
-                {/* Hidden/unknown paths (incl. gated Saathi & dashboard) → home. */}
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </Suspense>
-          </main>
-          <Footer />
-          <BottomNav />
-          {SHOW_ASSISTANT && <AssistantWidget />}
-        </div>
+        <AppFrame />
       </AuthProvider>
     </BrowserRouter>
   );
