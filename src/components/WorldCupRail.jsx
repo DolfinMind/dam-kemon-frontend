@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Trophy, Flag, ArrowRight } from 'lucide-react';
 import { getWorldCup } from '../api/api';
+import { formatBdt } from '../lib/display';
 
 function fmt(p) {
-  if (p == null) return 'N/A';
-  return '৳' + Number(p).toLocaleString('en-IN');
+  return formatBdt(p);
 }
 
 /**

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { saathiMe, saathiSignup } from '../api/auth';
 import {
-  Sparkles, Radio, MessageSquare, ShieldCheck, ArrowRight, Tag, Store, Zap, Check,
+  Sparkles, Radio, MessageSquare, ShieldCheck, ArrowRight, Zap, Check,
 } from 'lucide-react';
 
 /**

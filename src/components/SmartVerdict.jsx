@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
 import {
-  Sparkles, TrendingDown, ShieldCheck, BadgeCheck, Truck, RotateCcw, ArrowRight, Award,
+  Sparkles, TrendingDown, ShieldCheck, BadgeCheck, Truck, RotateCcw, ArrowRight,
 } from 'lucide-react';
 import {
   valueScore, deliveryText, returnText, authenticityMeta, tierOf,
 } from './TrustBadge';
+import { formatBdt } from '../lib/display';
 
-const fmt = (p) => (p == null ? 'N/A' : '৳' + Number(p).toLocaleString('en-IN'));
+const fmt = formatBdt;
 const slugOf = (sp) => sp.siteSlug || sp.siteName;
 // Prefer the real marketplace sub-seller (e.g. a Daraz storefront), noting the
 // marketplace it sits on; first-party shops just show their name.
@@ -15,8 +16,8 @@ const sellerLabel = (sp) => (sp.sellerName ? `${sp.sellerName} · ${sp.siteName}
 /**
  * The decision layer, distilled. Instead of leaving the buyer to eyeball a
  * price table, this panel answers the questions people actually ask:
- * where's it cheapest, is the seller trustworthy, is it genuine, how long is
- * delivery, and is there a better-value option for similar money.
+ * where's it cheapest, what seller signals are available, typical delivery,
+ * and whether another option may offer better value for similar money.
  *
  * It opens with one plain-language "bottom line" sentence — the whole verdict
  * in a breath — then backs it with a scannable grid of the six questions, so a
@@ -48,9 +49,9 @@ export default function SmartVerdict({ product, trust = {} }) {
   const bottomLine = !multi ? (
     <>Only one seller here: <b className="text-ink">{sellerLabel(cheapest)}</b> at <b className="text-acid-deep">{fmt(lowest)}</b>.</>
   ) : sameAsCheapest ? (
-    <>Buy from <b className="text-ink">{sellerLabel(cheapest)}</b> at <b className="text-acid-deep">{fmt(lowest)}</b> — it's the cheapest <i>and</i> the most trustworthy of {prices.length} sellers.</>
+    <><b className="text-ink">{sellerLabel(cheapest)}</b> is cheapest at <b className="text-acid-deep">{fmt(lowest)}</b> and has the strongest available signals among {prices.length} sellers.</>
   ) : (
-    <>Cheapest is <b className="text-ink">{sellerLabel(cheapest)}</b> at <b className="text-acid-deep">{fmt(lowest)}</b>, but <b className="text-ink">{sellerLabel(recommended)}</b> is the smarter buy for just <b className="text-acid-deep">{fmt(Math.abs(diff))}</b> more.</>
+    <>Cheapest is <b className="text-ink">{sellerLabel(cheapest)}</b> at <b className="text-acid-deep">{fmt(lowest)}</b>; <b className="text-ink">{sellerLabel(recommended)}</b> has stronger available signals for <b className="text-acid-deep">{fmt(Math.abs(diff))}</b> more.</>
   );
 
   return (
@@ -68,7 +69,7 @@ export default function SmartVerdict({ product, trust = {} }) {
             <div>
               <div className="flex items-center gap-2 mb-0.5">
                 <h2 className="font-sans text-[17px] font-extrabold tracking-tight text-ink">Smart verdict</h2>
-                <span className="text-[10px] text-gray font-mono uppercase tracking-widest px-2 py-0.5 rounded bg-black/[0.03]">Trust &amp; Delivery</span>
+                <span className="text-[10px] text-gray font-mono uppercase tracking-widest px-2 py-0.5 rounded bg-black/[0.03]">Price &amp; seller context</span>
               </div>
               <p className="font-sans text-[14px] font-medium leading-snug text-ink/80">
                 {bottomLine}
@@ -93,10 +94,10 @@ export default function SmartVerdict({ product, trust = {} }) {
             icon={ShieldCheck}
             tone={tier ? tier.text : 'text-gray'}
             bgTone={tier ? 'bg-acid-soft/50 group-hover:bg-acid-soft' : 'bg-cream-soft'}
-            q="Damkemon score"
+            q="Seller score"
             a={recT ? `${recT.trustScore}/100 · ${tier.label}` : 'Not yet rated'}
             sub={recT
-              ? <>{recT.ratingCount > 0 ? `${recT.ratingCount} buyer review${recT.ratingCount === 1 ? '' : 's'}` : 'baseline reputation'}{recT.recommendRate != null ? ` · ${recT.recommendRate}% recommend` : ''}</>
+              ? <>{recT.ratingCount > 0 ? `${recT.ratingCount} buyer review${recT.ratingCount === 1 ? '' : 's'}` : 'editorial baseline; no buyer reviews yet'}{recT.recommendRate != null ? ` · ${recT.recommendRate}% recommend` : ''}</>
               : <>be the first to review this seller</>}
           />
           <Cell
@@ -104,7 +105,7 @@ export default function SmartVerdict({ product, trust = {} }) {
             icon={BadgeCheck}
             tone={auth ? auth.tone : 'text-gray'}
             bgTone="bg-blue-50/50 group-hover:bg-blue-50"
-            q="Is the product genuine?"
+            q="What kind of seller?"
             a={auth ? auth.label : 'Unverified'}
             sub={recT?.warranty ? <>{recT.warranty}</> : <>warranty varies by seller</>}
           />
@@ -113,7 +114,7 @@ export default function SmartVerdict({ product, trust = {} }) {
             icon={Truck}
             tone="text-ink"
             bgTone="bg-orange-50/50 group-hover:bg-orange-50"
-            q="How long will delivery take?"
+            q="Typical delivery"
             a={dtext || 'Varies'}
             sub={recT ? <>{recT.codAvailable ? 'Cash on delivery available' : 'Prepaid only'}{recT.avgReportedDelivery != null ? ' · buyer-reported' : ''}</> : <>add a review with your delivery time</>}
           />
@@ -122,16 +123,16 @@ export default function SmartVerdict({ product, trust = {} }) {
             icon={RotateCcw}
             tone="text-ink"
             bgTone="bg-purple-50/50 group-hover:bg-purple-50"
-            q="What if I need to return it?"
+            q="Listed return window"
             a={recT ? returnText(recT) : '—'}
-            sub={recT ? <>at {sellerLabel(recommended)}</> : <>check the seller's policy</>}
+            sub={recT ? <>at {sellerLabel(recommended)}</> : <>check the seller’s policy</>}
           />
         </div>
 
         {/* Better alternative */}
         {product?.category && (
           <Link
-            to={`/browse?category=${encodeURIComponent(product.category)}`}
+            to={`/category/${encodeURIComponent(product.category)}`}
             className="flex items-center justify-between gap-2 px-5 py-3.5 bg-neutral-bg hover:bg-cream transition-colors group border-t border-line"
           >
             <span className="text-sm font-medium text-ink/70">

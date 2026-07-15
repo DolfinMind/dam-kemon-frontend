@@ -15,11 +15,11 @@ const avgDays = (lo, hi) => {
 /** Map a 0..100 trust score to a tier label + palette classes. */
 export function tierOf(score) {
   const s = score ?? 60;
-  if (s >= 85) return { label: 'Excellent', text: 'text-green', bg: 'bg-green-soft' };
-  if (s >= 72) return { label: 'Trusted',   text: 'text-green', bg: 'bg-green-soft' };
-  if (s >= 60) return { label: 'Good',      text: 'text-ink',   bg: 'bg-lime-soft'  };
-  if (s >= 45) return { label: 'Fair',      text: 'text-ink',   bg: 'bg-yellow-soft' };
-  return        { label: 'Caution',   text: 'text-red',   bg: 'bg-red-soft'   };
+  if (s >= 85) return { label: 'Very strong', text: 'text-green', bg: 'bg-green-soft' };
+  if (s >= 72) return { label: 'Strong',      text: 'text-green', bg: 'bg-green-soft' };
+  if (s >= 60) return { label: 'Moderate',    text: 'text-ink',   bg: 'bg-lime-soft'  };
+  if (s >= 45) return { label: 'Limited',     text: 'text-ink',   bg: 'bg-yellow-soft' };
+  return        { label: 'Weak',        text: 'text-red',   bg: 'bg-red-soft'   };
 }
 
 /** Human delivery estimate, preferring buyer-reported data over the baseline. */
@@ -45,10 +45,10 @@ export function returnText(t) {
 
 export function authenticityMeta(a) {
   switch (a) {
-    case 'authorized':     return { label: 'Authorized seller', Icon: ShieldCheck, tone: 'text-green', bg: 'bg-green-soft' };
-    case 'official_store': return { label: 'Official store',     Icon: BadgeCheck,  tone: 'text-green', bg: 'bg-green-soft' };
-    case 'reseller':       return { label: 'Verified reseller',  Icon: Store,       tone: 'text-ink',   bg: 'bg-cream-soft' };
-    case 'marketplace':    return { label: 'Marketplace seller', Icon: Store,       tone: 'text-ink',   bg: 'bg-yellow-soft' };
+    case 'authorized':     return { label: 'Listed as authorized', Icon: ShieldCheck, tone: 'text-green', bg: 'bg-green-soft' };
+    case 'official_store': return { label: 'Brand storefront',     Icon: BadgeCheck,  tone: 'text-green', bg: 'bg-green-soft' };
+    case 'reseller':       return { label: 'Independent reseller', Icon: Store,       tone: 'text-ink',   bg: 'bg-cream-soft' };
+    case 'marketplace':    return { label: 'Marketplace listing',  Icon: Store,       tone: 'text-ink',   bg: 'bg-yellow-soft' };
     default:               return { label: 'Unverified seller',  Icon: HelpCircle,  tone: 'text-gray',  bg: 'bg-cream-soft' };
   }
 }
@@ -56,8 +56,7 @@ export function authenticityMeta(a) {
 /**
  * "Best value" beyond just price. Blends price (45%), seller trust (35%),
  * delivery speed (15%) and return ease (5%) into a single 0..100 score, so a
- * marginally pricier but far more trustworthy / faster seller can win — which
- * is exactly how people actually decide.
+ * marginally pricier seller with stronger available signals can win.
  */
 export function valueScore({ price, lowestPrice, trust }) {
   const priceRatio = (lowestPrice && price) ? Math.min(1, lowestPrice / price) : 1;

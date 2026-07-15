@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import { Sparkles, Send, X, Loader2 } from 'lucide-react';
 import { assistantChat } from '../api/api';
 import TrustBadge from './TrustBadge';
+import { formatBdt } from '../lib/display';
 
-const fmt = (p) => (p == null ? '' : '৳' + Number(p).toLocaleString('en-IN'));
+const fmt = (p) => formatBdt(p, '');
 const cheapest = (p) => (p.prices || []).slice().sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity))[0];
 
 /**

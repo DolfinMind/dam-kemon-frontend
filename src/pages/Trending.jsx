@@ -4,10 +4,10 @@ import { Flame, ArrowRight, TrendingUp, Store } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { CategoryIcon } from '../lib/categoryIcon';
+import { formatBdt } from '../lib/display';
 
 function formatPrice(price) {
-  if (price == null) return 'N/A';
-  return '৳' + Number(price).toLocaleString('en-IN');
+  return formatBdt(price);
 }
 
 function fmtNum(n) {
@@ -116,23 +116,20 @@ export default function Trending() {
                 <Store className="w-6 h-6 text-acid-deep shrink-0" />
                 Trending shops
               </h2>
-              <Link to="/sellers" className="text-[13px] font-bold text-gray hover:text-ink transition-colors inline-flex items-center gap-1.5 shrink-0 uppercase tracking-widest">
-                All sellers <ArrowRight className="w-4 h-4" />
-              </Link>
+              <span className="text-[11px] font-mono text-gray">Based on outbound visits</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
               {shops.slice(0, 5).map((s, i) => (
-                <Link
+                <div
                   key={s.siteSlug}
-                  to="/sellers"
-                  className="group bg-white rounded-2xl border border-line hover:border-ink/30 p-4 sm:p-5 transition-colors"
+                  className="bg-white rounded-2xl border border-line p-4 sm:p-5"
                 >
                   <span className="font-sans text-2xl font-extrabold text-ink/15 tabular-nums leading-none">{String(i + 1).padStart(2, '0')}</span>
-                  <div className="mt-3 text-[15px] font-bold text-ink truncate group-hover:text-acid-deep transition-colors">{s.name}</div>
+                  <div className="mt-3 text-[15px] font-bold text-ink truncate">{s.name}</div>
                   <div className="text-[11px] text-gray mt-1 font-mono">
                     {fmtNum(s.clicks)} buyer visits · {fmtNum(s.distinctProducts)} products
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           </div>

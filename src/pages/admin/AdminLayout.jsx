@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-/* eslint-disable react/prop-types */
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
 import { triggerReindex, indexStatus } from '../../api/admin';
@@ -22,17 +21,23 @@ export default function AdminLayout() {
     else if (user.role !== 'admin') navigate('/account', { replace: true });
   }, [ready, user, navigate]);
 
-  // Poll the indexer so the header chip reflects what's happening even if you
-  // kicked it off on a different tab.
+  // The header only needs a coarse heartbeat; the Indexer tab owns its faster
+  // progress poll. Pause in background tabs so this does not flood the audit log.
   useEffect(() => {
     if (!user || user.role !== 'admin') return;
-    const tick = () =>
+    const tick = () => {
+      if (document.visibilityState !== 'visible') return;
       indexStatus()
         .then((r) => setRunning(Boolean(r.data?.inProgress)))
         .catch(() => {});
+    };
     tick();
-    const t = setInterval(tick, 5000);
-    return () => clearInterval(t);
+    const t = setInterval(tick, 30_000);
+    document.addEventListener('visibilitychange', tick);
+    return () => {
+      clearInterval(t);
+      document.removeEventListener('visibilitychange', tick);
+    };
   }, [user]);
 
   const scrapeNow = async () => {

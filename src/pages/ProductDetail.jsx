@@ -19,11 +19,10 @@ import {
   ArrowLeft, Share2, Bell, Store, AlertTriangle, Heart, Clock, ChevronDown,
 } from 'lucide-react';
 import { CategoryIcon } from '../lib/categoryIcon';
-import { cleanName, saneSavePct, relTime } from '../lib/display';
+import { cleanName, formatBdt, saneSavePct, relTime } from '../lib/display';
 
 function formatPrice(price) {
-  if (!price && price !== 0) return 'N/A';
-  return '৳' + Number(price).toLocaleString('en-IN');
+  return formatBdt(price);
 }
 
 export default function ProductDetail() {
@@ -34,6 +33,7 @@ export default function ProductDetail() {
   // router state — use it immediately so the page renders even when the
   // backend can't look it up (e.g. live-search results before Mongo persists).
   const seedProduct = state?.product || null;
+  const fromQuery = state?.fromQuery || null;
 
   const [product, setProduct] = useState(seedProduct);
   const [history, setHistory] = useState([]);
@@ -48,8 +48,7 @@ export default function ProductDetail() {
     setError(null);
 
     // History is a member feature (API 401s anonymously) — skip the call and
-    // show the signup gate instead. Signing in flips `user`, which re-runs
-    // this effect and also swaps the gated product payload for the full one.
+    // show the signup gate instead. Signing in flips `user` and re-runs this.
     Promise.allSettled([
       getProduct(id),
       user ? getProductHistory(id) : Promise.resolve({ data: [] }),
@@ -90,8 +89,7 @@ export default function ProductDetail() {
       if (ids.size >= 2) {
         if (localStorage.getItem('dk_nl')) return;
         if (Date.now() - Number(localStorage.getItem('dk_nl_x') || 0) < 14 * 24 * 3600 * 1000) return;
-        // Drives only the inline card below the price table — the modal ask
-        // lives solely in ExitIntentModal now (10s dwell, once per session).
+        // The ask stays inline below the price table; never interrupt comparison.
         setShowNewsletter(true);
       }
     } catch { /* private mode */ }
@@ -238,36 +236,16 @@ export default function ProductDetail() {
     return vals.length ? Math.min(...vals) : (product?.lowestPrice ?? null);
   }, [prices, product?.lowestPrice]);
   const highestPrice = useMemo(() => {
-    // Prefer the index-time field: anonymous payloads cap prices[] at the 4
-    // cheapest, which would otherwise understate the spread.
+    // Prefer the index-time field so the comparison spread is stable.
     if (product?.highestPrice != null) return product.highestPrice;
     const vals = prices.map((p) => p.price).filter((v) => v != null);
     return vals.length ? Math.max(...vals) : null;
   }, [prices, product?.highestPrice]);
   // Hidden when the spread is implausible for one product (bad match, not a deal).
   const savings = saneSavePct(lowestPrice, highestPrice) > 0 ? highestPrice - lowestPrice : 0;
-  // Anonymous payloads carry the real seller count alongside the capped list.
   const sellerCount = product?.totalSellerCount ?? prices.length;
   const cheapest = prices.find((p) => p.price === lowestPrice) || null;
-
-  // Signed-out teaser: the 4 cheapest rows with the best offer's shop identity
-  // stripped. The API already strips fetched payloads; this also covers
-  // products seeded through router state from search results.
-  const shownPrices = useMemo(() => {
-    if (user) return prices;
-    return prices.slice(0, 4).map((p, i) => (i === 0 && p.price != null ? {
-      price: p.price, originalPrice: p.originalPrice, currency: p.currency,
-      inStock: p.inStock, rating: p.rating, reviewCount: p.reviewCount,
-      soldCount: p.soldCount, locked: true,
-    } : p));
-  }, [user, prices]);
-
-  // The lowest live offer is highlighted inside the comparison itself. Keeping
-  // it in the same list removes the duplicate recommendation card and lets the
-  // shopper compare price, reputation and fulfilment in one scan. For a
-  // signed-out visitor the highlighted row is the locked one (same object, so
-  // the table's reference check still matches).
-  const pick = user ? cheapest : (shownPrices[0] || null);
+  const pick = cheapest;
 
   if (loading) {
     return (
@@ -377,12 +355,12 @@ export default function ProductDetail() {
           </div>
 
           <PriceComparisonTable
-            prices={shownPrices}
+            prices={prices}
             productId={pid}
+            fromQuery={fromQuery}
             trust={trust}
             sellerTrust={sellerTrust}
             recommended={pick}
-            totalCount={sellerCount}
           />
 
           {showNewsletter && <div className="mt-4"><NewsletterInline /></div>}

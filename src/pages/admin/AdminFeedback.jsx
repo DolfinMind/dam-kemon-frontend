@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { getFeedback } from '../../api/admin';
-import { MessageSquare, Calendar, Mail, User, ThumbsUp, ThumbsDown, Activity } from 'lucide-react';
+import { MessageSquare, Calendar, Mail, User, Activity } from 'lucide-react';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
@@ -29,8 +29,6 @@ export default function AdminFeedback() {
       }
 
       const isPulse = item.name === 'pulse';
-      const isDetail = item.name === 'pulse-detail';
-      
       if (isPulse && item.message) {
         if (item.message.startsWith('PULSE up')) likes++;
         else if (item.message.startsWith('PULSE down')) dislikes++;

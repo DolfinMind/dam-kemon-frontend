@@ -1,12 +1,7 @@
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Store, Star, TrendingDown, ChevronRight, Megaphone } from 'lucide-react';
 import { CategoryIcon } from '../lib/categoryIcon';
-import { cleanName, saneSavePct } from '../lib/display';
-
-function fmt(p) {
-  if (p == null) return 'N/A';
-  return '৳' + Number(p).toLocaleString('en-IN');
-}
+import { cleanName, formatBdt, saneSavePct } from '../lib/display';
 
 // Discovery pages only need enough shop evidence to make the spread tangible.
 // The full seller list and fulfilment detail live on the product page.
@@ -19,8 +14,7 @@ const VISIBLE_SHOPS = 2;
  * shop rows are evidence, not outbound links. Every interaction opens the
  * detail page, where the shopper can review the full comparison before leaving.
  */
-export default function SearchProductCard({ product, sponsored = false }) {
-  const navigate = useNavigate();
+export default function SearchProductCard({ product, query, sponsored = false }) {
   let prices = Array.isArray(product.prices) ? [...product.prices] : [];
   prices.sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
   // One row per seller — duplicate listings keep only their cheapest price.
@@ -32,7 +26,7 @@ export default function SearchProductCard({ product, sponsored = false }) {
     return true;
   });
   const cheapest = prices[0];
-  const previewPrices = prices.slice(1, VISIBLE_SHOPS + 1);
+  const previewPrices = prices.slice(0, VISIBLE_SHOPS);
   const numericPrices = prices.map((offer) => Number(offer.price)).filter((price) => Number.isFinite(price));
   const highestPrice = numericPrices.length ? Math.max(...numericPrices) : null;
   const sellerCount = prices.length;
@@ -41,14 +35,11 @@ export default function SearchProductCard({ product, sponsored = false }) {
   const savingsPct = saneSavePct(cheapest?.price, highestPrice);
 
   const detailHref = `/product/${product.id || product.slug || ''}`;
-  const goToDetail = () => navigate(detailHref, { state: { product } });
 
   return (
-    <div
-      role="link"
-      tabIndex={0}
-      onClick={goToDetail}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goToDetail(); } }}
+    <Link
+      to={detailHref}
+      state={{ product, fromQuery: query || null }}
       className="card-soft p-4 flex flex-col gap-3 group hover:shadow-[var(--shadow-lift)] hover:border-line-strong transition-all cursor-pointer"
     >
       {/* Header — compact product identity */}
@@ -128,10 +119,10 @@ export default function SearchProductCard({ product, sponsored = false }) {
                   </span>
                   <span className="shrink-0 text-right">
                     <span className="block font-mono text-sm font-extrabold text-ink">
-                      {fmt(sp.price)}
+                      {formatBdt(sp.price)}
                     </span>
                     <span className="mt-0.5 block font-mono text-[9px] font-semibold text-gray">
-                      {delta > 0 ? `+${fmt(delta)}` : 'Same price'}
+                      {delta > 0 ? `+${formatBdt(delta)}` : 'Lowest price'}
                     </span>
                   </span>
                 </div>
@@ -144,7 +135,7 @@ export default function SearchProductCard({ product, sponsored = false }) {
               {sellerCount > VISIBLE_SHOPS
                 ? <>+{sellerCount - VISIBLE_SHOPS} more {sellerCount - VISIBLE_SHOPS === 1 ? 'shop' : 'shops'}</>
                 : isMulti
-                ? <>{fmt(priceSpread)} shop spread</>
+                ? <>{formatBdt(priceSpread)} shop spread</>
                 : <>Only at <span className="font-semibold text-ink">{cheapest.siteName}</span></>}
             </span>
             <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-ink bg-acid px-3.5 py-1.5 rounded-full hover:brightness-95 hover:-translate-y-0.5 transition-all shrink-0 shadow-sm">
@@ -154,6 +145,6 @@ export default function SearchProductCard({ product, sponsored = false }) {
           </div>
         </div>
       )}
-    </div>
+    </Link>
   );
 }

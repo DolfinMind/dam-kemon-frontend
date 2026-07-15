@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, Menu, X, BarChart3, Sparkles, User as UserIcon, Shield } from 'lucide-react';
 import { useAuth } from '../auth/AuthContext';
-import AlphaBadge from './AlphaBadge';
 import { SHOW_SAATHI, SHOW_PUBLIC_DASHBOARD } from '../config/features';
 // THEME_TOGGLE_DISABLED: dark mode is paused. See src/api/theme.js for the
 // re-enable recipe. We keep the import-less component so the layout stays
@@ -48,12 +47,7 @@ export default function Navbar() {
     { to: '/',          label: 'Home' },
     { to: '/browse',    label: 'Browse' },
     { to: '/trending',  label: 'Trending' },
-    // ponytail: Protect hidden from frontend per request. Restore this line to bring it back.
-    // { to: '/protect',   label: 'Protect' },
     { to: '/compare',   label: 'Compare' },
-    // ponytail: Shops (/sellers) hidden until the sellers directory is populated —
-    // it was showing 0 / stuck loading. Restore this line once seeding is verified.
-    // { to: '/sellers',   label: 'Shops' },
     ...(SHOW_SAATHI ? [{ to: '/saathi', label: 'Sell with us' }] : []),
   ];
 
@@ -101,7 +95,6 @@ export default function Navbar() {
               <span className="font-serif text-xl sm:text-[22px] font-bold italic tracking-tight text-ink hidden xs:inline sm:inline">
                 dam<span className="text-red">.</span>kemon
               </span>
-              <AlphaBadge className="ml-0.5" />
             </Link>
 
             {/* Center nav (desktop) — surface bg + line-strong border auto-flip

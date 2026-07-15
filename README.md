@@ -13,7 +13,7 @@
 
 | | |
 |---|---|
-| Build | Vite 5 |
+| Build | Vite 6 |
 | UI | React 18 + react-router-dom 7 |
 | Styling | Tailwind CSS 4 (via `@tailwindcss/vite`) |
 | HTTP | axios |

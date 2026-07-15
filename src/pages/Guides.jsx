@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { GUIDES } from '../content/guides';
 import { BookOpen, ArrowRight } from 'lucide-react';
 
@@ -10,6 +11,11 @@ export default function Guides() {
 
   return (
     <div className="container-tight py-6 sm:py-10 lg:py-14">
+      <Helmet>
+        <title>Bangladesh online shopping guides | Damkemon</title>
+        <meta name="description" content="Practical guides for comparing prices, spotting fake discounts and buying safely from online sellers in Bangladesh." />
+        <link rel="canonical" href="https://damkemon.com/guides" />
+      </Helmet>
       {/* Header */}
       <div className="mb-10 sm:mb-14">
         <div className="flex items-center gap-2 mb-3">

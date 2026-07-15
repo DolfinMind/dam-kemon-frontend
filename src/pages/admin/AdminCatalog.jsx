@@ -37,7 +37,9 @@ export default function AdminCatalog() {
       .finally(() => setBusy(false));
   };
 
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, [page, sort]);
+  // Deliberately reload only for paging/sort; the search form controls q.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { load(); }, [page, sort]);
 
   const onSearch = (e) => { e.preventDefault(); setPage(0); load(); };
 

@@ -16,9 +16,8 @@ import {
  * FAQPage JSON-LD, where Google only accepts text answers. The article `Body`
  * can use rich JSX (headings, lists, internal links, callouts).
  *
- * Keep the articles honest: Damkemon Protect today is a trust + dispute layer
- * (it scores scam risk and records a protected order); it does not yet hold
- * money in escrow. Never imply a guaranteed refund.
+ * Keep the articles honest: Damkemon compares listings and seller signals; it
+ * does not hold payments, guarantee sellers, or recover money after a scam.
  */
 
 /* ── small presentational helpers used inside article bodies ── */
@@ -62,20 +61,20 @@ export const GUIDES = [
   {
     slug: 'why-one-search-beats-ten-browser-tabs',
     title: 'Why one search beats ten browser tabs',
-    dek: 'See every shop that sells your product — price, trust and delivery, side by side.',
+    dek: 'See available sellers and their recently checked prices side by side.',
     readMin: 4,
     category: 'Smart shopping',
     tone: 'bg-acid-soft text-acid-deep',
     Icon: PhSearch,
     datePublished: '2026-06-16',
-    dateModified: '2026-06-16',
+    dateModified: '2026-07-15',
     keywords: [
       'price comparison Bangladesh', 'compare prices online BD', 'cheapest price Bangladesh',
       'online shopping Bangladesh', 'best price BD', 'দাম তুলনা',
     ],
     metaTitle: 'Price comparison in Bangladesh: why one search beats ten browser tabs',
     metaDescription:
-      'Stop opening a dozen tabs to compare prices. Learn how a single search across Bangladesh’s shops shows the cheapest — and safest — seller, side by side.',
+      'Stop opening a dozen tabs to compare prices. Learn how one search lines up recently checked listings and available seller signals side by side.',
     faqs: [
       {
         q: 'Is Damkemon free to use?',
@@ -83,7 +82,7 @@ export const GUIDES = [
       },
       {
         q: 'Where do the prices come from?',
-        a: 'Prices are read from real, current listings at shops across Bangladesh and kept fresh. When a listing goes stale, Damkemon flags it instead of showing a made-up number.',
+        a: 'Prices come from listings at shops across Bangladesh and include a checked-at timestamp. Always confirm the final price and stock on the seller’s page before paying.',
       },
       {
         q: 'Can I search in Bangla?',
@@ -91,7 +90,7 @@ export const GUIDES = [
       },
       {
         q: 'Why is the cheapest price not always the best choice?',
-        a: 'A low price is only worth it if the seller is genuine and actually delivers. That is why Damkemon shows a trust score and delivery estimate next to every price, not just the number.',
+        a: 'A low price is only useful if the listing and seller check out. Damkemon shows available seller, delivery and rating signals, but you should still confirm the final price, stock and seller policy before paying.',
       },
     ],
     Body: () => (
@@ -103,8 +102,8 @@ export const GUIDES = [
           you <em>still</em> are not sure who is actually cheapest — or who will actually deliver.
         </p>
         <p>
-          Price comparison fixes the first problem. Damkemon fixes all three: <strong>price, trust,
-          and delivery</strong>, in a single search. Here is why one good search beats ten browser tabs.
+          Price comparison reduces that work by putting <strong>recently checked listing prices and
+          available seller context</strong> in one search. Here is why that beats ten browser tabs.
         </p>
 
         <h2>The hidden cost of shopping with ten tabs</h2>
@@ -117,14 +116,14 @@ export const GUIDES = [
         <p>
           Worse, ten tabs can not tell you the two things that matter most in Bangladesh: whether a
           “discount” is real, and whether the seller is safe. A tab shows you a number. It does not
-          show you a shop’s delivery record or whether that suspiciously low price is bait.
+          show you how the same product is priced elsewhere or whether seller context is available.
         </p>
 
         <h2>What a single price-comparison search actually does</h2>
         <p>
           A price-comparison engine flips the work around. Instead of you visiting every shop, you type
-          the product <strong>once</strong> and it brings every shop that sells it to you — real,
-          current prices lined up in one row. Type{' '}
+          the product <strong>once</strong> and it lines up matching offers in Damkemon’s catalog —
+          recently checked listing prices in one view. Type{' '}
           <Link to="/search?q=iphone">a phone model</Link>, a brand, or a category and the whole market
           answers at once. You can even search in Bangla; Damkemon understands Bengali and
           transliteration, so <span lang="bn">দাম কেমন</span> works as well as “price”.
@@ -134,40 +133,40 @@ export const GUIDES = [
         <p>
           The cheapest price is worthless if the seller never ships, or if the listing is a fake low
           price designed to pull an advance payment. That is the difference between a plain comparison
-          site and Damkemon: every price sits next to a <strong>trust score</strong> and a{' '}
-          <strong>delivery estimate</strong>, so you are comparing whole decisions, not just numbers.
+          site and a useful comparison: where data is available, a price can sit beside a{' '}
+          <strong>seller score</strong>, ratings, typical delivery and policy details. These are
+          decision signals, not a guarantee, so confirm everything important on the seller’s page.
         </p>
         <p>
           If you want to understand how that score sees through bait pricing, read{' '}
           <Link to="/guides/how-trust-score-spots-fake-low-prices">
-            how our trust score spots fake low prices
+            what our seller score means and what it does not
           </Link>
-          . And if a seller is unknown — say, a Facebook page — check it first with{' '}
-          <Link to="/guides/buying-from-unknown-seller-use-protect">Damkemon Protect</Link>.
+          . For an unknown seller — such as a Facebook page — use the independent checks in our{' '}
+          <Link to="/guides/buying-from-unknown-seller-check-risk">buyer-safety guide</Link>.
         </p>
 
         <Callout tone="green" title="A quick example">
-          Search a popular phone and you might see eight sellers. The very cheapest is a two-week-old
-          shop with a thin trust score and no delivery history. The second-cheapest is ৳500 more, from
-          a top-trust shop that delivers in two days. The Smart Pick is not the lowest number — it is
-          the lowest number <em>you can trust</em>. One search shows you both in the same glance.
+          Search a popular phone and you may see several offers. The cheapest can have little seller
+          context, while another costs slightly more and has a longer shop history, ratings or a clearer
+          return policy. One comparison shows the price difference and the available evidence together.
         </Callout>
 
         <h2>How to get the most out of one search</h2>
         <p>
           Start broad, then narrow: search the product, scan the lined-up prices, and check the trust
           score before you fixate on the lowest figure. Watch the{' '}
-          <Link to="/browse">price history</Link> before big festival sales — a “30% off” banner means
-          nothing if the price was quietly raised the week before. And for any seller you do not
-          recognise, run a quick risk check with Protect before you pay a single taka.
+          price history on the relevant product page before big festival sales — a “30% off” banner
+          is worth checking against earlier prices. For any seller you do not recognise, verify its
+          page history, payment identity and independent reviews before paying.
         </p>
 
         <KeyTakeaways
           items={[
-            'Ten tabs cost you time and usually end in overpaying — one search lines up every shop at once.',
-            'Damkemon shows price, trust score and delivery together, so you compare decisions, not just numbers.',
+            'Ten tabs cost time; one search lines up matching offers from Damkemon’s current catalog.',
+            'Available seller, rating and delivery signals add context to price, but do not guarantee a purchase.',
             'You can search in Bangla or English and still get the full comparison.',
-            'The smartest buy is the lowest price from a seller you can actually trust.',
+            'Confirm the final price, stock and seller policy before paying.',
           ]}
         />
       </>
@@ -176,9 +175,9 @@ export const GUIDES = [
 
   /* ============================ GUIDE 2 ============================ */
   {
-    slug: 'buying-from-unknown-seller-use-protect',
-    title: 'Buying from an unknown seller? Use Protect',
-    dek: 'Check the scam risk and open a protected order before you hand over money.',
+    slug: 'buying-from-unknown-seller-check-risk',
+    title: 'Buying from an unknown seller? Check the risk first',
+    dek: 'Use price, payment and seller-history checks before you hand over money.',
     readMin: 3,
     category: 'Buyer safety',
     tone: 'bg-green-soft text-green',
@@ -191,23 +190,23 @@ export const GUIDES = [
     ],
     metaTitle: 'Buying from an unknown seller in Bangladesh? Check the scam risk first',
     metaDescription:
-      'Facebook-page sellers and “Send Money” advance payments are where Bangladeshis lose money. Learn the red flags and how Damkemon Protect checks a seller before you pay.',
+      'Facebook-page sellers and “Send Money” advance payments are common scam risks. Learn the red flags and how to check a seller before you pay.',
     faqs: [
       {
         q: 'Is it safe to pay in advance to an online seller in Bangladesh?',
-        a: 'Prefer cash on delivery whenever you can. If you must pay in advance, keep it small, verify the seller first, and never use bKash or Nagad “Send Money” to a personal number. Bangladesh rules cap advance payment at 10% of the price.',
+        a: 'Prefer cash on delivery whenever you can. If you must pay in advance, keep it small, verify the seller first, and never use bKash or Nagad “Send Money” to an unverified personal number.',
       },
       {
         q: 'What is the bKash “Send Money” trap?',
         a: 'Scammers ask you to use the personal “Send Money” option instead of a merchant Payment, because Send Money to a personal number is hard to trace or reverse. A genuine shop almost always uses a merchant or cash-on-delivery flow.',
       },
       {
-        q: 'Does Damkemon Protect work for Facebook sellers?',
-        a: 'Yes. Protect works for any seller, including off-platform Facebook pages. You can check the scam risk and open a protected order even when the seller is not listed on Damkemon.',
+        q: 'How can I check a Facebook seller?',
+        a: 'Compare the asking price with established shops, inspect the page history and independent reviews, verify its payment identity, and prefer cash on delivery. A price far below the market plus pressure to pay a personal number is a strong warning.',
       },
       {
         q: 'Can Damkemon get my money back if I am scammed?',
-        a: 'Today Protect is a trust and dispute layer: it scores the risk before you pay, puts your order on record, and a dispute lowers the seller’s trust score. It does not yet hold your money in escrow, so always pay cautiously and prefer cash on delivery.',
+        a: 'No. Damkemon does not hold payments, guarantee sellers or recover money. Compare the market price, verify the seller independently, prefer cash on delivery and keep your payment and conversation records.',
       },
     ],
     Body: () => (
@@ -219,8 +218,8 @@ export const GUIDES = [
           to the everyday fake page that vanishes the moment your payment lands.
         </p>
         <p>
-          You do not have to stop buying from small or unknown sellers. You just need to check them
-          first. That is what <Link to="/protect">Damkemon Protect</Link> is for.
+          You do not have to stop buying from small or unknown sellers. You need a consistent risk
+          check before paying, starting with the market price and the seller’s independent history.
         </p>
 
         <h2>Why unknown sellers are risky in Bangladesh</h2>
@@ -249,41 +248,32 @@ export const GUIDES = [
           personal number” is the number-one signal of a scam in Bangladesh.
         </Callout>
 
-        <h2>What Damkemon Protect does</h2>
+        <h2>How Damkemon helps with the first check</h2>
         <p>
-          Protect reads the seller and the deal the way an experienced buyer would — but instantly. It
-          scores the <strong>scam risk</strong> using the seller’s trust signals and the real market
-          price, and it flags the exact traps above: the personal-number request, an unverified seller,
-          and a price that is suspiciously below market. If the risk is high, it points you to safer,
-          trusted sellers for the same product.
-        </p>
-        <p>
-          If you decide to go ahead, you can open a <strong>Protected Order</strong> with a shareable
-          code that puts the deal on record. If it goes wrong, you can file a dispute — and a dispute
-          dents that seller’s trust score, which protects the next buyer too. Protect works for any
-          seller, including off-platform Facebook pages.
+          Search the product on Damkemon to see whether the asking price is anywhere near the listed
+          market. On product comparisons, use the available seller, delivery and payment signals to
+          narrow the shortlist. Then verify the seller independently before sending money.
         </p>
 
-        <Callout tone="ink" title="An honest note on how far Protect goes today">
-          Right now Protect is a <strong>trust and dispute layer</strong> — it checks risk, records
-          your order, and lowers a seller’s score when a deal goes bad. It does <em>not</em> yet hold
-          your money in escrow. So treat it as a strong early-warning system, keep preferring cash on
-          delivery, and never advance more than you can afford to lose.
+        <Callout tone="ink" title="A comparison is not a payment guarantee">
+          Damkemon does not hold your money, guarantee a seller, or recover a payment. Treat price and
+          trust signals as a shortlist, not insurance. Prefer cash on delivery and never advance more
+          than you can afford to lose.
         </Callout>
 
-        <h2>Use Protect in three steps</h2>
+        <h2>Check the deal in three steps</h2>
         <ol>
-          <li>Enter the seller, the product and the price, and read the risk check.</li>
-          <li>If you proceed, open a protected order and save the code.</li>
-          <li>Share the code with the seller; if the deal goes wrong, file a dispute.</li>
+          <li>Compare the product’s asking price with several established shops.</li>
+          <li>Verify the seller’s page history, payment identity, address and independent reviews.</li>
+          <li>Prefer cash on delivery; if you proceed, save the listing, messages and receipt.</li>
         </ol>
 
         <KeyTakeaways
           items={[
             'The biggest BD scam is the advance “Send Money” to a personal number — never do it.',
-            'Check any unknown or Facebook seller with Protect before you pay.',
-            'Protect scores scam risk, suggests safer sellers, and records a protected order.',
-            'Protect is a trust + dispute layer today (not escrow) — still prefer cash on delivery.',
+            'Compare the asking price with established shops before you pay.',
+            'Verify page history, payment identity and independent reviews—not screenshots supplied by the seller.',
+            'Damkemon is a comparison tool, not escrow or a payment guarantee; still prefer cash on delivery.',
           ]}
         />
 
@@ -301,109 +291,96 @@ export const GUIDES = [
   /* ============================ GUIDE 3 ============================ */
   {
     slug: 'how-trust-score-spots-fake-low-prices',
-    title: 'How our trust score spots fake low prices',
-    dek: 'Delivery signals, review history and stock depth — combined into one number.',
+    title: 'What Damkemon’s seller score means',
+    dek: 'Editorial shop facts and available buyer or listing ratings, summarized clearly.',
     readMin: 5,
     category: 'How it works',
     tone: 'bg-yellow-soft text-ink',
     Icon: PhSealCheck,
     datePublished: '2026-06-16',
-    dateModified: '2026-06-16',
+    dateModified: '2026-07-15',
     keywords: [
       'fake discount Bangladesh', 'too good to be true price', 'is this online seller genuine',
       'trust score', 'fake MRP Bangladesh', 'how to tell if a shop is real',
     ],
-    metaTitle: 'How Damkemon’s trust score spots fake low prices and fake discounts',
+    metaTitle: 'What Damkemon’s seller score means — and what it does not',
     metaDescription:
-      'A low price can be bait. See how Damkemon combines price history, delivery, reviews and stock depth into one trust score that flags fake discounts and risky sellers.',
+      'Learn which editorial, buyer and listing signals feed Damkemon’s seller score, what is shown separately, and why the score is not a purchase guarantee.',
     faqs: [
       {
-        q: 'What is a good trust score?',
-        a: 'Higher is safer. A high score means consistent pricing, real reviews and a reliable delivery record, so you can buy with confidence. A low score, or a “too good to be true” flag, means you should check reviews and delivery — or use Protect — before paying.',
+        q: 'What does a higher seller score mean?',
+        a: 'It means the shop has a stronger editorial baseline and, where available, more positive buyer or listing-rating signals. It is a comparison aid, not proof that a specific listing or transaction is safe.',
       },
       {
-        q: 'Why is the cheapest price sometimes flagged?',
-        a: 'Because Damkemon compares it against the cross-shop price history. A price far below what the same product reliably sells for — or a “discount” from an MRP that was never really charged — is flagged as a possible fake low price or fake discount.',
+        q: 'Does the seller score verify that a price is real?',
+        a: 'No. Compare the offer with other shops and its product price history, then confirm the final price and stock on the seller’s page. The seller score does not authenticate an individual offer.',
       },
       {
-        q: 'Does a low price always mean a scam?',
-        a: 'No. Genuine clearance, festival deals and grey-market stock can all be cheap and legitimate. The trust score exists to tell the difference, by weighing the price against delivery, reviews, account age and stock depth rather than the number alone.',
+        q: 'Does a low seller score mean a shop is a scam?',
+        a: 'No. It can mean limited or weaker available signals. Verify the shop independently, prefer cash on delivery and never treat one score as a final verdict.',
       },
       {
-        q: 'How is the trust score calculated?',
-        a: 'It combines several real signals: the price versus cross-shop history, delivery reliability, review history and quality, how long the shop has been active, stock depth and dispute history — blended into a single number you can read at a glance.',
+        q: 'How is the seller score calculated?',
+        a: 'It starts with an editorial shop baseline, then incorporates available buyer ratings, trust votes, recommendations, scraped listing ratings and a small verified-buyer confidence adjustment. Delivery and return details are displayed separately.',
       },
     ],
     Body: () => (
       <>
         <p>
-          The lowest price on the page is not always the best deal. Sometimes it is bait. A{' '}
-          <strong>fake low price</strong> — or a fake “discount” from an inflated MRP that nobody ever
-          paid — is one of the oldest tricks in Bangladeshi e-commerce. Damkemon’s trust score exists
-          to see through it. Here is how.
+          A price alone does not tell you enough about a seller. Damkemon’s seller score summarizes
+          the signals currently available for a shop, so offers are easier to compare. It does not
+          authenticate a listing, insure a payment or promise that an order will go well.
         </p>
 
-        <h2>Why fake low prices exist</h2>
+        <h2>What feeds the score</h2>
         <p>
-          A price that looks impossible usually has a reason behind it. It might be bait to pull an
-          advance payment before the seller disappears. It might be grey-market or refurbished stock
-          sold as new. Or it might be a manufactured discount — “was ৳40,000, now ৳22,000” — where the
-          ৳40,000 was never a real selling price. In every case, the number alone is designed to
-          short-circuit your judgement.
-        </p>
-
-        <h2>The signals behind the score</h2>
-        <p>
-          Instead of trusting a single price, the trust score weighs several independent signals that a
-          scammer can not easily fake all at once:
+          Each known shop begins with an editorial baseline. That profile records details such as the
+          shop type, typical delivery window, cash-on-delivery availability, returns and warranty notes.
+          The numeric score then moves as real feedback becomes available.
         </p>
         <ul>
-          <li><strong>Price versus history.</strong> The cross-shop price history reveals what the product really sells for — so an impossible price, or a fake MRP, stands out immediately.</li>
-          <li><strong>Delivery reliability.</strong> Does this shop actually deliver, and on time? A great price from a shop that never ships is not a deal.</li>
-          <li><strong>Review history and quality.</strong> Not just the star count, but whether reviews look real and consistent over time.</li>
-          <li><strong>Account age and activity.</strong> A brand-new or freshly renamed shop carries more risk than one with a long, steady track record.</li>
-          <li><strong>Stock depth.</strong> Thin, single-item listings behave differently from a real, well-stocked catalogue.</li>
-          <li><strong>Dispute history.</strong> Past disputes — including those opened through <Link to="/protect">Protect</Link> — pull a score down.</li>
+          <li><strong>Buyer ratings.</strong> Star ratings gradually move the baseline as the sample grows.</li>
+          <li><strong>Trust and recommendation votes.</strong> Community feedback adds a smaller positive or negative adjustment.</li>
+          <li><strong>Listing ratings.</strong> Available ratings collected from seller listings contribute with a limited weight.</li>
+          <li><strong>Verified-buyer signal.</strong> Reviews connected to a prior outbound seller visit get a small confidence adjustment.</li>
         </ul>
 
-        <h2>How the signals combine into one number</h2>
+        <h2>What does not feed the score</h2>
         <p>
-          No single signal decides it. A suspiciously low price <em>plus</em> a new account{' '}
-          <em>plus</em> no delivery record adds up to a low score and a warning. Consistent pricing,
-          real reviews and reliable delivery add up to a high score you can buy from with confidence.
-          The result is one glanceable number — and a Smart Verdict — sitting right next to the price,
-          so you never have to do this detective work yourself.
+          The seller score does not currently judge whether one specific price is fake, and it does not
+          include product price history, stock depth or dispute history. Typical delivery, cash on
+          delivery, returns and warranty details are shown beside the score, but they are not part of
+          the numeric calculation. Keeping these boundaries visible prevents one number from claiming
+          more than the evidence supports.
         </p>
 
-        <Callout tone="green" title="Read the score, then read the price">
-          A high score means buy with confidence. A middling score means check the reviews and delivery
-          first. A low score, or a “too good to be true” flag, means slow down — cross-check the{' '}
-          <Link to="/browse">price history</Link>, or run the seller through{' '}
-          <Link to="/protect">Protect</Link> before you pay.
+        <Callout tone="green" title="Use the score as a shortlist, not a guarantee">
+          Compare the seller score, ratings and policies, then cross-check the offer against other
+          sellers. Confirm price and stock on the destination page and prefer cash on delivery when
+          you do not already know the shop.
         </Callout>
 
-        <h2>Why no single shop can fake it</h2>
+        <h2>How to assess a suspiciously low price</h2>
         <p>
-          A seller can fake their own page — the photos, the reviews, the “MRP”. What they can not fake
-          is the <strong>whole market’s price history</strong>. Because Damkemon is a neutral layer
-          sitting above every shop, it sees the aggregate that no individual seller controls. That is
-          what makes a fake low price visible: it disagrees with everything else the market is saying.
+          A genuine clearance, grey-market unit, refurbished device and bait offer can all look cheap
+          for different reasons. Compare the same model and condition across several shops, inspect the
+          product’s recorded price history, and check warranty and return terms. A large price gap is a
+          reason to investigate, not automatic proof of a scam.
         </p>
 
-        <h2>How to use the score when you shop</h2>
+        <h2>How to use the seller score</h2>
         <p>
-          Treat the score as your first filter and the price as your second. Compare like-for-like with{' '}
-          <Link to="/search">one search</Link>, let the trust score rule out the risky sellers, and then
-          pick the lowest price that remains. If you are still unsure about a specific shop, browse{' '}
-          <Link to="/sellers">shop trust profiles</Link> to see the signals in detail.
+          Start with a <Link to="/search">product search</Link>, compare like-for-like offers, and use
+          the seller score to decide which shops deserve a closer look. Then read the underlying ratings,
+          delivery and policy details. If evidence is thin, verify the seller independently before paying.
         </p>
 
         <KeyTakeaways
           items={[
-            'A fake low price or fake MRP is bait — the number is designed to bypass your judgement.',
-            'The trust score weighs price history, delivery, reviews, account age, stock depth and disputes.',
-            'No single signal decides it; combined, they are very hard for a scammer to fake.',
-            'Only a neutral cross-shop layer can see the whole market’s price history — which is what exposes fakes.',
+            'The seller score starts with an editorial baseline and adjusts with available rating and community signals.',
+            'Delivery, returns, warranty and price history are useful context but do not feed the numeric score.',
+            'A high score is not a transaction guarantee, and a low score is not proof of fraud.',
+            'Compare like-for-like offers and confirm the final price, stock and policy on the seller’s page.',
           ]}
         />
 
@@ -413,7 +390,7 @@ export const GUIDES = [
             why one search beats ten browser tabs
           </Link>{' '}
           and{' '}
-          <Link to="/guides/buying-from-unknown-seller-use-protect">
+          <Link to="/guides/buying-from-unknown-seller-check-risk">
             how to buy safely from an unknown seller
           </Link>
           .

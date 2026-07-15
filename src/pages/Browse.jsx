@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { getAllProducts, getShopTrust, getCategories } from '../api/api';
 import SearchProductCard from '../components/SearchProductCard';
 import SearchProductCardSkeleton from '../components/SearchProductCardSkeleton';
@@ -18,8 +19,11 @@ const sortOptions = [
 ];
 
 export default function Browse() {
-  const [params, setParams] = useSearchParams();
-  const category = params.get('category') || '';
+  const navigate = useNavigate();
+  const { category: routeCategory } = useParams();
+  const [params] = useSearchParams();
+  const legacyCategory = params.get('category') || '';
+  const category = routeCategory || legacyCategory;
 
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(0);
@@ -38,6 +42,14 @@ export default function Browse() {
   useEffect(() => {
     getCategories().then((r) => { if (Array.isArray(r.data)) setCategories(r.data); }).catch(() => {});
   }, []);
+
+  // Keep old shared /browse?category= links working, but consolidate indexing
+  // onto one stable category URL.
+  useEffect(() => {
+    if (!routeCategory && legacyCategory) {
+      navigate(`/category/${encodeURIComponent(legacyCategory)}`, { replace: true });
+    }
+  }, [legacyCategory, navigate, routeCategory]);
 
   // Decide whether the "show more" toggle is needed: does the full chip set
   // exceed the collapsed two-line cap? Re-measures on category load + resize.
@@ -73,7 +85,6 @@ export default function Browse() {
     setTotal(null);
     loadPage(0, category, true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category]);
 
   // Batch-fetch trust for the cheapest seller of each loaded product.
@@ -97,15 +108,34 @@ export default function Browse() {
   }, [items, sortBy]);
 
   const setCategory = (c) => {
-    const next = new URLSearchParams(params);
-    if (c) next.set('category', c); else next.delete('category');
-    setParams(next);
+    if (c) navigate(`/category/${encodeURIComponent(c)}`);
+    else navigate('/browse');
   };
 
   const initialLoading = loading && items.length === 0;
 
   return (
     <div className="container-tight py-4 sm:py-6 lg:py-8">
+      <Helmet>
+        <title>{category
+          ? `Compare ${category} prices in Bangladesh | Damkemon`
+          : 'Browse tech prices across Bangladesh shops | Damkemon'}</title>
+        <meta
+          name="description"
+          content={category
+            ? `Compare ${category} prices across Bangladesh shops. See the cheapest seller, trust and delivery side by side.`
+            : 'Browse phones, laptops, computers and accessories across Bangladesh shops with price, seller trust and delivery compared.'}
+        />
+        <link
+          rel="canonical"
+          href={category
+            ? `https://damkemon.com/category/${encodeURIComponent(category)}`
+            : 'https://damkemon.com/browse'}
+        />
+        {category && !loading && items.length === 0 && (
+          <meta name="robots" content="noindex, follow" />
+        )}
+      </Helmet>
       {/* Header */}
       <div className="flex items-end justify-between gap-3 mb-4 sm:mb-5">
         <div>
@@ -117,8 +147,8 @@ export default function Browse() {
           </h1>
           <p className="text-gray text-sm mt-1">
             {total != null
-              ? <><span className="font-mono text-ink">{total.toLocaleString('en-IN')}</span> products{category ? ` in ${category}` : ' across every shop'} — cheapest seller, trust &amp; delivery on each.</>
-              : 'Every product on Damkemon, with its cheapest shops and confidence signals.'}
+              ? <><span className="font-mono text-ink">{total.toLocaleString('en-IN')}</span> products{category ? ` in ${category}` : ' in the focused catalog'} — compare available prices and seller signals.</>
+              : 'Focused products with recently checked prices and available seller signals.'}
           </p>
         </div>
 
@@ -216,7 +246,7 @@ export default function Browse() {
                 {loading ? <><RefreshCw className="w-4 h-4 animate-spin" /> Loading…</> : <>Load more products</>}
               </button>
             ) : (
-              <p className="text-gray text-sm font-mono">You've reached the end · {items.length} shown</p>
+              <p className="text-gray text-sm font-mono">You’ve reached the end · {items.length} shown</p>
             )}
           </div>
         </>

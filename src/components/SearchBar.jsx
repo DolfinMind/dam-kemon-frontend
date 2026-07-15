@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, ArrowRight, Sparkles, Store } from 'lucide-react';
+import { Search, ArrowRight, Store } from 'lucide-react';
 import { suggestProducts } from '../api/api';
 import { trackSuggestClick } from '../api/analytics';
+import { formatBdt } from '../lib/display';
 
 function fmt(p) {
-  if (p == null) return '';
-  return '৳' + Number(p).toLocaleString('en-IN');
+  return formatBdt(p, '');
 }
 
 export default function SearchBar({ large = false, onSearch, placeholder }) {

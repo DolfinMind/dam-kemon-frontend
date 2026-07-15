@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import {
@@ -11,22 +10,18 @@ import HomeProductCard, { HomeProductCardSkeleton } from '../components/HomeProd
 import SearchProductCard from '../components/SearchProductCard';
 import SearchProductCardSkeleton from '../components/SearchProductCardSkeleton';
 import { useAuth } from '../auth/AuthContext';
-// ponytail: Protect hidden from frontend per request.
-// import ProtectShowcase from '../components/ProtectShowcase';
 import { TrustScore, deliveryText } from '../components/TrustBadge';
 import { CategoryIcon } from '../lib/categoryIcon';
 import { WovenLightHero } from '../components/ui/woven-light-hero';
-import { cleanName, saneSavePct } from '../lib/display';
+import { cleanName, formatBdt, saneSavePct } from '../lib/display';
 import {
   ArrowRight, ShieldCheck, Flame, TrendingDown, Truck, Heart, Check,
 } from 'lucide-react';
 
 function fmt(p) {
-  if (p == null) return 'N/A';
-  return '৳' + Number(p).toLocaleString('en-IN');
+  return formatBdt(p);
 }
 const fmtNum = (n) => (n == null ? '—' : Number(n).toLocaleString('en-IN'));
-const HERO_TITLE_WORDS = ['Dam', 'kemon?'];
 
 // Quick paths into the catalog — doubles as "what we cover", right under search.
 const QUICK_CATS = [
@@ -67,7 +62,6 @@ function guardDegeneratePcts(ds) {
 
 export default function Home() {
   const navigate = useNavigate();
-  const reduceMotion = useReducedMotion();
   const [deals, setDeals] = useState([]);
   const [shops, setShops] = useState([]);
   const [allProducts, setAllProducts] = useState(null);   // null = loading
@@ -109,7 +103,7 @@ export default function Home() {
         }).catch(() => {});
       });
 
-    // Most-trusted well-stocked shops (real trust scores).
+    // Well-stocked shops ranked by the available seller score.
     getShops().then((r) => {
       const dir = (Array.isArray(r.data) ? r.data : []).filter((s) => s.productCount > 0).slice(0, 14);
       if (!dir.length) return;
@@ -133,8 +127,9 @@ export default function Home() {
   return (
     <div className="overflow-x-hidden">
       <Helmet>
-        <title>Damkemon - The Ultimate Price Comparison Engine</title>
-        <meta name="description" content="Find the best deals on laptops, phones, and tech gear across trusted BD sellers. Never overpay again." />
+        <title>Compare Tech Prices Across Bangladesh Shops | Damkemon</title>
+        <meta name="description" content="Search once to compare phones, laptops and tech prices across Bangladesh sellers. See the cheapest shop, seller trust and delivery details side by side." />
+        <link rel="canonical" href="https://damkemon.com/" />
       </Helmet>
 
       {/* ── Hero: the brand question, a search box, and nothing else ── */}
@@ -144,42 +139,19 @@ export default function Home() {
         <div className="relative z-10">
           <h1 aria-label="Dam kemon?" className="max-w-4xl mx-auto mb-4">
             <span aria-hidden="true" className="block font-sans font-extrabold leading-[0.92] tracking-[-0.04em] text-[clamp(3.2rem,8vw,6.5rem)] text-ink">
-              {HERO_TITLE_WORDS.map((word, wordIndex) => (
-                <span
-                  key={word}
-                  className={`relative isolate inline-block ${wordIndex === 0 ? 'mr-[0.22em]' : 'px-3 -mx-1'}`}
-                >
-                  {wordIndex === 1 && (
-                    <motion.span
-                      className="absolute inset-0 z-0 origin-left bg-acid"
-                      initial={reduceMotion ? { scaleX: 1 } : { scaleX: 0 }}
-                      animate={{ scaleX: 1 }}
-                      transition={{ delay: 0.2, duration: 0.7, ease: [0.2, 0.65, 0.3, 0.9] }}
-                    />
-                  )}
-                  <span className="relative z-10">
-                    {[...word].map((character, characterIndex) => (
-                      <motion.span
-                        key={`${word}-${characterIndex}`}
-                        className="inline-block"
-                        initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{
-                          delay: reduceMotion ? 0 : (wordIndex * 4 + characterIndex) * 0.1 + 0.35,
-                          duration: reduceMotion ? 0 : 1.2,
-                          ease: [0.2, 0.65, 0.3, 0.9],
-                        }}
-                      >
-                        {character}
-                      </motion.span>
-                    ))}
-                  </span>
-                </span>
-              ))}
+              <span className="mr-[0.22em] inline-block">Dam</span>
+              <span className="relative isolate -mx-1 inline-block px-3">
+                <span className="absolute inset-0 z-0 bg-acid" />
+                <span className="relative z-10">kemon?</span>
+              </span>
             </span>
           </h1>
 
-          <div className="w-full max-w-2xl mx-auto relative z-10 text-left mt-6">
+          <p className="mx-auto max-w-2xl text-balance text-base font-medium leading-relaxed text-ink/65 sm:text-lg">
+            Search once. Compare real prices, seller trust and delivery across Bangladesh shops—then buy from the one that earns it.
+          </p>
+
+          <div className="w-full max-w-2xl mx-auto relative z-10 text-left mt-5">
             <SearchBar large onSearch={handleSearch} />
           </div>
 
@@ -188,7 +160,7 @@ export default function Home() {
             {QUICK_CATS.map((c) => (
               <Link
                 key={c.category}
-                to={`/browse?category=${encodeURIComponent(c.category)}`}
+                to={`/category/${encodeURIComponent(c.category)}`}
                 className="inline-flex items-center gap-1.5 bg-white border border-line hover:border-ink text-ink/80 hover:text-ink text-[13px] font-semibold px-3.5 py-2 rounded-full transition-colors"
               >
                 <CategoryIcon category={c.category} className="w-3.5 h-3.5 text-acid-deep" />
@@ -262,18 +234,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ponytail: Protect spotlight hidden from frontend per request. Restore to bring it back. */}
-      {/* <ProtectShowcase /> */}
-
       {/* ── All Products Grid ────── */}
       <section className="container-tight pt-10 sm:pt-16">
         <div className="flex items-end justify-between gap-3 mb-6 sm:mb-8">
           <div>
             <h2 className="font-sans font-extrabold text-[clamp(1.5rem,3.5vw,2.5rem)] leading-tight tracking-tight text-ink">
-              Everything you need, <span className="text-acid-deep">in one place.</span>
+              Popular tech, <span className="text-acid-deep">compared clearly.</span>
             </h2>
             <p className="text-ink/60 text-[14px] sm:text-[16px] mt-2 font-medium max-w-xl">
-              Browse our complete collection of products at the best prices, sorted just for you.
+              Phones, computers and accessories with recently checked prices from available sellers.
             </p>
           </div>
           <Link
@@ -316,37 +285,34 @@ export default function Home() {
         )}
       </section>
 
-      {/* ── Trust strip: who you can safely buy from, one row ────── */}
+      {/* ── Seller-signal strip ────── */}
       <section className="container-tight pt-10 sm:pt-14">
         <div className="flex items-end justify-between gap-3 mb-4 sm:mb-6">
           <h2 className="font-sans font-extrabold text-[clamp(1.4rem,3vw,2rem)] leading-tight tracking-tight text-ink inline-flex items-center gap-2.5">
             <ShieldCheck className="w-6 h-6 text-acid-deep shrink-0" />
-            Shops you can trust
+            Shops with stronger signals
           </h2>
-          <Link to="/sellers" className="text-[13px] font-bold text-[#A3A3A3] hover:text-[#2A2A2A] transition-colors inline-flex items-center gap-1.5 shrink-0 uppercase tracking-widest">
-            All sellers <ArrowRight className="w-4 h-4" />
-          </Link>
+          <span className="text-[11px] font-mono text-gray">A comparison signal, not a guarantee</span>
         </div>
         <div className="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar snap-x -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 pb-4">
           {(shops.length ? shops : Array.from({ length: 5 })).map((s, i) => (
             s ? (
-              <Link
+              <div
                 key={s.slug}
-                to="/sellers"
-                className="group snap-start shrink-0 w-[230px] bg-white rounded-2xl border border-line hover:border-ink/30 p-4 sm:p-5 transition-colors"
+                className="snap-start shrink-0 w-[230px] bg-white rounded-2xl border border-line p-4 sm:p-5"
               >
                 <div className="flex items-start justify-between gap-2">
                   <span className="font-sans text-2xl font-extrabold text-ink/15 tabular-nums leading-none">{String(i + 1).padStart(2, '0')}</span>
                   {s.trust?.trustScore != null && <TrustScore score={s.trust.trustScore} size="sm" showLabel={false} />}
                 </div>
-                <div className="mt-3 text-[15px] font-bold text-ink truncate group-hover:text-acid-deep transition-colors">{s.name}</div>
+                <div className="mt-3 text-[15px] font-bold text-ink truncate">{s.name}</div>
                 <div className="text-[11px] text-gray mt-1 flex items-center gap-2">
                   <span className="font-mono">{fmtNum(s.productCount)} products</span>
                   {s.trust && deliveryText(s.trust) && (
                     <span className="inline-flex items-center gap-0.5"><Truck className="w-3 h-3" /> {deliveryText(s.trust)}</span>
                   )}
                 </div>
-              </Link>
+              </div>
             ) : (
               <div key={i} className="snap-start shrink-0 w-[230px] h-28 bg-white rounded-2xl border border-line animate-pulse" />
             )

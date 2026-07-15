@@ -178,8 +178,8 @@ export default function SaathiDashboard() {
       {/* ─── Modals ─── */}
       {showProducts && <ProductsModal onClose={() => { setShowProducts(false); reloadProductCount(); reloadStats(); }} />}
       {showConnect  && <ConnectFbModal acc={acc} onClose={() => setShowConnect(false)} onConnected={() => { setShowConnect(false); reloadAcc(); }} />}
-      {showTestBot  && <TestBotModal acc={acc} onClose={() => setShowTestBot(false)} />}
-      {showVerify   && <VerifyModal acc={acc} onClose={() => setShowVerify(false)} onSubmitted={(updated) => { setAcc(updated); setShowVerify(false); }} />}
+      {showTestBot  && <TestBotModal onClose={() => setShowTestBot(false)} />}
+      {showVerify   && <VerifyModal onClose={() => setShowVerify(false)} onSubmitted={(updated) => { setAcc(updated); setShowVerify(false); }} />}
     </div>
   );
 }
@@ -606,7 +606,7 @@ function ConnectFbModal({ acc, onClose, onConnected }) {
 
 // ────────────────────────────────────────────────────────────
 // Test bot modal
-function TestBotModal({ acc, onClose }) {
+function TestBotModal({ onClose }) {
   const [q, setQ] = useState('');
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState(null);
@@ -665,7 +665,7 @@ function TestBotModal({ acc, onClose }) {
 
 // ────────────────────────────────────────────────────────────
 // Verification modal
-function VerifyModal({ acc, onClose, onSubmitted }) {
+function VerifyModal({ onClose, onSubmitted }) {
   const [nid, setNid] = useState('');
   const [tl, setTl] = useState('');
   const [busy, setBusy] = useState(false);

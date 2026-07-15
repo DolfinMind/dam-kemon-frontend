@@ -47,8 +47,8 @@ function bestIndex(values, higherBetter) {
 
 /**
  * Shop-vs-shop comparison. Instead of stacking products, we stack the SELLERS
- * themselves — trust score, catalog size, ratings, delivery, returns, COD and
- * genuineness — because on a price-comparison site the seller is the decision.
+ * themselves — seller score, catalog size, ratings, delivery, returns, COD and
+ * seller type — because on a price-comparison site the seller is the decision.
  * Shops are chosen from the public directory (/api/shops) and their decision
  * signals come from the trust layer (/api/trust/shops).
  */
@@ -113,7 +113,7 @@ export default function Compare() {
 
   // Comparison rows. `val` → sortable number (for the crown), `cell` → display.
   const rows = useMemo(() => [
-    { key: 'trust', label: 'Trust score', higher: true,
+    { key: 'trust', label: 'Seller score', higher: true,
       val: (t) => t?.trustScore ?? null,
       cell: (t) => (t ? <TrustScore score={t.trustScore} size="sm" /> : '—') },
     { key: 'catalog', label: 'Catalog size', higher: true,
@@ -140,7 +140,7 @@ export default function Compare() {
     { key: 'returns', label: 'Returns', higher: true,
       val: (t) => t?.returnWindowDays ?? null,
       cell: (t) => (t ? returnText(t) : '—') },
-    { key: 'genuine', label: 'Genuineness', higher: true,
+    { key: 'genuine', label: 'Seller type', higher: true,
       val: (t) => (t ? authRank(t.authenticity) : null),
       cell: (t) => { const a = authenticityMeta(t?.authenticity); const Icon = a.Icon;
         return <span className={`inline-flex items-center gap-1 ${a.tone}`}><Icon className="w-3.5 h-3.5" />{a.label}</span>; } },
@@ -171,7 +171,7 @@ export default function Compare() {
           Compare <em className="text-acid-deep not-italic">shops side by side</em>
         </h1>
         <p className="text-gray text-sm sm:text-base mt-2">
-          Stack up to 4 sellers on trust, catalog size, delivery, returns &amp; genuineness — here the seller wins, not the product.
+          Stack up to 4 sellers on score, ratings, catalog size, delivery, returns and seller type.
         </p>
       </div>
 
