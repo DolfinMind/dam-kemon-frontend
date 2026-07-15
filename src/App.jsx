@@ -42,6 +42,7 @@ const SaathiSignup = SHOW_SAATHI ? lazy(() => import('./pages/SaathiSignup')) : 
 const SaathiDashboard = SHOW_SAATHI ? lazy(() => import('./pages/SaathiDashboard')) : null;
 const SaathiProfile = SHOW_SAATHI ? lazy(() => import('./pages/SaathiProfile')) : null;
 const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'));
+const AdminIndexer = lazy(() => import('./pages/admin/AdminIndexer'));
 const AdminShops = lazy(() => import('./pages/admin/AdminShops'));
 const AdminPendingShops = lazy(() => import('./pages/admin/AdminPendingShops'));
 const AdminOffers = lazy(() => import('./pages/admin/AdminOffers'));
@@ -116,6 +117,7 @@ function App() {
                 {SHOW_PUBLIC_DASHBOARD && <Route path="/dashboard" element={<Dashboard />} />}
                 <Route path="/admin" element={<AdminLayout />}>
                   <Route index element={<AdminAnalytics />} />
+                  <Route path="indexer" element={<AdminIndexer />} />
                   <Route path="shops" element={<AdminShops />} />
                   <Route path="pending-shops" element={<AdminPendingShops />} />
                   <Route path="offers" element={<AdminOffers />} />

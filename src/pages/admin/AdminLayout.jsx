@@ -1,37 +1,41 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
+import { triggerReindex, indexStatus } from '../../api/admin';
 import {
   Store, Inbox, BarChart3, FileText, LogOut, Package,
   Search as SearchIcon, Clock, HardDrive, ShieldAlert,
-  Activity, Tag, MessageSquare, Users, Menu, X, Bell, Plus, Settings
+  Activity, Tag, MessageSquare, Users, Menu, X, Bell, Plus, Settings, Play, Loader2, CheckCircle2, Database
 } from 'lucide-react';
 
 const navigation = [
   {
     label: 'MAIN MENU',
     items: [
-      { to: '/admin/traffic', label: 'Dashboard', icon: Activity, description: 'Acquisition and behavior' },
-      { to: '/admin/catalog', label: 'Products', icon: Package, description: 'Products and listings' },
-      { to: '/admin/pending-shops', label: 'Order', icon: Inbox, description: 'Review submissions' },
-      { to: '/admin/users', label: 'Customers', icon: Users, description: 'Accounts and access' },
-      { to: '/admin/reviews', label: 'Chat', icon: MessageSquare, description: 'Moderation queue', badge: 22 },
+      { to: '/admin/traffic', label: 'Traffic', icon: Activity, description: 'Acquisition and behavior' },
+      { to: '/admin/catalog', label: 'Catalog', icon: Package, description: 'Products and listings' },
+      { to: '/admin/pending-shops', label: 'Pending', icon: Inbox, description: 'Review submissions' },
+      { to: '/admin/offers', label: 'Offers', icon: Tag, description: 'Promotional offers' },
+      { to: '/admin/users', label: 'Users', icon: Users, description: 'Accounts and access' },
+      { to: '/admin/reviews', label: 'Reviews', icon: ShieldAlert, description: 'Moderation queue', badge: 22 },
     ],
   },
   {
     label: 'OTHER',
     items: [
-      { to: '/admin/newsletter', label: 'Email', icon: Inbox, description: 'Subscribers and sends' },
-      { to: '/admin/stats', label: 'Analytics', icon: BarChart3, description: 'Marketplace performance' },
-      { to: '/admin/shops', label: 'Integration', icon: Store, description: 'Manage indexed sellers' },
-      { to: '/admin/search-log', label: 'Performance', icon: SearchIcon, description: 'Queries and zero results' },
+      { to: '/admin/indexer', label: 'Indexer', icon: Database, description: 'Search indexing' },
+      { to: '/admin/newsletter', label: 'Newsletter', icon: Inbox, description: 'Subscribers and sends' },
+      { to: '/admin/stats', label: 'Stats', icon: BarChart3, description: 'Marketplace performance' },
+      { to: '/admin/shops', label: 'Shops', icon: Store, description: 'Manage indexed sellers' },
+      { to: '/admin/search-log', label: 'Search log', icon: SearchIcon, description: 'Queries and zero results' },
     ],
   },
   {
     label: 'ACCOUNT',
     items: [
-      { to: '/admin/audit', label: 'Account', icon: FileText, description: 'Admin activity' },
-      { to: '/admin/jobs', label: 'Members', icon: Clock, description: 'Background tasks' },
+      { to: '/admin/audit', label: 'Audit log', icon: FileText, description: 'Admin activity' },
+      { to: '/admin/jobs', label: 'Jobs', icon: Clock, description: 'Background tasks' },
+      { to: '/admin/cache', label: 'Cache', icon: HardDrive, description: 'Manage system cache' },
     ],
   },
 ];
@@ -49,6 +53,8 @@ export default function AdminLayout() {
   const { pathname } = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [query, setQuery] = useState('');
+  const [running, setRunning] = useState(false);
+  const [justStarted, setJustStarted] = useState(false);
 
   useEffect(() => {
     if (!ready) return;
@@ -69,6 +75,31 @@ export default function AdminLayout() {
       document.removeEventListener('keydown', close);
     };
   }, [drawerOpen]);
+
+  // Poll the indexer so the header chip reflects what's happening
+  useEffect(() => {
+    if (!user || user.role !== 'admin') return;
+    const tick = () =>
+      indexStatus()
+        .then((r) => setRunning(Boolean(r.data?.inProgress)))
+        .catch(() => {});
+    tick();
+    const t = setInterval(tick, 5000);
+    return () => clearInterval(t);
+  }, [user]);
+
+  const scrapeNow = async () => {
+    if (running) return;
+    if (!confirm('Kick off a full nightly indexer run right now? This will take 30–90 minutes.')) return;
+    try {
+      await triggerReindex();
+      setRunning(true);
+      setJustStarted(true);
+      setTimeout(() => setJustStarted(false), 4000);
+    } catch (e) {
+      alert(e.response?.data?.error || 'Could not start the indexer.');
+    }
+  };
 
   if (!ready) return <div className="container-tight py-16 text-center text-gray">Loading…</div>;
   if (!user || user.role !== 'admin') return null;
@@ -152,8 +183,32 @@ export default function AdminLayout() {
                 <Bell className="h-5 w-5" />
                 <span className="absolute top-2.5 right-2.5 h-2 w-2 rounded-full bg-orange-500" />
               </button>
-              <button className="h-10 rounded-xl bg-orange-500 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600 focus:ring-2 focus:ring-orange-200">
-                Export
+              
+              <button
+                onClick={scrapeNow}
+                disabled={running}
+                className={`flex items-center gap-2 h-10 rounded-xl px-5 text-sm font-semibold shadow-sm transition focus:ring-2 ${
+                  running
+                    ? 'bg-orange-100 text-orange-600 cursor-wait focus:ring-orange-200'
+                    : justStarted
+                      ? 'bg-green-500 text-white hover:bg-green-600 focus:ring-green-200'
+                      : 'bg-orange-500 text-white hover:bg-orange-600 focus:ring-orange-200'
+                }`}
+                title="Trigger a full indexer run now (otherwise runs nightly at 03:00)"
+              >
+                {running ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" /> Scraping…
+                  </>
+                ) : justStarted ? (
+                  <>
+                    <CheckCircle2 className="w-4 h-4" /> Started
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-4 h-4" /> Scrape now
+                  </>
+                )}
               </button>
             </div>
           </header>
