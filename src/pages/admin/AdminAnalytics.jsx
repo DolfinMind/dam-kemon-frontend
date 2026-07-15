@@ -1,38 +1,125 @@
-import { useState } from 'react';
-import { 
+/* eslint-disable react/prop-types */
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  BarChart, Bar, Cell, PieChart, Pie
+  BarChart, Bar, Cell, PieChart, Pie,
 } from 'recharts';
-import { Filter, Plus, ChevronDown, ArrowRight, MoreHorizontal, Users } from 'lucide-react';
+import {
+  Filter, Plus, ChevronDown, ArrowRight, MoreHorizontal, Users, X, Search as SearchIcon,
+  Store, Globe, Smartphone, SearchX, Activity,
+} from 'lucide-react';
+import {
+  analyticsOverview, analyticsHourly, analyticsDailyUsers,
+  analyticsTopProducts, analyticsFunnel, analyticsTopSearches,
+  analyticsZeroResultSearches, analyticsTopShops, analyticsDevices, analyticsReferrers,
+  diagCollections,
+} from '../../api/admin';
 
-const analyticsData = [
-  { name: 'JAN', sales: 1200, average: 2000 },
-  { name: 'FEB', sales: 2100, average: 2200 },
-  { name: 'MAR', sales: 1800, average: 2400 },
-  { name: 'APR', sales: 2400, average: 2600 },
-  { name: 'MAY', sales: 4800, average: 3000 },
-  { name: 'JUN', sales: 3200, average: 2800 },
-  { name: 'JUL', sales: 2900, average: 3200 },
-  { name: 'AUG', sales: 4100, average: 3400 },
-];
+// ─────────────────────────────────────────────────────────────────────────────
+//  The operator's traffic dashboard. Every number here used to be a hardcoded
+//  mock (130,491 products, iPhone sales, JAN–AUG chart…) — this version wires
+//  the SAME visual design to the real /api/admin/analytics surface that was
+//  already fully built but unused. Fetches degrade silently (one slow endpoint
+//  never breaks the page) and the operator can toggle extra widgets on/off via
+//  the "Add Widget" panel; that choice is remembered in localStorage.
+// ─────────────────────────────────────────────────────────────────────────────
 
-const topProducts = [
-  { id: 1, name: 'iPhone 15 Pro Max', sales: 127, revenue: 1890, stock: 120, status: 'In Stock' },
-  { id: 2, name: 'MacBook Air M3', sales: 540, revenue: 2889, stock: 100, status: 'Out of stock' },
-  { id: 3, name: 'Sony WH-1000XM5', sales: 320, revenue: 1250, stock: 45, status: 'In Stock' },
-  { id: 4, name: 'Samsung Galaxy S24', sales: 410, revenue: 2100, stock: 0, status: 'Out of stock' },
-];
+const RANGES = [{ label: '7d', days: 7 }, { label: '14d', days: 14 }, { label: '30d', days: 30 }];
+const WIDGET_KEY = 'dk_admin_widgets';
 
-const visitData = [
-  { day: 'MON', value: 80, isHighest: false },
-  { day: 'TUE', value: 45, isHighest: false },
-  { day: 'WED', value: 100, isHighest: true },
-  { day: 'THU', value: 65, isHighest: false },
-  { day: 'FRI', value: 50, isHighest: false },
+// Optional widgets (off by default — keeping the first-load screen identical to
+// the mock). Each maps 1:1 to a real endpoint that was previously unused.
+const OPTIONAL_WIDGETS = [
+  { id: 'topSearches', label: 'Top searches', icon: SearchIcon, fetch: (d) => analyticsTopSearches(d, 12) },
+  { id: 'zeroSearches', label: 'Catalog gaps', icon: SearchX, fetch: (d) => analyticsZeroResultSearches(d, 10) },
+  { id: 'topShops', label: 'Top shops', icon: Store, fetch: (d) => analyticsTopShops(d, 8) },
+  { id: 'funnel', label: 'Funnel', icon: Activity, fetch: (d) => analyticsFunnel(d) },
+  { id: 'devices', label: 'Devices', icon: Smartphone, fetch: (d) => analyticsDevices(d) },
+  { id: 'referrers', label: 'Referrers', icon: Globe, fetch: (d) => analyticsReferrers(d, 8) },
 ];
+const DEFAULT_ENABLED = []; // default screen = the 6 core cards only
+
+const num = (n) => (n == null ? '—' : Number(n).toLocaleString());
+const pct = (n, suffix = '%') => (n == null ? '—' : `${Number(n).toFixed(n >= 10 ? 0 : 1)}${suffix}`);
 
 export default function AdminAnalytics() {
-  const [timeRange, setTimeRange] = useState('This month');
+  const [timeRange, setTimeRange] = useState('14d');
+  const windowDays = RANGES.find((r) => r.label === timeRange)?.days ?? 14;
+
+  const [overview, setOverview] = useState(null);
+  const [diag, setDiag] = useState(null);
+  const [daily, setDaily] = useState([]);
+  const [hourly, setHourly] = useState(null);
+  const [funnel, setFunnel] = useState(null);
+  const [topProducts, setTopProducts] = useState([]);
+  const [live, setLive] = useState(true);
+
+  // Optional-widget state.
+  const [enabled, setEnabled] = useState(() => loadWidgets());
+  const [widgetPanel, setWidgetPanel] = useState(false);
+  const [widgetData, setWidgetData] = useState({});
+  const liveRef = useRef(live);
+  liveRef.current = live;
+
+  // Overview polls for a "live" feel (matches the old behaviour) — this is the
+  // cheap headline-counters call, safe to repeat.
+  const pullOverview = useCallback(
+    () => analyticsOverview().then((r) => setOverview(r.data)).catch(() => {}),
+    [],
+  );
+  useEffect(() => {
+    pullOverview();
+    if (!live) return;
+    const t = setInterval(() => { if (liveRef.current) pullOverview(); }, 10000);
+    return () => clearInterval(t);
+  }, [pullOverview, live]);
+
+  // Catalog size is a diag endpoint (not in analytics overview); fetch once.
+  useEffect(() => {
+    diagCollections().then((r) => setDiag(r.data)).catch(() => setDiag(null));
+  }, []);
+
+  // Daily + hourly series refetch when the window changes.
+  useEffect(() => {
+    analyticsDailyUsers(Math.min(windowDays, 30)).then((r) => setDaily(r.data || [])).catch(() => setDaily([]));
+    analyticsHourly(windowDays).then((r) => setHourly(r.data)).catch(() => setHourly(null));
+  }, [windowDays]);
+
+  // Funnel + top products also follow the window.
+  useEffect(() => {
+    analyticsFunnel(windowDays).then((r) => setFunnel(r.data)).catch(() => setFunnel(null));
+    analyticsTopProducts(windowDays, 6).then((r) => setTopProducts(r.data || [])).catch(() => setTopProducts([]));
+  }, [windowDays]);
+
+  // Each optional widget fetches lazily only when enabled, and respects window.
+  useEffect(() => {
+    OPTIONAL_WIDGETS.forEach((w) => {
+      if (!enabled.includes(w.id)) return;
+      w.fetch(windowDays)
+        .then((r) => setWidgetData((s) => ({ ...s, [w.id]: r.data })))
+        .catch(() => setWidgetData((s) => ({ ...s, [w.id]: s[w.id] ?? [] })));
+    });
+  }, [enabled, windowDays]);
+
+  const toggleWidget = (id) => {
+    setEnabled((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      try { localStorage.setItem(WIDGET_KEY, JSON.stringify(next)); } catch { /* private mode */ }
+      return next;
+    });
+  };
+
+  const peakHour = hourly?.peakHourLabel ?? '—';
+  const dailyViewed = daily.reduce((a, d) => a + (Number(d.pageViews) || 0), 0);
+  const dailyRequests = daily.reduce((a, d) => a + (Number(d.requests) || 0), 0);
+  const convRate = overview?.searchConversionRate ?? funnel?.searchToClick;
+
+  // Hourly bar data: 24 buckets, mark the peak.
+  const hourlyBars = useMemo(() => {
+    const buckets = hourly?.buckets || [];
+    return buckets.map((b) => ({ hour: `${b.hour}h`, value: Number(b.activity) || 0, isHighest: b.hour === hourly?.peakHour }));
+  }, [hourly]);
 
   return (
     <div className="space-y-6 animate-fade-in pb-10">
@@ -43,10 +130,23 @@ export default function AdminAnalytics() {
           <p className="text-sm text-gray-500 mt-1">Track your traffic and performance of your strategy</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition">
-            <Filter className="h-4 w-4" /> Filters
-          </button>
-          <button className="flex items-center gap-2 rounded-xl bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-900 transition shadow-sm">
+          <div className="flex items-center gap-1 rounded-xl border border-gray-200 bg-white p-1">
+            {RANGES.map((r) => (
+              <button
+                key={r.label}
+                onClick={() => setTimeRange(r.label)}
+                className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                  timeRange === r.label ? 'bg-black text-white' : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                {r.label}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={() => setWidgetPanel(true)}
+            className="flex items-center gap-2 rounded-xl bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-900 transition shadow-sm"
+          >
             <Plus className="h-4 w-4" /> Add Widget
           </button>
         </div>
@@ -54,86 +154,94 @@ export default function AdminAnalytics() {
 
       {/* Top 3 Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Product Overview Card */}
-        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm col-span-1 md:col-span-1">
+        {/* Product overview / catalog size */}
+        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Product overview</span>
-            <button className="flex items-center gap-1 rounded-md border border-gray-200 px-2 py-1 text-[11px] font-medium text-gray-600 hover:bg-gray-50">
-              {timeRange} <ChevronDown className="h-3 w-3" />
-            </button>
+            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Catalog overview</span>
+            <span className="rounded-md border border-gray-200 px-2 py-1 text-[11px] font-medium text-gray-600">
+              {timeRange} <ChevronDown className="inline h-3 w-3" />
+            </span>
           </div>
           <div className="mb-6 flex items-end gap-2">
-            <h2 className="text-3xl font-bold text-gray-900">130,491</h2>
+            <h2 className="text-3xl font-bold text-gray-900">{num(diag?.products)}</h2>
             <span className="text-sm text-gray-500 mb-1">Total products</span>
           </div>
           <div className="flex items-center justify-between mb-3 text-sm">
-            <span className="text-gray-600 font-medium">Select by category</span>
-            <span className="text-gray-400">New index: 453 <ChevronDown className="inline h-3 w-3" /></span>
+            <span className="text-gray-600 font-medium">Indexed sellers</span>
+            <span className="text-gray-400">{num(diag?.sellers)} sellers</span>
           </div>
           <div className="flex gap-2">
-            <button className="flex-1 rounded-xl bg-orange-500 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-orange-600 transition text-center">
-              Electronics
-            </button>
-            <button className="flex-1 rounded-xl bg-orange-100 py-2.5 text-xs font-semibold text-orange-600 hover:bg-orange-200 transition text-center">
-              Accessories
-            </button>
+            <div className="flex-1 rounded-xl bg-orange-50 py-2.5 px-3 text-xs">
+              <div className="font-semibold text-orange-600">Shops</div>
+              <div className="text-orange-900/70">{num(diag?.shops)}</div>
+            </div>
+            <div className="flex-1 rounded-xl bg-orange-100 py-2.5 px-3 text-xs">
+              <div className="font-semibold text-orange-600">Pending</div>
+              <div className="text-orange-900/70">{num(diag?.pendingOffers)}</div>
+            </div>
           </div>
         </div>
 
-        {/* Active Sales / Traffic Card */}
+        {/* Active shops / today's activity */}
         <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Active shops</span>
+              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Today&apos;s traffic</span>
+              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-gray-400">
+                <span className={`h-1.5 w-1.5 rounded-full ${live ? 'bg-emerald-500 animate-pulse' : 'bg-gray-300'}`} />
+                {live ? 'live' : 'paused'}
+              </span>
             </div>
             <div className="flex justify-between items-start">
               <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-1">1,285</h2>
+                <h2 className="text-3xl font-bold text-gray-900 mb-1">{num(overview?.pageViewsToday)}</h2>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-500">vs last month</span>
-                  <span className="rounded-md bg-green-50 px-1.5 py-0.5 text-[11px] font-bold text-green-600">+12%</span>
+                  <span className="text-sm text-gray-500">page views today</span>
                 </div>
               </div>
               <div className="h-12 w-16 flex items-end gap-1">
-                 <div className="w-1/3 bg-orange-500 rounded-t-sm" style={{height: '60%'}}></div>
-                 <div className="w-1/3 bg-orange-300 rounded-t-sm" style={{height: '100%'}}></div>
-                 <div className="w-1/3 bg-orange-200 rounded-t-sm" style={{height: '40%'}}></div>
+                {(hourlyBars.slice(0, 3)).map((b, i) => (
+                  <div
+                    key={i}
+                    className={`flex-1 rounded-t-sm ${b.isHighest ? 'bg-orange-500' : 'bg-orange-300'}`}
+                    style={{ height: `${20 + Math.min(80, (b.value % 10) * 8 + 30)}%` }}
+                  />
+                ))}
               </div>
             </div>
           </div>
-          <div className="mt-4 border-t border-gray-100 pt-3">
-             <button className="text-xs font-semibold text-gray-900 flex items-center gap-1 hover:text-orange-600 transition">
-               See Details <ArrowRight className="h-3 w-3" />
-             </button>
+          <div className="mt-4 grid grid-cols-3 gap-2 border-t border-gray-100 pt-3 text-center">
+            <MiniStat label="Searches" value={num(overview?.searchesToday)} />
+            <MiniStat label="Clicks" value={num(overview?.clicksToday)} />
+            <MiniStat label="Active" value={num(overview?.activeNow)} />
           </div>
         </div>
 
-        {/* Product Revenue / Index Rate Card */}
+        {/* Conversion rate gauge */}
         <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Index Rate</span>
+              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Search → Click</span>
             </div>
             <div className="flex justify-between items-start">
               <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-1">94.2%</h2>
+                <h2 className="text-3xl font-bold text-gray-900 mb-1">{convRate != null ? pct(convRate) : '—'}</h2>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-500">vs last month</span>
-                  <span className="rounded-md bg-green-50 px-1.5 py-0.5 text-[11px] font-bold text-green-600">+7%</span>
+                  <span className="text-sm text-gray-500">conversion rate</span>
                 </div>
               </div>
               <div className="h-14 w-14 relative">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
-                      data={[{value: 94}, {value: 6}]}
+                      data={[
+                        { value: Number(convRate) || 0 },
+                        { value: Math.max(0, 100 - (Number(convRate) || 0)) },
+                      ]}
                       cx="50%" cy="50%"
-                      innerRadius={18}
-                      outerRadius={24}
-                      startAngle={90}
-                      endAngle={-270}
-                      dataKey="value"
-                      stroke="none"
+                      innerRadius={18} outerRadius={24}
+                      startAngle={90} endAngle={-270}
+                      dataKey="value" stroke="none"
                     >
                       <Cell fill="#F97316" />
                       <Cell fill="#FFF7ED" />
@@ -143,197 +251,188 @@ export default function AdminAnalytics() {
               </div>
             </div>
           </div>
-          <div className="mt-4 border-t border-gray-100 pt-3">
-             <button className="text-xs font-semibold text-gray-900 flex items-center gap-1 hover:text-orange-600 transition">
-               See Details <ArrowRight className="h-3 w-3" />
-             </button>
+          <div className="mt-4 grid grid-cols-2 gap-2 border-t border-gray-100 pt-3 text-center">
+            <MiniStat label="Product views" value={num(overview?.productViewsToday)} />
+            <MiniStat label="Visitors" value={num(overview?.visitorsToday)} />
           </div>
         </div>
       </div>
 
-      {/* Middle Row (Analytics Chart + Sales Gauge) */}
+      {/* Middle Row: Analytics Chart + Funnel gauge */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Analytics Chart */}
+        {/* Daily traffic area chart */}
         <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm lg:col-span-2 flex flex-col">
-          <div className="flex items-center justify-between mb-6">
-             <div className="flex items-center gap-6">
-                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Analytics</span>
-                <div className="flex gap-4">
-                  <div>
-                    <div className="flex items-center gap-2">
-                       <span className="text-lg font-bold text-gray-900">4,543,000</span>
-                       <span className="text-sm text-gray-400">visits</span>
-                       <span className="rounded-md bg-red-50 px-1.5 py-0.5 text-[10px] font-bold text-red-500">-0.4%</span>
-                    </div>
-                  </div>
-                  <div className="w-px bg-gray-200"></div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                       <span className="text-lg font-bold text-gray-900">1.73%</span>
-                       <span className="text-sm text-gray-400">Conv.rate</span>
-                       <span className="rounded-md bg-green-50 px-1.5 py-0.5 text-[10px] font-bold text-green-600">+13%</span>
-                    </div>
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-2">
+            <div className="flex items-center gap-6">
+              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Analytics</span>
+              <div className="flex gap-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg font-bold text-gray-900">{num(dailyViewed)}</span>
+                    <span className="text-sm text-gray-400">views</span>
                   </div>
                 </div>
-             </div>
-             <div className="flex items-center gap-2">
-                <button className="flex items-center gap-1 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50">
-                  This year <ChevronDown className="h-3 w-3" />
-                </button>
-                <button className="flex items-center gap-1 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50">
-                  <Filter className="h-3 w-3" /> Filters
-                </button>
-             </div>
+                <div className="w-px bg-gray-200"></div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg font-bold text-gray-900">{num(dailyRequests)}</span>
+                    <span className="text-sm text-gray-400">requests</span>
+                  </div>
+                </div>
+                <div className="w-px bg-gray-200"></div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg font-bold text-gray-900">{num(overview?.activeNow)}</span>
+                    <span className="text-sm text-gray-400">active now</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setLive((v) => !v)}
+                className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-medium transition ${
+                  live ? 'border-emerald-200 text-emerald-600' : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                <Filter className="h-3 w-3" /> {live ? 'Live' : 'Paused'}
+              </button>
+            </div>
           </div>
           <div className="h-[240px] w-full mt-auto">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={analyticsData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+              <AreaChart data={daily} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
                 <defs>
-                  <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#F97316" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#F97316" stopOpacity={0}/>
+                  <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#F97316" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#F97316" stopOpacity={0} />
                   </linearGradient>
-                  <pattern id="diagonalHatch" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
-                    <line x1="0" y1="0" x2="0" y2="8" stroke="#F97316" strokeWidth="1" strokeOpacity="0.2" />
-                  </pattern>
+                  <linearGradient id="colorReq" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#94a3b8" stopOpacity={0.25} />
+                    <stop offset="95%" stopColor="#94a3b8" stopOpacity={0} />
+                  </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8' }} dy={10} />
+                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8' }} dy={10} tickFormatter={(d) => String(d).slice(5)} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8' }} />
-                <Tooltip 
+                <Tooltip
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                   labelStyle={{ fontWeight: 'bold', color: '#0f172a' }}
                 />
-                <Area type="monotone" dataKey="average" stroke="none" fill="url(#diagonalHatch)" />
-                <Area type="monotone" dataKey="sales" stroke="#F97316" strokeWidth={3} fill="url(#colorSales)" activeDot={{ r: 6, fill: '#F97316', stroke: '#fff', strokeWidth: 2 }} />
+                <Area type="monotone" dataKey="requests" stroke="#94a3b8" strokeWidth={2} fill="url(#colorReq)" />
+                <Area type="monotone" dataKey="pageViews" stroke="#F97316" strokeWidth={3} fill="url(#colorViews)" activeDot={{ r: 6, fill: '#F97316', stroke: '#fff', strokeWidth: 2 }} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Sales Performance Gauge */}
+        {/* Funnel performance gauge */}
         <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm lg:col-span-1 flex flex-col items-center relative">
-           <div className="w-full text-left mb-6">
-              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Performance</span>
-           </div>
-           
-           <div className="relative w-48 h-48 flex items-center justify-center">
-             {/* Simple CSS-based gauge arc for precision matching the screenshot */}
-             <div className="absolute inset-0 rounded-full border-[12px] border-orange-100" style={{clipPath: 'polygon(0 0, 100% 0, 100% 50%, 0 50%)'}}></div>
-             <div className="absolute inset-0 rounded-full border-[12px] border-orange-500" style={{clipPath: 'polygon(0 0, 40% 0, 40% 50%, 0 50%)'}}></div>
-             <div className="absolute inset-2 rounded-full border-[8px] border-orange-200 opacity-50" style={{clipPath: 'polygon(0 0, 100% 0, 100% 50%, 0 50%)'}}></div>
-             
-             <div className="text-center -mt-6">
-               <h3 className="text-3xl font-bold text-gray-900">17.9%</h3>
-               <p className="text-xs text-gray-400 mt-1">Since yesterday</p>
-             </div>
-           </div>
+          <div className="w-full text-left mb-6">
+            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Funnel</span>
+          </div>
 
-           <div className="mt-auto w-full border-t border-gray-100 pt-4 flex flex-col gap-3">
-              <div className="flex items-center justify-between text-xs">
-                 <div className="flex items-center gap-2">
-                   <div className="w-3 h-1 bg-orange-500 rounded-full"></div>
-                   <span className="font-medium text-gray-900">Total Index per day</span>
-                 </div>
-                 <span className="text-gray-400">For week</span>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                 <div className="flex items-center gap-2">
-                   <div className="w-3 h-1 bg-orange-200 rounded-full"></div>
-                   <span className="font-medium text-gray-900">Average Index</span>
-                 </div>
-                 <span className="text-gray-400">For today</span>
-              </div>
-           </div>
-           <div className="w-full border-t border-gray-100 pt-3 mt-4">
-             <button className="text-xs font-semibold text-gray-900 flex items-center gap-1 hover:text-orange-600 transition w-full justify-center">
-               See Details <ArrowRight className="h-3 w-3" />
-             </button>
+          <div className="relative w-48 h-24 flex items-center justify-center overflow-hidden">
+            <div className="absolute inset-x-0 top-0 h-24 rounded-full border-[12px] border-orange-100" style={{ clipPath: 'polygon(0 0, 100% 0, 100% 50%, 0 50%)' }} />
+            <div
+              className="absolute inset-x-0 top-0 h-24 rounded-full border-[12px] border-orange-500"
+              style={{ clipPath: `polygon(0 0, ${Math.min(100, Math.max(0, Number(funnel?.viewToClick) || 0))}% 0, ${Math.min(100, Math.max(0, Number(funnel?.viewToClick) || 0))}% 50%, 0 50%)` }}
+            />
+            <div className="text-center -mt-2">
+              <h3 className="text-3xl font-bold text-gray-900">{pct(funnel?.viewToClick)}</h3>
+              <p className="text-xs text-gray-400 mt-1">view → click</p>
+            </div>
+          </div>
+
+          <div className="mt-auto w-full border-t border-gray-100 pt-4 flex flex-col gap-3">
+            <FunnelRow label="Searches" value={num(funnel?.searches)} />
+            <FunnelRow label="Product views" value={num(funnel?.productViews)} />
+            <FunnelRow label="Outbound clicks" value={num(funnel?.outboundClicks)} highlight />
           </div>
         </div>
       </div>
 
-      {/* Bottom Row */}
+      {/* Bottom Row: hourly + top products */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Total visits by hourly */}
+        {/* Hourly visits */}
         <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm lg:col-span-1">
-           <div className="flex justify-between items-start mb-6">
-              <div className="flex items-center gap-3">
-                 <div className="h-10 w-10 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center">
-                   <Users className="h-5 w-5" />
-                 </div>
-                 <div>
-                   <span className="text-[10px] font-semibold text-gray-400 uppercase">Total visits by hourly</span>
-                   <div className="flex items-center gap-2 mt-0.5">
-                     <h3 className="text-xl font-bold text-gray-900">288,822</h3>
-                     <span className="rounded-md bg-green-50 px-1.5 py-0.5 text-[10px] font-bold text-green-600">+4%</span>
-                   </div>
-                 </div>
+          <div className="flex justify-between items-start mb-6">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center">
+                <Users className="h-5 w-5" />
               </div>
-              <button className="text-gray-400 hover:text-gray-600">
-                <MoreHorizontal className="h-5 w-5" />
-              </button>
-           </div>
-           
-           <div className="h-[120px] w-full mt-4">
-             <ResponsiveContainer width="100%" height="100%">
-               <BarChart data={visitData} layout="vertical" margin={{top: 0, right: 0, left: -20, bottom: 0}}>
-                 <XAxis type="number" hide />
-                 <YAxis type="category" dataKey="day" axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8', fontWeight: 600}} />
-                 <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={12}>
-                   {
-                     visitData.map((entry, index) => (
-                       <Cell key={`cell-${index}`} fill={entry.isHighest ? '#F97316' : '#FFEDD5'} />
-                     ))
-                   }
-                 </Bar>
-               </BarChart>
-             </ResponsiveContainer>
-           </div>
+              <div>
+                <span className="text-[10px] font-semibold text-gray-400 uppercase">Peak hour</span>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <h3 className="text-xl font-bold text-gray-900">{peakHour}</h3>
+                  <span className="rounded-md bg-green-50 px-1.5 py-0.5 text-[10px] font-bold text-green-600">peak</span>
+                </div>
+              </div>
+            </div>
+            <button className="text-gray-400 hover:text-gray-600">
+              <MoreHorizontal className="h-5 w-5" />
+            </button>
+          </div>
+
+          <div className="h-[120px] w-full mt-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={hourlyBars} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                <XAxis dataKey="hour" axisLine={false} tickLine={false} tick={{ fontSize: 9, fill: '#94a3b8' }} interval={3} />
+                <YAxis hide />
+                <Tooltip
+                  cursor={{ fill: '#F3F4F6' }}
+                  contentStyle={{ borderRadius: '12px', border: '1px solid #E5E7EB', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}
+                />
+                <Bar dataKey="value" radius={[4, 4, 0, 0]} barSize={8}>
+                  {hourlyBars.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.isHighest ? '#F97316' : '#FFEDD5'} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
-        {/* Top Products Table */}
+        {/* Top products table */}
         <div className="rounded-2xl border border-gray-100 bg-white shadow-sm lg:col-span-2 overflow-hidden flex flex-col">
           <div className="p-5 flex items-center justify-between border-b border-gray-50">
-             <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Top Products</span>
-             <button className="text-xs font-semibold text-orange-500 flex items-center gap-1 hover:text-orange-600 transition">
-               See Details <ArrowRight className="h-3 w-3" />
-             </button>
+            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Top clicked products</span>
+            <Link to="/admin/stats" className="text-xs font-semibold text-orange-500 flex items-center gap-1 hover:text-orange-600 transition">
+              See Details <ArrowRight className="h-3 w-3" />
+            </Link>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-gray-50/50">
                   <th className="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Product</th>
-                  <th className="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Views</th>
-                  <th className="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Revenue</th>
-                  <th className="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Stock</th>
-                  <th className="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider text-right">Status</th>
+                  <th className="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Clicks</th>
+                  <th className="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Shops</th>
+                  <th className="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Category</th>
+                  <th className="px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider text-right">Last seen</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {topProducts.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50/50 transition">
+                {topProducts.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="px-5 py-8 text-center text-gray text-sm">No outbound clicks in this window yet.</td>
+                  </tr>
+                ) : topProducts.map((p) => (
+                  <tr key={p.productId || p.name} className="hover:bg-gray-50/50 transition">
                     <td className="px-5 py-4">
-                       <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-lg bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-500">
-                             {product.name.charAt(0)}
-                          </div>
-                          <span className="text-sm font-semibold text-gray-900">{product.name}</span>
-                       </div>
+                      <div className="flex items-center gap-3">
+                        <div className="h-8 w-8 rounded-lg bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-500">
+                          {(p.name || p.productId || '?').charAt(0)}
+                        </div>
+                        <Link to={`/product/${p.productId}`} className="text-sm font-semibold text-gray-900 hover:text-orange-600">
+                          {p.name || p.productId}
+                        </Link>
+                      </div>
                     </td>
-                    <td className="px-5 py-4 text-sm text-gray-600">{product.sales}</td>
-                    <td className="px-5 py-4 text-sm text-gray-600">${product.revenue}</td>
-                    <td className="px-5 py-4 text-sm text-gray-600">{product.stock}</td>
-                    <td className="px-5 py-4 text-right">
-                       <span className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold ${
-                         product.status === 'In Stock' 
-                           ? 'bg-indigo-50 text-indigo-600'
-                           : 'bg-red-50 text-red-500'
-                       }`}>
-                         {product.status}
-                       </span>
-                    </td>
+                    <td className="px-5 py-4 text-sm text-gray-600 font-mono">{num(p.clicks)}</td>
+                    <td className="px-5 py-4 text-sm text-gray-600 font-mono">{num(p.distinctShops)}</td>
+                    <td className="px-5 py-4 text-sm text-gray-600 truncate max-w-[140px]">{p.category || '—'}</td>
+                    <td className="px-5 py-4 text-right text-xs text-gray-400">{p.lastSeen ? timeAgo(p.lastSeen) : '—'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -341,6 +440,142 @@ export default function AdminAnalytics() {
           </div>
         </div>
       </div>
+
+      {/* Optional widgets (Add Widget panel toggles these on) */}
+      {enabled.length > 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {OPTIONAL_WIDGETS.filter((w) => enabled.includes(w.id)).map((w) => (
+            <OptionalWidget key={w.id} widget={w} data={widgetData[w.id]} />
+          ))}
+        </div>
+      )}
+
+      {/* Add Widget side panel */}
+      {widgetPanel && (
+        <div className="fixed inset-0 z-50" role="dialog" aria-modal="true">
+          <button
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setWidgetPanel(false)}
+            aria-label="Close widget panel"
+          />
+          <aside className="absolute right-0 top-0 h-full w-[340px] max-w-[88vw] bg-white shadow-2xl flex flex-col animate-slide-down">
+            <div className="flex items-center justify-between border-b border-gray-100 p-5">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Add widgets</h3>
+                <p className="text-xs text-gray-500">Toggle a card on/off. Your choice is remembered.</p>
+              </div>
+              <button
+                onClick={() => setWidgetPanel(false)}
+                className="grid h-8 w-8 place-items-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 space-y-2">
+              {OPTIONAL_WIDGETS.map((w) => {
+                const Icon = w.icon;
+                const on = enabled.includes(w.id);
+                return (
+                  <button
+                    key={w.id}
+                    onClick={() => toggleWidget(w.id)}
+                    className={`flex w-full items-center gap-3 rounded-xl border p-3 text-left transition ${
+                      on ? 'border-orange-300 bg-orange-50' : 'border-gray-200 hover:bg-gray-50'
+                    }`}
+                  >
+                    <div className={`grid h-9 w-9 place-items-center rounded-lg ${on ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-500'}`}>
+                      <Icon className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-semibold text-gray-900">{w.label}</div>
+                      <div className="text-[11px] text-gray-500">{on ? 'Shown on dashboard' : 'Hidden'}</div>
+                    </div>
+                    <span className={`relative h-5 w-9 rounded-full transition ${on ? 'bg-orange-500' : 'bg-gray-200'}`}>
+                      <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all ${on ? 'left-4' : 'left-0.5'}`} />
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </aside>
+        </div>
+      )}
     </div>
   );
+}
+
+// ───────────────────────────── small building blocks ─────────────────────────────
+
+function MiniStat({ label, value }) {
+  return (
+    <div>
+      <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">{label}</div>
+      <div className="text-base font-bold text-gray-900 mt-0.5">{value}</div>
+    </div>
+  );
+}
+
+function FunnelRow({ label, value, highlight }) {
+  return (
+    <div className="flex items-center justify-between text-xs">
+      <div className="flex items-center gap-2">
+        <div className={`w-3 h-1 rounded-full ${highlight ? 'bg-orange-500' : 'bg-orange-200'}`} />
+        <span className={`font-medium ${highlight ? 'text-gray-900' : 'text-gray-600'}`}>{label}</span>
+      </div>
+      <span className="text-gray-400 font-mono">{value}</span>
+    </div>
+  );
+}
+
+/** Renders one optional widget by id, reading its already-fetched data. */
+function OptionalWidget({ widget, data }) {
+  const title = widget.label;
+  const rows = Array.isArray(data) ? data : [];
+
+  return (
+    <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+      <div className="flex items-center gap-2 mb-4">
+        <widget.icon className="h-4 w-4 text-orange-500" />
+        <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">{title}</h3>
+        <span className="ml-auto text-[10px] text-gray-400 font-mono">{rows.length}</span>
+      </div>
+      {rows.length === 0 ? (
+        <p className="text-xs text-gray-400 text-center py-6">No data in this window.</p>
+      ) : (
+        <ul className="space-y-1.5">
+          {rows.slice(0, 8).map((r, i) => {
+            const key = r.query || r.siteSlug || r.referrer || r.productId || r.device || i;
+            const metric = r.clicks ?? r.hits ?? r.views ?? r.appearances ?? r.visitors;
+            return (
+              <li key={key} className="flex items-center justify-between text-xs py-1.5 border-b border-gray-50 last:border-0">
+                <span className="truncate text-gray-700 mr-2">{String(key)}</span>
+                <span className="font-mono text-gray-400 shrink-0">{num(metric)}</span>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+// ───────────────────────────── helpers ─────────────────────────────
+
+function timeAgo(ts) {
+  if (!ts) return '';
+  const s = Math.max(0, (Date.now() - new Date(ts).getTime()) / 1000);
+  if (s < 60) return `${Math.floor(s)}s ago`;
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+  return `${Math.floor(s / 86400)}d ago`;
+}
+
+function loadWidgets() {
+  try {
+    const raw = localStorage.getItem(WIDGET_KEY);
+    const parsed = raw ? JSON.parse(raw) : null;
+    return Array.isArray(parsed) ? parsed : DEFAULT_ENABLED;
+  } catch {
+    return DEFAULT_ENABLED;
+  }
 }

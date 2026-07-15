@@ -57,6 +57,7 @@ const AdminCache = lazy(() => import('./pages/admin/AdminCache'));
 const AdminJobs = lazy(() => import('./pages/admin/AdminJobs'));
 const AdminNewsletter = lazy(() => import('./pages/admin/AdminNewsletter'));
 const AdminFeedback = lazy(() => import('./pages/admin/AdminFeedback'));
+const AdminSettings = lazy(() => import('./pages/admin/AdminSettings'));
 
 function PageFallback() {
   return (
@@ -133,6 +134,7 @@ function App() {
                   <Route path="audit" element={<AdminAuditLog />} />
                   <Route path="newsletter" element={<AdminNewsletter />} />
                   <Route path="feedback" element={<AdminFeedback />} />
+                  <Route path="settings" element={<AdminSettings />} />
                 </Route>
                 {/* Hidden/unknown paths (incl. gated Saathi & dashboard) → home. */}
                 <Route path="*" element={<Navigate to="/" replace />} />
