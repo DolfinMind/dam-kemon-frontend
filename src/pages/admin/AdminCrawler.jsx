@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Activity, Play, RefreshCw, RotateCw, Square, Terminal } from 'lucide-react';
+import { Activity, CloudDownload, Play, RefreshCw, RotateCw, Square, Terminal } from 'lucide-react';
 import { crawlerAction, crawlerLogs, crawlerStatus } from '../../api/admin';
 
 const errorMessage = (error) =>
@@ -47,12 +47,22 @@ export default function AdminCrawler() {
   }, [logs]);
 
   const runAction = async (action) => {
-    if (action !== 'start' && !confirm(`${action === 'stop' ? 'Stop' : 'Restart'} the Python crawler?`)) return;
+    const prompts = {
+      stop: 'Stop the Python crawler?',
+      restart: 'Restart the Python crawler?',
+      deploy: 'Deploy the latest crawler from main? It will smoke-test and restart automatically.',
+    };
+    if (prompts[action] && !confirm(prompts[action])) return;
     setBusy(action);
     try {
       await crawlerAction(action);
       setError('');
-      setTimeout(() => refresh(true), 800);
+      if (action === 'deploy') {
+        await new Promise((resolve) => setTimeout(resolve, 8000));
+        await refresh(true);
+      } else {
+        setTimeout(() => refresh(true), 800);
+      }
     } catch (requestError) {
       setError(errorMessage(requestError));
     } finally {
@@ -83,11 +93,12 @@ export default function AdminCrawler() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-px bg-line sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-px bg-line sm:grid-cols-5">
           <Stat label="State" value={status ? `${status.state} / ${status.subState}` : '—'} />
           <Stat label="PID" value={status?.pid || '—'} />
           <Stat label="Memory" value={formatMemory(status?.memoryBytes)} />
           <Stat label="Restarts" value={status?.restarts ?? '—'} />
+          <Stat label="Version" value={status?.version || '—'} />
         </div>
 
         <div className="flex flex-wrap items-center gap-2 border-t border-line p-4 sm:p-5">
@@ -111,6 +122,13 @@ export default function AdminCrawler() {
             onClick={() => runAction('restart')}
             disabled={!active || Boolean(busy)}
             busy={busy === 'restart'}
+          />
+          <ActionButton
+            icon={CloudDownload}
+            label="Deploy latest"
+            onClick={() => runAction('deploy')}
+            disabled={Boolean(busy)}
+            busy={busy === 'deploy'}
           />
           {status?.startedAt && (
             <span className="ml-auto text-[11px] text-gray">Started {status.startedAt}</span>
