@@ -6,7 +6,7 @@ import {
   BarChart, Bar, Cell, PieChart, Pie,
 } from 'recharts';
 import {
-  Filter, Plus, ArrowRight, MoreHorizontal, Users, X, Search as SearchIcon,
+  Filter, Plus, ArrowRight, Users, X, Search as SearchIcon,
   Store, Globe, Smartphone, SearchX, Activity, Package, RefreshCw, TrendingUp,
 } from 'lucide-react';
 import {
@@ -51,6 +51,8 @@ export default function AdminAnalytics() {
   const [topProducts, setTopProducts] = useState([]);
   const [live, setLive] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [refreshError, setRefreshError] = useState('');
 
   // Optional-widget state.
   const [enabled, setEnabled] = useState(() => loadWidgets());
@@ -59,14 +61,52 @@ export default function AdminAnalytics() {
   const liveRef = useRef(live);
   liveRef.current = live;
 
-  const pullOverview = useCallback(() => {
-    analyticsOverview()
-      .then((r) => {
-        setOverview(r.data);
-        setLastUpdated(new Date());
-      })
-      .catch(() => {});
+  const pullOverview = useCallback(async () => {
+    try {
+      const r = await analyticsOverview();
+      setOverview(r.data);
+      setLastUpdated(new Date());
+      return true;
+    } catch {
+      return false;
+    }
   }, []);
+
+  const pullWindow = useCallback(async () => {
+    const results = await Promise.allSettled([
+      analyticsDailyUsers(Math.min(windowDays, 30)),
+      analyticsHourly(windowDays),
+      analyticsCatalogGrowth(windowDays),
+      analyticsFunnel(windowDays),
+      analyticsTopProducts(windowDays, 6),
+    ]);
+    if (results[0].status === 'fulfilled') setDaily(results[0].value.data || []);
+    if (results[1].status === 'fulfilled') setHourly(results[1].value.data);
+    if (results[2].status === 'fulfilled') setGrowth(results[2].value.data);
+    if (results[3].status === 'fulfilled') setFunnel(results[3].value.data);
+    if (results[4].status === 'fulfilled') setTopProducts(results[4].value.data || []);
+    return results.some((result) => result.status === 'fulfilled');
+  }, [windowDays]);
+
+  const pullWidgets = useCallback(async () => {
+    const widgets = OPTIONAL_WIDGETS.filter((w) => enabled.includes(w.id));
+    const results = await Promise.allSettled(widgets.map((w) => w.fetch(windowDays)));
+    results.forEach((result, index) => {
+      if (result.status !== 'fulfilled') return;
+      setWidgetData((state) => ({ ...state, [widgets[index].id]: result.value.data }));
+    });
+    return widgets.length === 0 || results.some((result) => result.status === 'fulfilled');
+  }, [enabled, windowDays]);
+
+  const refreshAll = useCallback(async () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    setRefreshError('');
+    const results = await Promise.all([pullOverview(), pullWindow(), pullWidgets()]);
+    if (results.some(Boolean)) setLastUpdated(new Date());
+    else setRefreshError('Refresh failed — check your admin session.');
+    setRefreshing(false);
+  }, [pullOverview, pullWidgets, pullWindow, refreshing]);
 
   useEffect(() => {
     pullOverview();
@@ -75,28 +115,10 @@ export default function AdminAnalytics() {
     return () => clearInterval(t);
   }, [pullOverview, live]);
 
-  // Heavier time-series calls only run when the selected window changes.
-  useEffect(() => {
-    analyticsDailyUsers(Math.min(windowDays, 30)).then((r) => setDaily(r.data || [])).catch(() => setDaily([]));
-    analyticsHourly(windowDays).then((r) => setHourly(r.data)).catch(() => setHourly(null));
-    analyticsCatalogGrowth(windowDays).then((r) => setGrowth(r.data)).catch(() => setGrowth(null));
-  }, [windowDays]);
-
-  // Funnel + top products also follow the window.
-  useEffect(() => {
-    analyticsFunnel(windowDays).then((r) => setFunnel(r.data)).catch(() => setFunnel(null));
-    analyticsTopProducts(windowDays, 6).then((r) => setTopProducts(r.data || [])).catch(() => setTopProducts([]));
-  }, [windowDays]);
+  useEffect(() => { pullWindow(); }, [pullWindow]);
 
   // Each optional widget fetches lazily only when enabled, and respects window.
-  useEffect(() => {
-    OPTIONAL_WIDGETS.forEach((w) => {
-      if (!enabled.includes(w.id)) return;
-      w.fetch(windowDays)
-        .then((r) => setWidgetData((s) => ({ ...s, [w.id]: r.data })))
-        .catch(() => setWidgetData((s) => ({ ...s, [w.id]: s[w.id] ?? [] })));
-    });
-  }, [enabled, windowDays]);
+  useEffect(() => { pullWidgets(); }, [pullWidgets]);
 
   const toggleWidget = (id) => {
     setEnabled((prev) => {
@@ -108,7 +130,7 @@ export default function AdminAnalytics() {
 
   const peakHour = hourly?.peakHourLabel ?? '—';
   const dailyViewed = daily.reduce((a, d) => a + (Number(d.pageViews) || 0), 0);
-  const dailyRequests = daily.reduce((a, d) => a + (Number(d.requests) || 0), 0);
+  const dailyVisitors = daily.reduce((a, d) => a + (Number(d.users) || 0), 0);
   const convRate = overview?.searchConversionRate ?? funnel?.searchToClick;
   const catalogDaily = growth?.daily || [];
   const averageNewProducts = catalogDaily.length
@@ -152,12 +174,13 @@ export default function AdminAnalytics() {
               ))}
             </div>
             <button
-              onClick={pullOverview}
+              onClick={refreshAll}
+              disabled={refreshing}
               className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/5 text-gray-300 transition hover:bg-white/10 hover:text-white"
-              title="Refresh overview"
-              aria-label="Refresh overview"
+              title="Refresh all dashboard data"
+              aria-label="Refresh all dashboard data"
             >
-              <RefreshCw className="h-4 w-4" />
+              <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
             </button>
             <button
               onClick={() => setWidgetPanel(true)}
@@ -165,8 +188,8 @@ export default function AdminAnalytics() {
             >
               <Plus className="h-4 w-4" /> Add widget
             </button>
-            <div className="basis-full text-right text-[10px] text-gray-500">
-              {lastUpdated ? `Updated ${lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : 'Connecting to analytics…'}
+            <div className={`basis-full text-right text-[10px] ${refreshError ? 'text-red-300' : 'text-gray-500'}`}>
+              {refreshError || (lastUpdated ? `Updated ${lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : 'Connecting to analytics…')}
             </div>
           </div>
         </div>
@@ -219,8 +242,8 @@ export default function AdminAnalytics() {
             </div>
             <div className="flex justify-between items-start">
               <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-1">{num(overview?.pageViewsToday)}</h2>
-                <span className="text-sm text-gray-500">page views today</span>
+                <h2 className="text-3xl font-bold text-gray-900 mb-1">{num(overview?.visitorsToday)}</h2>
+                <span className="text-sm text-gray-500">visitors today</span>
               </div>
               <div className="h-12 w-16 flex items-end gap-1">
                 {hourlyBars.slice(0, 3).map((b, i) => (
@@ -234,8 +257,8 @@ export default function AdminAnalytics() {
             </div>
           </div>
           <div className="mt-4 grid grid-cols-3 gap-2 border-t border-gray-100 pt-3 text-center">
+            <MiniStat label="Page views" value={num(overview?.pageViewsToday)} />
             <MiniStat label="Searches" value={num(overview?.searchesToday)} />
-            <MiniStat label="Clicks" value={num(overview?.clicksToday)} />
             <MiniStat label="Active" value={num(overview?.activeNow)} />
           </div>
         </div>
@@ -340,8 +363,8 @@ export default function AdminAnalytics() {
                 <div className="w-px bg-gray-200"></div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-lg font-bold text-gray-900">{num(dailyRequests)}</span>
-                    <span className="text-sm text-gray-400">requests</span>
+                    <span className="text-lg font-bold text-gray-900">{num(dailyVisitors)}</span>
+                    <span className="text-sm text-gray-400">visitors</span>
                   </div>
                 </div>
                 <div className="w-px bg-gray-200"></div>
@@ -372,7 +395,7 @@ export default function AdminAnalytics() {
                     <stop offset="5%" stopColor="#F97316" stopOpacity={0.3} />
                     <stop offset="95%" stopColor="#F97316" stopOpacity={0} />
                   </linearGradient>
-                  <linearGradient id="colorReq" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#94a3b8" stopOpacity={0.25} />
                     <stop offset="95%" stopColor="#94a3b8" stopOpacity={0} />
                   </linearGradient>
@@ -384,7 +407,7 @@ export default function AdminAnalytics() {
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                   labelStyle={{ fontWeight: 'bold', color: '#0f172a' }}
                 />
-                <Area type="monotone" dataKey="requests" stroke="#94a3b8" strokeWidth={2} fill="url(#colorReq)" />
+                <Area type="monotone" dataKey="users" name="Visitors" stroke="#94a3b8" strokeWidth={2} fill="url(#colorUsers)" />
                 <Area type="monotone" dataKey="pageViews" stroke="#F97316" strokeWidth={3} fill="url(#colorViews)" activeDot={{ r: 6, fill: '#F97316', stroke: '#fff', strokeWidth: 2 }} />
               </AreaChart>
             </ResponsiveContainer>
@@ -434,9 +457,6 @@ export default function AdminAnalytics() {
                 </div>
               </div>
             </div>
-            <button className="text-gray-400 hover:text-gray-600">
-              <MoreHorizontal className="h-5 w-5" />
-            </button>
           </div>
 
           <div className="h-[120px] w-full mt-4">

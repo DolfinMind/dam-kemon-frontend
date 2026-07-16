@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
 import { crawlerAction, crawlerStatus } from '../../api/admin';
+import { listNotifications, markNotificationsRead } from '../../api/auth';
 import {
   Store, Inbox, BarChart3, FileText, LogOut, Package,
   Search as SearchIcon, Clock, HardDrive, ShieldAlert,
@@ -49,6 +50,7 @@ const bottomNavigation = [
 
 export default function AdminLayout() {
   const { user, ready, signOut } = useAuth();
+  const isAdmin = String(user?.role || '').toLowerCase() === 'admin';
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -56,15 +58,20 @@ export default function AdminLayout() {
   const [running, setRunning] = useState(false);
   const [starting, setStarting] = useState(false);
   const [justStarted, setJustStarted] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [unread, setUnread] = useState(0);
+  const [notificationsLoading, setNotificationsLoading] = useState(false);
 
   useEffect(() => {
     if (!ready) return;
     if (!user) navigate('/sign-in', { replace: true });
-    else if (user.role !== 'admin') navigate('/account', { replace: true });
-  }, [ready, user, navigate]);
+    else if (!isAdmin) navigate('/account', { replace: true });
+  }, [ready, user, isAdmin, navigate]);
 
   useEffect(() => {
     setDrawerOpen(false);
+    setNotificationsOpen(false);
   }, [pathname]);
 
   useEffect(() => {
@@ -80,7 +87,7 @@ export default function AdminLayout() {
   // Production keeps crawl work off the API JVM. Poll the continuous Python
   // crawler instead so the header control never hits crawl_disabled_on_api.
   useEffect(() => {
-    if (!user || user.role !== 'admin') return;
+    if (!isAdmin) return;
     const tick = () =>
       crawlerStatus()
         .then((r) => setRunning(Boolean(r.data?.active)))
@@ -88,7 +95,40 @@ export default function AdminLayout() {
     tick();
     const t = setInterval(tick, 5000);
     return () => clearInterval(t);
-  }, [user]);
+  }, [isAdmin]);
+
+  const loadNotifications = useCallback(async () => {
+    setNotificationsLoading(true);
+    try {
+      const response = await listNotifications(12);
+      setNotifications(response.data?.items || []);
+      setUnread(Number(response.data?.unread) || 0);
+    } catch {
+      setNotifications([]);
+      setUnread(0);
+    } finally {
+      setNotificationsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isAdmin) return;
+    loadNotifications();
+    const timer = setInterval(loadNotifications, 60000);
+    return () => clearInterval(timer);
+  }, [isAdmin, loadNotifications]);
+
+  const toggleNotifications = async () => {
+    const opening = !notificationsOpen;
+    setNotificationsOpen(opening);
+    if (!opening) return;
+    await loadNotifications();
+    try {
+      await markNotificationsRead();
+      setUnread(0);
+      setNotifications((items) => items.map((item) => ({ ...item, unread: false })));
+    } catch { /* reading the feed still works */ }
+  };
 
   const scrapeNow = async () => {
     if (starting) return;
@@ -111,7 +151,7 @@ export default function AdminLayout() {
   };
 
   if (!ready) return <div className="container-tight py-16 text-center text-gray">Loading…</div>;
-  if (!user || user.role !== 'admin') return null;
+  if (!isAdmin) return null;
 
   const search = (event) => {
     event.preventDefault();
@@ -128,7 +168,7 @@ export default function AdminLayout() {
     <div className="admin-shell min-h-screen bg-[#F0F2F5] lg:p-4 xl:p-6 font-sans">
       <div className="mx-auto flex min-h-screen max-w-[1600px] overflow-hidden bg-white lg:min-h-[calc(100vh-2rem)] lg:rounded-[24px] lg:shadow-xl xl:min-h-[calc(100vh-3rem)]">
         <aside className="hidden w-[240px] shrink-0 border-r border-[#EFEFEF] bg-white lg:flex lg:flex-col py-6">
-          <Sidebar pathname={pathname} onSignOut={handleSignOut} />
+          <Sidebar user={user} pathname={pathname} onSignOut={handleSignOut} />
         </aside>
 
         {drawerOpen && (
@@ -145,7 +185,7 @@ export default function AdminLayout() {
               >
                 <X className="h-4 w-4" />
               </button>
-              <Sidebar pathname={pathname} onSignOut={handleSignOut} />
+              <Sidebar user={user} pathname={pathname} onSignOut={handleSignOut} />
             </aside>
           </div>
         )}
@@ -176,18 +216,69 @@ export default function AdminLayout() {
             </div>
 
             <div className="flex shrink-0 items-center gap-4">
-              <div className="hidden items-center -space-x-2 md:flex">
-                <img src="https://i.pravatar.cc/100?img=33" className="h-8 w-8 rounded-full border-2 border-white bg-gray-100" alt="" />
-                <img src="https://i.pravatar.cc/100?img=47" className="h-8 w-8 rounded-full border-2 border-white bg-gray-100" alt="" />
-                <img src="https://i.pravatar.cc/100?img=12" className="h-8 w-8 rounded-full border-2 border-white bg-gray-100" alt="" />
-              </div>
-              <button className="grid h-10 w-10 place-items-center rounded-xl border border-gray-200 bg-white text-gray-600 transition hover:bg-gray-50">
+              <button
+                onClick={() => navigate('/admin/catalog?new=1')}
+                className="grid h-10 w-10 place-items-center rounded-xl border border-gray-200 bg-white text-gray-600 transition hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600"
+                title="Add a product"
+                aria-label="Add a product"
+              >
                 <Plus className="h-5 w-5" />
               </button>
-              <button className="grid h-10 w-10 place-items-center rounded-xl border border-gray-200 bg-white text-gray-600 transition hover:bg-gray-50 relative">
-                <Bell className="h-5 w-5" />
-                <span className="absolute top-2.5 right-2.5 h-2 w-2 rounded-full bg-orange-500" />
-              </button>
+              <div className="relative">
+                <button
+                  onClick={toggleNotifications}
+                  className={`relative grid h-10 w-10 place-items-center rounded-xl border bg-white text-gray-600 transition ${
+                    notificationsOpen ? 'border-orange-300 bg-orange-50 text-orange-600' : 'border-gray-200 hover:bg-gray-50'
+                  }`}
+                  aria-label="Notifications"
+                  aria-expanded={notificationsOpen}
+                >
+                  <Bell className="h-5 w-5" />
+                  {unread > 0 && (
+                    <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full border-2 border-white bg-orange-500" />
+                  )}
+                </button>
+                {notificationsOpen && (
+                  <div className="absolute right-0 top-12 z-50 w-[340px] max-w-[82vw] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl">
+                    <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
+                      <div>
+                        <div className="text-sm font-bold text-gray-900">Notifications</div>
+                        <div className="text-[11px] text-gray-400">Price alerts for this account</div>
+                      </div>
+                      <button onClick={() => navigate('/account')} className="text-xs font-semibold text-orange-600 hover:text-orange-700">
+                        View all
+                      </button>
+                    </div>
+                    <div className="max-h-[360px] overflow-y-auto">
+                      {notificationsLoading ? (
+                        <div className="px-4 py-8 text-center text-sm text-gray-400">Loading…</div>
+                      ) : notifications.length === 0 ? (
+                        <div className="px-4 py-8 text-center">
+                          <Bell className="mx-auto mb-2 h-6 w-6 text-gray-300" />
+                          <p className="text-sm font-medium text-gray-600">You&apos;re all caught up.</p>
+                        </div>
+                      ) : notifications.map((note) => (
+                        <button
+                          key={note.id}
+                          onClick={() => navigate(`/product/${note.productId}`)}
+                          className="flex w-full items-start gap-3 border-b border-gray-50 px-4 py-3 text-left transition last:border-0 hover:bg-gray-50"
+                        >
+                          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-orange-50 text-xs font-bold text-orange-600">
+                            ↓
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="truncate text-sm font-semibold text-gray-900">{note.productName || 'Price alert'}</div>
+                            <div className="mt-0.5 text-xs text-gray-500">
+                              {note.currentPrice != null ? `Now ৳${Number(note.currentPrice).toLocaleString()}` : 'A watched price changed'}
+                            </div>
+                            <div className="mt-1 text-[10px] text-gray-400">{timeAgo(note.createdAt)}</div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
               
               <button
                 onClick={scrapeNow}
@@ -235,7 +326,7 @@ export default function AdminLayout() {
   );
 }
 
-function Sidebar({ pathname, onSignOut }) {
+function Sidebar({ user, pathname, onSignOut }) {
   return (
     <>
       <div className="flex shrink-0 items-center gap-3 px-6 pb-6">
@@ -310,9 +401,11 @@ function Sidebar({ pathname, onSignOut }) {
         
         <div className="flex items-center justify-between rounded-2xl border border-gray-100 bg-white p-3 shadow-sm transition hover:shadow-md">
           <div className="flex items-center gap-3 overflow-hidden">
-            <img src="https://i.pravatar.cc/100?img=5" alt="Avatar" className="h-9 w-9 shrink-0 rounded-full bg-gray-100 object-cover" />
+            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-orange-100 text-sm font-bold text-orange-700">
+              {(user?.displayName || user?.email || 'A').charAt(0).toUpperCase()}
+            </div>
             <div className="min-w-0">
-              <div className="truncate text-[13px] font-bold text-gray-900">Saif Mahmud</div>
+              <div className="truncate text-[13px] font-bold text-gray-900">{user?.displayName || user?.email || 'Admin'}</div>
             </div>
           </div>
           <button
@@ -326,4 +419,13 @@ function Sidebar({ pathname, onSignOut }) {
       </div>
     </>
   );
+}
+
+function timeAgo(value) {
+  if (!value) return '';
+  const seconds = Math.max(0, (Date.now() - new Date(value).getTime()) / 1000);
+  if (seconds < 60) return 'Just now';
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+  return `${Math.floor(seconds / 86400)}d ago`;
 }

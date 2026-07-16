@@ -1,4 +1,6 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { adminListCatalog, adminEditProduct, adminDeleteProduct, adminMergeProducts, adminCreateProduct } from '../../api/admin';
 import { Search as SearchIcon, Edit2, Trash2, Merge, X, Check, Plus } from 'lucide-react';
 
@@ -17,6 +19,7 @@ function formatDateTime(isoString) {
 }
 
 export default function AdminCatalog() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [q, setQ] = useState('');
@@ -29,6 +32,15 @@ export default function AdminCatalog() {
   const [mergeHits, setMergeHits] = useState([]);
   const [busy, setBusy] = useState(false);
 
+  useEffect(() => {
+    if (searchParams.get('new') !== '1') return;
+    setCreating({ ...EMPTY_DRAFT });
+    setCreateError(null);
+    const next = new URLSearchParams(searchParams);
+    next.delete('new');
+    setSearchParams(next, { replace: true });
+  }, [searchParams, setSearchParams]);
+
   const load = () => {
     setBusy(true);
     adminListCatalog({ q: q || undefined, page, size: 100, sort: sort || undefined })
@@ -37,7 +49,9 @@ export default function AdminCatalog() {
       .finally(() => setBusy(false));
   };
 
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, [page, sort]);
+  // `load` intentionally uses the current query only when search is submitted.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { load(); }, [page, sort]);
 
   const onSearch = (e) => { e.preventDefault(); setPage(0); load(); };
 

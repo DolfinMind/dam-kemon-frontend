@@ -27,12 +27,13 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// 401 → drop the token so the UI flips back to signed-out. We don't
-// auto-redirect; the consuming page decides what to do.
+// Only /auth/me proves the session token itself is invalid. A feature endpoint
+// may return 401 for its own gate; clearing the token there leaves the UI
+// looking signed in while every following request becomes anonymous.
 api.interceptors.response.use(
   (r) => r,
   (e) => {
-    if (e.response?.status === 401 && getAuthToken()) {
+    if (e.response?.status === 401 && e.config?.url?.includes('/auth/me') && getAuthToken()) {
       setAuthToken(null);
     }
     return Promise.reject(e);
