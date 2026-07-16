@@ -6,23 +6,19 @@ import {
   BarChart, Bar, Cell, PieChart, Pie,
 } from 'recharts';
 import {
-  Filter, Plus, ChevronDown, ArrowRight, MoreHorizontal, Users, X, Search as SearchIcon,
-  Store, Globe, Smartphone, SearchX, Activity,
+  Filter, Plus, ArrowRight, MoreHorizontal, Users, X, Search as SearchIcon,
+  Store, Globe, Smartphone, SearchX, Activity, Package, RefreshCw, TrendingUp,
 } from 'lucide-react';
 import {
   analyticsOverview, analyticsHourly, analyticsDailyUsers,
   analyticsTopProducts, analyticsFunnel, analyticsTopSearches,
   analyticsZeroResultSearches, analyticsTopShops, analyticsDevices, analyticsReferrers,
-  diagCollections,
+  analyticsCatalogGrowth,
 } from '../../api/admin';
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  The operator's traffic dashboard. Every number here used to be a hardcoded
-//  mock (130,491 products, iPhone sales, JAN–AUG chart…) — this version wires
-//  the SAME visual design to the real /api/admin/analytics surface that was
-//  already fully built but unused. Fetches degrade silently (one slow endpoint
-//  never breaks the page) and the operator can toggle extra widgets on/off via
-//  the "Add Widget" panel; that choice is remembered in localStorage.
+//  Operator dashboard backed by focused analytics endpoints. Fetches degrade
+//  independently so one slow series never takes down the whole page.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const RANGES = [{ label: '7d', days: 7 }, { label: '14d', days: 14 }, { label: '30d', days: 30 }];
@@ -48,12 +44,13 @@ export default function AdminAnalytics() {
   const windowDays = RANGES.find((r) => r.label === timeRange)?.days ?? 14;
 
   const [overview, setOverview] = useState(null);
-  const [diag, setDiag] = useState(null);
+  const [growth, setGrowth] = useState(null);
   const [daily, setDaily] = useState([]);
   const [hourly, setHourly] = useState(null);
   const [funnel, setFunnel] = useState(null);
   const [topProducts, setTopProducts] = useState([]);
   const [live, setLive] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState(null);
 
   // Optional-widget state.
   const [enabled, setEnabled] = useState(() => loadWidgets());
@@ -62,28 +59,27 @@ export default function AdminAnalytics() {
   const liveRef = useRef(live);
   liveRef.current = live;
 
-  // Overview polls for a "live" feel (matches the old behaviour) — this is the
-  // cheap headline-counters call, safe to repeat.
-  const pullOverview = useCallback(
-    () => analyticsOverview().then((r) => setOverview(r.data)).catch(() => {}),
-    [],
-  );
+  const pullOverview = useCallback(() => {
+    analyticsOverview()
+      .then((r) => {
+        setOverview(r.data);
+        setLastUpdated(new Date());
+      })
+      .catch(() => {});
+  }, []);
+
   useEffect(() => {
     pullOverview();
     if (!live) return;
-    const t = setInterval(() => { if (liveRef.current) pullOverview(); }, 10000);
+    const t = setInterval(() => { if (liveRef.current) pullOverview(); }, 30000);
     return () => clearInterval(t);
   }, [pullOverview, live]);
 
-  // Catalog size is a diag endpoint (not in analytics overview); fetch once.
-  useEffect(() => {
-    diagCollections().then((r) => setDiag(r.data)).catch(() => setDiag(null));
-  }, []);
-
-  // Daily + hourly series refetch when the window changes.
+  // Heavier time-series calls only run when the selected window changes.
   useEffect(() => {
     analyticsDailyUsers(Math.min(windowDays, 30)).then((r) => setDaily(r.data || [])).catch(() => setDaily([]));
     analyticsHourly(windowDays).then((r) => setHourly(r.data)).catch(() => setHourly(null));
+    analyticsCatalogGrowth(windowDays).then((r) => setGrowth(r.data)).catch(() => setGrowth(null));
   }, [windowDays]);
 
   // Funnel + top products also follow the window.
@@ -114,6 +110,10 @@ export default function AdminAnalytics() {
   const dailyViewed = daily.reduce((a, d) => a + (Number(d.pageViews) || 0), 0);
   const dailyRequests = daily.reduce((a, d) => a + (Number(d.requests) || 0), 0);
   const convRate = overview?.searchConversionRate ?? funnel?.searchToClick;
+  const catalogDaily = growth?.daily || [];
+  const averageNewProducts = catalogDaily.length
+    ? Math.round((Number(growth?.newProducts) || 0) / catalogDaily.length)
+    : 0;
 
   // Hourly bar data: 24 buckets, mark the peak.
   const hourlyBars = useMemo(() => {
@@ -123,69 +123,94 @@ export default function AdminAnalytics() {
 
   return (
     <div className="space-y-6 animate-fade-in pb-10">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-1">Track your traffic and performance of your strategy</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1 rounded-xl border border-gray-200 bg-white p-1">
-            {RANGES.map((r) => (
-              <button
-                key={r.label}
-                onClick={() => setTimeRange(r.label)}
-                className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
-                  timeRange === r.label ? 'bg-black text-white' : 'text-gray-600 hover:bg-gray-50'
-                }`}
-              >
-                {r.label}
-              </button>
-            ))}
+      <section className="relative overflow-hidden rounded-[28px] bg-gray-950 px-6 py-6 text-white shadow-xl shadow-gray-200/60 sm:px-8">
+        <div className="absolute -right-20 -top-24 h-64 w-64 rounded-full bg-orange-500/20 blur-3xl" />
+        <div className="absolute bottom-0 right-1/3 h-28 w-28 rounded-full bg-amber-300/10 blur-2xl" />
+        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-2xl">
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-orange-200">
+              <span className={`h-1.5 w-1.5 rounded-full ${live ? 'bg-emerald-400 animate-pulse' : 'bg-gray-500'}`} />
+              Operator pulse
+            </div>
+            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Catalog and marketplace growth</h1>
+            <p className="mt-2 max-w-xl text-sm leading-6 text-gray-400">
+              Monitor new products, seller coverage, traffic and conversion without putting heavy polling pressure on the API.
+            </p>
           </div>
-          <button
-            onClick={() => setWidgetPanel(true)}
-            className="flex items-center gap-2 rounded-xl bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-900 transition shadow-sm"
-          >
-            <Plus className="h-4 w-4" /> Add Widget
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-1 rounded-xl border border-white/10 bg-white/5 p-1">
+              {RANGES.map((r) => (
+                <button
+                  key={r.label}
+                  onClick={() => setTimeRange(r.label)}
+                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                    timeRange === r.label ? 'bg-white text-gray-950' : 'text-gray-300 hover:bg-white/10'
+                  }`}
+                >
+                  {r.label}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={pullOverview}
+              className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/5 text-gray-300 transition hover:bg-white/10 hover:text-white"
+              title="Refresh overview"
+              aria-label="Refresh overview"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => setWidgetPanel(true)}
+              className="flex h-10 items-center gap-2 rounded-xl bg-orange-500 px-4 text-sm font-semibold text-white transition hover:bg-orange-400"
+            >
+              <Plus className="h-4 w-4" /> Add widget
+            </button>
+            <div className="basis-full text-right text-[10px] text-gray-500">
+              {lastUpdated ? `Updated ${lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : 'Connecting to analytics…'}
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* Top 3 Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Product overview / catalog size */}
+      {/* Headline metrics */}
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Catalog overview</span>
-            <span className="rounded-md border border-gray-200 px-2 py-1 text-[11px] font-medium text-gray-600">
-              {timeRange} <ChevronDown className="inline h-3 w-3" />
+          <div className="mb-5 flex items-start justify-between">
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">Total products</span>
+              <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900">{num(growth?.totalProducts)}</h2>
+            </div>
+            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-orange-50 text-orange-500">
+              <Package className="h-5 w-5" />
+            </div>
+          </div>
+          <div className="flex items-center justify-between border-t border-gray-100 pt-3">
+            <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600">
+              <TrendingUp className="h-3.5 w-3.5" /> +{num(growth?.newProducts)}
             </span>
-          </div>
-          <div className="mb-6 flex items-end gap-2">
-            <h2 className="text-3xl font-bold text-gray-900">{num(diag?.products)}</h2>
-            <span className="text-sm text-gray-500 mb-1">Total products</span>
-          </div>
-          <div className="flex items-center justify-between mb-3 text-sm">
-            <span className="text-gray-600 font-medium">Indexed sellers</span>
-            <span className="text-gray-400">{num(diag?.sellers)} sellers</span>
-          </div>
-          <div className="flex gap-2">
-            <div className="flex-1 rounded-xl bg-orange-50 py-2.5 px-3 text-xs">
-              <div className="font-semibold text-orange-600">Shops</div>
-              <div className="text-orange-900/70">{num(diag?.shops)}</div>
-            </div>
-            <div className="flex-1 rounded-xl bg-orange-100 py-2.5 px-3 text-xs">
-              <div className="font-semibold text-orange-600">Pending</div>
-              <div className="text-orange-900/70">{num(diag?.pendingOffers)}</div>
-            </div>
+            <span className="text-xs text-gray-400">new in {timeRange}</span>
           </div>
         </div>
 
-        {/* Active shops / today's activity */}
-        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm flex flex-col justify-between">
+        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="mb-5 flex items-start justify-between">
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">Seller network</span>
+              <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900">{num(growth?.totalSellers)}</h2>
+            </div>
+            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-violet-50 text-violet-500">
+              <Store className="h-5 w-5" />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3 border-t border-gray-100 pt-3">
+            <MiniStat label="Marketplace" value={num(growth?.marketplaceSellers)} />
+            <MiniStat label="Active shops" value={num(growth?.activeShops)} />
+          </div>
+        </div>
+
+        <div className="flex flex-col justify-between rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
           <div>
-            <div className="flex items-center justify-between mb-2">
+            <div className="mb-2 flex items-center justify-between">
               <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Today&apos;s traffic</span>
               <span className="inline-flex items-center gap-1 text-[11px] font-medium text-gray-400">
                 <span className={`h-1.5 w-1.5 rounded-full ${live ? 'bg-emerald-500 animate-pulse' : 'bg-gray-300'}`} />
@@ -195,12 +220,10 @@ export default function AdminAnalytics() {
             <div className="flex justify-between items-start">
               <div>
                 <h2 className="text-3xl font-bold text-gray-900 mb-1">{num(overview?.pageViewsToday)}</h2>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-500">page views today</span>
-                </div>
+                <span className="text-sm text-gray-500">page views today</span>
               </div>
               <div className="h-12 w-16 flex items-end gap-1">
-                {(hourlyBars.slice(0, 3)).map((b, i) => (
+                {hourlyBars.slice(0, 3).map((b, i) => (
                   <div
                     key={i}
                     className={`flex-1 rounded-t-sm ${b.isHighest ? 'bg-orange-500' : 'bg-orange-300'}`}
@@ -217,18 +240,15 @@ export default function AdminAnalytics() {
           </div>
         </div>
 
-        {/* Conversion rate gauge */}
-        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm flex flex-col justify-between">
+        <div className="flex flex-col justify-between rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
           <div>
-            <div className="flex items-center justify-between mb-2">
+            <div className="mb-2 flex items-center justify-between">
               <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Search → Click</span>
             </div>
             <div className="flex justify-between items-start">
               <div>
                 <h2 className="text-3xl font-bold text-gray-900 mb-1">{convRate != null ? pct(convRate) : '—'}</h2>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-500">conversion rate</span>
-                </div>
+                <span className="text-sm text-gray-500">conversion rate</span>
               </div>
               <div className="h-14 w-14 relative">
                 <ResponsiveContainer width="100%" height="100%">
@@ -254,6 +274,51 @@ export default function AdminAnalytics() {
           <div className="mt-4 grid grid-cols-2 gap-2 border-t border-gray-100 pt-3 text-center">
             <MiniStat label="Product views" value={num(overview?.productViewsToday)} />
             <MiniStat label="Visitors" value={num(overview?.visitorsToday)} />
+          </div>
+        </div>
+      </div>
+
+      {/* Catalog velocity */}
+      <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+        <div className="grid gap-6 p-5 lg:grid-cols-[260px_1fr] lg:p-6">
+          <div className="flex flex-col justify-between">
+            <div>
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-orange-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-orange-600">
+                <TrendingUp className="h-3 w-3" /> Catalog velocity
+              </div>
+              <h2 className="text-3xl font-bold tracking-tight text-gray-900">+{num(growth?.newProducts)}</h2>
+              <p className="mt-2 text-sm leading-6 text-gray-500">Products added across the selected {timeRange} window.</p>
+            </div>
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              <div className="rounded-xl bg-gray-50 p-3">
+                <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">Daily avg</div>
+                <div className="mt-1 text-lg font-bold text-gray-900">{num(averageNewProducts)}</div>
+              </div>
+              <div className="rounded-xl bg-amber-50 p-3">
+                <div className="text-[10px] font-semibold uppercase tracking-wide text-amber-600">Recoverable</div>
+                <div className="mt-1 text-lg font-bold text-amber-900">{num(growth?.recoverableShops)}</div>
+              </div>
+            </div>
+          </div>
+          <div className="h-[210px] min-w-0">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={catalogDaily} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="catalogGrowth" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#F97316" stopOpacity={0.35} />
+                    <stop offset="95%" stopColor="#F97316" stopOpacity={0.02} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8' }} dy={10} tickFormatter={(d) => String(d).slice(5)} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8' }} />
+                <Tooltip
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 30px rgb(15 23 42 / 0.12)' }}
+                  formatter={(value) => [num(value), 'New products']}
+                />
+                <Area type="monotone" dataKey="products" stroke="#F97316" strokeWidth={3} fill="url(#catalogGrowth)" activeDot={{ r: 5, fill: '#F97316', stroke: '#fff', strokeWidth: 2 }} />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>
@@ -530,7 +595,7 @@ function FunnelRow({ label, value, highlight }) {
 /** Renders one optional widget by id, reading its already-fetched data. */
 function OptionalWidget({ widget, data }) {
   const title = widget.label;
-  const rows = Array.isArray(data) ? data : [];
+  const rows = optionalRows(widget.id, data);
 
   return (
     <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
@@ -544,12 +609,12 @@ function OptionalWidget({ widget, data }) {
       ) : (
         <ul className="space-y-1.5">
           {rows.slice(0, 8).map((r, i) => {
-            const key = r.query || r.siteSlug || r.referrer || r.productId || r.device || i;
-            const metric = r.clicks ?? r.hits ?? r.views ?? r.appearances ?? r.visitors;
+            const key = r.label || r.query || r.siteSlug || r.referrer || r.productId || r.device || i;
+            const metric = r.value ?? r.clicks ?? r.hits ?? r.views ?? r.appearances ?? r.visitors;
             return (
               <li key={key} className="flex items-center justify-between text-xs py-1.5 border-b border-gray-50 last:border-0">
                 <span className="truncate text-gray-700 mr-2">{String(key)}</span>
-                <span className="font-mono text-gray-400 shrink-0">{num(metric)}</span>
+                <span className="font-mono text-gray-400 shrink-0">{r.formatted ?? num(metric)}</span>
               </li>
             );
           })}
@@ -560,6 +625,21 @@ function OptionalWidget({ widget, data }) {
 }
 
 // ───────────────────────────── helpers ─────────────────────────────
+
+function optionalRows(id, data) {
+  if (Array.isArray(data)) return data;
+  if (!data || typeof data !== 'object') return [];
+  if (id === 'devices') return Array.isArray(data.devices) ? data.devices : [];
+  if (id === 'funnel') {
+    return [
+      { label: 'Searches', value: data.searches },
+      { label: 'Product views', value: data.productViews },
+      { label: 'Outbound clicks', value: data.outboundClicks },
+      { label: 'Search → click', formatted: pct(data.searchToClick) },
+    ];
+  }
+  return [];
+}
 
 function timeAgo(ts) {
   if (!ts) return '';

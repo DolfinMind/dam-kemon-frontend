@@ -101,6 +101,8 @@ export const analyticsHourly = (days = 7) =>
   api.get('/admin/analytics/hourly', { params: { days } });
 export const analyticsDailyUsers = (days = 14) =>
   api.get('/admin/analytics/daily-users', { params: { days } });
+export const analyticsCatalogGrowth = (days = 14) =>
+  api.get('/admin/analytics/catalog-growth', { params: { days } });
 export const analyticsTopIps = (days = 7, limit = 25) =>
   api.get('/admin/analytics/top-ips', { params: { days, limit } });
 export const analyticsTopPaths = (days = 7, limit = 25) =>

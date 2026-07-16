@@ -1,7 +1,8 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
-import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
-import { triggerReindex, indexStatus } from '../../api/admin';
+import { crawlerAction, crawlerStatus } from '../../api/admin';
 import {
   Store, Inbox, BarChart3, FileText, LogOut, Package,
   Search as SearchIcon, Clock, HardDrive, ShieldAlert,
@@ -23,7 +24,8 @@ const navigation = [
   {
     label: 'OTHER',
     items: [
-      { to: '/admin/indexer', label: 'Indexer', icon: Database, description: 'Search indexing' },
+      { to: '/admin/indexer', label: 'Indexer', icon: Database, description: 'Catalog growth history' },
+      { to: '/admin/crawler', label: 'Crawler', icon: Activity, description: 'Continuous crawler control' },
       { to: '/admin/newsletter', label: 'Newsletter', icon: Inbox, description: 'Subscribers and sends' },
       { to: '/admin/stats', label: 'Stats', icon: BarChart3, description: 'Marketplace performance' },
       { to: '/admin/shops', label: 'Shops', icon: Store, description: 'Manage indexed sellers' },
@@ -45,8 +47,6 @@ const bottomNavigation = [
   { to: '/admin/feedback', label: 'Feedback', icon: MessageSquare },
 ];
 
-const navItems = navigation.flatMap((group) => group.items);
-
 export default function AdminLayout() {
   const { user, ready, signOut } = useAuth();
   const navigate = useNavigate();
@@ -54,6 +54,7 @@ export default function AdminLayout() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [running, setRunning] = useState(false);
+  const [starting, setStarting] = useState(false);
   const [justStarted, setJustStarted] = useState(false);
 
   useEffect(() => {
@@ -76,12 +77,13 @@ export default function AdminLayout() {
     };
   }, [drawerOpen]);
 
-  // Poll the indexer so the header chip reflects what's happening
+  // Production keeps crawl work off the API JVM. Poll the continuous Python
+  // crawler instead so the header control never hits crawl_disabled_on_api.
   useEffect(() => {
     if (!user || user.role !== 'admin') return;
     const tick = () =>
-      indexStatus()
-        .then((r) => setRunning(Boolean(r.data?.inProgress)))
+      crawlerStatus()
+        .then((r) => setRunning(Boolean(r.data?.active)))
         .catch(() => {});
     tick();
     const t = setInterval(tick, 5000);
@@ -89,24 +91,27 @@ export default function AdminLayout() {
   }, [user]);
 
   const scrapeNow = async () => {
-    if (running) return;
-    if (!confirm('Kick off a full nightly indexer run right now? This will take 30–90 minutes.')) return;
+    if (starting) return;
+    const action = running ? 'restart' : 'start';
+    const prompt = running
+      ? 'Restart the continuous crawler now? Active work will resume after the service restarts.'
+      : 'Start the continuous crawler now? Crawl work stays isolated from the API server.';
+    if (!confirm(prompt)) return;
+    setStarting(true);
     try {
-      await triggerReindex();
+      await crawlerAction(action);
       setRunning(true);
       setJustStarted(true);
       setTimeout(() => setJustStarted(false), 4000);
     } catch (e) {
-      alert(e.response?.data?.error || 'Could not start the indexer.');
+      alert(e.response?.data?.error || 'Could not start the crawler.');
+    } finally {
+      setStarting(false);
     }
   };
 
   if (!ready) return <div className="container-tight py-16 text-center text-gray">Loading…</div>;
   if (!user || user.role !== 'admin') return null;
-
-  const page = pathname === '/admin'
-    ? navItems[0]
-    : navItems.find((item) => pathname.startsWith(item.to)) || navItems[0];
 
   const search = (event) => {
     event.preventDefault();
@@ -123,7 +128,7 @@ export default function AdminLayout() {
     <div className="admin-shell min-h-screen bg-[#F0F2F5] lg:p-4 xl:p-6 font-sans">
       <div className="mx-auto flex min-h-screen max-w-[1600px] overflow-hidden bg-white lg:min-h-[calc(100vh-2rem)] lg:rounded-[24px] lg:shadow-xl xl:min-h-[calc(100vh-3rem)]">
         <aside className="hidden w-[240px] shrink-0 border-r border-[#EFEFEF] bg-white lg:flex lg:flex-col py-6">
-          <Sidebar user={user} pathname={pathname} onSignOut={handleSignOut} />
+          <Sidebar pathname={pathname} onSignOut={handleSignOut} />
         </aside>
 
         {drawerOpen && (
@@ -140,7 +145,7 @@ export default function AdminLayout() {
               >
                 <X className="h-4 w-4" />
               </button>
-              <Sidebar user={user} pathname={pathname} onSignOut={handleSignOut} />
+              <Sidebar pathname={pathname} onSignOut={handleSignOut} />
             </aside>
           </div>
         )}
@@ -186,27 +191,33 @@ export default function AdminLayout() {
               
               <button
                 onClick={scrapeNow}
-                disabled={running}
+                disabled={starting}
                 className={`flex items-center gap-2 h-10 rounded-xl px-5 text-sm font-semibold shadow-sm transition focus:ring-2 ${
-                  running
+                  starting
                     ? 'bg-orange-100 text-orange-600 cursor-wait focus:ring-orange-200'
                     : justStarted
                       ? 'bg-green-500 text-white hover:bg-green-600 focus:ring-green-200'
+                      : running
+                        ? 'bg-emerald-500 text-white hover:bg-emerald-600 focus:ring-emerald-200'
                       : 'bg-orange-500 text-white hover:bg-orange-600 focus:ring-orange-200'
                 }`}
-                title="Trigger a full indexer run now (otherwise runs nightly at 03:00)"
+                title={running ? 'Continuous crawler is running; click to restart it' : 'Start the continuous crawler'}
               >
-                {running ? (
+                {starting ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" /> Scraping…
+                    <Loader2 className="w-4 h-4 animate-spin" /> Starting…
                   </>
                 ) : justStarted ? (
                   <>
                     <CheckCircle2 className="w-4 h-4" /> Started
                   </>
+                ) : running ? (
+                  <>
+                    <Activity className="w-4 h-4" /> Crawler live
+                  </>
                 ) : (
                   <>
-                    <Play className="w-4 h-4" /> Scrape now
+                    <Play className="w-4 h-4" /> Start crawler
                   </>
                 )}
               </button>
@@ -224,7 +235,7 @@ export default function AdminLayout() {
   );
 }
 
-function Sidebar({ user, pathname, onSignOut }) {
+function Sidebar({ pathname, onSignOut }) {
   return (
     <>
       <div className="flex shrink-0 items-center gap-3 px-6 pb-6">
