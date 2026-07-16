@@ -15,6 +15,7 @@ export default function AdminShops() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
   const [filter, setFilter] = useState('all');
+  const [sourceFilter, setSourceFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [q, setQ] = useState(''); // debounced copy of searchQuery that actually hits the server
   const [sortBy, setSortBy] = useState('name');
@@ -33,6 +34,7 @@ export default function AdminShops() {
       page, size: PAGE_SIZE, sort: sortBy,
       q: q || undefined,
       health: filter !== 'all' ? filter : undefined,
+      source: sourceFilter !== 'all' ? sourceFilter : undefined,
     })
       .then((r) => {
         setShops(Array.isArray(r.data?.shops) ? r.data.shops : []);
@@ -49,7 +51,7 @@ export default function AdminShops() {
         );
       });
   const loadDiag = () => diagCollections().then((r) => setDiag(r.data)).catch(() => setDiag(null));
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, [page, filter, sortBy, q]);
+  useEffect(() => { load(); /* eslint-disable-next-line */ }, [page, filter, sourceFilter, sortBy, q]);
   useEffect(() => { loadDiag(); }, []);
   useEffect(() => {
     const t = setTimeout(() => { setPage(0); setQ(searchQuery.trim()); }, 400);
@@ -180,6 +182,20 @@ export default function AdminShops() {
         </div>
         
         <select
+          value={sourceFilter}
+          onChange={(e) => { setSourceFilter(e.target.value); setPage(0); }}
+          className="px-3 py-1.5 bg-white border border-line rounded-lg text-xs"
+          aria-label="Filter by verified catalog source"
+        >
+          <option value="all">All sources</option>
+          <option value="sitemap">Verified sitemap</option>
+          <option value="feed">Product feed</option>
+          <option value="none">No source</option>
+          <option value="unreachable">Unreachable</option>
+          <option value="unaudited">Not audited</option>
+        </select>
+
+        <select
           value={sortBy}
           onChange={(e) => { setSortBy(e.target.value); setPage(0); }}
           className="px-3 py-1.5 bg-white border border-line rounded-lg text-xs"
@@ -255,6 +271,16 @@ export default function AdminShops() {
                         <Zap className="w-3.5 h-3.5" />
                       </span>
                     </div>
+                    {s.sourceAuditStatus && (
+                      <div className={`mt-1 text-[9px] font-mono uppercase tracking-wide ${
+                        ['sitemap', 'feed', 'sitemap-and-feed'].includes(s.sourceAuditStatus)
+                          ? 'text-green'
+                          : s.sourceAuditStatus === 'unreachable' ? 'text-red' : 'text-gray'
+                      }`}>
+                        {s.sourceAuditStatus.replaceAll('-', ' ')}
+                        {s.discoveredSitemapCount > 1 ? ` · ${s.discoveredSitemapCount} maps` : ''}
+                      </div>
+                    )}
                   </td>
                   <td className="py-2 pr-3">
                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-wider ${badge.color}`}>

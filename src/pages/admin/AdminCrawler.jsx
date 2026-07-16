@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Activity, CloudDownload, Play, RefreshCw, RotateCw, Square, Terminal } from 'lucide-react';
+import { Activity, CloudDownload, Play, Radar, RefreshCw, RotateCw, Square, Terminal } from 'lucide-react';
 import { crawlerAction, crawlerLogs, crawlerStatus } from '../../api/admin';
 
 const errorMessage = (error) =>
@@ -51,6 +51,7 @@ export default function AdminCrawler() {
       stop: 'Stop the Python crawler?',
       restart: 'Restart the Python crawler?',
       deploy: 'Deploy the latest crawler from main? It will smoke-test and restart automatically.',
+      discover: 'Audit every shop for verified sitemaps and public catalog feeds?',
     };
     if (prompts[action] && !confirm(prompts[action])) return;
     setBusy(action);
@@ -130,6 +131,13 @@ export default function AdminCrawler() {
             disabled={Boolean(busy)}
             busy={busy === 'deploy'}
           />
+          <ActionButton
+            icon={Radar}
+            label="Discover sources"
+            onClick={() => runAction('discover')}
+            disabled={Boolean(busy)}
+            busy={busy === 'discover'}
+          />
           {status?.startedAt && (
             <span className="ml-auto text-[11px] text-gray">Started {status.startedAt}</span>
           )}
@@ -141,6 +149,8 @@ export default function AdminCrawler() {
           </p>
         )}
       </section>
+
+      <SourceDiscovery report={status?.sourceDiscovery} />
 
       <section className="overflow-hidden rounded-2xl border border-ink bg-ink shadow-[var(--shadow-soft)]">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/15 px-4 py-3 text-cream">
@@ -184,6 +194,56 @@ export default function AdminCrawler() {
       </section>
     </div>
   );
+}
+
+function SourceDiscovery({ report }) {
+  if (!report) return null;
+  const percent = report.total ? Math.round((report.audited / report.total) * 100) : 0;
+  return (
+    <section className="card-soft p-4 sm:p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h3 className="inline-flex items-center gap-2 font-semibold">
+            <Radar className={`h-4 w-4 ${report.running ? 'animate-pulse text-red' : 'text-green'}`} />
+            Catalog source audit
+          </h3>
+          <p className="mt-1 text-xs text-gray">
+            {report.running ? `Checking ${report.currentShop || 'shops'}…` : `Finished ${formatDate(report.finishedAt)}`}
+          </p>
+        </div>
+        <span className="rounded-full bg-ink px-3 py-1 font-mono text-xs font-bold text-cream">
+          {report.audited}/{report.total} · {percent}%
+        </span>
+      </div>
+      <div className="mt-4 h-2 overflow-hidden rounded-full bg-line">
+        <div className="h-full rounded-full bg-acid transition-all" style={{ width: `${percent}%` }} />
+      </div>
+      <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-5">
+        <AuditStat label="Sitemap shops" value={report.withSitemap} />
+        <AuditStat label="Feed shops" value={report.withFeed} />
+        <AuditStat label="Both" value={report.withBoth} />
+        <AuditStat label="No source" value={report.noSource} />
+        <AuditStat label="Unreachable" value={report.unreachable} />
+      </div>
+      <p className="mt-3 font-mono text-[11px] text-gray">
+        {report.sitemapsFound || 0} verified sitemap entry-points saved · {report.updatedShops || 0} shops updated
+      </p>
+    </section>
+  );
+}
+
+function AuditStat({ label, value }) {
+  return (
+    <div className="rounded-xl border border-line bg-cream-soft p-3">
+      <div className="font-mono text-[9px] uppercase tracking-wider text-gray">{label}</div>
+      <div className="mt-1 font-mono text-lg font-bold">{value ?? 0}</div>
+    </div>
+  );
+}
+
+function formatDate(value) {
+  if (!value) return '—';
+  return new Date(value).toLocaleString();
 }
 
 function Stat({ label, value }) {
