@@ -114,15 +114,8 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
   const hiddenCount = sorted.length - visible.length;
 
   return (
-    <div className="@container overflow-hidden rounded-3xl border border-line bg-white shadow-[var(--shadow-soft)]">
-      <div className="hidden @3xl:grid grid-cols-[minmax(150px,1.3fr)_minmax(160px,1fr)_minmax(100px,.6fr)_minmax(160px,auto)] gap-4 px-5 py-3 bg-cream-soft/70 border-b border-line text-[10px] font-mono font-bold uppercase tracking-[0.12em] text-gray">
-        <span>Shop</span>
-        <span>Buyer confidence</span>
-        <span>Fulfilment</span>
-        <span className="text-right">Live price</span>
-      </div>
-
-      <div className="divide-y divide-line">
+    <div>
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
         {visible.map(({ it, mt, st, key, isRecommended }) => {
           const isFb = isFacebookSeller(it.siteName);
           const badge = sellerBadges[it.siteName];
@@ -145,7 +138,7 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
                 trackClick(productId, it.siteSlug || it.siteName);
                 try { sessionStorage.setItem('dk_outclick', '1'); } catch { /* private mode */ }
               }}
-              className={`group grid grid-cols-[minmax(0,1fr)_auto] @3xl:grid-cols-[minmax(150px,1.3fr)_minmax(160px,1fr)_minmax(100px,.6fr)_minmax(160px,auto)] items-center gap-x-3 gap-y-2 px-4 sm:px-5 py-4 transition-colors ${isRecommended ? 'border-l-4 border-l-acid bg-acid-soft/35 hover:bg-acid-soft/55' : `hover:bg-cream-soft/60 ${isFb ? 'border-l-2 border-l-blue/40' : ''}`}`}
+              className={`group flex h-full flex-col rounded-3xl border p-4 shadow-[var(--shadow-soft)] transition-colors sm:p-5 ${isRecommended ? 'border-acid bg-acid-soft/35 hover:bg-acid-soft/55' : `border-line bg-white hover:bg-cream-soft/60 ${isFb ? 'border-l-2 border-l-blue/40' : ''}`}`}
             >
               <div className="min-w-0">
                 {isRecommended && (
@@ -168,7 +161,7 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
                 </div>
               </div>
 
-              <div className="col-start-1 @3xl:col-start-auto flex flex-wrap items-center gap-1.5">
+              <div className="mt-3 flex flex-wrap items-center gap-1.5">
                 {tier && (
                   <Signal
                     Icon={ShieldCheck}
@@ -189,13 +182,13 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
                 )}
               </div>
 
-              <div className="hidden min-w-0 @3xl:flex flex-wrap items-center gap-1.5 overflow-hidden">
+              <div className="mt-2 flex min-w-0 flex-wrap items-center gap-1.5 overflow-hidden">
                 {dtext && <Signal Icon={Truck}>{dtext}</Signal>}
                 {mt?.codAvailable && <Signal Icon={Banknote}>COD</Signal>}
               </div>
 
-              <div className="row-start-1 row-span-2 col-start-2 @3xl:row-auto @3xl:col-auto flex items-center justify-end gap-3 text-right">
-                <div>
+              <div className="mt-auto flex items-end justify-between gap-3 pt-4">
+                <div className="text-left">
                   <div className="font-mono text-[19px] sm:text-[21px] font-bold leading-none text-ink">{formatPrice(it.price)}</div>
                   <div className="mt-1 text-[9px] sm:text-[10px] font-mono leading-tight">
                     {isCheapest ? (
@@ -205,10 +198,9 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
                     ) : null}
                   </div>
                 </div>
-                <span className={`hidden sm:inline-flex items-center gap-1.5 shrink-0 rounded-full px-3.5 py-2 text-xs font-bold transition-colors ${isRecommended ? 'bg-ink text-cream group-hover:bg-ink-soft' : 'bg-cream-soft text-ink group-hover:bg-ink group-hover:text-cream'}`}>
+                <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-bold transition-colors ${isRecommended ? 'bg-ink text-cream group-hover:bg-ink-soft' : 'bg-cream-soft text-ink group-hover:bg-ink group-hover:text-cream'}`}>
                   Visit <ExternalLink className="w-3.5 h-3.5" />
                 </span>
-                <ExternalLink className="sm:hidden w-4 h-4 text-gray group-hover:text-ink" />
               </div>
             </a>
           );
@@ -219,7 +211,7 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-3 border-t border-line text-xs font-bold text-gray hover:text-ink hover:bg-cream-soft/60 transition-colors"
+          className="mt-3 w-full inline-flex items-center justify-center gap-1.5 rounded-2xl border border-line bg-white px-4 py-3 text-xs font-bold text-gray hover:text-ink hover:bg-cream-soft/60 transition-colors"
         >
           {expanded ? <><ChevronUp className="w-4 h-4" /> Show fewer shops</> : <><ChevronDown className="w-4 h-4" /> Show {hiddenCount} more {hiddenCount === 1 ? 'shop' : 'shops'}</>}
         </button>
