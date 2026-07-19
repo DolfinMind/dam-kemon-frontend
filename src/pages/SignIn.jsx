@@ -6,6 +6,8 @@ import GoogleSignInButton from '../components/GoogleSignInButton';
 import AuthLayout, { Stagger, Field } from '../components/AuthLayout';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 
+const SIGN_IN_GSI = { text: 'signin_with' };
+
 /**
  * Sign-in for everyone: regular users type their email, the owner a
  * username — one field, one endpoint, server returns a 30-day JWT. After
@@ -29,6 +31,12 @@ export default function SignIn() {
   // prevent open-redirect attacks via ?next=https://evil.com.
   const rawNext = search.get('next');
   const next = (rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//')) ? rawNext : null;
+  const intent = next ? new URL(next, 'https://damkemon.com').searchParams.get('memberAction') : null;
+  const copy = intent === 'track'
+    ? { complete: 'Price tracking ready', heading: 'Sign in to track this price', detail: 'We’ll turn the alert on as soon as you’re back.' }
+    : intent === 'save'
+      ? { complete: 'Product saved', heading: 'Sign in to save this product', detail: 'We’ll add it to your wishlist as soon as you’re back.' }
+      : { complete: 'Welcome back', heading: 'Welcome back', detail: 'Sign in to continue to Damkemon.' };
 
   useEffect(() => {
     if (!user) return undefined;
@@ -52,12 +60,12 @@ export default function SignIn() {
   };
 
   return (
-    <AuthLayout complete={complete} completeLabel="Welcome back">
+    <AuthLayout complete={complete} completeLabel={copy.complete}>
       <Stagger i={0} className="text-center mb-8">
         <h1 className="font-serif text-3xl sm:text-[2.1rem] font-semibold tracking-tight leading-tight mb-2">
-          Welcome back
+          {copy.heading}
         </h1>
-        <p className="text-gray text-[15px]">Sign in to continue to Damkemon.</p>
+        <p className="text-gray text-[15px]">{copy.detail}</p>
       </Stagger>
 
       {justReset && (
@@ -75,6 +83,7 @@ export default function SignIn() {
           <GoogleSignInButton
             featured
             divider="below"
+            gsi={SIGN_IN_GSI}
             onSuccess={(d) => signIn(d.token, d.user)}
             onError={setError}
           />

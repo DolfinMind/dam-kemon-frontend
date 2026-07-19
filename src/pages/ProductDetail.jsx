@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { getProduct, getProductHistory, getDailyPriceHistory, getShopTrust, getSellerTrust } from '../api/api';
-import { trackView } from '../api/analytics';
+import { trackAction, trackView } from '../api/analytics';
 import { pushRecent } from '../api/recentlyViewed';
 import { addToWishlist, removeFromWishlist, listWishlist, updateWishlistAlert } from '../api/auth';
 import { useAuth } from '../auth/AuthContext';
@@ -14,7 +14,6 @@ import ProductSEO from '../components/ProductSEO';
 import ServiceUnavailable from '../components/ServiceUnavailable';
 import NewsletterInline from '../components/NewsletterInline';
 import FeedbackPulse from '../components/FeedbackPulse';
-import SignupGate from '../components/SignupGate';
 import {
   ArrowLeft, Share2, Bell, Store, AlertTriangle, Heart, Clock, ChevronDown,
 } from 'lucide-react';
@@ -29,7 +28,7 @@ function formatPrice(price) {
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { state } = useLocation();
+  const { state, pathname, search } = useLocation();
   // If the user arrived from a search result, the full product travels in
   // router state — use it immediately so the page renders even when the
   // backend can't look it up (e.g. live-search results before Mongo persists).
@@ -41,18 +40,17 @@ export default function ProductDetail() {
   const [error, setError] = useState(null);
   const [retryTick, setRetryTick] = useState(0);
   const { user } = useAuth();
+  const pid = product?.id || id;
+  const memberAction = new URLSearchParams(search).get('memberAction');
 
   useEffect(() => {
     let cancelled = false;
     if (!seedProduct) setLoading(true);
     setError(null);
 
-    // History is a member feature (API 401s anonymously) — skip the call and
-    // show the signup gate instead. Signing in flips `user`, which re-runs
-    // this effect and also swaps the gated product payload for the full one.
     Promise.allSettled([
       getProduct(id),
-      user ? getProductHistory(id) : Promise.resolve({ data: [] }),
+      getProductHistory(id),
     ]).then(([productRes, historyRes]) => {
       if (cancelled) return;
       if (productRes.status === 'fulfilled') {
@@ -67,7 +65,7 @@ export default function ProductDetail() {
     });
 
     return () => { cancelled = true; };
-  }, [id, seedProduct, retryTick, user]);
+  }, [id, seedProduct, retryTick]);
 
   useEffect(() => {
     const pid = product?.id || id;
@@ -113,6 +111,7 @@ export default function ProductDetail() {
 
   const [inWishlist, setInWishlist] = useState(false);
   const [wishlistBusy, setWishlistBusy] = useState(false);
+  const [memberNotice, setMemberNotice] = useState(null);
   const [alertModalOpen, setAlertModalOpen] = useState(false);
   const [alertSettings, setAlertSettings] = useState({
     alertsEnabled: false,
@@ -122,7 +121,7 @@ export default function ProductDetail() {
 
   useEffect(() => {
     if (!user) { setInWishlist(false); return; }
-    const pid = product?.id || id;
+    if (memberAction) return; // the pending-action effect owns this first load
     if (!pid) return;
     listWishlist().then((r) => {
       const row = (r.data || []).find((w) => (w.product?.id || w.productId) === pid);
@@ -136,37 +135,80 @@ export default function ProductDetail() {
         });
       }
     }).catch(() => {});
-  }, [user, product?.id, id]);
+  }, [user, pid, memberAction]);
 
-  // Send anonymous users to sign-in WITH a way back — losing the product
-  // they were on is where the signup funnel used to leak.
-  const signInNext = () => navigate(`/sign-in?next=${encodeURIComponent(`/product/${id}`)}`);
+  // Complete the exact action that motivated signup. The intent lives in the
+  // whitelisted relative next URL, so it survives both Google and email auth.
+  useEffect(() => {
+    // Wait for the canonical Mongo ID; the route may contain a product slug.
+    if (!user || !product?.id || !['save', 'track'].includes(memberAction)) return;
+    const track = memberAction === 'track';
+    const targetPid = product.id;
+    const cleanParams = new URLSearchParams(search);
+    cleanParams.delete('memberAction');
+    const cleanPath = `${pathname}${cleanParams.size ? `?${cleanParams}` : ''}`;
+    setWishlistBusy(true);
+    addToWishlist(targetPid, track)
+      .then(() => {
+        setInWishlist(true);
+        if (track) setAlertSettings((s) => ({ ...s, alertsEnabled: true }));
+        setMemberNotice(track
+          ? 'Price tracking is on. We’ll email you when it drops.'
+          : 'Product saved to your wishlist.');
+        trackAction(`member_action_completed_${memberAction}`, targetPid);
+      })
+      .catch(() => setMemberNotice('Your account is ready, but that action could not be saved. Try again.'))
+      .finally(() => {
+        setWishlistBusy(false);
+        navigate(cleanPath, { replace: true, state });
+      });
+  }, [user, product?.id, memberAction, navigate, pathname, search, state]);
+
+  const requestMemberAction = (action) => {
+    const params = new URLSearchParams(search);
+    params.set('memberAction', action);
+    const next = `${pathname}?${params.toString()}`;
+    trackAction(`member_intent_${action}`, pid);
+    navigate(`/sign-up?next=${encodeURIComponent(next)}`);
+  };
 
   const toggleWishlist = async () => {
-    const pid = product?.id || id;
-    if (!pid || !user) { signInNext(); return; }
+    if (!pid) return;
+    if (!user) { requestMemberAction('save'); return; }
     setWishlistBusy(true);
     try {
       if (inWishlist) { await removeFromWishlist(pid); setInWishlist(false); }
-      else { await addToWishlist(pid); setInWishlist(true); }
+      else {
+        await addToWishlist(pid, false);
+        setInWishlist(true);
+        setMemberNotice('Product saved to your wishlist.');
+        trackAction('member_action_completed_save', pid);
+      }
     } catch { /* noop */ }
     finally { setWishlistBusy(false); }
   };
 
   const openTrackPrice = async () => {
-    const pid = product?.id || id;
     if (!pid) return;
-    if (!user) { signInNext(); return; }
-    // Add to wishlist first if not already — alerts hang off a wishlist row
-    if (!inWishlist) {
-      try { await addToWishlist(pid); setInWishlist(true); }
+    if (!user) { requestMemberAction('track'); return; }
+    // Turn tracking on with this click; the modal only customizes the threshold.
+    if (!alertSettings.alertsEnabled) {
+      setWishlistBusy(true);
+      try {
+        await addToWishlist(pid, true);
+        setInWishlist(true);
+        setAlertSettings((s) => ({ ...s, alertsEnabled: true }));
+        setMemberNotice('Price tracking is on. We’ll email you when it drops.');
+        trackAction('member_action_completed_track', pid);
+      }
       catch { return; }
+      finally { setWishlistBusy(false); }
     }
+    setAlertSettings((s) => ({ ...s, alertsEnabled: true }));
     setAlertModalOpen(true);
   };
 
   const saveAlertSettings = async () => {
-    const pid = product?.id || id;
     if (!pid) return;
     setWishlistBusy(true);
     try {
@@ -177,19 +219,20 @@ export default function ProductDetail() {
         alertOnDropPercent: Math.max(1, Math.min(50, Number(alertSettings.alertOnDropPercent) || 10)) / 100,
       });
       setAlertModalOpen(false);
+      if (alertSettings.alertsEnabled) {
+        setMemberNotice('Price tracking is on. We’ll email you when it drops.');
+      }
     } catch { /* noop */ }
     finally { setWishlistBusy(false); }
   };
 
   const [dailySeries, setDailySeries] = useState([]);
   useEffect(() => {
-    const pid = product?.id || id;
     if (!pid) return;
-    if (!user) { setDailySeries([]); return; } // member feature — gated UI instead
     getDailyPriceHistory(pid, 30).then((r) => {
       setDailySeries(Array.isArray(r.data) ? r.data : []);
     }).catch(() => {});
-  }, [product?.id, id, user]);
+  }, [pid]);
 
   // Trust / delivery / genuineness profiles for every seller on this product,
   // fetched in one batched call keyed by shop slug.
@@ -221,7 +264,6 @@ export default function ProductDetail() {
   };
 
   // ── Decision math for the hero "best deal" champion ───────────────────────
-  const pid = product?.id || id;
   // One row per seller — duplicate listings keep only their cheapest price.
   const prices = useMemo(() => {
     const sorted = [...(product?.prices || [])].sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
@@ -238,36 +280,16 @@ export default function ProductDetail() {
     return vals.length ? Math.min(...vals) : (product?.lowestPrice ?? null);
   }, [prices, product?.lowestPrice]);
   const highestPrice = useMemo(() => {
-    // Prefer the index-time field: anonymous payloads cap prices[] at the 4
-    // cheapest, which would otherwise understate the spread.
+    // Prefer the index-time field so the comparison spread is stable.
     if (product?.highestPrice != null) return product.highestPrice;
     const vals = prices.map((p) => p.price).filter((v) => v != null);
     return vals.length ? Math.max(...vals) : null;
   }, [prices, product?.highestPrice]);
   // Hidden when the spread is implausible for one product (bad match, not a deal).
   const savings = saneSavePct(lowestPrice, highestPrice) > 0 ? highestPrice - lowestPrice : 0;
-  // Anonymous payloads carry the real seller count alongside the capped list.
   const sellerCount = product?.totalSellerCount ?? prices.length;
   const cheapest = prices.find((p) => p.price === lowestPrice) || null;
-
-  // Signed-out teaser: the 4 cheapest rows with the best offer's shop identity
-  // stripped. The API already strips fetched payloads; this also covers
-  // products seeded through router state from search results.
-  const shownPrices = useMemo(() => {
-    if (user) return prices;
-    return prices.slice(0, 4).map((p, i) => (i === 0 && p.price != null ? {
-      price: p.price, originalPrice: p.originalPrice, currency: p.currency,
-      inStock: p.inStock, rating: p.rating, reviewCount: p.reviewCount,
-      soldCount: p.soldCount, locked: true,
-    } : p));
-  }, [user, prices]);
-
-  // The lowest live offer is highlighted inside the comparison itself. Keeping
-  // it in the same list removes the duplicate recommendation card and lets the
-  // shopper compare price, reputation and fulfilment in one scan. For a
-  // signed-out visitor the highlighted row is the locked one (same object, so
-  // the table's reference check still matches).
-  const pick = user ? cheapest : (shownPrices[0] || null);
+  const pick = cheapest;
 
   if (loading) {
     return (
@@ -344,7 +366,7 @@ export default function ProductDetail() {
             <button onClick={toggleWishlist} disabled={wishlistBusy} aria-label={inWishlist ? 'Remove from saved products' : 'Save product'} title={inWishlist ? 'Saved' : 'Save'} className={`w-9 h-9 sm:w-auto sm:px-3 rounded-full border inline-flex items-center justify-center gap-1.5 text-xs font-bold transition-colors ${inWishlist ? 'border-red/30 bg-red-soft text-red' : 'border-line text-gray hover:text-ink'}`}>
               <Heart className={`w-4 h-4 ${inWishlist ? 'fill-red' : ''}`} /><span className="hidden sm:inline">{inWishlist ? 'Saved' : 'Save'}</span>
             </button>
-            <button onClick={openTrackPrice} aria-label="Track price drops" title="Track price drops" className={`w-9 h-9 sm:w-auto sm:px-3 rounded-full border inline-flex items-center justify-center gap-1.5 text-xs font-bold transition-colors ${alertSettings.alertsEnabled ? 'border-green/30 bg-green-soft text-green' : 'border-line text-gray hover:text-ink'}`}>
+            <button onClick={openTrackPrice} disabled={wishlistBusy} aria-label="Track price drops" title="Track price drops" className={`w-9 h-9 sm:w-auto sm:px-3 rounded-full border inline-flex items-center justify-center gap-1.5 text-xs font-bold transition-colors disabled:opacity-50 ${alertSettings.alertsEnabled ? 'border-green/30 bg-green-soft text-green' : 'border-line text-gray hover:text-ink'}`}>
               <Bell className="w-4 h-4" /><span className="hidden sm:inline">{alertSettings.alertsEnabled ? 'Tracking' : 'Track'}</span>
             </button>
             <button
@@ -361,6 +383,11 @@ export default function ProductDetail() {
             </button>
           </div>
         </div>
+        {memberNotice && (
+          <p role="status" className="mt-3 rounded-2xl bg-acid-soft px-3 py-2 text-center text-xs font-semibold text-ink">
+            {memberNotice}
+          </p>
+        )}
       </header>
 
       <main className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.65fr)_minmax(320px,.85fr)] gap-5 lg:gap-6 items-start">
@@ -377,12 +404,11 @@ export default function ProductDetail() {
           </div>
 
           <PriceComparisonTable
-            prices={shownPrices}
+            prices={prices}
             productId={pid}
             trust={trust}
             sellerTrust={sellerTrust}
             recommended={pick}
-            totalCount={sellerCount}
           />
 
           {showNewsletter && <div className="mt-4"><NewsletterInline /></div>}
@@ -407,14 +433,7 @@ export default function ProductDetail() {
           <ChevronDown className="w-4 h-4 text-gray transition-transform group-open:rotate-180" />
         </summary>
         <div className="border-t border-line p-3 sm:p-5">
-          {user ? (
-            <PriceHistoryChart history={history} dailySeries={dailySeries} />
-          ) : (
-            <SignupGate
-              title="Price history is a free member feature"
-              subtitle="See the full price timeline for this product — so a re-priced “discount” can’t fool you."
-            />
-          )}
+          <PriceHistoryChart history={history} dailySeries={dailySeries} />
         </div>
       </details>
 

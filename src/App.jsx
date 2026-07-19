@@ -5,7 +5,6 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import BottomNav from './components/BottomNav';
 import AssistantWidget from './components/AssistantWidget';
-import GoogleOneTap from './components/GoogleOneTap';
 import ScrollToTop from './components/ScrollToTop';
 import ExitIntentModal from './components/ExitIntentModal';
 import { AuthProvider } from './auth/AuthContext';
@@ -145,7 +144,6 @@ function App() {
           </main>
           <Footer />
           <BottomNav />
-          <GoogleOneTap />
           <ExitIntentModal />
           {SHOW_ASSISTANT && <AssistantWidget />}
         </div>

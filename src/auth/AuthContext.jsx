@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { getAuthToken, setAuthToken, getMe, signOut as apiSignOut } from '../api/auth';
+import { trackAction } from '../api/analytics';
 
 const AuthContext = createContext({
   user: null,
@@ -32,6 +33,7 @@ export function AuthProvider({ children }) {
   const signIn = useCallback((token, profile) => {
     setAuthToken(token);
     setUser(profile);
+    trackAction('auth_success');
   }, []);
 
   const signOut = useCallback(() => {

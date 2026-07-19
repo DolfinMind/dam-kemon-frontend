@@ -18,10 +18,8 @@ const GSI_SRC = 'https://accounts.google.com/gsi/client';
  * `gsi` overrides the rendered button options (size, text, width…) for
  * compact placements like the navbar.
  *
- * GSI has ONE global callback (last initialize wins across this button and
- * GoogleOneTap) — every mount must therefore keep onSuccess equivalent to
- * signIn(token, user); pages that need to redirect afterwards watch `user`
- * instead of relying on their own callback firing.
+ * Pages redirect by watching `user`, so email and Google auth finish through
+ * the same post-sign-in path.
  */
 export default function GoogleSignInButton({ onSuccess, onError, divider = 'above', gsi, fallback = null, featured = false }) {
   const slotRef = useRef(null);

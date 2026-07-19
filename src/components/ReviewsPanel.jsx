@@ -5,7 +5,6 @@ import {
 } from 'lucide-react';
 import { getProductReviews, getReviewVotes, postProductReview, postDeliveryReport, voteReview } from '../api/api';
 import { useAuth } from '../auth/AuthContext';
-import SignupGate from './SignupGate';
 
 function fmtDate(v) {
   if (!v) return '';
@@ -32,8 +31,7 @@ export default function ReviewsPanel({ productId, product, onTrustUpdated, initi
   const { user } = useAuth();
   const [reviews, setReviews] = useState([]);
   const [myVotes, setMyVotes] = useState({});
-  // True stored count — the API caps the anonymous body at 3 and reports the
-  // real total in a header, so the gate can honestly say "all N reviews".
+  // True stored count from the response header.
   const [totalStored, setTotalStored] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -328,13 +326,7 @@ export default function ReviewsPanel({ productId, product, onTrustUpdated, initi
       ) : (
         <div className="space-y-2.5">
           {visibleReviews.map((r, i) => <ReviewCard key={r.id || i} r={r} user={user} initialVote={myVotes[r.id] || 0} />)}
-          {!user && totalStored > reviews.length ? (
-            <SignupGate
-              compact
-              title={`Read all ${totalStored} buyer reviews`}
-              subtitle="Delivery times, genuineness, after-sales — free members see every review."
-            />
-          ) : reviews.length > initialVisible && (
+          {reviews.length > initialVisible && (
             <button
               type="button"
               onClick={() => setShowAll((v) => !v)}

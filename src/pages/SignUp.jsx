@@ -6,6 +6,8 @@ import GoogleSignInButton from '../components/GoogleSignInButton';
 import AuthLayout, { Stagger, Field } from '../components/AuthLayout';
 import { AlertCircle } from 'lucide-react';
 
+const SIGN_UP_GSI = { text: 'signup_with' };
+
 /**
  * Regular-user registration: name + email + password, optional phone,
  * newsletter opt-in. On success the API returns a JWT (signed in right
@@ -24,11 +26,17 @@ export default function SignUp() {
 
   const rawNext = search.get('next');
   const next = (rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//')) ? rawNext : null;
+  const intent = next ? new URL(next, 'https://damkemon.com').searchParams.get('memberAction') : null;
+  const copy = intent === 'track'
+    ? { complete: 'Price tracking ready', heading: 'Track this price', detail: 'Create a free account and we’ll turn the alert on automatically.' }
+    : intent === 'save'
+      ? { complete: 'Product saved', heading: 'Save this product', detail: 'Create a free account and we’ll add it to your wishlist automatically.' }
+      : { complete: 'Account ready', heading: 'Create your account', detail: 'Save a search now and we’ll watch the prices for you.' };
 
   useEffect(() => {
     if (!user) return undefined;
     setComplete(true);
-    const timer = setTimeout(() => navigate(next || '/account'), 1050);
+    const timer = setTimeout(() => navigate(next || '/account?tab=saved-searches'), 1050);
     return () => clearTimeout(timer);
   }, [user, next, navigate]);
 
@@ -57,10 +65,10 @@ export default function SignUp() {
   };
 
   return (
-    <AuthLayout complete={complete} completeLabel="Account ready">
+    <AuthLayout complete={complete} completeLabel={copy.complete}>
       <Stagger i={0} className="text-center mb-8">
-        <h1 className="font-serif text-3xl sm:text-[2.1rem] font-semibold tracking-tight leading-tight mb-2">Create your account</h1>
-        <p className="text-gray text-[15px]">Free to join. No card required.</p>
+        <h1 className="font-serif text-3xl sm:text-[2.1rem] font-semibold tracking-tight leading-tight mb-2">{copy.heading}</h1>
+        <p className="text-gray text-[15px]">{copy.detail}</p>
       </Stagger>
 
       <Stagger i={1}>
@@ -69,6 +77,7 @@ export default function SignUp() {
           <GoogleSignInButton
             featured
             divider="below"
+            gsi={SIGN_UP_GSI}
             onSuccess={(d) => signIn(d.token, d.user)}
             onError={setError}
           />

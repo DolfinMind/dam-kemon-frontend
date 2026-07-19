@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import { trackAction } from '../api/analytics';
 import {
   listSavedSearches, addSavedSearch, removeSavedSearch,
   listWishlist, removeFromWishlist, updateWishlistAlert,
@@ -33,7 +34,10 @@ function fmt(p) { if (p == null) return 'N/A'; return '৳' + Number(p).toLocale
 export default function Account() {
   const { user, ready, signOut } = useAuth();
   const navigate = useNavigate();
-  const [tab, setTab] = useState('notifications');
+  const [search] = useSearchParams();
+  const requestedTab = search.get('tab');
+  const [tab, setTab] = useState(['notifications', 'wishlist', 'saved-searches', 'history', 'contributions', 'profile'].includes(requestedTab)
+    ? requestedTab : 'notifications');
 
   useEffect(() => {
     if (ready && !user) navigate('/sign-in');
@@ -376,7 +380,12 @@ function SavedSearchesTab() {
     e.preventDefault();
     if (!newQuery.trim()) return;
     setBusy(true);
-    try { await addSavedSearch(newQuery.trim()); setNewQuery(''); await reload(); }
+    try {
+      await addSavedSearch(newQuery.trim());
+      trackAction('saved_search_created');
+      setNewQuery('');
+      await reload();
+    }
     catch { /* ignore */ }
     finally { setBusy(false); }
   };
@@ -495,6 +504,7 @@ function WishlistTab() {
   const toggleAlert = async (productId, currentEnabled) => {
     try {
       await updateWishlistAlert(productId, { alertsEnabled: !currentEnabled });
+      if (!currentEnabled) trackAction('member_action_completed_track', productId);
       setItems((xs) => xs.map((x) =>
         (x.product?.id === productId || x.productId === productId)
           ? { ...x, alertsEnabled: !currentEnabled } : x));

@@ -1,6 +1,6 @@
-// Anonymous, no-PII telemetry. The anon id is a UUID minted once per
-// browser and stored in localStorage. The server treats it as best-effort
-// uniqueness, never identity.
+// Privacy-conscious telemetry. The anon id is a UUID minted once per browser
+// and stored in localStorage. Authenticated conversion events also carry the
+// user's JWT so the server can measure activation without adding PII here.
 //
 // All event hits go via sendBeacon so they don't add latency to the user's
 // navigation. We fall back to fetch(..., {keepalive: true}) when sendBeacon
@@ -89,6 +89,12 @@ export const trackPageView = (path) => {
   let referer = null;
   try { referer = document.referrer || null; } catch { /* ignore */ }
   fireBeacon('/events/pageview', { path: p, referer });
+};
+
+// Bounded conversion actions; the server rejects unknown event types.
+export const trackAction = (type, productId) => {
+  if (!type) return;
+  fireBeacon('/events/action', { type, ...(productId ? { productId } : {}) });
 };
 
 // Meta Pixel for ad retargeting. Inert until VITE_META_PIXEL_ID is set at

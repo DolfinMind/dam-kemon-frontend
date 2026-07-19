@@ -76,7 +76,8 @@ export const addSavedSearch = (query, notifyEmail) =>
 export const removeSavedSearch = (id) => api.delete(`/account/saved-searches/${id}`);
 
 export const listWishlist = () => api.get('/account/wishlist');
-export const addToWishlist = (productId) => api.post('/account/wishlist', { productId });
+export const addToWishlist = (productId, alertsEnabled = false) =>
+  api.post('/account/wishlist', { productId, alertsEnabled });
 export const removeFromWishlist = (productId) => api.delete(`/account/wishlist/${productId}`);
 
 /**

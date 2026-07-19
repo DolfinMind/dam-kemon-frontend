@@ -141,7 +141,7 @@ function ConversionFunnel({ data }) {
         <div className="lg:w-56 shrink-0">
           <p className="text-[10px] font-mono uppercase tracking-[.18em] text-green-light">Free-user funnel</p>
           <h3 className="font-serif text-xl font-bold mt-1">From curious to committed</h3>
-          <p className="text-xs text-white/55 mt-2">Activation means a new member searched, viewed a product, clicked a shop, or used a saved feature.</p>
+          <p className="text-xs text-white/55 mt-2">Activation means a new member saved a product, enabled an alert, or saved a search.</p>
         </div>
         <div className="flex-1 space-y-3">
           <FunnelStep label="Free visitors" value={visitors} width="100%" color="bg-blue" />
