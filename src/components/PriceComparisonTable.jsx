@@ -115,7 +115,7 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
 
   return (
     <div>
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
         {visible.map(({ it, mt, st, key, isRecommended }) => {
           const isFb = isFacebookSeller(it.siteName);
           const badge = sellerBadges[it.siteName];
@@ -125,6 +125,11 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
           const dtext = mt ? deliveryText(mt) : null;
           const isCheapest = it.price != null && it.price === lowestPrice;
           const delta = (it.price != null && lowestPrice != null) ? it.price - lowestPrice : null;
+          const initials = name.split(/\s+/).filter(Boolean).map((word) => word[0]).join('').slice(0, 2).toUpperCase();
+          let logoUrl = it.logoUrl || st?.avatarUrl || mt?.logoUrl || null;
+          if (!logoUrl && it.productUrl) {
+            try { logoUrl = new URL('/favicon.ico', it.productUrl).href; } catch { /* initials stay visible */ }
+          }
 
           return (
             <a
@@ -138,26 +143,43 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
                 trackClick(productId, it.siteSlug || it.siteName);
                 try { sessionStorage.setItem('dk_outclick', '1'); } catch { /* private mode */ }
               }}
-              className={`group flex h-full flex-col rounded-3xl border p-4 shadow-[var(--shadow-soft)] transition-colors sm:p-5 ${isRecommended ? 'border-acid bg-acid-soft/35 hover:bg-acid-soft/55' : `border-line bg-white hover:bg-cream-soft/60 ${isFb ? 'border-l-2 border-l-blue/40' : ''}`}`}
+              className={`group flex h-full min-w-0 flex-col rounded-3xl border p-3 shadow-[var(--shadow-soft)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 sm:p-5 ${isRecommended ? 'border-acid bg-acid-soft/35 hover:bg-acid-soft/55' : `border-line bg-white hover:bg-cream-soft/60 ${isFb ? 'border-l-2 border-l-blue/40' : ''}`}`}
             >
-              <div className="min-w-0">
-                {isRecommended && (
-                  <span className="mb-1.5 inline-flex items-center gap-1 rounded-full bg-acid px-2 py-0.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.1em] text-ink">
-                    <Crown className="h-2.5 w-2.5" /> Damkemon Pick
-                  </span>
-                )}
-                <h4 className="font-sans text-[15px] sm:text-base font-extrabold tracking-tight leading-tight text-ink truncate">
-                  {name}
-                </h4>
-                <div className="mt-1 flex items-center gap-1.5 min-w-0">
-                  {it.sellerName ? (
-                    <span className="text-[10px] font-mono text-gray truncate">via {it.siteName}</span>
-                  ) : badge ? (
-                    <span className={`text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded ${badge.color}`}>{badge.label}</span>
-                  ) : isFb ? (
-                    <span className="text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-blue text-white">Facebook</span>
-                  ) : null}
-                  {it.inStock === false && <span className="text-[9px] font-mono font-bold text-red">Out of stock</span>}
+              <div className="flex items-start gap-2.5 sm:gap-3">
+                <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-line bg-gradient-to-br from-white to-cream-soft font-serif text-xs font-bold italic text-ink shadow-[var(--shadow-soft)] sm:h-12 sm:w-12 sm:rounded-2xl sm:text-sm">
+                  <span aria-hidden="true">{initials || '?'}</span>
+                  {logoUrl && (
+                    <img
+                      src={logoUrl}
+                      alt=""
+                      loading="lazy"
+                      referrerPolicy="no-referrer"
+                      className="absolute inset-0 h-full w-full bg-white object-contain p-1.5"
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
+                  )}
+                </div>
+                <div className="min-w-0 flex-1 pt-0.5">
+                  {isRecommended && (
+                    <span className="mb-1.5 inline-flex items-center gap-1 rounded-full bg-acid px-2 py-0.5 font-mono text-[9px] font-extrabold uppercase tracking-[0.1em] text-ink">
+                      <Crown className="h-2.5 w-2.5" />
+                      <span className="sm:hidden">Pick</span>
+                      <span className="hidden sm:inline">Damkemon Pick</span>
+                    </span>
+                  )}
+                  <h4 className="truncate font-sans text-[15px] font-extrabold leading-tight tracking-tight text-ink sm:text-base">
+                    {name}
+                  </h4>
+                  <div className="mt-1 flex min-w-0 items-center gap-1.5">
+                    {it.sellerName ? (
+                      <span className="truncate font-mono text-[10px] text-gray">via {it.siteName}</span>
+                    ) : badge ? (
+                      <span className={`rounded px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase ${badge.color}`}>{badge.label}</span>
+                    ) : isFb ? (
+                      <span className="rounded bg-blue px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase text-white">Facebook</span>
+                    ) : null}
+                    {it.inStock === false && <span className="font-mono text-[9px] font-bold text-red">Out of stock</span>}
+                  </div>
                 </div>
               </div>
 
@@ -187,7 +209,7 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
                 {mt?.codAvailable && <Signal Icon={Banknote}>COD</Signal>}
               </div>
 
-              <div className="mt-auto flex items-end justify-between gap-3 pt-4">
+              <div className="mt-auto flex flex-col items-stretch gap-3 pt-4 sm:flex-row sm:items-end sm:justify-between">
                 <div className="text-left">
                   <div className="font-mono text-[19px] sm:text-[21px] font-bold leading-none text-ink">{formatPrice(it.price)}</div>
                   <div className="mt-1 text-[9px] sm:text-[10px] font-mono leading-tight">
@@ -198,7 +220,7 @@ export default function PriceComparisonTable({ prices = [], productId, trust = {
                     ) : null}
                   </div>
                 </div>
-                <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-bold transition-colors ${isRecommended ? 'bg-ink text-cream group-hover:bg-ink-soft' : 'bg-cream-soft text-ink group-hover:bg-ink group-hover:text-cream'}`}>
+                <span className={`inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full px-3 py-2 text-xs font-bold transition-colors sm:px-3.5 ${isRecommended ? 'bg-ink text-cream group-hover:bg-ink-soft' : 'bg-cream-soft text-ink group-hover:bg-ink group-hover:text-cream'}`}>
                   Visit <ExternalLink className="w-3.5 h-3.5" />
                 </span>
               </div>
