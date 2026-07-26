@@ -312,7 +312,7 @@ export default function AdminAnalytics() {
       </div>
 
       <p className="px-1 text-[11px] text-gray-500">
-        Likely-human metrics require newly classified public traffic. Older events remain unclassified instead of being counted as people.
+        New traffic is classified at ingestion; historical page views are estimated from their stored browser signature.
       </p>
 
       {/* Catalog velocity */}
