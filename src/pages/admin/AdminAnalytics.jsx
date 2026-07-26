@@ -131,7 +131,10 @@ export default function AdminAnalytics() {
   const peakHour = hourly?.peakHourLabel ?? '—';
   const dailyViewed = daily.reduce((a, d) => a + (Number(d.pageViews) || 0), 0);
   const dailyVisitors = daily.reduce((a, d) => a + (Number(d.users) || 0), 0);
-  const convRate = overview?.searchConversionRate ?? funnel?.searchToClick;
+  const convRate = overview?.clicksPer100Searches
+    ?? funnel?.clicksPer100Searches
+    ?? overview?.searchConversionRate
+    ?? funnel?.searchToClick;
   const catalogDaily = growth?.daily || [];
   const averageNewProducts = catalogDaily.length
     ? Math.round((Number(growth?.newProducts) || 0) / catalogDaily.length)
@@ -242,8 +245,10 @@ export default function AdminAnalytics() {
             </div>
             <div className="flex justify-between items-start">
               <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-1">{num(overview?.visitorsToday)}</h2>
-                <span className="text-sm text-gray-500">visitors today</span>
+                <h2 className="text-3xl font-bold text-gray-900 mb-1">
+                  {num(overview?.likelyHumanVisitorsToday ?? overview?.visitorsToday)}
+                </h2>
+                <span className="text-sm text-gray-500">likely human visitors today</span>
               </div>
               <div className="h-12 w-16 flex items-end gap-1">
                 {hourlyBars.slice(0, 3).map((b, i) => (
@@ -258,20 +263,25 @@ export default function AdminAnalytics() {
           </div>
           <div className="mt-4 grid grid-cols-3 gap-2 border-t border-gray-100 pt-3 text-center">
             <MiniStat label="Page views" value={num(overview?.pageViewsToday)} />
+            <MiniStat label="Searchers" value={num(overview?.uniqueSearchersToday)} />
             <MiniStat label="Searches" value={num(overview?.searchesToday)} />
-            <MiniStat label="Active" value={num(overview?.activeNow)} />
+          </div>
+          <div className="mt-3 grid grid-cols-3 gap-2 border-t border-gray-100 pt-3 text-center">
+            <MiniStat label="Known bots" value={num(overview?.knownBotVisitorsToday)} />
+            <MiniStat label="Suspected" value={num(overview?.suspectedBotVisitorsToday)} />
+            <MiniStat label="Unclassified" value={num(overview?.unclassifiedVisitorsToday)} />
           </div>
         </div>
 
         <div className="flex flex-col justify-between rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
           <div>
             <div className="mb-2 flex items-center justify-between">
-              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Search → Click</span>
+              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Search click rate</span>
             </div>
             <div className="flex justify-between items-start">
               <div>
                 <h2 className="text-3xl font-bold text-gray-900 mb-1">{convRate != null ? pct(convRate) : '—'}</h2>
-                <span className="text-sm text-gray-500">conversion rate</span>
+                <span className="text-sm text-gray-500">outbound clicks per 100 searches</span>
               </div>
               <div className="h-14 w-14 relative">
                 <ResponsiveContainer width="100%" height="100%">
@@ -294,12 +304,16 @@ export default function AdminAnalytics() {
               </div>
             </div>
           </div>
-          <div className="mt-4 grid grid-cols-2 gap-2 border-t border-gray-100 pt-3 text-center">
-            <MiniStat label="Product views" value={num(overview?.productViewsToday)} />
-            <MiniStat label="Visitors" value={num(overview?.visitorsToday)} />
+          <div className="mt-4 grid grid-cols-2 gap-3 border-t border-gray-100 pt-3 text-center">
+            <MiniStat label="Likely-human views" value={num(overview?.productViewsToday)} />
+            <MiniStat label="Active now" value={num(overview?.activeNow)} />
           </div>
         </div>
       </div>
+
+      <p className="px-1 text-[11px] text-gray-500">
+        Likely-human metrics require newly classified public traffic. Older events remain unclassified instead of being counted as people.
+      </p>
 
       {/* Catalog velocity */}
       <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
@@ -364,7 +378,7 @@ export default function AdminAnalytics() {
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-lg font-bold text-gray-900">{num(dailyVisitors)}</span>
-                    <span className="text-sm text-gray-400">visitors</span>
+                    <span className="text-sm text-gray-400">likely humans</span>
                   </div>
                 </div>
                 <div className="w-px bg-gray-200"></div>
@@ -407,7 +421,7 @@ export default function AdminAnalytics() {
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                   labelStyle={{ fontWeight: 'bold', color: '#0f172a' }}
                 />
-                <Area type="monotone" dataKey="users" name="Visitors" stroke="#94a3b8" strokeWidth={2} fill="url(#colorUsers)" />
+                <Area type="monotone" dataKey="users" name="Likely humans" stroke="#94a3b8" strokeWidth={2} fill="url(#colorUsers)" />
                 <Area type="monotone" dataKey="pageViews" stroke="#F97316" strokeWidth={3} fill="url(#colorViews)" activeDot={{ r: 6, fill: '#F97316', stroke: '#fff', strokeWidth: 2 }} />
               </AreaChart>
             </ResponsiveContainer>
@@ -424,11 +438,11 @@ export default function AdminAnalytics() {
             <div className="absolute inset-x-0 top-0 h-24 rounded-full border-[12px] border-orange-100" style={{ clipPath: 'polygon(0 0, 100% 0, 100% 50%, 0 50%)' }} />
             <div
               className="absolute inset-x-0 top-0 h-24 rounded-full border-[12px] border-orange-500"
-              style={{ clipPath: `polygon(0 0, ${Math.min(100, Math.max(0, Number(funnel?.viewToClick) || 0))}% 0, ${Math.min(100, Math.max(0, Number(funnel?.viewToClick) || 0))}% 50%, 0 50%)` }}
+              style={{ clipPath: `polygon(0 0, ${Math.min(100, Math.max(0, Number(funnel?.clicksPer100Views ?? funnel?.viewToClick) || 0))}% 0, ${Math.min(100, Math.max(0, Number(funnel?.clicksPer100Views ?? funnel?.viewToClick) || 0))}% 50%, 0 50%)` }}
             />
             <div className="text-center -mt-2">
-              <h3 className="text-3xl font-bold text-gray-900">{pct(funnel?.viewToClick)}</h3>
-              <p className="text-xs text-gray-400 mt-1">view → click</p>
+              <h3 className="text-3xl font-bold text-gray-900">{pct(funnel?.clicksPer100Views ?? funnel?.viewToClick)}</h3>
+              <p className="text-xs text-gray-400 mt-1">clicks per 100 views</p>
             </div>
           </div>
 
@@ -655,7 +669,7 @@ function optionalRows(id, data) {
       { label: 'Searches', value: data.searches },
       { label: 'Product views', value: data.productViews },
       { label: 'Outbound clicks', value: data.outboundClicks },
-      { label: 'Search → click', formatted: pct(data.searchToClick) },
+      { label: 'Clicks / 100 searches', formatted: pct(data.clicksPer100Searches ?? data.searchToClick) },
     ];
   }
   return [];
