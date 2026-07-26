@@ -33,6 +33,7 @@ export default function Footer() {
             <Link to="/sellers" className="text-cream/70 hover:text-cream text-sm transition-colors">Shops</Link>
             {SHOW_SAATHI && <Link to="/saathi" className="text-cream/70 hover:text-cream text-sm transition-colors">Sell with us</Link>}
             <Link to="/submit-shop" className="text-cream/70 hover:text-cream text-sm transition-colors">Submit shop</Link>
+            <Link to="/privacy" className="text-cream/70 hover:text-cream text-sm transition-colors">Privacy</Link>
             {SHOW_PUBLIC_DASHBOARD && <Link to="/dashboard" className="text-cream/70 hover:text-cream text-sm transition-colors">Dashboard</Link>}
           </nav>
         </div>

@@ -158,7 +158,7 @@ function ProfileTab() {
     gender: user?.gender || '',
     birthYear: user?.birthYear || '',
     interests: user?.interests || [],
-    newsletterOptIn: user?.newsletterOptIn !== false,
+    newsletterOptIn: !!user?.newsletterOptIn,
   });
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -278,6 +278,8 @@ function ProfileTab() {
   );
 }
 
+// This codebase does not use runtime PropTypes; TypeScript covers build-time checks.
+// eslint-disable-next-line react/prop-types
 function TabBtn({ active, onClick, icon: Icon, children }) {
   return (
     <button
@@ -410,7 +412,7 @@ function SavedSearchesTab() {
           disabled={busy || !newQuery.trim()}
           className="inline-flex items-center gap-1 px-4 py-2.5 rounded-xl bg-ink text-cream font-semibold text-sm hover:bg-red disabled:opacity-50 transition-colors"
         >
-          <Plus className="w-4 h-4" /> Track
+          <Plus className="w-4 h-4" /> Save
         </button>
       </form>
 
@@ -420,7 +422,7 @@ function SavedSearchesTab() {
         <div className="text-center py-12 card-soft">
           <Bell className="w-10 h-10 text-ink/20 mx-auto mb-3" />
           <p className="text-gray text-sm">No saved searches yet.</p>
-          <p className="text-gray text-xs mt-1">Add one above and we’ll email you when prices drop.</p>
+          <p className="text-gray text-xs mt-1">Save a search to run it again later.</p>
         </div>
       ) : (
         <ul className="space-y-2">
@@ -501,13 +503,12 @@ function WishlistTab() {
     catch { /* ignore */ }
   };
 
-  const toggleAlert = async (productId, currentEnabled) => {
+  const disableAlert = async (productId) => {
     try {
-      await updateWishlistAlert(productId, { alertsEnabled: !currentEnabled });
-      if (!currentEnabled) trackAction('member_action_completed_track', productId);
+      await updateWishlistAlert(productId, { alertsEnabled: false });
       setItems((xs) => xs.map((x) =>
         (x.product?.id === productId || x.productId === productId)
-          ? { ...x, alertsEnabled: !currentEnabled } : x));
+          ? { ...x, alertsEnabled: false } : x));
     } catch { /* ignore */ }
   };
 
@@ -544,16 +545,21 @@ function WishlistTab() {
                     )}
                   </div>
                   <div className="mt-2 flex flex-wrap items-center gap-2">
-                    <button
-                      onClick={() => toggleAlert(pid, w.alertsEnabled)}
-                      className={`inline-flex items-center gap-1 text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full transition-colors ${
-                        w.alertsEnabled
-                          ? 'bg-green/15 text-green border border-green/30'
-                          : 'bg-cream-soft text-gray border border-line hover:border-ink hover:text-ink'
-                      }`}
-                    >
-                      <Bell className="w-3 h-3" /> {w.alertsEnabled ? 'Alerts on' : 'Alerts off'}
-                    </button>
+                    {w.alertsEnabled ? (
+                      <button
+                        onClick={() => disableAlert(pid)}
+                        className="inline-flex items-center gap-1 text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-green/15 text-green border border-green/30 transition-colors"
+                      >
+                        <Bell className="w-3 h-3" /> Alerts on{dropTarget ? '' : ' · 10% drop'}
+                      </button>
+                    ) : (
+                      <Link
+                        to={`/product/${pid}`}
+                        className="inline-flex items-center gap-1 text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-cream-soft text-gray border border-line hover:border-ink hover:text-ink transition-colors"
+                      >
+                        <Bell className="w-3 h-3" /> Set target
+                      </Link>
+                    )}
                     {dropTarget && (
                       <span className="inline-flex items-center gap-0.5 text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-ink/5 text-ink/70">
                         target {fmt(dropTarget)}

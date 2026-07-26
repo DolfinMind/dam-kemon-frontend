@@ -86,6 +86,10 @@ export const trackPageView = (path) => {
     /* no window */
   }
   if (!p) return;
+  // Pageview analytics needs the route, not query values. Dropping the query
+  // keeps auth/reset tokens, alert targets, searches, and nested next URLs out
+  // of the event stream; dedicated events capture the useful actions.
+  p = p.split(/[?#]/, 1)[0];
   let referer = null;
   try { referer = document.referrer || null; } catch { /* ignore */ }
   fireBeacon('/events/pageview', { path: p, referer });
@@ -104,8 +108,10 @@ export const trackAction = (type, productId) => {
 const PIXEL_ID = import.meta.env.VITE_META_PIXEL_ID;
 
 function metaPixelPageView() {
-  if (!PIXEL_ID) return;
+  // Advertising pixels wait for an explicit local consent signal. There is no
+  // consent control yet, so this stays off by default.
   try {
+    if (!PIXEL_ID || localStorage.getItem('dk_meta_consent') !== 'granted') return;
     if (!window.fbq) {
       const n = (window.fbq = function () {
         n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);

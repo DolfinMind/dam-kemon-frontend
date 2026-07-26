@@ -45,8 +45,8 @@ export const passwordLogin = (identifier, password) =>
   api.post('/auth/login', { username: identifier, password });
 
 /** Regular-user registration. Returns {token, user} — signed in immediately. */
-export const signup = ({ name, email, password, phone, newsletterOptIn }) =>
-  api.post('/auth/signup', { name, email, password, phone, newsletterOptIn });
+export const signup = ({ name, email, password, newsletterOptIn }) =>
+  api.post('/auth/signup', { name, email, password, newsletterOptIn });
 
 /** Google Identity Services: exchange the Google ID token for our JWT. */
 export const googleLogin = (credential) =>
@@ -76,8 +76,12 @@ export const addSavedSearch = (query, notifyEmail) =>
 export const removeSavedSearch = (id) => api.delete(`/account/saved-searches/${id}`);
 
 export const listWishlist = () => api.get('/account/wishlist');
-export const addToWishlist = (productId, alertsEnabled = false) =>
-  api.post('/account/wishlist', { productId, alertsEnabled });
+export const addToWishlist = (productId, alertsEnabled = false, targetPrice = null) =>
+  api.post('/account/wishlist', {
+    productId,
+    alertsEnabled,
+    ...(Number.isFinite(targetPrice) ? { targetPrice } : {}),
+  });
 export const removeFromWishlist = (productId) => api.delete(`/account/wishlist/${productId}`);
 
 /**

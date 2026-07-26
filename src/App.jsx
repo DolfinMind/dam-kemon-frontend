@@ -35,6 +35,7 @@ const VerifyEmail = lazy(() => import('./pages/VerifyEmail'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const Account = lazy(() => import('./pages/Account'));
+const Privacy = lazy(() => import('./pages/Privacy'));
 const FcommerceSignup = SHOW_SAATHI ? lazy(() => import('./pages/FcommerceSignup')) : null;
 const Saathi = SHOW_SAATHI ? lazy(() => import('./pages/Saathi')) : null;
 const SaathiSignup = SHOW_SAATHI ? lazy(() => import('./pages/SaathiSignup')) : null;
@@ -115,6 +116,7 @@ function App() {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/account" element={<Account />} />
+                <Route path="/privacy" element={<Privacy />} />
                 {SHOW_PUBLIC_DASHBOARD && <Route path="/dashboard" element={<Dashboard />} />}
                 <Route path="/admin" element={<AdminLayout />}>
                   <Route index element={<AdminAnalytics />} />

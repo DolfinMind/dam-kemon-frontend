@@ -1,9 +1,9 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { getProduct, getProductHistory, getDailyPriceHistory, getShopTrust, getSellerTrust } from '../api/api';
 import { trackAction, trackView } from '../api/analytics';
 import { pushRecent } from '../api/recentlyViewed';
-import { addToWishlist, removeFromWishlist, listWishlist, updateWishlistAlert } from '../api/auth';
+import { addToWishlist, removeFromWishlist, listWishlist } from '../api/auth';
 import { useAuth } from '../auth/AuthContext';
 import PriceComparisonTable from '../components/PriceComparisonTable';
 import PriceHistoryChart from '../components/PriceHistoryChart';
@@ -12,7 +12,6 @@ import AddOffer from '../components/AddOffer';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ProductSEO from '../components/ProductSEO';
 import ServiceUnavailable from '../components/ServiceUnavailable';
-import NewsletterInline from '../components/NewsletterInline';
 import FeedbackPulse from '../components/FeedbackPulse';
 import {
   ArrowLeft, Share2, Bell, Store, AlertTriangle, Heart, Clock, ChevronDown,
@@ -41,7 +40,9 @@ export default function ProductDetail() {
   const [retryTick, setRetryTick] = useState(0);
   const { user } = useAuth();
   const pid = product?.id || id;
-  const memberAction = new URLSearchParams(search).get('memberAction');
+  const intentParams = new URLSearchParams(search);
+  const memberAction = intentParams.get('memberAction');
+  const requestedTargetPrice = Number(intentParams.get('targetPrice'));
 
   useEffect(() => {
     let cancelled = false;
@@ -75,26 +76,6 @@ export default function ProductDetail() {
     }
   }, [product?.id, id]);
 
-  // Value-moment newsletter ask: only from the 2nd product viewed this
-  // session — a first-time lander hasn't seen the value yet.
-  const [showNewsletter, setShowNewsletter] = useState(false);
-  useEffect(() => {
-    try {
-      // Count distinct products viewed — a Set so remounts (and StrictMode's
-      // double effect run) can't inflate the count and fire the ask early.
-      const ids = new Set(JSON.parse(sessionStorage.getItem('dk_pv') || '[]'));
-      ids.add(id);
-      sessionStorage.setItem('dk_pv', JSON.stringify([...ids]));
-      if (ids.size >= 2) {
-        if (localStorage.getItem('dk_nl')) return;
-        if (Date.now() - Number(localStorage.getItem('dk_nl_x') || 0) < 14 * 24 * 3600 * 1000) return;
-        // Drives only the inline card below the price table — the modal ask
-        // lives solely in ExitIntentModal now (10s dwell, once per session).
-        setShowNewsletter(true);
-      }
-    } catch { /* private mode */ }
-  }, [id]);
-
   // One-click pulse survey, armed when the shopper returns from a store tab —
   // the moment they know whether we actually helped.
   const [pulseArmed, setPulseArmed] = useState(false);
@@ -112,7 +93,9 @@ export default function ProductDetail() {
   const [inWishlist, setInWishlist] = useState(false);
   const [wishlistBusy, setWishlistBusy] = useState(false);
   const [memberNotice, setMemberNotice] = useState(null);
+  const [alertError, setAlertError] = useState(null);
   const [alertModalOpen, setAlertModalOpen] = useState(false);
+  const completedIntentRef = useRef(null);
   const [alertSettings, setAlertSettings] = useState({
     alertsEnabled: false,
     targetPrice: '',
@@ -142,18 +125,25 @@ export default function ProductDetail() {
   useEffect(() => {
     // Wait for the canonical Mongo ID; the route may contain a product slug.
     if (!user || !product?.id || !['save', 'track'].includes(memberAction)) return;
+    if (memberAction === 'track' && (!Number.isFinite(requestedTargetPrice) || requestedTargetPrice <= 0)) return;
+    const intentKey = `${user.id || user.email}:${product.id}:${memberAction}:${requestedTargetPrice || ''}`;
+    if (completedIntentRef.current === intentKey) return;
+    completedIntentRef.current = intentKey;
     const track = memberAction === 'track';
     const targetPid = product.id;
     const cleanParams = new URLSearchParams(search);
     cleanParams.delete('memberAction');
+    cleanParams.delete('targetPrice');
     const cleanPath = `${pathname}${cleanParams.size ? `?${cleanParams}` : ''}`;
     setWishlistBusy(true);
-    addToWishlist(targetPid, track)
+    addToWishlist(targetPid, track, track ? requestedTargetPrice : null)
       .then(() => {
         setInWishlist(true);
-        if (track) setAlertSettings((s) => ({ ...s, alertsEnabled: true }));
+        if (track) setAlertSettings((s) => ({ ...s, alertsEnabled: true, targetPrice: requestedTargetPrice }));
         setMemberNotice(track
-          ? 'Price tracking is on. We’ll email you when it drops.'
+          ? (user.emailVerified === true
+            ? `Alert saved. We’ll email when a fresh observed price reaches ${formatPrice(requestedTargetPrice)}.`
+            : 'Alert saved. Verify your email to receive alerts.')
           : 'Product saved to your wishlist.');
         trackAction(`member_action_completed_${memberAction}`, targetPid);
       })
@@ -162,12 +152,14 @@ export default function ProductDetail() {
         setWishlistBusy(false);
         navigate(cleanPath, { replace: true, state });
       });
-  }, [user, product?.id, memberAction, navigate, pathname, search, state]);
+  }, [user, product?.id, memberAction, requestedTargetPrice, navigate, pathname, search, state]);
 
-  const requestMemberAction = (action) => {
+  const requestMemberAction = (action, targetPrice = null) => {
     const params = new URLSearchParams(search);
     params.set('memberAction', action);
+    if (targetPrice != null) params.set('targetPrice', String(targetPrice));
     const next = `${pathname}?${params.toString()}`;
+    if (action === 'track') trackAction('alert_target_set', pid);
     trackAction(`member_intent_${action}`, pid);
     navigate(`/sign-up?next=${encodeURIComponent(next)}`);
   };
@@ -188,41 +180,41 @@ export default function ProductDetail() {
     finally { setWishlistBusy(false); }
   };
 
-  const openTrackPrice = async () => {
+  const openTrackPrice = () => {
     if (!pid) return;
-    if (!user) { requestMemberAction('track'); return; }
-    // Turn tracking on with this click; the modal only customizes the threshold.
-    if (!alertSettings.alertsEnabled) {
-      setWishlistBusy(true);
-      try {
-        await addToWishlist(pid, true);
-        setInWishlist(true);
-        setAlertSettings((s) => ({ ...s, alertsEnabled: true }));
-        setMemberNotice('Price tracking is on. We’ll email you when it drops.');
-        trackAction('member_action_completed_track', pid);
-      }
-      catch { return; }
-      finally { setWishlistBusy(false); }
-    }
-    setAlertSettings((s) => ({ ...s, alertsEnabled: true }));
+    setAlertError(null);
+    setAlertSettings((s) => ({ ...s, alertsEnabled: true, targetPrice: s.targetPrice || (lowestPrice ? Math.round(lowestPrice * 0.9) : '') }));
     setAlertModalOpen(true);
   };
 
   const saveAlertSettings = async () => {
     if (!pid) return;
+    const targetPrice = Number(alertSettings.targetPrice);
+    if (!Number.isFinite(targetPrice) || targetPrice <= 0) {
+      setAlertError('Enter a positive target price.');
+      return;
+    }
+    if (lowestPrice != null && targetPrice >= lowestPrice) {
+      setAlertError(`Choose a target below the currently observed ${formatPrice(lowestPrice)}.`);
+      return;
+    }
+    setAlertError(null);
+    if (!user) {
+      setAlertModalOpen(false);
+      requestMemberAction('track', targetPrice);
+      return;
+    }
     setWishlistBusy(true);
     try {
-      const tp = alertSettings.targetPrice === '' ? null : Number(alertSettings.targetPrice);
-      await updateWishlistAlert(pid, {
-        alertsEnabled: !!alertSettings.alertsEnabled,
-        targetPrice: Number.isFinite(tp) ? tp : null,
-        alertOnDropPercent: Math.max(1, Math.min(50, Number(alertSettings.alertOnDropPercent) || 10)) / 100,
-      });
+      await addToWishlist(pid, true, targetPrice);
       setAlertModalOpen(false);
-      if (alertSettings.alertsEnabled) {
-        setMemberNotice('Price tracking is on. We’ll email you when it drops.');
-      }
-    } catch { /* noop */ }
+      setInWishlist(true);
+      setAlertSettings((s) => ({ ...s, alertsEnabled: true, targetPrice }));
+      setMemberNotice(user.emailVerified === true
+        ? `Alert saved. We’ll email when a fresh observed price reaches ${formatPrice(targetPrice)}.`
+        : 'Alert saved. Verify your email to receive alerts.');
+      trackAction('member_action_completed_track', pid);
+    } catch { setAlertError('Could not save this alert. Try again.'); }
     finally { setWishlistBusy(false); }
   };
 
@@ -366,8 +358,8 @@ export default function ProductDetail() {
             <button onClick={toggleWishlist} disabled={wishlistBusy} aria-label={inWishlist ? 'Remove from saved products' : 'Save product'} title={inWishlist ? 'Saved' : 'Save'} className={`w-9 h-9 sm:w-auto sm:px-3 rounded-full border inline-flex items-center justify-center gap-1.5 text-xs font-bold transition-colors ${inWishlist ? 'border-red/30 bg-red-soft text-red' : 'border-line text-gray hover:text-ink'}`}>
               <Heart className={`w-4 h-4 ${inWishlist ? 'fill-red' : ''}`} /><span className="hidden sm:inline">{inWishlist ? 'Saved' : 'Save'}</span>
             </button>
-            <button onClick={openTrackPrice} disabled={wishlistBusy} aria-label="Track price drops" title="Track price drops" className={`w-9 h-9 sm:w-auto sm:px-3 rounded-full border inline-flex items-center justify-center gap-1.5 text-xs font-bold transition-colors disabled:opacity-50 ${alertSettings.alertsEnabled ? 'border-green/30 bg-green-soft text-green' : 'border-line text-gray hover:text-ink'}`}>
-              <Bell className="w-4 h-4" /><span className="hidden sm:inline">{alertSettings.alertsEnabled ? 'Tracking' : 'Track'}</span>
+            <button onClick={openTrackPrice} disabled={wishlistBusy} aria-label="Set a target price alert" title="Set a target price alert" className={`w-9 h-9 sm:w-auto sm:px-3 rounded-full border inline-flex items-center justify-center gap-1.5 text-xs font-bold transition-colors disabled:opacity-50 ${alertSettings.alertsEnabled ? 'border-green/30 bg-green-soft text-green' : 'border-line text-gray hover:text-ink'}`}>
+              <Bell className="w-4 h-4" /><span className="hidden sm:inline">{alertSettings.alertsEnabled ? 'Edit alert' : (user ? 'Set alert' : 'Alert me at my price')}</span>
             </button>
             <button
               onClick={() => {
@@ -399,7 +391,7 @@ export default function ProductDetail() {
             </div>
             <p className="hidden sm:block text-right text-[10px] font-mono text-gray shrink-0">
               Lowest {formatPrice(lowestPrice)}<br />
-              {savings > 0 ? `${formatPrice(savings)} price spread` : `${sellerCount} live ${sellerCount === 1 ? 'offer' : 'offers'}`}
+              {savings > 0 ? `${formatPrice(savings)} price spread` : `${sellerCount} observed ${sellerCount === 1 ? 'offer' : 'offers'}`}
             </p>
           </div>
 
@@ -411,7 +403,6 @@ export default function ProductDetail() {
             recommended={pick}
           />
 
-          {showNewsletter && <div className="mt-4"><NewsletterInline /></div>}
           <AddOffer productId={pid} />
         </section>
 
@@ -448,8 +439,8 @@ export default function ProductDetail() {
           >
             <div className="flex items-start justify-between mb-4">
               <div>
-                <h3 className="font-sans text-xl sm:text-2xl font-extrabold tracking-[-0.02em] text-ink">Plan a Genius Comeback</h3>
-                <p className="text-xs text-gray mt-1">Smart shoppers wait. We’ll email you the moment the price drops.</p>
+                <h3 className="font-sans text-xl sm:text-2xl font-extrabold tracking-[-0.02em] text-ink">Set your target price</h3>
+                <p className="text-xs text-gray mt-1">{user ? 'Email alerts require a verified address.' : 'We’ll save this alert after you sign up. Email alerts require a verified address.'}</p>
               </div>
               <button
                 onClick={() => setAlertModalOpen(false)}
@@ -460,25 +451,15 @@ export default function ProductDetail() {
               </button>
             </div>
 
-            <label className="flex items-start gap-3 cursor-pointer mb-4 px-3 py-2.5 rounded-2xl bg-white border border-line">
-              <input
-                type="checkbox"
-                checked={!!alertSettings.alertsEnabled}
-                onChange={(e) => setAlertSettings((s) => ({ ...s, alertsEnabled: e.target.checked }))}
-                className="mt-0.5 w-4 h-4"
-              />
-              <span className="text-sm">
-                <span className="font-semibold text-ink">Enable price alerts</span>
-                <span className="block text-[11px] text-gray mt-0.5">
-                  Currently lowest: <span className="font-mono">{formatPrice(lowestPrice)}</span>
-                </span>
-              </span>
-            </label>
+            <div className="mb-4 px-3 py-2.5 rounded-2xl bg-white border border-line text-sm">
+              <span className="font-semibold text-ink">Currently observed lowest</span>
+              <span className="block text-[11px] text-gray mt-0.5 font-mono">{formatPrice(lowestPrice)}</span>
+            </div>
 
             <div className="space-y-3 mb-5">
               <div>
                 <label className="block text-[11px] uppercase tracking-wider font-mono text-gray mb-1.5">
-                  Target price (notify when below)
+                  Target price (notify at or below)
                 </label>
                 <div className="flex items-center gap-2 bg-white border border-line rounded-2xl px-3 py-2">
                   <span className="text-gray font-mono">৳</span>
@@ -492,19 +473,9 @@ export default function ProductDetail() {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-[11px] uppercase tracking-wider font-mono text-gray mb-1.5">
-                  Or notify on any drop ≥ <b>{alertSettings.alertOnDropPercent}%</b>
-                </label>
-                <input
-                  type="range"
-                  min="1" max="50" step="1"
-                  value={alertSettings.alertOnDropPercent}
-                  onChange={(e) => setAlertSettings((s) => ({ ...s, alertOnDropPercent: e.target.value }))}
-                  className="w-full"
-                />
-              </div>
             </div>
+
+            {alertError && <p role="alert" className="mb-4 text-sm text-red">{alertError}</p>}
 
             <div className="flex items-center gap-2">
               <button
@@ -518,7 +489,7 @@ export default function ProductDetail() {
                 disabled={wishlistBusy}
                 className="btn-primary flex-1 disabled:opacity-50"
               >
-                {wishlistBusy ? 'Saving…' : 'Save alert'}
+                {wishlistBusy ? 'Saving…' : (user ? 'Save alert' : 'Continue to sign up')}
               </button>
             </div>
           </div>

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { signup } from '../api/auth';
+import { getProduct } from '../api/api';
 import { useAuth } from '../auth/AuthContext';
+import { safeNextPath } from '../auth/safeNext';
 import GoogleSignInButton from '../components/GoogleSignInButton';
 import AuthLayout, { Stagger, Field } from '../components/AuthLayout';
 import { AlertCircle } from 'lucide-react';
@@ -9,7 +11,7 @@ import { AlertCircle } from 'lucide-react';
 const SIGN_UP_GSI = { text: 'signup_with' };
 
 /**
- * Regular-user registration: name + email + password, optional phone,
+ * Regular-user registration: name + email + password,
  * newsletter opt-in. On success the API returns a JWT (signed in right
  * away) and sends a verification email — alerts activate once verified.
  * Navigation watches `user` (not a callback) so it works no matter which
@@ -19,24 +21,35 @@ export default function SignUp() {
   const { signIn, user } = useAuth();
   const navigate = useNavigate();
   const [search] = useSearchParams();
-  const [form, setForm] = useState({ name: '', email: '', password: '', phone: '', newsletterOptIn: true });
+  const [form, setForm] = useState({ name: '', email: '', password: '', newsletterOptIn: false });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
   const [complete, setComplete] = useState(false);
 
   const rawNext = search.get('next');
-  const next = (rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//')) ? rawNext : null;
+  const next = safeNextPath(rawNext);
   const intent = next ? new URL(next, 'https://damkemon.com').searchParams.get('memberAction') : null;
+  const intentUrl = next ? new URL(next, 'https://damkemon.com') : null;
+  const productId = intentUrl?.pathname.match(/^\/product\/([^/]+)$/)?.[1];
+  const targetPrice = Number(intentUrl?.searchParams.get('targetPrice'));
+  const [intentProduct, setIntentProduct] = useState(null);
   const copy = intent === 'track'
     ? { complete: 'Price tracking ready', heading: 'Track this price', detail: 'Create a free account and we’ll turn the alert on automatically.' }
     : intent === 'save'
       ? { complete: 'Product saved', heading: 'Save this product', detail: 'Create a free account and we’ll add it to your wishlist automatically.' }
-      : { complete: 'Account ready', heading: 'Create your account', detail: 'Save a search now and we’ll watch the prices for you.' };
+      : { complete: 'Account ready', heading: 'Create your account', detail: 'Save products and set price alerts you can manage.' };
+
+  useEffect(() => {
+    if (!productId || intent !== 'track') return undefined;
+    let alive = true;
+    getProduct(productId).then((r) => { if (alive) setIntentProduct(r.data); }).catch(() => {});
+    return () => { alive = false; };
+  }, [productId, intent]);
 
   useEffect(() => {
     if (!user) return undefined;
     setComplete(true);
-    const timer = setTimeout(() => navigate(next || '/account?tab=saved-searches'), 1050);
+    const timer = setTimeout(() => navigate(next || '/browse'), 1050);
     return () => clearTimeout(timer);
   }, [user, next, navigate]);
 
@@ -53,7 +66,6 @@ export default function SignUp() {
         name: form.name.trim(),
         email: form.email.trim(),
         password: form.password,
-        phone: form.phone.trim() || undefined,
         newsletterOptIn: form.newsletterOptIn,
       });
       signIn(r.data.token, r.data.user); // the user-watch effect navigates
@@ -69,6 +81,11 @@ export default function SignUp() {
       <Stagger i={0} className="text-center mb-8">
         <h1 className="font-serif text-3xl sm:text-[2.1rem] font-semibold tracking-tight leading-tight mb-2">{copy.heading}</h1>
         <p className="text-gray text-[15px]">{copy.detail}</p>
+        {intent === 'track' && Number.isFinite(targetPrice) && targetPrice > 0 && (
+          <p className="mt-3 text-xs text-ink/70">
+            {intentProduct?.name ? `${intentProduct.name} · ` : ''}Alert at or below <b>৳{targetPrice.toLocaleString('en-IN')}</b>{intentProduct?.lowestPrice != null ? ` (currently observed from ৳${Number(intentProduct.lowestPrice).toLocaleString('en-IN')})` : ''}.
+          </p>
+        )}
       </Stagger>
 
       <Stagger i={1}>
@@ -85,12 +102,11 @@ export default function SignUp() {
           <Field label="Name" type="text" value={form.name} onChange={set('name')} autoComplete="name" required />
           <Field label="Email" type="email" value={form.email} onChange={set('email')} autoComplete="email" required />
           <Field label="Password (8+ characters)" type="password" value={form.password} onChange={set('password')} autoComplete="new-password" required />
-          <Field label="Phone (optional)" type="tel" value={form.phone} onChange={set('phone')} autoComplete="tel" placeholder="01XXXXXXXXX" />
-
           <label className="flex items-start gap-2 text-sm text-ink/80 cursor-pointer">
             <input type="checkbox" checked={form.newsletterOptIn} onChange={set('newsletterOptIn')} className="mt-0.5" />
             <span>Send me the weekly price-drop digest (unsubscribe anytime)</span>
           </label>
+          <p className="text-xs leading-relaxed text-gray">See our <Link to="/privacy" className="underline hover:text-ink">privacy information</Link>.</p>
 
           {error && (
             // key replays the shake when the message changes on retry

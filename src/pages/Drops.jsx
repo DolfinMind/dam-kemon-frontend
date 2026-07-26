@@ -33,10 +33,10 @@ export default function Drops() {
             <Flame className="w-3.5 h-3.5" /> Price drops
           </div>
           <h1 className="font-serif font-semibold text-[clamp(1.75rem,4vw,2.75rem)] leading-tight">
-            This week's biggest <em className="text-red">price drops</em>
+            This week&apos;s biggest <em className="text-red">price drops</em>
           </h1>
           <p className="text-gray text-sm mt-2 max-w-xl">
-            Real drops below each product's 7-day typical market low — so one expensive seller or bad scrape cannot fake a deal.
+            Real drops below each product&apos;s 7-day typical market low — so one expensive seller or bad scrape cannot fake a deal.
           </p>
         </div>
         <button onClick={share} className="btn-ghost inline-flex shrink-0" aria-label="Share this page">
@@ -56,7 +56,7 @@ export default function Drops() {
         </div>
       ) : items.length === 0 ? (
         <div className="card-soft p-10 text-center text-gray text-sm">
-          No big drops right now — subscribe above and we'll tell you the moment prices move.
+          No big drops right now — subscribe above to get Monday&apos;s list.
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">

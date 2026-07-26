@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { passwordLogin } from '../api/auth';
+import { getProduct } from '../api/api';
 import { useAuth } from '../auth/AuthContext';
+import { safeNextPath } from '../auth/safeNext';
 import GoogleSignInButton from '../components/GoogleSignInButton';
 import AuthLayout, { Stagger, Field } from '../components/AuthLayout';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
@@ -30,13 +32,24 @@ export default function SignIn() {
   // Whitelist next= targets — only relative paths starting with "/" to
   // prevent open-redirect attacks via ?next=https://evil.com.
   const rawNext = search.get('next');
-  const next = (rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//')) ? rawNext : null;
+  const next = safeNextPath(rawNext);
   const intent = next ? new URL(next, 'https://damkemon.com').searchParams.get('memberAction') : null;
+  const intentUrl = next ? new URL(next, 'https://damkemon.com') : null;
+  const productId = intentUrl?.pathname.match(/^\/product\/([^/]+)$/)?.[1];
+  const targetPrice = Number(intentUrl?.searchParams.get('targetPrice'));
+  const [intentProduct, setIntentProduct] = useState(null);
   const copy = intent === 'track'
     ? { complete: 'Price tracking ready', heading: 'Sign in to track this price', detail: 'We’ll turn the alert on as soon as you’re back.' }
     : intent === 'save'
       ? { complete: 'Product saved', heading: 'Sign in to save this product', detail: 'We’ll add it to your wishlist as soon as you’re back.' }
       : { complete: 'Welcome back', heading: 'Welcome back', detail: 'Sign in to continue to Damkemon.' };
+
+  useEffect(() => {
+    if (!productId || intent !== 'track') return undefined;
+    let alive = true;
+    getProduct(productId).then((r) => { if (alive) setIntentProduct(r.data); }).catch(() => {});
+    return () => { alive = false; };
+  }, [productId, intent]);
 
   useEffect(() => {
     if (!user) return undefined;
@@ -66,6 +79,11 @@ export default function SignIn() {
           {copy.heading}
         </h1>
         <p className="text-gray text-[15px]">{copy.detail}</p>
+        {intent === 'track' && Number.isFinite(targetPrice) && targetPrice > 0 && (
+          <p className="mt-3 text-xs text-ink/70">
+            {intentProduct?.name ? `${intentProduct.name} · ` : ''}Alert at or below <b>৳{targetPrice.toLocaleString('en-IN')}</b>{intentProduct?.lowestPrice != null ? ` (currently observed from ৳${Number(intentProduct.lowestPrice).toLocaleString('en-IN')})` : ''}.
+          </p>
+        )}
       </Stagger>
 
       {justReset && (

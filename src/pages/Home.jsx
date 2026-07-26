@@ -386,7 +386,7 @@ function CloseBand() {
             Never quietly <span className="text-acid">overpay</span> again.
           </h2>
           <p className="text-cream/60 text-[15px] mt-3 max-w-md">
-            Wishlist any product and we&apos;ll email you the moment its price drops at any shop.
+            Set a target price for a product and, after you verify your email, we&apos;ll notify you when a fresh observed price reaches it.
           </p>
           <Link
             to={user ? '/account' : '/sign-up'}

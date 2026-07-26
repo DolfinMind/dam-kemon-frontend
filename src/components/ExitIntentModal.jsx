@@ -7,12 +7,15 @@ export default function ExitIntentModal() {
   const { user } = useAuth();
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
-  const authPage = pathname.startsWith('/sign-in') || pathname.startsWith('/sign-up');
+  const suppressedPage = pathname.startsWith('/product/') || pathname.startsWith('/sign-in') || pathname.startsWith('/sign-up');
   
   useEffect(() => {
     // Only show if not logged in, max once per session, never for subscribers,
     // and snoozed 14 days after a dismissal.
-    if (user || authPage) return;
+    if (user || suppressedPage) {
+      setOpen(false);
+      return undefined;
+    }
     try {
       if (sessionStorage.getItem('dk_exit_shown')) return;
       if (localStorage.getItem('dk_nl')) return;
@@ -26,9 +29,9 @@ export default function ExitIntentModal() {
       try { sessionStorage.setItem('dk_exit_shown', '1'); } catch { /* ignore */ }
     }, 10000);
     return () => clearTimeout(t);
-  }, [user, authPage]);
+  }, [user, suppressedPage]);
 
-  if (!open) return null;
+  if (!open || suppressedPage) return null;
 
   return (
     <NewsletterModal open={open} onClose={() => setOpen(false)} />
