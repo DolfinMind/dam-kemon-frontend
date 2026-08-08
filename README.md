@@ -78,6 +78,7 @@ npm run preview      # local preview of the built bundle
 | `/compare?ids=A,B,C` | [Compare.jsx](src/pages/Compare.jsx) | 4-up grid + spec table, winner crown per row |
 | `/sellers` | [Sellers.jsx](src/pages/Sellers.jsx) | Facebook seller directory (manual curation only) |
 | `/dashboard` | [Dashboard.jsx](src/pages/Dashboard.jsx) | Live `/api/dashboard/stats` — products / shops / reviews / price points |
+| `/admin/payments` | [AdminPayments.jsx](src/pages/admin/AdminPayments.jsx) | Admin-only sandbox/live payment operations, with redacted lifecycle data and audited provider actions |
 
 ---
 
@@ -155,6 +156,12 @@ templates, so secrets stay local.
 
 The axios client in [src/api/api.js](src/api/api.js) is the single place that
 talks to the backend. Endpoints it consumes:
+
+The lazy-loaded admin payment client in [src/api/payments.js](src/api/payments.js)
+uses the separate `/api/admin/payments` surface. It deliberately renders no
+provider secrets, full license keys, or customer contact details. Refunds and
+license disables require the operator to type the exact provider resource ID;
+the payment backend independently validates and audits every mutation.
 
 - `GET /api/search?q=...` — DB-first search, returns grouped products
 - `GET /api/search/suggest?q=&limit=` — autocomplete dropdown

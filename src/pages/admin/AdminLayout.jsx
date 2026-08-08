@@ -7,7 +7,7 @@ import { listNotifications, markNotificationsRead } from '../../api/auth';
 import {
   Store, Inbox, BarChart3, FileText, LogOut, Package,
   Search as SearchIcon, Clock, HardDrive, ShieldAlert,
-  Activity, Tag, MessageSquare, Users, Menu, X, Bell, Plus, Settings, Play, Loader2, CheckCircle2, Database
+  Activity, Tag, MessageSquare, Users, Menu, X, Bell, Plus, Settings, Play, Loader2, CheckCircle2, Database, CreditCard
 } from 'lucide-react';
 
 const navigation = [
@@ -31,6 +31,7 @@ const navigation = [
       { to: '/admin/stats', label: 'Stats', icon: BarChart3, description: 'Marketplace performance' },
       { to: '/admin/shops', label: 'Shops', icon: Store, description: 'Manage indexed sellers' },
       { to: '/admin/search-log', label: 'Search log', icon: SearchIcon, description: 'Queries and zero results' },
+      { to: '/admin/payments', label: 'Payments', icon: CreditCard, description: 'Revenue and license operations' },
     ],
   },
   {
