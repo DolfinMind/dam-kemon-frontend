@@ -1,97 +1,75 @@
-import { useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 
 /**
- * Mutates document.head to inject:
+ * Injects:
  *  - <title> and <meta description>
  *  - Open Graph + Twitter cards (so WhatsApp/FB previews look real)
  *  - schema.org Product JSON-LD (Google Shopping eligibility)
- *
- * Restores the previous tags on unmount so navigating away doesn't leave
- * stale metadata for the next page.
  */
 export default function ProductSEO({ product }) {
-  useEffect(() => {
-    if (!product) return;
+  if (!product) return null;
 
-    const title = `${product.name} — Dam Kemon`;
-    const description = (product.description || `Compare ${product.name} prices across Bangladesh shops`).slice(0, 240);
-    const apiBase = import.meta.env.VITE_API_URL
-      ? import.meta.env.VITE_API_URL.replace(/\/$/, '')
-      : (typeof window !== 'undefined' ? window.location.origin : '');
-    // Server-rendered 1200×630 PNG for FB/WhatsApp/Twitter previews. Falls
-    // back to the product image if the OG generator isn't available.
-    const image = product.id
-      ? `${apiBase}/api/og/product/${product.id}.png`
-      : (product.imageUrl || '');
-    const url = typeof window !== 'undefined' ? window.location.href : '';
+  // Price in the title = the CTR lever on "<name> price in bangladesh" SERPs.
+  const fromPrice = product.lowestPrice != null
+    ? ` — from ৳${Number(product.lowestPrice).toLocaleString('en-IN')}`
+    : '';
+  const title = `${product.name} Price in Bangladesh${fromPrice} - Damkemon`;
+  const description = (product.description || `Compare ${product.name} prices across Bangladesh shops. Lowest price is ৳${product.lowestPrice}.`).slice(0, 240);
+  const apiBase = import.meta.env.VITE_API_URL
+    ? import.meta.env.VITE_API_URL.replace(/\/$/, '')
+    : (typeof window !== 'undefined' ? window.location.origin : '');
+  const image = product.id
+    ? `${apiBase}/api/og/product/${product.id}.png`
+    : (product.imageUrl || '');
+  const url = typeof window !== 'undefined' ? window.location.href : '';
 
-    const prevTitle = document.title;
-    document.title = title;
-
-    const tags = [
-      { name: 'description', content: description },
-      { property: 'og:title', content: title },
-      { property: 'og:description', content: description },
-      { property: 'og:type', content: 'product' },
-      { property: 'og:url', content: url },
-      { property: 'og:image', content: image },
-      { name: 'twitter:card', content: 'summary_large_image' },
-      { name: 'twitter:title', content: title },
-      { name: 'twitter:description', content: description },
-      { name: 'twitter:image', content: image },
-    ];
-
-    const created = [];
-    for (const t of tags) {
-      const sel = t.name ? `meta[name="${t.name}"]` : `meta[property="${t.property}"]`;
-      let el = document.querySelector(sel);
-      if (!el) {
-        el = document.createElement('meta');
-        if (t.name) el.setAttribute('name', t.name);
-        if (t.property) el.setAttribute('property', t.property);
-        document.head.appendChild(el);
-        created.push(el);
-      }
-      el.setAttribute('content', t.content);
-    }
-
-    // JSON-LD
-    const ld = {
-      '@context': 'https://schema.org/',
-      '@type': 'Product',
-      name: product.name,
-      image: product.imageUrl ? [product.imageUrl] : undefined,
-      description: product.description || undefined,
-      offers: (product.prices || []).map((p) => ({
-        '@type': 'Offer',
-        url: p.productUrl,
-        priceCurrency: p.currency || 'BDT',
-        price: p.price,
-        availability: p.inStock === false
-          ? 'https://schema.org/OutOfStock'
-          : 'https://schema.org/InStock',
-        seller: { '@type': 'Organization', name: p.siteName },
-      })),
+  // JSON-LD. AggregateOffer (not per-seller offers): the visible offer list is
+  // capped for signed-out visitors — and Googlebot browses signed out — so
+  // per-seller markup would drift from the page. lowPrice/highPrice/offerCount
+  // are index-time fields, true in both the gated and the full view.
+  const offerCount = product.totalSellerCount ?? (product.prices || []).length;
+  const ld = {
+    '@context': 'https://schema.org/',
+    '@type': 'Product',
+    name: product.name,
+    image: product.imageUrl ? [product.imageUrl] : undefined,
+    description: product.description || undefined,
+    offers: product.lowestPrice != null ? {
+      '@type': 'AggregateOffer',
+      priceCurrency: 'BDT',
+      lowPrice: product.lowestPrice,
+      highPrice: product.highestPrice ?? product.lowestPrice,
+      offerCount: offerCount || undefined,
+    } : undefined,
+  };
+  
+  if (product.averageRating > 0 && product.totalReviews > 0) {
+    ld.aggregateRating = {
+      '@type': 'AggregateRating',
+      ratingValue: product.averageRating,
+      reviewCount: product.totalReviews,
     };
-    if (product.averageRating > 0) {
-      ld.aggregateRating = {
-        '@type': 'AggregateRating',
-        ratingValue: product.averageRating,
-        reviewCount: product.totalReviews || 1,
-      };
-    }
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.text = JSON.stringify(ld);
-    script.setAttribute('data-product-seo', '');
-    document.head.appendChild(script);
+  }
 
-    return () => {
-      document.title = prevTitle;
-      created.forEach((el) => el.remove());
-      script.remove();
-    };
-  }, [product]);
+  return (
+    <Helmet>
+      <title>{title}</title>
+      <meta name="description" content={description} />
+      
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:type" content="product" />
+      <meta property="og:url" content={url} />
+      <meta property="og:image" content={image} />
+      
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={image} />
 
-  return null;
+      <script type="application/ld+json">
+        {JSON.stringify(ld)}
+      </script>
+    </Helmet>
+  );
 }

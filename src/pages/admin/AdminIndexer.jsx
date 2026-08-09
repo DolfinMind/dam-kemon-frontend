@@ -1,11 +1,14 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
-import { triggerReindex, indexStatus, retryFailedShops, getIndexerHistory } from '../../api/api';
+import { Link } from 'react-router-dom';
+import { crawlerAction, crawlerStatus, indexStatus, getIndexerHistory } from '../../api/admin';
 import api from '../../api/api';
-import { Play, RotateCcw, Search as SearchIcon, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { Play, RotateCcw, Terminal, AlertTriangle, CheckCircle2 } from 'lucide-react';
 
 export default function AdminIndexer() {
   const [status, setStatus] = useState(null);
   const [history, setHistory] = useState([]);
+  const [crawler, setCrawler] = useState(null);
   const [busy, setBusy] = useState(null);
   const [msg, setMsg] = useState(null);
 
@@ -13,11 +16,17 @@ export default function AdminIndexer() {
     indexStatus().then((r) => setStatus(r.data)).catch(() => {});
   const loadHistory = () =>
     getIndexerHistory(30).then((r) => setHistory(Array.isArray(r.data) ? r.data : [])).catch(() => {});
+  const loadCrawler = () =>
+    crawlerStatus().then((r) => setCrawler(r.data)).catch(() => setCrawler(null));
 
   useEffect(() => {
     loadStatus();
     loadHistory();
-    const t = setInterval(loadStatus, 4000);
+    loadCrawler();
+    const t = setInterval(() => {
+      loadStatus();
+      loadCrawler();
+    }, 5000);
     return () => clearInterval(t);
   }, []);
 
@@ -28,66 +37,133 @@ export default function AdminIndexer() {
     finally { setBusy(null); }
   };
 
-  const fmtPct = (a, b) => b ? Math.round((a / b) * 100) : 0;
+  const keepCrawlerRunning = () => handle(
+    crawler?.active ? 'Crawler restart' : 'Crawler start',
+    () => crawlerAction(crawler?.active ? 'restart' : 'start'),
+  ).then(loadCrawler);
 
   return (
     <div className="space-y-6">
       <section className="card-soft p-5 sm:p-6">
-        <h2 className="font-serif text-xl font-semibold mb-1">Latest run</h2>
-        {status?.startedAtEpochMs ? (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-3">
-            <Stat label="Shops" value={`${status.shopsSucceeded}/${status.shopsAttempted}`} hint={status.shopsFailed > 0 ? `${status.shopsFailed} failed` : null} />
-            <Stat label="URLs scraped" value={status.urlsScraped?.toLocaleString() ?? '—'} />
-            <Stat label="Inserted" value={status.productsInserted?.toLocaleString() ?? '—'} />
-            <Stat label="Merged" value={status.productsMerged?.toLocaleString() ?? '—'} />
+        <div className="flex items-center justify-between gap-3 mb-1">
+          <h2 className="font-serif text-xl font-semibold">Latest run</h2>
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[10px] font-bold uppercase ${
+              crawler?.active ? 'bg-emerald-100 text-emerald-700' : 'bg-red/10 text-red'
+            }`}>
+              <span className={`h-1.5 w-1.5 rounded-full ${crawler?.active ? 'bg-emerald-500 animate-pulse' : 'bg-red'}`} />
+              {crawler?.active ? 'Crawler running' : 'Crawler stopped'}
+            </span>
+            {status?.catalogSize != null && (
+              <span className="font-mono text-xs text-gray">
+                catalog: <b className="text-ink">{Number(status.catalogSize).toLocaleString()}</b> products
+              </span>
+            )}
           </div>
-        ) : (
-          <p className="text-sm text-gray mt-2">No runs yet — kick one off below.</p>
-        )}
-        {status?.inProgress && (
-          <div className="mt-4 text-xs font-mono inline-flex items-center gap-2 text-green">
-            <span className="w-2 h-2 rounded-full bg-green animate-pulse" /> Running…
-          </div>
-        )}
-        {status?.finishedAtEpochMs > 0 && !status?.inProgress && (
-          <p className="mt-3 text-[11px] text-gray">
-            Finished {new Date(status.finishedAtEpochMs).toLocaleString()}
-            {' '} · took {Math.round((status.finishedAtEpochMs - status.startedAtEpochMs) / 1000)}s
-          </p>
-        )}
+        </div>
+        {(() => {
+          // /index/status is now cross-process: the worker JVM heartbeats its
+          // live run into Mongo, so this shows a crawl that runs OUT of this
+          // JVM too. Fall back to the last persisted IndexerRunRecord when
+          // there's no live/heartbeat data at all.
+          const live = status?.startedAtEpochMs > 0;
+          const persisted = (!live && history.length > 0) ? history[0] : null;
+
+          if (!live && !persisted) {
+            return <p className="text-sm text-gray mt-2">No runs yet — kick one off below.</p>;
+          }
+
+          const view = live ? {
+            shopsAttempted: status.shopsAttempted,
+            shopsSucceeded: status.shopsSucceeded,
+            shopsFailed: status.shopsFailed,
+            urlsScraped: status.urlsScraped,
+            productsInserted: status.productsInserted,
+            productsMerged: status.productsMerged,
+            finishedAtMs: status.finishedAtEpochMs,
+            startedAtMs: status.startedAtEpochMs,
+            source: status.inProgress ? 'running' : (status.source === 'worker' ? 'worker' : 'this-session'),
+            kind: status.kind,
+          } : {
+            shopsAttempted: persisted.shopsAttempted,
+            shopsSucceeded: persisted.shopsSucceeded,
+            shopsFailed: persisted.shopsFailed,
+            urlsScraped: persisted.urlsScraped,
+            productsInserted: persisted.productsInserted,
+            productsMerged: persisted.productsMerged,
+            finishedAtMs: persisted.finishedAt ? new Date(persisted.finishedAt).getTime() : 0,
+            startedAtMs: persisted.startedAt ? new Date(persisted.startedAt).getTime() : 0,
+            source: 'persisted',
+            kind: persisted.kind,
+            tookSeconds: persisted.tookSeconds,
+          };
+
+          return (
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-3">
+                <Stat label="Shops" value={`${view.shopsSucceeded}/${view.shopsAttempted}`}
+                      hint={view.shopsFailed > 0 ? `${view.shopsFailed} failed` : null} />
+                <Stat label="URLs scraped" value={view.urlsScraped?.toLocaleString() ?? '—'} />
+                <Stat label="Inserted" value={view.productsInserted?.toLocaleString() ?? '—'} />
+                <Stat label="Merged" value={view.productsMerged?.toLocaleString() ?? '—'} />
+              </div>
+              {status?.inProgress && (
+                <div className="mt-4 text-xs font-mono inline-flex items-center gap-2 text-green">
+                  <span className="w-2 h-2 rounded-full bg-green animate-pulse" />
+                  Running{status.currentShop ? <> — indexing <b>{status.currentShop}</b></> : '…'}
+                  {status.source === 'worker' && <span className="text-gray">(worker)</span>}
+                </div>
+              )}
+              {status?.stalled && (
+                <div className="mt-4 text-xs inline-flex items-center gap-1.5 text-red">
+                  <AlertTriangle className="w-3.5 h-3.5" />
+                  Worker heartbeat stopped mid-run — the crawl likely died. Check the worker service.
+                </div>
+              )}
+              {!status?.inProgress && !status?.stalled && view.finishedAtMs > 0 && (
+                <p className="mt-3 text-[11px] text-gray">
+                  {view.kind && (
+                    <span className="inline-flex items-center gap-1 mr-2 px-1.5 py-0.5 rounded-full bg-cream-soft border border-line text-[10px] font-mono uppercase tracking-wider">
+                      {view.kind}
+                    </span>
+                  )}
+                  Finished {new Date(view.finishedAtMs).toLocaleString()}
+                  {' '} · took {view.tookSeconds ?? Math.round((view.finishedAtMs - view.startedAtMs) / 1000)}s
+                  {view.source === 'worker' && ' · ran on worker'}
+                </p>
+              )}
+            </>
+          );
+        })()}
       </section>
 
       <section className="card-soft p-5 sm:p-6 space-y-4">
         <div>
-          <h2 className="font-serif text-xl font-semibold mb-1">Manual scrape</h2>
+          <h2 className="font-serif text-xl font-semibold mb-1">Continuous catalog crawl</h2>
           <p className="text-sm text-gray">
-            Nightly auto-runs at 03:00. Use this button any time you want a fresh crawl right now —
-            it walks every active shop, refreshes prices, and writes new products into the catalog.
+            The API crawl lock stays enabled to protect request latency and memory. Product acquisition
+            runs in the isolated Python service with bounded concurrency and automatically resumes after deploys.
           </p>
         </div>
         <button
-          onClick={() => handle('Manual scrape', () => triggerReindex())}
-          disabled={busy === 'Manual scrape' || status?.inProgress}
-          className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-red text-white font-semibold text-base hover:bg-ink disabled:opacity-50 disabled:cursor-wait transition-colors w-full sm:w-auto"
+          onClick={keepCrawlerRunning}
+          disabled={Boolean(busy)}
+          className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-orange-500 text-white font-semibold text-base hover:bg-orange-600 disabled:opacity-50 disabled:cursor-wait transition-colors w-full sm:w-auto"
         >
-          <Play className="w-4 h-4" />
-          {status?.inProgress
-            ? 'Scrape in progress…'
-            : busy === 'Manual scrape'
-              ? 'Starting…'
-              : 'Scrape every shop now'}
+          {crawler?.active ? <RotateCcw className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+          {busy ? 'Working…' : crawler?.active ? 'Restart continuous crawler' : 'Start continuous crawler'}
         </button>
 
         <div className="border-t border-line pt-4">
           <h3 className="font-serif text-base font-semibold mb-2">Other actions</h3>
           <div className="flex flex-wrap gap-2">
-            <ActionBtn icon={RotateCcw} onClick={() => handle('Retry pass', () => retryFailedShops())} busy={busy === 'Retry pass'}>
-              Retry failed shops only
-            </ActionBtn>
-            <ActionBtn icon={SearchIcon} onClick={() => handle('Shop discovery', () => api.post('/admin/discover-shops'))} busy={busy === 'Shop discovery'}>
-              Discover new shops
-            </ActionBtn>
-            <ActionBtn icon={SearchIcon} onClick={() => handle('Hot-drops rebuild', () => api.post('/admin/hot-drops/rebuild'))} busy={busy === 'Hot-drops rebuild'}>
+            <Link
+              to="/admin/crawler"
+              className="inline-flex items-center gap-1.5 rounded-full bg-ink px-4 py-2 text-sm font-semibold text-cream transition-colors hover:bg-orange-500"
+            >
+              <Terminal className="h-3.5 w-3.5" /> Open crawler console
+            </Link>
+            <ActionBtn icon={RotateCcw} onClick={() => handle('Hot-drops rebuild', () => api.post('/admin/hot-drops/rebuild'))} busy={busy === 'Hot-drops rebuild'}>
               Rebuild hot drops
             </ActionBtn>
           </div>

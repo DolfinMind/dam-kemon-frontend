@@ -7,8 +7,16 @@ import { applyTheme, getTheme } from './api/theme'
 // Apply persisted theme synchronously before first paint to avoid a flash.
 applyTheme(getTheme());
 
+// iOS Safari only renders :active states (our global press feedback in
+// index.css) when at least one touch listener exists on the document.
+document.addEventListener('touchstart', () => {}, { passive: true });
+
+import { HelmetProvider } from 'react-helmet-async';
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <HelmetProvider>
+      <App />
+    </HelmetProvider>
   </StrictMode>,
 )

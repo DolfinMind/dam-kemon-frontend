@@ -1,0 +1,8023 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "73b7b71242c6fd5566e916a6140b39804e2f3cf5",
+  "generatedAt": "2026-08-08T08:49:07.967Z",
+  "files": {
+    ".claude/hooks/check-gstack.sh": {
+      "filePath": ".claude/hooks/check-gstack.sh",
+      "contentHash": "1247a95de347d297a33f59690a0219a41a0b6f97f6ad6ba0e0e99209f8d3fc5c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 21,
+      "hasStructuralAnalysis": true
+    },
+    ".claude/launch.json": {
+      "filePath": ".claude/launch.json",
+      "contentHash": "43a752f38979c42dfbeff1387d0bbd2ab8ea6217b5ef1065d782c5f9844bd6a4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 13,
+      "hasStructuralAnalysis": true
+    },
+    ".claude/settings.json": {
+      "filePath": ".claude/settings.json",
+      "contentHash": "b2dfdf3c060b947acecb7b0f5f218e4f8f5c23f67577e22948bfd94a4691b2c2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 16,
+      "hasStructuralAnalysis": true
+    },
+    ".github/workflows/production-deploy.yml": {
+      "filePath": ".github/workflows/production-deploy.yml",
+      "contentHash": "ea84c8f5ea678533354a6c8f44e0a5aac700c4a62fdd4bc34baad5eec0cfd180",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 69,
+      "hasStructuralAnalysis": true
+    },
+    ".github/workflows/staging-deploy.yml": {
+      "filePath": ".github/workflows/staging-deploy.yml",
+      "contentHash": "ccc197f9a2d8904716860e54014ef2c8aa54046c9a7a8b08ce24639e2f57f7b2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 62,
+      "hasStructuralAnalysis": true
+    },
+    "AGENTS.md": {
+      "filePath": "AGENTS.md",
+      "contentHash": "17da3dd4f278adbf3fd6162a1308fb39b6eec436fd40df42533bd738023078cd",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    "CLAUDE.md": {
+      "filePath": "CLAUDE.md",
+      "contentHash": "6c02a0592fe7d1420d68e530a6c91f78e33c30b9458965e5bd8e314a4a521b71",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 14,
+      "hasStructuralAnalysis": true
+    },
+    "LANDING_STANDOUT_CHANGES.md": {
+      "filePath": "LANDING_STANDOUT_CHANGES.md",
+      "contentHash": "7f2c6d1bfcd8003c2194ce4c5ef31c8e686b533820d3e03202c1946422de2418",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 60,
+      "hasStructuralAnalysis": true
+    },
+    "README.md": {
+      "filePath": "README.md",
+      "contentHash": "37b53107e85b0e9900305dca8287e77c40e4f1c7cd1b7e8ee13b38c6fc0df551",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 253,
+      "hasStructuralAnalysis": true
+    },
+    "components.json": {
+      "filePath": "components.json",
+      "contentHash": "345aba18d43a35ef35c1dcd2176436dce3c9686bce9fbd113cca0c23e77b3d28",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 19,
+      "hasStructuralAnalysis": true
+    },
+    "deploy/nginx.conf.example": {
+      "filePath": "deploy/nginx.conf.example",
+      "contentHash": "69a5c02a7e1247189355ebdfbf7689cc3305c24084a096e4eafd0889b4bb37d6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 68,
+      "hasStructuralAnalysis": false
+    },
+    "eslint.config.js": {
+      "filePath": "eslint.config.js",
+      "contentHash": "af46c4208b39e0e9cdeed4109391dfd7053294d0f32a06a646b4b07d4abc4a96",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@eslint/js",
+          "specifiers": [
+            "js"
+          ]
+        },
+        {
+          "source": "globals",
+          "specifiers": [
+            "globals"
+          ]
+        },
+        {
+          "source": "eslint-plugin-react",
+          "specifiers": [
+            "react"
+          ]
+        },
+        {
+          "source": "eslint-plugin-react-hooks",
+          "specifiers": [
+            "reactHooks"
+          ]
+        },
+        {
+          "source": "eslint-plugin-react-refresh",
+          "specifiers": [
+            "reactRefresh"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 39,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/2026-07-07/GRAPH_REPORT.md": {
+      "filePath": "graphify-out/2026-07-07/GRAPH_REPORT.md",
+      "contentHash": "616afaa1fade2df20bc0b9db567cc13b78dc8236a02a6e1ac638365044ff9ce2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 248,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/2026-07-07/cost.json": {
+      "filePath": "graphify-out/2026-07-07/cost.json",
+      "contentHash": "7989758f96a45f1b51c9bc901cfd6cb5e749c98182883c6273b756017001350e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/2026-07-07/graph.json": {
+      "filePath": "graphify-out/2026-07-07/graph.json",
+      "contentHash": "63c89f2b47f3213064b4f24a0a78d62a3200e0cad6aed1c005608a6a55c361f4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 14592,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/2026-07-07/manifest.json": {
+      "filePath": "graphify-out/2026-07-07/manifest.json",
+      "contentHash": "7e08ec4864cc02fd4f79cd0517ff199a8d785c31bac46493c5be43f8d1743cd0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 447,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/2026-07-10/GRAPH_REPORT.md": {
+      "filePath": "graphify-out/2026-07-10/GRAPH_REPORT.md",
+      "contentHash": "7283427d5c33ae726c2f549b98a7fe33a2e91690c813d159698705d225376f2e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 241,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/2026-07-10/cost.json": {
+      "filePath": "graphify-out/2026-07-10/cost.json",
+      "contentHash": "7989758f96a45f1b51c9bc901cfd6cb5e749c98182883c6273b756017001350e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/2026-07-10/graph.json": {
+      "filePath": "graphify-out/2026-07-10/graph.json",
+      "contentHash": "1c6662d704c3216c14f4375a1dbad38f5aa0be8c19060e0f7e07946ce6a5ad24",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 15776,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/2026-07-10/manifest.json": {
+      "filePath": "graphify-out/2026-07-10/manifest.json",
+      "contentHash": "9550648292a9896216397eb2dc6c4fc2d751443abe4d6de96d0a2531a297ec61",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 492,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/2026-07-11/GRAPH_REPORT.md": {
+      "filePath": "graphify-out/2026-07-11/GRAPH_REPORT.md",
+      "contentHash": "e00fe475625bdb9abb666812a4e9dda1f3fbbf0289658a2e8aa8f504d8251bd8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 239,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/2026-07-11/cost.json": {
+      "filePath": "graphify-out/2026-07-11/cost.json",
+      "contentHash": "7989758f96a45f1b51c9bc901cfd6cb5e749c98182883c6273b756017001350e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/2026-07-11/graph.json": {
+      "filePath": "graphify-out/2026-07-11/graph.json",
+      "contentHash": "c2c7a31e0b6c716fcea92e3db9aa268c7b076b7a10e90c5589791eee77d039a8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 16810,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/2026-07-11/manifest.json": {
+      "filePath": "graphify-out/2026-07-11/manifest.json",
+      "contentHash": "079f60c0a0e0e6ec122893620891e9ac170063dea2b868d3b33c5df30bd12387",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 532,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/2026-07-12/GRAPH_REPORT.md": {
+      "filePath": "graphify-out/2026-07-12/GRAPH_REPORT.md",
+      "contentHash": "e7aba62e3cdba4e91b10c1050050e9b891577a236fec85b93468a997820d6fa5",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 274,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/2026-07-12/cost.json": {
+      "filePath": "graphify-out/2026-07-12/cost.json",
+      "contentHash": "7989758f96a45f1b51c9bc901cfd6cb5e749c98182883c6273b756017001350e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/2026-07-12/graph.json": {
+      "filePath": "graphify-out/2026-07-12/graph.json",
+      "contentHash": "d7dfa98ef115194575d97d88c47762559ca9f12b3cbf302f828477a44cfa7c6d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 17785,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/2026-07-12/manifest.json": {
+      "filePath": "graphify-out/2026-07-12/manifest.json",
+      "contentHash": "41dde650ea7cd41982a149b21ddf75a18ba1eedc2ce670321d3425bde92a2aed",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 542,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/2026-07-13/GRAPH_REPORT.md": {
+      "filePath": "graphify-out/2026-07-13/GRAPH_REPORT.md",
+      "contentHash": "4076896a48f82cfe76b6ab653be912a639ad0e410e738a8b1bb9d6f8d03e1259",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 298,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/2026-07-13/cost.json": {
+      "filePath": "graphify-out/2026-07-13/cost.json",
+      "contentHash": "7989758f96a45f1b51c9bc901cfd6cb5e749c98182883c6273b756017001350e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/2026-07-13/graph.json": {
+      "filePath": "graphify-out/2026-07-13/graph.json",
+      "contentHash": "dad5987f8d0e35e1c60e803e4c3511d7c182b99765aa07f07f6ff05083a2516d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 18914,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/2026-07-13/manifest.json": {
+      "filePath": "graphify-out/2026-07-13/manifest.json",
+      "contentHash": "12cf8826db422134e33d11f5f24630f4227d04b8177caf7c598505ec178184eb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 567,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/GRAPH_REPORT.md": {
+      "filePath": "graphify-out/GRAPH_REPORT.md",
+      "contentHash": "e6ff5b84a8e83e76ea2453cb31ff23002fe782902395f6019d64ce4eb956787e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 291,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/cache/semantic/194d06b1f884ceb76767fede0f796e484e35c6f4b742bc13e168d2fbd640b20b.json": {
+      "filePath": "graphify-out/cache/semantic/194d06b1f884ceb76767fede0f796e484e35c6f4b742bc13e168d2fbd640b20b.json",
+      "contentHash": "75970fbbd1b2466dd0e9af0ca95f951a7afa3fa6fab3c3b005ea099160d18369",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/cache/semantic/1b285c7df8aeb1f5ee4d5787c786260a8dca22b1445bdc9a3dc2f4725a77177e.json": {
+      "filePath": "graphify-out/cache/semantic/1b285c7df8aeb1f5ee4d5787c786260a8dca22b1445bdc9a3dc2f4725a77177e.json",
+      "contentHash": "acb6e43b5d9c4fb10a955b8ae330dd46947178da346b2ee9ca5b366d5c90fd30",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/cache/semantic/2210e18efdf234599b85b4af6e31e6c208c5196700b616d12a4950828b88e022.json": {
+      "filePath": "graphify-out/cache/semantic/2210e18efdf234599b85b4af6e31e6c208c5196700b616d12a4950828b88e022.json",
+      "contentHash": "3d825f2a82e2dde221aaa85550d145e882bf5e1345b938b486b8b9cf98a7c927",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/cache/semantic/4cc55a2f91a7b1cb676148673a6c20b6bbcc2c4cf9e27113943b402b12b5b950.json": {
+      "filePath": "graphify-out/cache/semantic/4cc55a2f91a7b1cb676148673a6c20b6bbcc2c4cf9e27113943b402b12b5b950.json",
+      "contentHash": "137651231b950f19337ae9b41fced74ba8cce197ac0ed314c846798b711f88c0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/cache/semantic/a6b87618c6c9cec276c806cbfe1b537b9d7c5b84b98a6c33e1809302f9c9da18.json": {
+      "filePath": "graphify-out/cache/semantic/a6b87618c6c9cec276c806cbfe1b537b9d7c5b84b98a6c33e1809302f9c9da18.json",
+      "contentHash": "5c0ee2f804d29d310b84c51ce8890025b6c05ac02ea4079de7c98c491e335f47",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/cache/semantic/b17febae933b4fa055aef6d410af80dd12f5c9978812071d761408de432eb16c.json": {
+      "filePath": "graphify-out/cache/semantic/b17febae933b4fa055aef6d410af80dd12f5c9978812071d761408de432eb16c.json",
+      "contentHash": "6dfe481308d1805d4891ef260be3d8cfa546d07db8cdb618f253410bd127c9cd",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/cache/stat-index.json": {
+      "filePath": "graphify-out/cache/stat-index.json",
+      "contentHash": "b8950eaffe60c79ce9abde920dbfb8e421453e85959a3393c99bca0083d3fb10",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/cost.json": {
+      "filePath": "graphify-out/cost.json",
+      "contentHash": "7989758f96a45f1b51c9bc901cfd6cb5e749c98182883c6273b756017001350e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/graph.json": {
+      "filePath": "graphify-out/graph.json",
+      "contentHash": "a2f9c04590ba40bfcd28a06febbb93b190377993ed61781f7424ab609a0460d0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 19230,
+      "hasStructuralAnalysis": true
+    },
+    "graphify-out/manifest.json": {
+      "filePath": "graphify-out/manifest.json",
+      "contentHash": "2e4fd3648a2d52723b7cabd05cda005cae11846306556bb5203ce86b81e64b4b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 577,
+      "hasStructuralAnalysis": true
+    },
+    "index.html": {
+      "filePath": "index.html",
+      "contentHash": "2b821ee1c6a9221c1d29021a51658c7e5d7a21e9ee23220dfaaf28ae4b416563",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 27,
+      "hasStructuralAnalysis": false
+    },
+    "package.json": {
+      "filePath": "package.json",
+      "contentHash": "40de72e664a4be29b2425759da92529bdc5978b572a39e2acd2080c645890f21",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 43,
+      "hasStructuralAnalysis": true
+    },
+    "src/App.jsx": {
+      "filePath": "src/App.jsx",
+      "contentHash": "8e7d8d1239cbdb05a12eba756ff221eac91660a48fb321572f8354887f277ac9",
+      "functions": [
+        {
+          "name": "PageFallback",
+          "params": [],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "PageTracker",
+          "params": [],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "App",
+          "params": [],
+          "exported": false,
+          "lineCount": 76
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "lazy",
+            "Suspense",
+            "useEffect"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "BrowserRouter",
+            "Routes",
+            "Route",
+            "Navigate",
+            "useLocation"
+          ]
+        },
+        {
+          "source": "./api/analytics",
+          "specifiers": [
+            "trackPageView"
+          ]
+        },
+        {
+          "source": "./components/Navbar",
+          "specifiers": [
+            "Navbar"
+          ]
+        },
+        {
+          "source": "./components/Footer",
+          "specifiers": [
+            "Footer"
+          ]
+        },
+        {
+          "source": "./components/BottomNav",
+          "specifiers": [
+            "BottomNav"
+          ]
+        },
+        {
+          "source": "./components/AssistantWidget",
+          "specifiers": [
+            "AssistantWidget"
+          ]
+        },
+        {
+          "source": "./components/ScrollToTop",
+          "specifiers": [
+            "ScrollToTop"
+          ]
+        },
+        {
+          "source": "./components/ExitIntentModal",
+          "specifiers": [
+            "ExitIntentModal"
+          ]
+        },
+        {
+          "source": "./auth/AuthContext",
+          "specifiers": [
+            "AuthProvider"
+          ]
+        },
+        {
+          "source": "./components/LoadingSpinner",
+          "specifiers": [
+            "LoadingSpinner"
+          ]
+        },
+        {
+          "source": "./config/features",
+          "specifiers": [
+            "SHOW_SAATHI",
+            "SHOW_PUBLIC_DASHBOARD",
+            "SHOW_ASSISTANT"
+          ]
+        },
+        {
+          "source": "./pages/Home",
+          "specifiers": [
+            "Home"
+          ]
+        },
+        {
+          "source": "./pages/SearchResults",
+          "specifiers": [
+            "SearchResults"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 160,
+      "hasStructuralAnalysis": true
+    },
+    "src/api/admin.js": {
+      "filePath": "src/api/admin.js",
+      "contentHash": "fa20a044cf6f7326cd4d3d8bae978bad4773b1f5ff6e04c2d80708208c58b15f",
+      "functions": [
+        {
+          "name": "triggerReindex",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "indexStatus",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "retryFailedShops",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "getIndexerHistory",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "reindexShop",
+          "params": [
+            "slug"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "listShops",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "setShopStatus",
+          "params": [
+            "slug",
+            "status"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "editShop",
+          "params": [
+            "slug",
+            "patch"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "bulkSetShopStatus",
+          "params": [
+            "slugs",
+            "status"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "listPendingShops",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "approvePendingShop",
+          "params": [
+            "id"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "rejectPendingShop",
+          "params": [
+            "id",
+            "note"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "syncShopFeed",
+          "params": [
+            "slug"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "diagCollections",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "reseedDirectories",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "listOffers",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "approveOffer",
+          "params": [
+            "id"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "rejectOffer",
+          "params": [
+            "id",
+            "note"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "adminListCatalog",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "adminCreateProduct",
+          "params": [
+            "body"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "adminSellerDepth",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "adminEditProduct",
+          "params": [
+            "id",
+            "patch"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "adminDeleteProduct",
+          "params": [
+            "id"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "adminMergeProducts",
+          "params": [
+            "toId",
+            "fromId"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "adminFlaggedReviews",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "adminSetReviewStatus",
+          "params": [
+            "id",
+            "status"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "adminUsers",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "adminUser",
+          "params": [
+            "id"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "adminUserConversion",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "listCaches",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "flushCache",
+          "params": [
+            "name"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "flushAllCaches",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "listJobs",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "runJob",
+          "params": [
+            "id"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "jobRuns",
+          "params": [
+            "id"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "crawlerStatus",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "crawlerLogs",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "crawlerAction",
+          "params": [
+            "action"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "recentSearches",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "searchLatency",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "recentSuggestClicks",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "analyticsOverview",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "analyticsTopSearches",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "analyticsHourly",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "analyticsDailyUsers",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "analyticsCatalogGrowth",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "analyticsTopIps",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "analyticsTopPaths",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "analyticsRequests",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "analyticsDevices",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "analyticsReferrers",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "analyticsFunnel",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "analyticsShopClicksByCategory",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "analyticsTopShops",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "analyticsTopProducts",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "analyticsTopConvertingSearches",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "analyticsResultShops",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "analyticsZeroResultSearches",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "analyticsShopPriceWins",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "newsletterAnalytics",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "listSubscribers",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "triggerNewsletter",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "getFeedback",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./api",
+          "specifiers": [
+            "api"
+          ]
+        }
+      ],
+      "exports": [
+        "triggerReindex",
+        "indexStatus",
+        "retryFailedShops",
+        "getIndexerHistory",
+        "reindexShop",
+        "listShops",
+        "setShopStatus",
+        "editShop",
+        "bulkSetShopStatus",
+        "listPendingShops",
+        "approvePendingShop",
+        "rejectPendingShop",
+        "syncShopFeed",
+        "diagCollections",
+        "reseedDirectories",
+        "listOffers",
+        "approveOffer",
+        "rejectOffer",
+        "adminListCatalog",
+        "adminCreateProduct",
+        "adminSellerDepth",
+        "adminEditProduct",
+        "adminDeleteProduct",
+        "adminMergeProducts",
+        "adminFlaggedReviews",
+        "adminSetReviewStatus",
+        "adminUsers",
+        "adminUser",
+        "adminUserConversion",
+        "listCaches",
+        "flushCache",
+        "flushAllCaches",
+        "listJobs",
+        "runJob",
+        "jobRuns",
+        "crawlerStatus",
+        "crawlerLogs",
+        "crawlerAction",
+        "recentSearches",
+        "searchLatency",
+        "recentSuggestClicks",
+        "analyticsOverview",
+        "analyticsTopSearches",
+        "analyticsHourly",
+        "analyticsDailyUsers",
+        "analyticsCatalogGrowth",
+        "analyticsTopIps",
+        "analyticsTopPaths",
+        "analyticsRequests",
+        "analyticsDevices",
+        "analyticsReferrers",
+        "analyticsFunnel",
+        "analyticsShopClicksByCategory",
+        "analyticsTopShops",
+        "analyticsTopProducts",
+        "analyticsTopConvertingSearches",
+        "analyticsResultShops",
+        "analyticsZeroResultSearches",
+        "analyticsShopPriceWins",
+        "newsletterAnalytics",
+        "listSubscribers",
+        "triggerNewsletter",
+        "getFeedback"
+      ],
+      "totalLines": 144,
+      "hasStructuralAnalysis": true
+    },
+    "src/api/analytics.js": {
+      "filePath": "src/api/analytics.js",
+      "contentHash": "bcf22022fee583c0009a07207dacc2e72369d9202a5046abea6837c07904adfd",
+      "functions": [
+        {
+          "name": "getAnonId",
+          "params": [],
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "fireBeacon",
+          "params": [
+            "path",
+            "payload"
+          ],
+          "exported": false,
+          "lineCount": 30
+        },
+        {
+          "name": "trackView",
+          "params": [
+            "productId"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "trackClick",
+          "params": [
+            "productId",
+            "sellerSlug"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "trackSuggestClick",
+          "params": [
+            "query",
+            "productId",
+            "productName"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "trackPageView",
+          "params": [
+            "path"
+          ],
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "trackAction",
+          "params": [
+            "type",
+            "productId"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "metaPixelPageView",
+          "params": [],
+          "exported": false,
+          "lineCount": 21
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./config",
+          "specifiers": [
+            "API_BASE"
+          ]
+        }
+      ],
+      "exports": [
+        "getAnonId",
+        "trackView",
+        "trackClick",
+        "trackSuggestClick",
+        "trackPageView",
+        "trackAction"
+      ],
+      "totalLines": 131,
+      "hasStructuralAnalysis": true
+    },
+    "src/api/api.js": {
+      "filePath": "src/api/api.js",
+      "contentHash": "b7daf52e73ecd882dbf80f2e94fd43b206b41d0d17e5d1632272f2af8640eaf3",
+      "functions": [
+        {
+          "name": "searchProducts",
+          "params": [
+            "query"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "suggestProducts",
+          "params": [
+            "prefix"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getProduct",
+          "params": [
+            "id"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getProductHistory",
+          "params": [
+            "id"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getSites",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getDashboardStats",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "triggerScrape",
+          "params": [
+            "query",
+            "sites"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getAllProducts",
+          "params": [
+            "category"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getMostSellers",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getCategories",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "getShowcase",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "compareProducts",
+          "params": [
+            "ids"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getSellers",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getShops",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "getSeller",
+          "params": [
+            "id"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getLiveStats",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "getHeadlineStats",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "getTrendingSearches",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getTrending",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "getTrendingShops",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "getHotDrops",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getWorldCup",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "submitShop",
+          "params": [
+            "payload"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "getShopTrust",
+          "params": [
+            "slugs"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getSellerTrust",
+          "params": [
+            "ids"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getProductReviews",
+          "params": [
+            "idOrSlug"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "postProductReview",
+          "params": [
+            "idOrSlug",
+            "payload"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "postDeliveryReport",
+          "params": [
+            "idOrSlug",
+            "payload"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "voteReview",
+          "params": [
+            "id",
+            "value"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "getReviewVotes",
+          "params": [
+            "ids"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "getMyReviews",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "assistantChat",
+          "params": [
+            "message"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "protectAssess",
+          "params": [
+            "payload"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "protectCreateOrder",
+          "params": [
+            "payload"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "protectGetOrder",
+          "params": [
+            "code"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "protectConfirmOrder",
+          "params": [
+            "code"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "protectDisputeOrder",
+          "params": [
+            "code",
+            "reason"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getProductsByIds",
+          "params": [
+            "ids"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getDailyPriceHistory",
+          "params": [
+            "id"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "accountSearchHistory",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "affiliateUrl",
+          "params": [
+            "productId",
+            "siteSlug",
+            "fromQuery",
+            "offerUrl"
+          ],
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "submitOffer",
+          "params": [
+            "productId",
+            "payload"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "subscribeNewsletter",
+          "params": [
+            "email"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "submitFeedback",
+          "params": [
+            "data"
+          ],
+          "exported": true,
+          "lineCount": 1
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "axios",
+          "specifiers": [
+            "axios"
+          ]
+        },
+        {
+          "source": "./analytics",
+          "specifiers": [
+            "getAnonId"
+          ]
+        },
+        {
+          "source": "./config",
+          "specifiers": [
+            "API_BASE"
+          ]
+        }
+      ],
+      "exports": [
+        "searchProducts",
+        "suggestProducts",
+        "getProduct",
+        "getProductHistory",
+        "getSites",
+        "getDashboardStats",
+        "triggerScrape",
+        "getAllProducts",
+        "getMostSellers",
+        "getCategories",
+        "getShowcase",
+        "compareProducts",
+        "getSellers",
+        "getShops",
+        "getSeller",
+        "getLiveStats",
+        "getHeadlineStats",
+        "getTrendingSearches",
+        "getTrending",
+        "getTrendingShops",
+        "getHotDrops",
+        "getWorldCup",
+        "submitShop",
+        "getShopTrust",
+        "getSellerTrust",
+        "getProductReviews",
+        "postProductReview",
+        "postDeliveryReport",
+        "voteReview",
+        "getReviewVotes",
+        "getMyReviews",
+        "assistantChat",
+        "protectAssess",
+        "protectCreateOrder",
+        "protectGetOrder",
+        "protectConfirmOrder",
+        "protectDisputeOrder",
+        "getProductsByIds",
+        "getDailyPriceHistory",
+        "accountSearchHistory",
+        "affiliateUrl",
+        "submitOffer",
+        "subscribeNewsletter",
+        "submitFeedback"
+      ],
+      "totalLines": 198,
+      "hasStructuralAnalysis": true
+    },
+    "src/api/auth.js": {
+      "filePath": "src/api/auth.js",
+      "contentHash": "f966904d39fc45996d929fff23547783fd95fb13a95395a0525c310be7e95906",
+      "functions": [
+        {
+          "name": "getAuthToken",
+          "params": [],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "setAuthToken",
+          "params": [
+            "token"
+          ],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "passwordLogin",
+          "params": [
+            "identifier",
+            "password"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "signup",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "googleLogin",
+          "params": [
+            "credential"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getAuthConfig",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "verifyEmail",
+          "params": [
+            "token"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "resendVerification",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "forgotPassword",
+          "params": [
+            "email"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "resetPassword",
+          "params": [
+            "token",
+            "password"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "updateProfile",
+          "params": [
+            "patch"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "getMe",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "signOut",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "listSavedSearches",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "addSavedSearch",
+          "params": [
+            "query",
+            "notifyEmail"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "removeSavedSearch",
+          "params": [
+            "id"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "listWishlist",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "addToWishlist",
+          "params": [
+            "productId"
+          ],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "removeFromWishlist",
+          "params": [
+            "productId"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "updateWishlistAlert",
+          "params": [
+            "productId",
+            "patch"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "listNotifications",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "markNotificationsRead",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "saathiSignup",
+          "params": [
+            "payload"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "saathiMe",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "saathiUpdate",
+          "params": [
+            "patch"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "saathiSubmitVerification",
+          "params": [
+            "payload"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "saathiListProducts",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "saathiAttachProduct",
+          "params": [
+            "productId",
+            "listedPrice",
+            "note"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "saathiDetachProduct",
+          "params": [
+            "productId"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "saathiLiveAssist",
+          "params": [
+            "q"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "saathiRecentQueries",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "saathiStats",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "saathiPublicProfile",
+          "params": [
+            "slug"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "saathiConnectMessenger",
+          "params": [
+            "pageId",
+            "pageAccessToken"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "saathiDisconnectMessenger",
+          "params": [],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "saathiTestBot",
+          "params": [
+            "q"
+          ],
+          "exported": true,
+          "lineCount": 2
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./api",
+          "specifiers": [
+            "api"
+          ]
+        }
+      ],
+      "exports": [
+        "getAuthToken",
+        "setAuthToken",
+        "passwordLogin",
+        "signup",
+        "googleLogin",
+        "getAuthConfig",
+        "verifyEmail",
+        "resendVerification",
+        "forgotPassword",
+        "resetPassword",
+        "updateProfile",
+        "getMe",
+        "signOut",
+        "listSavedSearches",
+        "addSavedSearch",
+        "removeSavedSearch",
+        "listWishlist",
+        "addToWishlist",
+        "removeFromWishlist",
+        "updateWishlistAlert",
+        "listNotifications",
+        "markNotificationsRead",
+        "saathiSignup",
+        "saathiMe",
+        "saathiUpdate",
+        "saathiSubmitVerification",
+        "saathiListProducts",
+        "saathiAttachProduct",
+        "saathiDetachProduct",
+        "saathiLiveAssist",
+        "saathiRecentQueries",
+        "saathiStats",
+        "saathiPublicProfile",
+        "saathiConnectMessenger",
+        "saathiDisconnectMessenger",
+        "saathiTestBot"
+      ],
+      "totalLines": 125,
+      "hasStructuralAnalysis": true
+    },
+    "src/api/config.js": {
+      "filePath": "src/api/config.js",
+      "contentHash": "89878f490928fb9788fdd4b13298c06c8d353ae8898af17c4eb79c1c7c65a3a9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "API_BASE"
+      ],
+      "totalLines": 24,
+      "hasStructuralAnalysis": true
+    },
+    "src/api/payments.js": {
+      "filePath": "src/api/payments.js",
+      "contentHash": "8662d305fd15eeb17c30bd016a0065062c47270c6a961722cfec9aa2fe571591",
+      "functions": [
+        {
+          "name": "modeParams",
+          "params": [
+            "testMode"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "getPaymentOverview",
+          "params": [
+            "appId",
+            "testMode"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getPaymentProviderStatus",
+          "params": [
+            "testMode"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "listPaymentApplications",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "listPaymentProducts",
+          "params": [
+            "appId"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "listPaymentRecords",
+          "params": [
+            "resource",
+            "appId",
+            "testMode"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "listPaymentProviderCatalog",
+          "params": [
+            "appId",
+            "storeId",
+            "testMode"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "listPaymentWebhooks",
+          "params": [
+            "appId",
+            "storeId",
+            "testMode"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "ensurePaymentWebhook",
+          "params": [
+            "appId",
+            "storeId",
+            "testMode",
+            "confirmUrl"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "disablePaymentLicense",
+          "params": [
+            "providerLicenseId",
+            "confirmLicenseId"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "refundPaymentOrder",
+          "params": [
+            "providerOrderId",
+            "confirmOrderId"
+          ],
+          "exported": true,
+          "lineCount": 2
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./api",
+          "specifiers": [
+            "api"
+          ]
+        }
+      ],
+      "exports": [
+        "getPaymentOverview",
+        "getPaymentProviderStatus",
+        "listPaymentApplications",
+        "listPaymentProducts",
+        "listPaymentRecords",
+        "listPaymentProviderCatalog",
+        "listPaymentWebhooks",
+        "ensurePaymentWebhook",
+        "disablePaymentLicense",
+        "refundPaymentOrder"
+      ],
+      "totalLines": 31,
+      "hasStructuralAnalysis": true
+    },
+    "src/api/recentlyViewed.js": {
+      "filePath": "src/api/recentlyViewed.js",
+      "contentHash": "a242341cd8ba2ed49b22c8d8cbccb4391324022e59ae65ecc33cbb3742e20ae3",
+      "functions": [
+        {
+          "name": "getRecentIds",
+          "params": [],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "pushRecent",
+          "params": [
+            "productId"
+          ],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "clearRecent",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "getRecentIds",
+        "pushRecent",
+        "clearRecent"
+      ],
+      "totalLines": 28,
+      "hasStructuralAnalysis": true
+    },
+    "src/api/theme.js": {
+      "filePath": "src/api/theme.js",
+      "contentHash": "3bf45ea7bd2e337178942cb02af6fcba4e42400fe94579ec9b6f3cec4c16c1fe",
+      "functions": [
+        {
+          "name": "getTheme",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "applyTheme",
+          "params": [],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "toggleTheme",
+          "params": [],
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "getTheme",
+        "applyTheme",
+        "toggleTheme"
+      ],
+      "totalLines": 34,
+      "hasStructuralAnalysis": true
+    },
+    "src/auth/AuthContext.jsx": {
+      "filePath": "src/auth/AuthContext.jsx",
+      "contentHash": "ede49eeb0c4fe2b2e8c73cc99dc514eabd13dcd15f0e42f52eab5820f0bec4d8",
+      "functions": [
+        {
+          "name": "AuthProvider",
+          "params": [],
+          "exported": true,
+          "lineCount": 38
+        },
+        {
+          "name": "useAuth",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "createContext",
+            "useContext",
+            "useEffect",
+            "useState",
+            "useCallback"
+          ]
+        },
+        {
+          "source": "../api/auth",
+          "specifiers": [
+            "getAuthToken",
+            "setAuthToken",
+            "getMe",
+            "apiSignOut"
+          ]
+        },
+        {
+          "source": "../api/analytics",
+          "specifiers": [
+            "trackAction"
+          ]
+        }
+      ],
+      "exports": [
+        "AuthProvider",
+        "useAuth"
+      ],
+      "totalLines": 55,
+      "hasStructuralAnalysis": true
+    },
+    "src/auth/safeNext.js": {
+      "filePath": "src/auth/safeNext.js",
+      "contentHash": "22b84de9361f8eba08f895d837e84c449b41d9b249569f757868a23c4a667cc7",
+      "functions": [
+        {
+          "name": "safeNextPath",
+          "params": [
+            "raw"
+          ],
+          "exported": true,
+          "lineCount": 10
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "safeNextPath"
+      ],
+      "totalLines": 14,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/AddOffer.jsx": {
+      "filePath": "src/components/AddOffer.jsx",
+      "contentHash": "6ce770a3c331c4ec606b0f9d6d800f56d5e69693eb91cff8bdd3ab80077bcdcb",
+      "functions": [
+        {
+          "name": "AddOffer",
+          "params": [],
+          "exported": true,
+          "lineCount": 83
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Tag",
+            "Check",
+            "Plus"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "submitOffer"
+          ]
+        }
+      ],
+      "exports": [
+        "AddOffer"
+      ],
+      "totalLines": 93,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/AlphaBadge.jsx": {
+      "filePath": "src/components/AlphaBadge.jsx",
+      "contentHash": "4ea305aed8c6ed4bdc7824eb769c38e05885b3a00badcef88623b98b7d9f803a",
+      "functions": [
+        {
+          "name": "AlphaBadge",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "AlphaBadge"
+      ],
+      "totalLines": 13,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/AssistantWidget.jsx": {
+      "filePath": "src/components/AssistantWidget.jsx",
+      "contentHash": "2cea2d4c1e50cbeca10653891cf9b2ff7248a95f91f1b5ace41e25962426a0f7",
+      "functions": [
+        {
+          "name": "fmt",
+          "params": [
+            "p"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "cheapest",
+          "params": [
+            "p"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "AssistantWidget",
+          "params": [],
+          "exported": true,
+          "lineCount": 99
+        },
+        {
+          "name": "Message",
+          "params": [],
+          "exported": false,
+          "lineCount": 60
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState",
+            "useRef",
+            "useEffect"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Sparkles",
+            "Send",
+            "X",
+            "Loader2"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "assistantChat"
+          ]
+        },
+        {
+          "source": "./TrustBadge",
+          "specifiers": [
+            "TrustBadge"
+          ]
+        }
+      ],
+      "exports": [
+        "AssistantWidget"
+      ],
+      "totalLines": 175,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/AuthLayout.jsx": {
+      "filePath": "src/components/AuthLayout.jsx",
+      "contentHash": "caedd1eefa2cb3200cb959d651f82d70e864c88bb9294fc89b1154bb65806052",
+      "functions": [
+        {
+          "name": "AuthLayout",
+          "params": [],
+          "exported": true,
+          "lineCount": 26
+        },
+        {
+          "name": "AuthSuccess",
+          "params": [],
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "Stagger",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "Field",
+          "params": [],
+          "exported": true,
+          "lineCount": 8
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Check"
+          ]
+        }
+      ],
+      "exports": [
+        "AuthLayout",
+        "Stagger",
+        "Field"
+      ],
+      "totalLines": 62,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/BottomNav.jsx": {
+      "filePath": "src/components/BottomNav.jsx",
+      "contentHash": "2c3b2e2c53020d2925d646385dceeae27c5d1dd99dbb359073560fb821b4ec8f",
+      "functions": [
+        {
+          "name": "BottomNav",
+          "params": [],
+          "exported": true,
+          "lineCount": 62
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link",
+            "useLocation"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Home",
+            "LayoutGrid",
+            "GitCompare",
+            "TrendingUp",
+            "BarChart3"
+          ]
+        },
+        {
+          "source": "../config/features",
+          "specifiers": [
+            "SHOW_PUBLIC_DASHBOARD"
+          ]
+        }
+      ],
+      "exports": [
+        "BottomNav"
+      ],
+      "totalLines": 76,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/ExitIntentModal.jsx": {
+      "filePath": "src/components/ExitIntentModal.jsx",
+      "contentHash": "b1935910c719067bab95cdb473921b26b91b1ea6b915469c2805f532d59e6884",
+      "functions": [
+        {
+          "name": "ExitIntentModal",
+          "params": [],
+          "exported": true,
+          "lineCount": 34
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useLocation"
+          ]
+        },
+        {
+          "source": "./NewsletterModal",
+          "specifiers": [
+            "NewsletterModal"
+          ]
+        },
+        {
+          "source": "../auth/AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        }
+      ],
+      "exports": [
+        "ExitIntentModal"
+      ],
+      "totalLines": 40,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/FeedbackPulse.jsx": {
+      "filePath": "src/components/FeedbackPulse.jsx",
+      "contentHash": "19d1cd4494ae4d1e138310ad6f84913ed775c16a5171a1f2c251de9c3d45c9cb",
+      "functions": [
+        {
+          "name": "eligible",
+          "params": [],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "FeedbackPulse",
+          "params": [],
+          "exported": true,
+          "lineCount": 72
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "ThumbsUp",
+            "ThumbsDown",
+            "X"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "submitFeedback"
+          ]
+        }
+      ],
+      "exports": [
+        "FeedbackPulse"
+      ],
+      "totalLines": 90,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/FeedbackSection.jsx": {
+      "filePath": "src/components/FeedbackSection.jsx",
+      "contentHash": "56f87f61f0bbe6b7d3c864bb9f6ddc4969ba72e3d0d3807e12d5d349c331d464",
+      "functions": [
+        {
+          "name": "FeedbackSection",
+          "params": [],
+          "exported": true,
+          "lineCount": 90
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "MessageSquare",
+            "Send",
+            "CheckCircle",
+            "AlertCircle"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "submitFeedback"
+          ]
+        }
+      ],
+      "exports": [
+        "FeedbackSection"
+      ],
+      "totalLines": 95,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/Footer.jsx": {
+      "filePath": "src/components/Footer.jsx",
+      "contentHash": "6a9a67582688bdfd1df3dce8b2a39fc398d318d12b1eceaab32f179b0abaac9a",
+      "functions": [
+        {
+          "name": "Footer",
+          "params": [],
+          "exported": true,
+          "lineCount": 45
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Sparkles"
+          ]
+        },
+        {
+          "source": "./AlphaBadge",
+          "specifiers": [
+            "AlphaBadge"
+          ]
+        },
+        {
+          "source": "../config/features",
+          "specifiers": [
+            "SHOW_SAATHI",
+            "SHOW_PUBLIC_DASHBOARD"
+          ]
+        }
+      ],
+      "exports": [
+        "Footer"
+      ],
+      "totalLines": 51,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/GoogleSignInButton.jsx": {
+      "filePath": "src/components/GoogleSignInButton.jsx",
+      "contentHash": "a6fb8bad6144d0be053fcc49b7731e2ca9722f521248282134697b98967a2f2d",
+      "functions": [
+        {
+          "name": "GoogleSignInButton",
+          "params": [],
+          "exported": true,
+          "lineCount": 100
+        },
+        {
+          "name": "GoogleMark",
+          "params": [],
+          "exported": false,
+          "lineCount": 10
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "../api/auth",
+          "specifiers": [
+            "googleLogin",
+            "getAuthConfig"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Sparkles"
+          ]
+        }
+      ],
+      "exports": [
+        "GoogleSignInButton"
+      ],
+      "totalLines": 135,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/GuideSEO.jsx": {
+      "filePath": "src/components/GuideSEO.jsx",
+      "contentHash": "2caacd7ccab536b954e6b7ff36bfb4c52411c652c29421bbce0e26c045faa924",
+      "functions": [
+        {
+          "name": "GuideSEO",
+          "params": [],
+          "exported": true,
+          "lineCount": 123
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect"
+          ]
+        }
+      ],
+      "exports": [
+        "GuideSEO"
+      ],
+      "totalLines": 136,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/HomeProductCard.jsx": {
+      "filePath": "src/components/HomeProductCard.jsx",
+      "contentHash": "81df91691542c7bcaf3b247c45a24aaf5c3d21044ab58a7c3f26a705cf12db59",
+      "functions": [
+        {
+          "name": "formatPrice",
+          "params": [
+            "price"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "HomeProductCard",
+          "params": [],
+          "exported": true,
+          "lineCount": 150
+        },
+        {
+          "name": "HomeProductCardSkeleton",
+          "params": [],
+          "exported": true,
+          "lineCount": 13
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "ArrowRight",
+            "ShieldCheck",
+            "Star",
+            "Store",
+            "TrendingDown"
+          ]
+        },
+        {
+          "source": "../lib/categoryIcon",
+          "specifiers": [
+            "CategoryIcon"
+          ]
+        }
+      ],
+      "exports": [
+        "HomeProductCard",
+        "HomeProductCardSkeleton"
+      ],
+      "totalLines": 175,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/HotDropsRail.jsx": {
+      "filePath": "src/components/HotDropsRail.jsx",
+      "contentHash": "a9f01af7e21789cdef41ce7b12ec52b56cb19cd8951b2b35367df8761198357c",
+      "functions": [
+        {
+          "name": "fmt",
+          "params": [
+            "p"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "DropCard",
+          "params": [],
+          "exported": true,
+          "lineCount": 40
+        },
+        {
+          "name": "HotDropsRail",
+          "params": [],
+          "exported": true,
+          "lineCount": 35
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Flame",
+            "ArrowRight"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "getHotDrops"
+          ]
+        },
+        {
+          "source": "../lib/categoryIcon",
+          "specifiers": [
+            "CategoryIcon"
+          ]
+        }
+      ],
+      "exports": [
+        "DropCard",
+        "HotDropsRail"
+      ],
+      "totalLines": 95,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/LiveActivityPill.jsx": {
+      "filePath": "src/components/LiveActivityPill.jsx",
+      "contentHash": "3f68656ed5a2ac84bbd2e544a8af81feafc115c7e6b645afe4f83f90bd3d393b",
+      "functions": [
+        {
+          "name": "LiveActivityPill",
+          "params": [],
+          "exported": true,
+          "lineCount": 31
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "getLiveStats"
+          ]
+        }
+      ],
+      "exports": [
+        "LiveActivityPill"
+      ],
+      "totalLines": 40,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/LoadingSpinner.jsx": {
+      "filePath": "src/components/LoadingSpinner.jsx",
+      "contentHash": "9ba97b7007f14d1325af990c59d835020913a5b070cf86a4610dcbf1cd627919",
+      "functions": [
+        {
+          "name": "LoadingSpinner",
+          "params": [],
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "SkeletonCard",
+          "params": [],
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "SkeletonRow",
+          "params": [],
+          "exported": true,
+          "lineCount": 12
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "LoadingSpinner",
+        "SkeletonCard",
+        "SkeletonRow"
+      ],
+      "totalLines": 41,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/Navbar.jsx": {
+      "filePath": "src/components/Navbar.jsx",
+      "contentHash": "3d94947b1571308c03466356d49a313c55d0eb323e6371e1ca32be84592275e9",
+      "functions": [
+        {
+          "name": "Navbar",
+          "params": [],
+          "exported": true,
+          "lineCount": 255
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState",
+            "useEffect"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link",
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Search",
+            "Menu",
+            "X",
+            "BarChart3",
+            "Sparkles",
+            "UserIcon",
+            "Shield"
+          ]
+        },
+        {
+          "source": "../auth/AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        },
+        {
+          "source": "./AlphaBadge",
+          "specifiers": [
+            "AlphaBadge"
+          ]
+        },
+        {
+          "source": "../config/features",
+          "specifiers": [
+            "SHOW_SAATHI",
+            "SHOW_PUBLIC_DASHBOARD"
+          ]
+        }
+      ],
+      "exports": [
+        "Navbar"
+      ],
+      "totalLines": 266,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/NewsletterInline.jsx": {
+      "filePath": "src/components/NewsletterInline.jsx",
+      "contentHash": "474a3db0b210ccb74397b95178938346807bc8bc5bd5a503851ce285e6702b55",
+      "functions": [
+        {
+          "name": "eligible",
+          "params": [],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "NewsletterInline",
+          "params": [],
+          "exported": true,
+          "lineCount": 85
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Mail",
+            "Check",
+            "X"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "subscribeNewsletter",
+            "getHeadlineStats"
+          ]
+        },
+        {
+          "source": "../api/analytics",
+          "specifiers": [
+            "trackClick"
+          ]
+        }
+      ],
+      "exports": [
+        "NewsletterInline"
+      ],
+      "totalLines": 105,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/NewsletterModal.jsx": {
+      "filePath": "src/components/NewsletterModal.jsx",
+      "contentHash": "5ad07b72e02d12181d20c0a14c982fc901b24614cc3539df7bfb6c9a520ea27f",
+      "functions": [
+        {
+          "name": "NewsletterModal",
+          "params": [],
+          "exported": true,
+          "lineCount": 142
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "subscribeNewsletter"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Mail",
+            "Check",
+            "X",
+            "ShieldCheck",
+            "Flame",
+            "ArrowRight"
+          ]
+        },
+        {
+          "source": "../api/analytics",
+          "specifiers": [
+            "trackClick"
+          ]
+        }
+      ],
+      "exports": [
+        "NewsletterModal"
+      ],
+      "totalLines": 148,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/NewsletterSection.jsx": {
+      "filePath": "src/components/NewsletterSection.jsx",
+      "contentHash": "c29f97aa8cc53b52f93ce9b5a65ff4345bb07f90ea87dbc08dc21fffc0eb4853",
+      "functions": [
+        {
+          "name": "NewsletterSection",
+          "params": [],
+          "exported": true,
+          "lineCount": 68
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Mail",
+            "Check",
+            "AlertCircle"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "subscribeNewsletter"
+          ]
+        }
+      ],
+      "exports": [
+        "NewsletterSection"
+      ],
+      "totalLines": 73,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/PriceComparisonTable.jsx": {
+      "filePath": "src/components/PriceComparisonTable.jsx",
+      "contentHash": "52212131bdea09d5ff706ad61dd84d08fde39d29b3d43f7693175cbbdb66cf97",
+      "functions": [
+        {
+          "name": "formatPrice",
+          "params": [
+            "price"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "fmtSold",
+          "params": [
+            "n"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "isFacebookSeller",
+          "params": [
+            "name"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "slugOf",
+          "params": [
+            "it"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "offerKey",
+          "params": [
+            "it",
+            "i"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "sameOffer",
+          "params": [
+            "a",
+            "b"
+          ],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "Signal",
+          "params": [],
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "PriceComparisonTable",
+          "params": [],
+          "exported": true,
+          "lineCount": 177
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Crown",
+            "ExternalLink",
+            "Star",
+            "ShieldCheck",
+            "Truck",
+            "Banknote",
+            "ChevronDown",
+            "ChevronUp"
+          ]
+        },
+        {
+          "source": "../api/analytics",
+          "specifiers": [
+            "trackClick"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "affiliateUrl"
+          ]
+        },
+        {
+          "source": "./TrustBadge",
+          "specifiers": [
+            "tierOf",
+            "deliveryText"
+          ]
+        }
+      ],
+      "exports": [
+        "PriceComparisonTable"
+      ],
+      "totalLines": 244,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/PriceHistoryChart.jsx": {
+      "filePath": "src/components/PriceHistoryChart.jsx",
+      "contentHash": "bcacbeb934e1666c5264ab84b89f9e122a88b03f3d4997cff5433cde11eee2d7",
+      "functions": [
+        {
+          "name": "formatPrice",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "dateKey",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "displayDate",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "median",
+          "params": [
+            "values"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "PriceTooltip",
+          "params": [],
+          "exported": false,
+          "lineCount": 38
+        },
+        {
+          "name": "PriceHistoryChart",
+          "params": [],
+          "exported": true,
+          "lineCount": 291
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "recharts",
+          "specifiers": [
+            "Area",
+            "CartesianGrid",
+            "ComposedChart",
+            "Line",
+            "ReferenceLine",
+            "ResponsiveContainer",
+            "Tooltip",
+            "XAxis",
+            "YAxis"
+          ]
+        }
+      ],
+      "exports": [
+        "PriceHistoryChart"
+      ],
+      "totalLines": 379,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/ProductCard.jsx": {
+      "filePath": "src/components/ProductCard.jsx",
+      "contentHash": "222881a6607bc0c0796fbb999e21bab9176d07dd03c1cf8fd96e423e9d4c87da",
+      "functions": [
+        {
+          "name": "formatPrice",
+          "params": [
+            "price"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "ProductCard",
+          "params": [],
+          "exported": true,
+          "lineCount": 87
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "TrendingDown",
+            "Store"
+          ]
+        },
+        {
+          "source": "../lib/categoryIcon",
+          "specifiers": [
+            "CategoryIcon"
+          ]
+        }
+      ],
+      "exports": [
+        "ProductCard"
+      ],
+      "totalLines": 109,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/ProductSEO.jsx": {
+      "filePath": "src/components/ProductSEO.jsx",
+      "contentHash": "ae0ce7dcbd5f84f5ee8036078c64aaae3ee0a43d499343385bfa400c150ad839",
+      "functions": [
+        {
+          "name": "ProductSEO",
+          "params": [],
+          "exported": true,
+          "lineCount": 67
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react-helmet-async",
+          "specifiers": [
+            "Helmet"
+          ]
+        }
+      ],
+      "exports": [
+        "ProductSEO"
+      ],
+      "totalLines": 76,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/ProtectShowcase.jsx": {
+      "filePath": "src/components/ProtectShowcase.jsx",
+      "contentHash": "11be3dc080b34f541f21c6b90497b7f77d93aed5b0897fa33b35b9c699afa3ed",
+      "functions": [
+        {
+          "name": "ProtectShowcase",
+          "params": [],
+          "exported": true,
+          "lineCount": 135
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link",
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "ShieldCheck",
+            "Search",
+            "ArrowRight",
+            "Lock"
+          ]
+        }
+      ],
+      "exports": [
+        "ProtectShowcase"
+      ],
+      "totalLines": 140,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/RecentlyViewedRail.jsx": {
+      "filePath": "src/components/RecentlyViewedRail.jsx",
+      "contentHash": "7766e0fea606999dcc42bdb05f8149fa1fdd4af165a133a7afbf50094abc2700",
+      "functions": [
+        {
+          "name": "fmt",
+          "params": [
+            "p"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "RecentlyViewedRail",
+          "params": [],
+          "exported": true,
+          "lineCount": 51
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Clock",
+            "X"
+          ]
+        },
+        {
+          "source": "../api/recentlyViewed",
+          "specifiers": [
+            "getRecentIds",
+            "clearRecent"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "getProductsByIds"
+          ]
+        }
+      ],
+      "exports": [
+        "RecentlyViewedRail"
+      ],
+      "totalLines": 60,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/ReviewsPanel.jsx": {
+      "filePath": "src/components/ReviewsPanel.jsx",
+      "contentHash": "dffee836af74e226549ee2a5173a39225cb65339755acd44a6376955200f07ef",
+      "functions": [
+        {
+          "name": "fmtDate",
+          "params": [
+            "v"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "ReviewsPanel",
+          "params": [],
+          "exported": true,
+          "lineCount": 313
+        },
+        {
+          "name": "TrustToggle",
+          "params": [],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "RecToggle",
+          "params": [],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "ReviewCard",
+          "params": [],
+          "exported": false,
+          "lineCount": 116
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Star",
+            "ThumbsUp",
+            "ThumbsDown",
+            "Send",
+            "CheckCircle2",
+            "Truck",
+            "MessageSquare",
+            "Loader2",
+            "PenLine",
+            "BadgeCheck"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "getProductReviews",
+            "getReviewVotes",
+            "postProductReview",
+            "postDeliveryReport",
+            "voteReview"
+          ]
+        },
+        {
+          "source": "../auth/AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        }
+      ],
+      "exports": [
+        "ReviewsPanel"
+      ],
+      "totalLines": 480,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/ScrollToTop.jsx": {
+      "filePath": "src/components/ScrollToTop.jsx",
+      "contentHash": "729d23a2420396dc27cf40d4a3103d4d7385829ae87228a21183dd0a24a522cf",
+      "functions": [
+        {
+          "name": "ScrollToTop",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useLocation"
+          ]
+        }
+      ],
+      "exports": [
+        "ScrollToTop"
+      ],
+      "totalLines": 18,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/SearchBar.jsx": {
+      "filePath": "src/components/SearchBar.jsx",
+      "contentHash": "df29a028260c6de889e1aedd7982a58db5b16c0f79b330b4aab1acd6f451eac0",
+      "functions": [
+        {
+          "name": "fmt",
+          "params": [
+            "p"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "SearchBar",
+          "params": [],
+          "exported": true,
+          "lineCount": 160
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState",
+            "useEffect",
+            "useRef"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Search",
+            "ArrowRight",
+            "Sparkles",
+            "Store"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "suggestProducts"
+          ]
+        },
+        {
+          "source": "../api/analytics",
+          "specifiers": [
+            "trackSuggestClick"
+          ]
+        }
+      ],
+      "exports": [
+        "SearchBar"
+      ],
+      "totalLines": 172,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/SearchProductCard.jsx": {
+      "filePath": "src/components/SearchProductCard.jsx",
+      "contentHash": "36a030c081f15682a4b10cdf5cc15d8218aee0e5bd6601fe51bbedb6e4359269",
+      "functions": [
+        {
+          "name": "fmt",
+          "params": [
+            "p"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "SearchProductCard",
+          "params": [],
+          "exported": true,
+          "lineCount": 138
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Store",
+            "Star",
+            "TrendingDown",
+            "ChevronRight",
+            "Megaphone"
+          ]
+        },
+        {
+          "source": "../lib/categoryIcon",
+          "specifiers": [
+            "CategoryIcon"
+          ]
+        },
+        {
+          "source": "../lib/display",
+          "specifiers": [
+            "cleanName",
+            "saneSavePct"
+          ]
+        }
+      ],
+      "exports": [
+        "SearchProductCard"
+      ],
+      "totalLines": 160,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/SearchProductCardSkeleton.jsx": {
+      "filePath": "src/components/SearchProductCardSkeleton.jsx",
+      "contentHash": "fb3279d70c0221300d019853f1d3f1465054404b426c93855506cc312297e28a",
+      "functions": [
+        {
+          "name": "SearchProductCardSkeleton",
+          "params": [],
+          "exported": true,
+          "lineCount": 22
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "SearchProductCardSkeleton"
+      ],
+      "totalLines": 24,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/ServiceUnavailable.jsx": {
+      "filePath": "src/components/ServiceUnavailable.jsx",
+      "contentHash": "3b2dfb168c502460b20cc26436b3404d4cf24d5aac58e35a135cf86ee50f0648",
+      "functions": [
+        {
+          "name": "ServiceUnavailable",
+          "params": [],
+          "exported": true,
+          "lineCount": 74
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "RefreshCw"
+          ]
+        }
+      ],
+      "exports": [
+        "ServiceUnavailable"
+      ],
+      "totalLines": 91,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/SmartVerdict.jsx": {
+      "filePath": "src/components/SmartVerdict.jsx",
+      "contentHash": "7324ff930e39cecd9992a9b8651024eaf382f1e377de7103447f0e4018ecb865",
+      "functions": [
+        {
+          "name": "fmt",
+          "params": [
+            "p"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "slugOf",
+          "params": [
+            "sp"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "sellerLabel",
+          "params": [
+            "sp"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "SmartVerdict",
+          "params": [],
+          "exported": true,
+          "lineCount": 123
+        },
+        {
+          "name": "Cell",
+          "params": [],
+          "exported": false,
+          "lineCount": 14
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Sparkles",
+            "TrendingDown",
+            "ShieldCheck",
+            "BadgeCheck",
+            "Truck",
+            "RotateCcw",
+            "ArrowRight",
+            "Award"
+          ]
+        },
+        {
+          "source": "./TrustBadge",
+          "specifiers": [
+            "valueScore",
+            "deliveryText",
+            "returnText",
+            "authenticityMeta",
+            "tierOf"
+          ]
+        }
+      ],
+      "exports": [
+        "SmartVerdict"
+      ],
+      "totalLines": 164,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/StatsCard.jsx": {
+      "filePath": "src/components/StatsCard.jsx",
+      "contentHash": "9bdd1eedc73e0679ebeca9947be39a6fd785ebc707cc6f5d218ea4ca4ca4a6a0",
+      "functions": [
+        {
+          "name": "StatsCard",
+          "params": [],
+          "exported": true,
+          "lineCount": 64
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useRef",
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "StatsCard"
+      ],
+      "totalLines": 67,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/TrendingStrip.jsx": {
+      "filePath": "src/components/TrendingStrip.jsx",
+      "contentHash": "c8f48f60fb90e5bec763cdefb8a89de687feb4fdd7728e6b4776c86caeda4347",
+      "functions": [
+        {
+          "name": "TrendingStrip",
+          "params": [],
+          "exported": true,
+          "lineCount": 36
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "TrendingUp"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "getTrendingSearches"
+          ]
+        }
+      ],
+      "exports": [
+        "TrendingStrip"
+      ],
+      "totalLines": 47,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/TrustBadge.jsx": {
+      "filePath": "src/components/TrustBadge.jsx",
+      "contentHash": "a07e68df699cf23184eb9823a77a6eb3352eeae69da7675ec71a0f2e7d761c58",
+      "functions": [
+        {
+          "name": "clamp01",
+          "params": [
+            "n"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "avgDays",
+          "params": [
+            "lo",
+            "hi"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "tierOf",
+          "params": [
+            "score"
+          ],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "deliveryText",
+          "params": [
+            "t"
+          ],
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "returnText",
+          "params": [
+            "t"
+          ],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "authenticityMeta",
+          "params": [
+            "a"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "valueScore",
+          "params": [],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "TrustScore",
+          "params": [],
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "Chip",
+          "params": [],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "TrustBadge",
+          "params": [],
+          "exported": true,
+          "lineCount": 28
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "ShieldCheck",
+            "BadgeCheck",
+            "Store",
+            "Truck",
+            "RotateCcw",
+            "Banknote",
+            "HelpCircle"
+          ]
+        }
+      ],
+      "exports": [
+        "tierOf",
+        "deliveryText",
+        "returnText",
+        "authenticityMeta",
+        "valueScore",
+        "TrustScore",
+        "TrustBadge"
+      ],
+      "totalLines": 136,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/WorldCupRail.jsx": {
+      "filePath": "src/components/WorldCupRail.jsx",
+      "contentHash": "43426962d0f738061598364127e01d9badfcf2270c9d6396b296db640cbfa29e",
+      "functions": [
+        {
+          "name": "fmt",
+          "params": [
+            "p"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "WorldCupRail",
+          "params": [],
+          "exported": true,
+          "lineCount": 77
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Trophy",
+            "Flag",
+            "ArrowRight"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "getWorldCup"
+          ]
+        }
+      ],
+      "exports": [
+        "WorldCupRail"
+      ],
+      "totalLines": 94,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/ui/cobe-globe-analytics.tsx": {
+      "filePath": "src/components/ui/cobe-globe-analytics.tsx",
+      "contentHash": "e0f52db4fe618f2ab6f1ca797a4fa6b5fd0ec9e1aeb6f1707a2975354d0fd465",
+      "functions": [
+        {
+          "name": "GlobeAnalytics",
+          "params": [
+            "{\n  markers: initialMarkers = defaultMarkers,\n  className = \"\",\n  speed = 0.003,\n}"
+          ],
+          "exported": true,
+          "lineCount": 187
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useCallback",
+            "useEffect",
+            "useRef",
+            "useState",
+            "CSSProperties",
+            "ReactPointerEvent"
+          ]
+        },
+        {
+          "source": "cobe",
+          "specifiers": [
+            "createGlobe"
+          ]
+        }
+      ],
+      "exports": [
+        "GlobeAnalytics"
+      ],
+      "totalLines": 215,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/ui/woven-light-hero.tsx": {
+      "filePath": "src/components/ui/woven-light-hero.tsx",
+      "contentHash": "98250cfa3a55cb1b822579a1ed8201f0b288a6579718e96d6c6517ba1b68b698",
+      "functions": [
+        {
+          "name": "WovenLightHero",
+          "params": [
+            "{ className = \"\" }"
+          ],
+          "exported": true,
+          "lineCount": 123
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "framer-motion",
+          "specifiers": [
+            "motion"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useRef"
+          ]
+        },
+        {
+          "source": "three",
+          "specifiers": [
+            "* as THREE"
+          ]
+        }
+      ],
+      "exports": [
+        "WovenLightHero"
+      ],
+      "totalLines": 134,
+      "hasStructuralAnalysis": true
+    },
+    "src/config/features.js": {
+      "filePath": "src/config/features.js",
+      "contentHash": "091cc1b7251d6a43f352d0a4c0f63032206cbd1747e965f25bd5b50faee4ee9d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "SHOW_SAATHI",
+        "SHOW_PUBLIC_DASHBOARD",
+        "SHOW_ASSISTANT"
+      ],
+      "totalLines": 25,
+      "hasStructuralAnalysis": true
+    },
+    "src/content/guides.jsx": {
+      "filePath": "src/content/guides.jsx",
+      "contentHash": "eefd0219b76e003669f8c33870f811d77e9b016f91407740b042f99084991b7a",
+      "functions": [
+        {
+          "name": "KeyTakeaways",
+          "params": [],
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "Callout",
+          "params": [],
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "getGuide",
+          "params": [
+            "slug"
+          ],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "otherGuides",
+          "params": [
+            "slug"
+          ],
+          "exported": true,
+          "lineCount": 1
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "@phosphor-icons/react",
+          "specifiers": [
+            "PhSearch",
+            "PhShieldCheck",
+            "PhSealCheck"
+          ]
+        }
+      ],
+      "exports": [
+        "KeyTakeaways",
+        "Callout",
+        "GUIDES",
+        "getGuide",
+        "otherGuides"
+      ],
+      "totalLines": 429,
+      "hasStructuralAnalysis": true
+    },
+    "src/index.css": {
+      "filePath": "src/index.css",
+      "contentHash": "8f910e8784d4a4b64859c923ca41c40f409320f67bdd065fcd3ba823cbe96b85",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 473,
+      "hasStructuralAnalysis": false
+    },
+    "src/lib/categoryIcon.jsx": {
+      "filePath": "src/lib/categoryIcon.jsx",
+      "contentHash": "442e63471e7c760fe9c559226c529c258f8a4f95205b4b433711e57e09f30ff8",
+      "functions": [
+        {
+          "name": "categoryIcon",
+          "params": [
+            "category"
+          ],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "CategoryIcon",
+          "params": [],
+          "exported": true,
+          "lineCount": 4
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Smartphone",
+            "Laptop",
+            "Tablet",
+            "Monitor",
+            "Tv",
+            "Camera",
+            "Headphones",
+            "Speaker",
+            "Gamepad2",
+            "Watch",
+            "Cpu",
+            "HardDrive",
+            "Printer",
+            "Wifi",
+            "BatteryCharging",
+            "Lightbulb",
+            "Utensils",
+            "Plug",
+            "Cable",
+            "Shield",
+            "Package"
+          ]
+        }
+      ],
+      "exports": [
+        "categoryIcon",
+        "CategoryIcon"
+      ],
+      "totalLines": 51,
+      "hasStructuralAnalysis": true
+    },
+    "src/lib/display.js": {
+      "filePath": "src/lib/display.js",
+      "contentHash": "010e1376590cda6dc91ab355da668aba066c9166c8080f2d63de1e41559d16d6",
+      "functions": [
+        {
+          "name": "cleanName",
+          "params": [],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "relTime",
+          "params": [
+            "iso"
+          ],
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "saneSavePct",
+          "params": [
+            "lo",
+            "hi"
+          ],
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "cleanName",
+        "relTime",
+        "saneSavePct"
+      ],
+      "totalLines": 30,
+      "hasStructuralAnalysis": true
+    },
+    "src/main.jsx": {
+      "filePath": "src/main.jsx",
+      "contentHash": "29a4ed825c0558eec2ac0817fdfeb6aae0bfeb391e8e93f948b6022e2d2bdc58",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "StrictMode"
+          ]
+        },
+        {
+          "source": "react-dom/client",
+          "specifiers": [
+            "createRoot"
+          ]
+        },
+        {
+          "source": "./index.css",
+          "specifiers": []
+        },
+        {
+          "source": "./App.jsx",
+          "specifiers": [
+            "App"
+          ]
+        },
+        {
+          "source": "./api/theme",
+          "specifiers": [
+            "applyTheme",
+            "getTheme"
+          ]
+        },
+        {
+          "source": "react-helmet-async",
+          "specifiers": [
+            "HelmetProvider"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 23,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/Account.jsx": {
+      "filePath": "src/pages/Account.jsx",
+      "contentHash": "a60c75d9932ab6e1fcfbbb6ec3442bc906c33788121bfb00bf2d44ba09fe5bac",
+      "functions": [
+        {
+          "name": "fmt",
+          "params": [
+            "p"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "Account",
+          "params": [],
+          "exported": true,
+          "lineCount": 82
+        },
+        {
+          "name": "VerifyBanner",
+          "params": [],
+          "exported": false,
+          "lineCount": 31
+        },
+        {
+          "name": "ProfileTab",
+          "params": [],
+          "exported": false,
+          "lineCount": 128
+        },
+        {
+          "name": "TabBtn",
+          "params": [],
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "ContributionsTab",
+          "params": [],
+          "exported": false,
+          "lineCount": 70
+        },
+        {
+          "name": "SavedSearchesTab",
+          "params": [],
+          "exported": false,
+          "lineCount": 87
+        },
+        {
+          "name": "HistoryTab",
+          "params": [],
+          "exported": false,
+          "lineCount": 34
+        },
+        {
+          "name": "WishlistTab",
+          "params": [],
+          "exported": false,
+          "lineCount": 97
+        },
+        {
+          "name": "NotificationsTab",
+          "params": [],
+          "exported": false,
+          "lineCount": 66
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link",
+            "useNavigate",
+            "useSearchParams"
+          ]
+        },
+        {
+          "source": "../auth/AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        },
+        {
+          "source": "../api/analytics",
+          "specifiers": [
+            "trackAction"
+          ]
+        },
+        {
+          "source": "../api/auth",
+          "specifiers": [
+            "listSavedSearches",
+            "addSavedSearch",
+            "removeSavedSearch",
+            "listWishlist",
+            "removeFromWishlist",
+            "updateWishlistAlert",
+            "listNotifications",
+            "markNotificationsRead",
+            "resendVerification",
+            "updateProfile"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "accountSearchHistory",
+            "getMyReviews"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "UserIcon",
+            "Bell",
+            "Heart",
+            "LogOut",
+            "Plus",
+            "X",
+            "ArrowRight",
+            "SearchIcon",
+            "History",
+            "TrendingDown",
+            "Inbox",
+            "MailWarning",
+            "Check",
+            "Award",
+            "MessageSquare",
+            "BadgeCheck"
+          ]
+        }
+      ],
+      "exports": [
+        "Account"
+      ],
+      "totalLines": 654,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/Browse.jsx": {
+      "filePath": "src/pages/Browse.jsx",
+      "contentHash": "d82a920ac9452f2cc04cf7bd796099de17392a37c396874d582d8ae8e4fde5cc",
+      "functions": [
+        {
+          "name": "Browse",
+          "params": [],
+          "exported": true,
+          "lineCount": 207
+        },
+        {
+          "name": "Chip",
+          "params": [],
+          "exported": false,
+          "lineCount": 12
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useLayoutEffect",
+            "useMemo",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useSearchParams"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "getAllProducts",
+            "getShopTrust",
+            "getCategories"
+          ]
+        },
+        {
+          "source": "../components/SearchProductCard",
+          "specifiers": [
+            "SearchProductCard"
+          ]
+        },
+        {
+          "source": "../components/SearchProductCardSkeleton",
+          "specifiers": [
+            "SearchProductCardSkeleton"
+          ]
+        },
+        {
+          "source": "../components/ServiceUnavailable",
+          "specifiers": [
+            "ServiceUnavailable"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "LayoutGrid",
+            "ArrowUpDown",
+            "PackageSearch",
+            "RefreshCw",
+            "ChevronDown",
+            "ChevronUp"
+          ]
+        }
+      ],
+      "exports": [
+        "Browse"
+      ],
+      "totalLines": 240,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/Compare.jsx": {
+      "filePath": "src/pages/Compare.jsx",
+      "contentHash": "2f62fb448d760dac5bd0175cebffd3bb7d7111a4f2f75c8d8ee3ee535cf5b601",
+      "functions": [
+        {
+          "name": "cap",
+          "params": [
+            "s"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "initialsOf",
+          "params": [
+            "name"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "deliveryDays",
+          "params": [
+            "t"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "authRank",
+          "params": [
+            "a"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "respRank",
+          "params": [
+            "r"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "bestIndex",
+          "params": [
+            "values",
+            "higherBetter"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "Compare",
+          "params": [],
+          "exported": true,
+          "lineCount": 314
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState",
+            "useEffect",
+            "useMemo"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useSearchParams",
+            "Link"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "getShops",
+            "getShopTrust"
+          ]
+        },
+        {
+          "source": "../components/LoadingSpinner",
+          "specifiers": [
+            "LoadingSpinner"
+          ]
+        },
+        {
+          "source": "../components/ServiceUnavailable",
+          "specifiers": [
+            "ServiceUnavailable"
+          ]
+        },
+        {
+          "source": "../components/TrustBadge",
+          "specifiers": [
+            "TrustScore",
+            "deliveryText",
+            "returnText",
+            "authenticityMeta"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "ArrowLeft",
+            "Plus",
+            "X",
+            "Crown",
+            "Star",
+            "Store",
+            "Search",
+            "Check"
+          ]
+        }
+      ],
+      "exports": [
+        "Compare"
+      ],
+      "totalLines": 369,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/Dashboard.jsx": {
+      "filePath": "src/pages/Dashboard.jsx",
+      "contentHash": "6bc679962ff21306fdf7a66b9037aeefaf92894738e5d57357912fd706d5db7c",
+      "functions": [
+        {
+          "name": "fmt",
+          "params": [
+            "n"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "bdt",
+          "params": [
+            "n"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "Dashboard",
+          "params": [],
+          "exported": true,
+          "lineCount": 279
+        },
+        {
+          "name": "HeroStat",
+          "params": [],
+          "exported": false,
+          "lineCount": 23
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState",
+            "useEffect"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link",
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "getDashboardStats",
+            "getLiveStats",
+            "getTrendingSearches",
+            "getHotDrops"
+          ]
+        },
+        {
+          "source": "../components/LoadingSpinner",
+          "specifiers": [
+            "LoadingSpinner"
+          ]
+        },
+        {
+          "source": "../components/ServiceUnavailable",
+          "specifiers": [
+            "ServiceUnavailable"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Activity",
+            "TrendingDown",
+            "Search",
+            "RefreshCw",
+            "AlertTriangle",
+            "ArrowRight",
+            "Store",
+            "Flame",
+            "ShieldCheck",
+            "Eye",
+            "Users"
+          ]
+        }
+      ],
+      "exports": [
+        "Dashboard"
+      ],
+      "totalLines": 343,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/Drops.jsx": {
+      "filePath": "src/pages/Drops.jsx",
+      "contentHash": "8a5ae59a565460e60943418e284d16274faa97f9b0251f58192864192bfc13a6",
+      "functions": [
+        {
+          "name": "Drops",
+          "params": [],
+          "exported": true,
+          "lineCount": 57
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Flame",
+            "Share2"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "getHotDrops"
+          ]
+        },
+        {
+          "source": "../components/HotDropsRail",
+          "specifiers": [
+            "DropCard"
+          ]
+        },
+        {
+          "source": "../components/NewsletterInline",
+          "specifiers": [
+            "NewsletterInline"
+          ]
+        }
+      ],
+      "exports": [
+        "Drops"
+      ],
+      "totalLines": 69,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/FcommerceSignup.jsx": {
+      "filePath": "src/pages/FcommerceSignup.jsx",
+      "contentHash": "8168f370d724af94578719849b7668a0bcfcf79a9489c1167b2f1c8ccd66f05b",
+      "functions": [
+        {
+          "name": "FcommerceSignup",
+          "params": [],
+          "exported": true,
+          "lineCount": 198
+        },
+        {
+          "name": "Field",
+          "params": [],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "Stepper",
+          "params": [],
+          "exported": false,
+          "lineCount": 16
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "api"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Store",
+            "Upload",
+            "CheckCircle2",
+            "ArrowLeft",
+            "AlertCircle",
+            "FileSpreadsheet"
+          ]
+        }
+      ],
+      "exports": [
+        "FcommerceSignup"
+      ],
+      "totalLines": 239,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/ForgotPassword.jsx": {
+      "filePath": "src/pages/ForgotPassword.jsx",
+      "contentHash": "a1f6020262c404d1bdbf504ad674853c60bd310604ac817490853f90ede8b3e9",
+      "functions": [
+        {
+          "name": "ForgotPassword",
+          "params": [],
+          "exported": true,
+          "lineCount": 59
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "../api/auth",
+          "specifiers": [
+            "forgotPassword"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "ArrowLeft",
+            "MailCheck"
+          ]
+        }
+      ],
+      "exports": [
+        "ForgotPassword"
+      ],
+      "totalLines": 65,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/GuideDetail.jsx": {
+      "filePath": "src/pages/GuideDetail.jsx",
+      "contentHash": "327e82b7098a982db5ecda91527ba47ff2d6e896e5c082355c8000467813827f",
+      "functions": [
+        {
+          "name": "GuideDetail",
+          "params": [],
+          "exported": true,
+          "lineCount": 77
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useParams",
+            "Link",
+            "Navigate"
+          ]
+        },
+        {
+          "source": "../content/guides",
+          "specifiers": [
+            "getGuide",
+            "otherGuides"
+          ]
+        },
+        {
+          "source": "../components/GuideSEO",
+          "specifiers": [
+            "GuideSEO"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "ArrowLeft",
+            "Clock",
+            "CalendarDays",
+            "ArrowRight"
+          ]
+        }
+      ],
+      "exports": [
+        "GuideDetail"
+      ],
+      "totalLines": 83,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/Guides.jsx": {
+      "filePath": "src/pages/Guides.jsx",
+      "contentHash": "be94611cc7ff649af30f5c144098731f374d08a20a886f8b269c579039d200c6",
+      "functions": [
+        {
+          "name": "Guides",
+          "params": [],
+          "exported": true,
+          "lineCount": 52
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "../content/guides",
+          "specifiers": [
+            "GUIDES"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "BookOpen",
+            "ArrowRight"
+          ]
+        }
+      ],
+      "exports": [
+        "Guides"
+      ],
+      "totalLines": 58,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/Home.jsx": {
+      "filePath": "src/pages/Home.jsx",
+      "contentHash": "eb0cb0e2c7fd4802229ad72c98ed8186af2dcc7e6091ee6dcbf67500eca83916",
+      "functions": [
+        {
+          "name": "fmt",
+          "params": [
+            "p"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "fmtNum",
+          "params": [
+            "n"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "fromDrop",
+          "params": [
+            "p"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "fromProduct",
+          "params": [
+            "p"
+          ],
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "guardDegeneratePcts",
+          "params": [
+            "ds"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "Home",
+          "params": [],
+          "exported": true,
+          "lineCount": 297
+        },
+        {
+          "name": "CloseBand",
+          "params": [],
+          "exported": false,
+          "lineCount": 34
+        },
+        {
+          "name": "NewsletterMini",
+          "params": [],
+          "exported": false,
+          "lineCount": 52
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "framer-motion",
+          "specifiers": [
+            "motion",
+            "useReducedMotion"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link",
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "react-helmet-async",
+          "specifiers": [
+            "Helmet"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "getHotDrops",
+            "getAllProducts",
+            "getMostSellers",
+            "getShops",
+            "getShopTrust",
+            "subscribeNewsletter"
+          ]
+        },
+        {
+          "source": "../components/SearchBar",
+          "specifiers": [
+            "SearchBar"
+          ]
+        },
+        {
+          "source": "../components/HomeProductCard",
+          "specifiers": [
+            "HomeProductCard",
+            "HomeProductCardSkeleton"
+          ]
+        },
+        {
+          "source": "../components/SearchProductCard",
+          "specifiers": [
+            "SearchProductCard"
+          ]
+        },
+        {
+          "source": "../components/SearchProductCardSkeleton",
+          "specifiers": [
+            "SearchProductCardSkeleton"
+          ]
+        },
+        {
+          "source": "../auth/AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        },
+        {
+          "source": "../components/TrustBadge",
+          "specifiers": [
+            "TrustScore",
+            "deliveryText"
+          ]
+        },
+        {
+          "source": "../lib/categoryIcon",
+          "specifiers": [
+            "CategoryIcon"
+          ]
+        },
+        {
+          "source": "../components/ui/woven-light-hero",
+          "specifiers": [
+            "WovenLightHero"
+          ]
+        },
+        {
+          "source": "../lib/display",
+          "specifiers": [
+            "cleanName",
+            "saneSavePct"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "ArrowRight",
+            "ShieldCheck",
+            "Flame",
+            "TrendingDown",
+            "Truck",
+            "Heart",
+            "Check"
+          ]
+        }
+      ],
+      "exports": [
+        "Home"
+      ],
+      "totalLines": 457,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/Privacy.jsx": {
+      "filePath": "src/pages/Privacy.jsx",
+      "contentHash": "326235e15edf915f170fac7946bd5cbcc50f227c5497d2c74d415597521351d7",
+      "functions": [
+        {
+          "name": "Privacy",
+          "params": [],
+          "exported": true,
+          "lineCount": 15
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        }
+      ],
+      "exports": [
+        "Privacy"
+      ],
+      "totalLines": 18,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/ProductDetail.jsx": {
+      "filePath": "src/pages/ProductDetail.jsx",
+      "contentHash": "a0fdd63c0e8202a1af9d259646aa0ca6a928459c9a8277a6adbbf77cd71ea4da",
+      "functions": [
+        {
+          "name": "formatPrice",
+          "params": [
+            "price"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "ProductDetail",
+          "params": [],
+          "exported": true,
+          "lineCount": 475
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState",
+            "useEffect",
+            "useMemo",
+            "useRef"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useParams",
+            "useNavigate",
+            "useLocation",
+            "Link"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "getProduct",
+            "getProductHistory",
+            "getDailyPriceHistory",
+            "getShopTrust",
+            "getSellerTrust"
+          ]
+        },
+        {
+          "source": "../api/analytics",
+          "specifiers": [
+            "trackAction",
+            "trackView"
+          ]
+        },
+        {
+          "source": "../api/recentlyViewed",
+          "specifiers": [
+            "pushRecent"
+          ]
+        },
+        {
+          "source": "../api/auth",
+          "specifiers": [
+            "addToWishlist",
+            "removeFromWishlist",
+            "listWishlist"
+          ]
+        },
+        {
+          "source": "../auth/AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        },
+        {
+          "source": "../components/PriceComparisonTable",
+          "specifiers": [
+            "PriceComparisonTable"
+          ]
+        },
+        {
+          "source": "../components/PriceHistoryChart",
+          "specifiers": [
+            "PriceHistoryChart"
+          ]
+        },
+        {
+          "source": "../components/ReviewsPanel",
+          "specifiers": [
+            "ReviewsPanel"
+          ]
+        },
+        {
+          "source": "../components/AddOffer",
+          "specifiers": [
+            "AddOffer"
+          ]
+        },
+        {
+          "source": "../components/LoadingSpinner",
+          "specifiers": [
+            "LoadingSpinner"
+          ]
+        },
+        {
+          "source": "../components/ProductSEO",
+          "specifiers": [
+            "ProductSEO"
+          ]
+        },
+        {
+          "source": "../components/ServiceUnavailable",
+          "specifiers": [
+            "ServiceUnavailable"
+          ]
+        },
+        {
+          "source": "../components/FeedbackPulse",
+          "specifiers": [
+            "FeedbackPulse"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "ArrowLeft",
+            "Share2",
+            "Bell",
+            "Store",
+            "AlertTriangle",
+            "Heart",
+            "Clock",
+            "ChevronDown"
+          ]
+        },
+        {
+          "source": "../lib/categoryIcon",
+          "specifiers": [
+            "CategoryIcon"
+          ]
+        },
+        {
+          "source": "../lib/display",
+          "specifiers": [
+            "cleanName",
+            "saneSavePct",
+            "relTime"
+          ]
+        }
+      ],
+      "exports": [
+        "ProductDetail"
+      ],
+      "totalLines": 502,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/Protect.jsx": {
+      "filePath": "src/pages/Protect.jsx",
+      "contentHash": "6142faa12e88940a6f073e27234b2200d34746fd7ff26b17be85bf84c962d090",
+      "functions": [
+        {
+          "name": "Protect",
+          "params": [],
+          "exported": true,
+          "lineCount": 323
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link",
+            "useSearchParams"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "ShieldCheck",
+            "Search",
+            "Truck",
+            "ArrowRight",
+            "ShieldAlert",
+            "Check",
+            "Loader2",
+            "Sparkles",
+            "Copy",
+            "Lock"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "protectAssess",
+            "protectCreateOrder",
+            "protectGetOrder",
+            "protectConfirmOrder",
+            "protectDisputeOrder"
+          ]
+        }
+      ],
+      "exports": [
+        "Protect"
+      ],
+      "totalLines": 338,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/ResetPassword.jsx": {
+      "filePath": "src/pages/ResetPassword.jsx",
+      "contentHash": "46e9f461e2d4883164d44edef92526cf2fa2e01d66146931fa829df2c5310d47",
+      "functions": [
+        {
+          "name": "ResetPassword",
+          "params": [],
+          "exported": true,
+          "lineCount": 76
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link",
+            "useNavigate",
+            "useSearchParams"
+          ]
+        },
+        {
+          "source": "../api/auth",
+          "specifiers": [
+            "resetPassword"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "ArrowLeft",
+            "AlertCircle",
+            "KeyRound"
+          ]
+        }
+      ],
+      "exports": [
+        "ResetPassword"
+      ],
+      "totalLines": 83,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/Saathi.jsx": {
+      "filePath": "src/pages/Saathi.jsx",
+      "contentHash": "bee2ac579039ee161b306b5ec795c6069f8b34257135c830dcb8f8bc7bff0203",
+      "functions": [
+        {
+          "name": "Saathi",
+          "params": [],
+          "exported": true,
+          "lineCount": 195
+        },
+        {
+          "name": "Feature",
+          "params": [],
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "PathStep",
+          "params": [],
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "PriceCard",
+          "params": [],
+          "exported": false,
+          "lineCount": 27
+        },
+        {
+          "name": "Field",
+          "params": [],
+          "exported": false,
+          "lineCount": 8
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link",
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "../auth/AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        },
+        {
+          "source": "../api/auth",
+          "specifiers": [
+            "saathiMe",
+            "saathiSignup"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Sparkles",
+            "Radio",
+            "MessageSquare",
+            "ShieldCheck",
+            "ArrowRight",
+            "Tag",
+            "Store",
+            "Zap",
+            "Check"
+          ]
+        }
+      ],
+      "exports": [
+        "Saathi"
+      ],
+      "totalLines": 271,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/SaathiDashboard.jsx": {
+      "filePath": "src/pages/SaathiDashboard.jsx",
+      "contentHash": "70f26940a38e6d8ad6fe9a0b5a6648251b64b4f83e97b7f4d3584c8bbbc98682",
+      "functions": [
+        {
+          "name": "fmt",
+          "params": [
+            "p"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "SaathiDashboard",
+          "params": [],
+          "exported": true,
+          "lineCount": 149
+        },
+        {
+          "name": "SetupStep",
+          "params": [],
+          "exported": false,
+          "lineCount": 18
+        },
+        {
+          "name": "LiveAssistCanvas",
+          "params": [],
+          "exported": false,
+          "lineCount": 134
+        },
+        {
+          "name": "ErrorPanel",
+          "params": [],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "buildReply",
+          "params": [
+            "result",
+            "lowest"
+          ],
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "BotStatusCard",
+          "params": [],
+          "exported": false,
+          "lineCount": 49
+        },
+        {
+          "name": "ActivityRail",
+          "params": [],
+          "exported": false,
+          "lineCount": 49
+        },
+        {
+          "name": "timeAgo",
+          "params": [
+            "ts"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "StatsBar",
+          "params": [],
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "Kpi",
+          "params": [],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "ManageCard",
+          "params": [],
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "BadgeCard",
+          "params": [],
+          "exported": false,
+          "lineCount": 21
+        },
+        {
+          "name": "ConnectFbModal",
+          "params": [],
+          "exported": false,
+          "lineCount": 61
+        },
+        {
+          "name": "TestBotModal",
+          "params": [],
+          "exported": false,
+          "lineCount": 56
+        },
+        {
+          "name": "VerifyModal",
+          "params": [],
+          "exported": false,
+          "lineCount": 36
+        },
+        {
+          "name": "ProductsModal",
+          "params": [],
+          "exported": false,
+          "lineCount": 63
+        },
+        {
+          "name": "AddProductInner",
+          "params": [],
+          "exported": false,
+          "lineCount": 75
+        },
+        {
+          "name": "ModalShell",
+          "params": [],
+          "exported": false,
+          "lineCount": 9
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState",
+            "useRef"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link",
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "../auth/AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        },
+        {
+          "source": "../api/auth",
+          "specifiers": [
+            "saathiMe",
+            "saathiSubmitVerification",
+            "saathiListProducts",
+            "saathiAttachProduct",
+            "saathiDetachProduct",
+            "saathiLiveAssist",
+            "saathiRecentQueries",
+            "saathiStats",
+            "saathiConnectMessenger",
+            "saathiDisconnectMessenger",
+            "saathiTestBot"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "searchProducts"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Radio",
+            "ShieldCheck",
+            "Store",
+            "Search",
+            "X",
+            "Plus",
+            "Copy",
+            "MessageSquare",
+            "Activity",
+            "TrendingDown",
+            "TrendingUp",
+            "Equal",
+            "AlertTriangle",
+            "Check",
+            "Power",
+            "Settings",
+            "ArrowRight",
+            "Sparkles",
+            "Zap",
+            "ExternalLink",
+            "Bot"
+          ]
+        }
+      ],
+      "exports": [
+        "SaathiDashboard"
+      ],
+      "totalLines": 858,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/SaathiProfile.jsx": {
+      "filePath": "src/pages/SaathiProfile.jsx",
+      "contentHash": "35e4a53db0d985100883b8cc460172514655b80273043771041e669487f237fa",
+      "functions": [
+        {
+          "name": "fmt",
+          "params": [
+            "p"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "SaathiProfile",
+          "params": [],
+          "exported": true,
+          "lineCount": 158
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useParams",
+            "Link"
+          ]
+        },
+        {
+          "source": "../api/auth",
+          "specifiers": [
+            "saathiPublicProfile"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "ShieldCheck",
+            "MapPin",
+            "MessageSquare",
+            "Phone",
+            "ExternalLink",
+            "Star",
+            "ArrowLeft",
+            "Store",
+            "TrendingDown"
+          ]
+        }
+      ],
+      "exports": [
+        "SaathiProfile"
+      ],
+      "totalLines": 177,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/SaathiSignup.jsx": {
+      "filePath": "src/pages/SaathiSignup.jsx",
+      "contentHash": "280fbfc634bc3fe81394ff6fb3f0baf98dcc6544438feeaf299b1c9f89ee76ec",
+      "functions": [
+        {
+          "name": "SaathiSignup",
+          "params": [],
+          "exported": true,
+          "lineCount": 139
+        },
+        {
+          "name": "Field",
+          "params": [],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "Perk",
+          "params": [],
+          "exported": false,
+          "lineCount": 14
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link",
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "../auth/AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        },
+        {
+          "source": "../api/auth",
+          "specifiers": [
+            "saathiMe",
+            "saathiSignup"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Sparkles",
+            "ArrowRight",
+            "Radio",
+            "MessageSquare",
+            "ShieldCheck",
+            "Check",
+            "ArrowLeft"
+          ]
+        }
+      ],
+      "exports": [
+        "SaathiSignup"
+      ],
+      "totalLines": 191,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/SearchResults.jsx": {
+      "filePath": "src/pages/SearchResults.jsx",
+      "contentHash": "880d4ea8210d17198802a72cb54b579114479ec05beb7f6eebf7c48c6b04d287",
+      "functions": [
+        {
+          "name": "SearchResults",
+          "params": [],
+          "exported": true,
+          "lineCount": 399
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState",
+            "useEffect",
+            "useMemo",
+            "useRef"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useSearchParams",
+            "Link"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "searchProducts",
+            "getShopTrust"
+          ]
+        },
+        {
+          "source": "../components/SearchProductCard",
+          "specifiers": [
+            "SearchProductCard"
+          ]
+        },
+        {
+          "source": "../components/SearchProductCardSkeleton",
+          "specifiers": [
+            "SearchProductCardSkeleton"
+          ]
+        },
+        {
+          "source": "../components/ServiceUnavailable",
+          "specifiers": [
+            "ServiceUnavailable"
+          ]
+        },
+        {
+          "source": "../components/NewsletterInline",
+          "specifiers": [
+            "NewsletterInline"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Search",
+            "ArrowUpDown",
+            "ArrowLeft",
+            "Sparkles",
+            "AlertTriangle",
+            "RefreshCw",
+            "Lightbulb"
+          ]
+        }
+      ],
+      "exports": [
+        "SearchResults"
+      ],
+      "totalLines": 426,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/Sellers.jsx": {
+      "filePath": "src/pages/Sellers.jsx",
+      "contentHash": "239e6b4bffeef274a6af61d5aba0f1a41ee82a096cfc8931182fc7f0138a2e14",
+      "functions": [
+        {
+          "name": "formatFollowers",
+          "params": [
+            "n"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "bucket",
+          "params": [
+            "t"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "TypeBadge",
+          "params": [],
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "Sellers",
+          "params": [],
+          "exported": true,
+          "lineCount": 238
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState",
+            "useEffect",
+            "useMemo"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "getSellers"
+          ]
+        },
+        {
+          "source": "../components/LoadingSpinner",
+          "specifiers": [
+            "LoadingSpinner"
+          ]
+        },
+        {
+          "source": "../config/features",
+          "specifiers": [
+            "SHOW_SAATHI"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "ArrowLeft",
+            "BadgeCheck",
+            "MessageCircle",
+            "MapPin",
+            "Clock",
+            "Store",
+            "Search",
+            "ExternalLink",
+            "Sparkles",
+            "AlertTriangle",
+            "Globe",
+            "ShoppingBag",
+            "Star"
+          ]
+        }
+      ],
+      "exports": [
+        "Sellers"
+      ],
+      "totalLines": 297,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/SignIn.jsx": {
+      "filePath": "src/pages/SignIn.jsx",
+      "contentHash": "0274d91569a88fcd6be0894ad641e985e73551af81b9b48450be7e747ce466ac",
+      "functions": [
+        {
+          "name": "SignIn",
+          "params": [],
+          "exported": true,
+          "lineCount": 136
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link",
+            "useNavigate",
+            "useSearchParams"
+          ]
+        },
+        {
+          "source": "../api/auth",
+          "specifiers": [
+            "passwordLogin"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "getProduct"
+          ]
+        },
+        {
+          "source": "../auth/AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        },
+        {
+          "source": "../auth/safeNext",
+          "specifiers": [
+            "safeNextPath"
+          ]
+        },
+        {
+          "source": "../components/GoogleSignInButton",
+          "specifiers": [
+            "GoogleSignInButton"
+          ]
+        },
+        {
+          "source": "../components/AuthLayout",
+          "specifiers": [
+            "AuthLayout",
+            "Stagger",
+            "Field"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "AlertCircle",
+            "CheckCircle2"
+          ]
+        }
+      ],
+      "exports": [
+        "SignIn"
+      ],
+      "totalLines": 157,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/SignUp.jsx": {
+      "filePath": "src/pages/SignUp.jsx",
+      "contentHash": "0e0ab0fa28d84e33b3c03dd6d2755a2fabf590cc35b2e55c7be8b107d13a546a",
+      "functions": [
+        {
+          "name": "SignUp",
+          "params": [],
+          "exported": true,
+          "lineCount": 118
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link",
+            "useNavigate",
+            "useSearchParams"
+          ]
+        },
+        {
+          "source": "../api/auth",
+          "specifiers": [
+            "signup"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "getProduct"
+          ]
+        },
+        {
+          "source": "../auth/AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        },
+        {
+          "source": "../auth/safeNext",
+          "specifiers": [
+            "safeNextPath"
+          ]
+        },
+        {
+          "source": "../components/GoogleSignInButton",
+          "specifiers": [
+            "GoogleSignInButton"
+          ]
+        },
+        {
+          "source": "../components/AuthLayout",
+          "specifiers": [
+            "AuthLayout",
+            "Stagger",
+            "Field"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "AlertCircle"
+          ]
+        }
+      ],
+      "exports": [
+        "SignUp"
+      ],
+      "totalLines": 138,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/SubmitShop.jsx": {
+      "filePath": "src/pages/SubmitShop.jsx",
+      "contentHash": "e57f14fbeed93fd35bc4aea315e1d7d2ad607a9be03b94179f15e0cf13b97e98",
+      "functions": [
+        {
+          "name": "SubmitShop",
+          "params": [],
+          "exported": true,
+          "lineCount": 198
+        },
+        {
+          "name": "Field",
+          "params": [],
+          "exported": false,
+          "lineCount": 11
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "submitShop"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Store",
+            "CheckCircle2",
+            "ArrowLeft",
+            "AlertCircle"
+          ]
+        }
+      ],
+      "exports": [
+        "SubmitShop"
+      ],
+      "totalLines": 230,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/Trending.jsx": {
+      "filePath": "src/pages/Trending.jsx",
+      "contentHash": "b78715b75e37a7c88e4ba8ca8023e77221bfed5e3fa71b712d2dd838b48b4ef6",
+      "functions": [
+        {
+          "name": "formatPrice",
+          "params": [
+            "price"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "fmtNum",
+          "params": [
+            "n"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "Trending",
+          "params": [],
+          "exported": true,
+          "lineCount": 127
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "../api/api",
+          "specifiers": [
+            "getTrending",
+            "getTrendingShops"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Flame",
+            "ArrowRight",
+            "TrendingUp",
+            "Store"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "react-helmet-async",
+          "specifiers": [
+            "Helmet"
+          ]
+        },
+        {
+          "source": "../lib/categoryIcon",
+          "specifiers": [
+            "CategoryIcon"
+          ]
+        }
+      ],
+      "exports": [
+        "Trending"
+      ],
+      "totalLines": 144,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/VerifyEmail.jsx": {
+      "filePath": "src/pages/VerifyEmail.jsx",
+      "contentHash": "2fba740f1f652d77a4177a0a500e32a4cb4b6926f8890a2869c0f75f806c2730",
+      "functions": [
+        {
+          "name": "VerifyEmail",
+          "params": [],
+          "exported": true,
+          "lineCount": 50
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link",
+            "useSearchParams"
+          ]
+        },
+        {
+          "source": "../api/auth",
+          "specifiers": [
+            "verifyEmail"
+          ]
+        },
+        {
+          "source": "../auth/AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "CheckCircle2",
+            "AlertTriangle"
+          ]
+        }
+      ],
+      "exports": [
+        "VerifyEmail"
+      ],
+      "totalLines": 58,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/admin/AdminAnalytics.jsx": {
+      "filePath": "src/pages/admin/AdminAnalytics.jsx",
+      "contentHash": "506504431d61e033186fd1d704c49e60ee975a4d355a4ffe8c4b8da2d52b08e3",
+      "functions": [
+        {
+          "name": "num",
+          "params": [
+            "n"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "pct",
+          "params": [
+            "n"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "AdminAnalytics",
+          "params": [],
+          "exported": true,
+          "lineCount": 563
+        },
+        {
+          "name": "MiniStat",
+          "params": [],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "FunnelRow",
+          "params": [],
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "OptionalWidget",
+          "params": [],
+          "exported": false,
+          "lineCount": 30
+        },
+        {
+          "name": "optionalRows",
+          "params": [
+            "id",
+            "data"
+          ],
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "timeAgo",
+          "params": [
+            "ts"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "loadWidgets",
+          "params": [],
+          "exported": false,
+          "lineCount": 9
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useCallback",
+            "useEffect",
+            "useMemo",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "recharts",
+          "specifiers": [
+            "AreaChart",
+            "Area",
+            "XAxis",
+            "YAxis",
+            "CartesianGrid",
+            "Tooltip",
+            "ResponsiveContainer",
+            "BarChart",
+            "Bar",
+            "Cell",
+            "PieChart",
+            "Pie"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Filter",
+            "Plus",
+            "ArrowRight",
+            "Users",
+            "X",
+            "SearchIcon",
+            "Store",
+            "Globe",
+            "Smartphone",
+            "SearchX",
+            "Activity",
+            "Package",
+            "RefreshCw",
+            "TrendingUp"
+          ]
+        },
+        {
+          "source": "../../api/admin",
+          "specifiers": [
+            "analyticsOverview",
+            "analyticsHourly",
+            "analyticsDailyUsers",
+            "analyticsTopProducts",
+            "analyticsFunnel",
+            "analyticsTopSearches",
+            "analyticsZeroResultSearches",
+            "analyticsTopShops",
+            "analyticsDevices",
+            "analyticsReferrers",
+            "analyticsCatalogGrowth"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminAnalytics"
+      ],
+      "totalLines": 696,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/admin/AdminAuditLog.jsx": {
+      "filePath": "src/pages/admin/AdminAuditLog.jsx",
+      "contentHash": "28778bac0aafb9108e3b02bc3d716e117fc87cdc14ff43995b04d4dc92629eda",
+      "functions": [
+        {
+          "name": "AdminAuditLog",
+          "params": [],
+          "exported": true,
+          "lineCount": 43
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "../../api/api",
+          "specifiers": [
+            "api"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminAuditLog"
+      ],
+      "totalLines": 47,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/admin/AdminCache.jsx": {
+      "filePath": "src/pages/admin/AdminCache.jsx",
+      "contentHash": "5c5633eb6261719303948c2992cf881d2730a03133c1a4543dc4be0d045dfee1",
+      "functions": [
+        {
+          "name": "AdminCache",
+          "params": [],
+          "exported": true,
+          "lineCount": 78
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "../../api/admin",
+          "specifiers": [
+            "listCaches",
+            "flushCache",
+            "flushAllCaches"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Database",
+            "Trash2",
+            "RotateCcw"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminCache"
+      ],
+      "totalLines": 83,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/admin/AdminCatalog.jsx": {
+      "filePath": "src/pages/admin/AdminCatalog.jsx",
+      "contentHash": "b3cfdf741f7e4ff741f8a2bd6918608be2a35a9f2b3c3e40e009d9b7018b2bb3",
+      "functions": [
+        {
+          "name": "fmt",
+          "params": [
+            "p"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "formatDateTime",
+          "params": [
+            "isoString"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "AdminCatalog",
+          "params": [],
+          "exported": true,
+          "lineCount": 269
+        },
+        {
+          "name": "EditField",
+          "params": [],
+          "exported": false,
+          "lineCount": 12
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useSearchParams"
+          ]
+        },
+        {
+          "source": "../../api/admin",
+          "specifiers": [
+            "adminListCatalog",
+            "adminEditProduct",
+            "adminDeleteProduct",
+            "adminMergeProducts",
+            "adminCreateProduct"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "SearchIcon",
+            "Edit2",
+            "Trash2",
+            "Merge",
+            "X",
+            "Check",
+            "Plus"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminCatalog"
+      ],
+      "totalLines": 303,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/admin/AdminCrawler.jsx": {
+      "filePath": "src/pages/admin/AdminCrawler.jsx",
+      "contentHash": "3a0b8667ab2fec9b2aa1c6392056e0c747b9ee93ff9efd3163a9173f784d0479",
+      "functions": [
+        {
+          "name": "errorMessage",
+          "params": [
+            "error"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "AdminCrawler",
+          "params": [],
+          "exported": true,
+          "lineCount": 187
+        },
+        {
+          "name": "SourceDiscovery",
+          "params": [],
+          "exported": false,
+          "lineCount": 35
+        },
+        {
+          "name": "AuditStat",
+          "params": [],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "formatDate",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "Stat",
+          "params": [],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "ActionButton",
+          "params": [],
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "formatMemory",
+          "params": [
+            "bytes"
+          ],
+          "exported": false,
+          "lineCount": 4
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useCallback",
+            "useEffect",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Activity",
+            "CloudDownload",
+            "Play",
+            "Radar",
+            "RefreshCw",
+            "RotateCw",
+            "Square",
+            "Terminal"
+          ]
+        },
+        {
+          "source": "../../api/admin",
+          "specifiers": [
+            "crawlerAction",
+            "crawlerLogs",
+            "crawlerStatus"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminCrawler"
+      ],
+      "totalLines": 276,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/admin/AdminFeedback.jsx": {
+      "filePath": "src/pages/admin/AdminFeedback.jsx",
+      "contentHash": "be1e207b0fc012c6f3da08f1460adf3ed826eee7c7ec0cca586708df90c46447",
+      "functions": [
+        {
+          "name": "AdminFeedback",
+          "params": [],
+          "exported": true,
+          "lineCount": 190
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState",
+            "useEffect",
+            "useMemo"
+          ]
+        },
+        {
+          "source": "../../api/admin",
+          "specifiers": [
+            "getFeedback"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "MessageSquare",
+            "Calendar",
+            "Mail",
+            "User",
+            "ThumbsUp",
+            "ThumbsDown",
+            "Activity"
+          ]
+        },
+        {
+          "source": "../../components/LoadingSpinner",
+          "specifiers": [
+            "LoadingSpinner"
+          ]
+        },
+        {
+          "source": "recharts",
+          "specifiers": [
+            "PieChart",
+            "Pie",
+            "Cell",
+            "RechartsTooltip",
+            "ResponsiveContainer",
+            "BarChart",
+            "Bar",
+            "XAxis",
+            "YAxis",
+            "CartesianGrid"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminFeedback"
+      ],
+      "totalLines": 197,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/admin/AdminIndexer.jsx": {
+      "filePath": "src/pages/admin/AdminIndexer.jsx",
+      "contentHash": "7430be05296ce0c8dbe713417a9efeb1ee3710c1b2e6d55c9205bddd4fe23c75",
+      "functions": [
+        {
+          "name": "AdminIndexer",
+          "params": [],
+          "exported": true,
+          "lineCount": 215
+        },
+        {
+          "name": "Stat",
+          "params": [],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "ActionBtn",
+          "params": [],
+          "exported": false,
+          "lineCount": 11
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "../../api/admin",
+          "specifiers": [
+            "crawlerAction",
+            "crawlerStatus",
+            "indexStatus",
+            "getIndexerHistory"
+          ]
+        },
+        {
+          "source": "../../api/api",
+          "specifiers": [
+            "api"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Play",
+            "RotateCcw",
+            "Terminal",
+            "AlertTriangle",
+            "CheckCircle2"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminIndexer"
+      ],
+      "totalLines": 245,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/admin/AdminJobs.jsx": {
+      "filePath": "src/pages/admin/AdminJobs.jsx",
+      "contentHash": "717b600249a3c759dd5d36b2d82291d52f4f077ed835a96b7ae66ec236411674",
+      "functions": [
+        {
+          "name": "relative",
+          "params": [
+            "ts"
+          ],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "AdminJobs",
+          "params": [],
+          "exported": true,
+          "lineCount": 87
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "../../api/admin",
+          "specifiers": [
+            "listJobs",
+            "runJob",
+            "jobRuns"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Play",
+            "Clock",
+            "CheckCircle2",
+            "AlertTriangle"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminJobs"
+      ],
+      "totalLines": 102,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/admin/AdminLayout.jsx": {
+      "filePath": "src/pages/admin/AdminLayout.jsx",
+      "contentHash": "ab8121689f05af17835597bdd4a3aab3fc44c8321ec8c04df12a1b684d8c6888",
+      "functions": [
+        {
+          "name": "AdminLayout",
+          "params": [],
+          "exported": true,
+          "lineCount": 277
+        },
+        {
+          "name": "Sidebar",
+          "params": [],
+          "exported": false,
+          "lineCount": 94
+        },
+        {
+          "name": "timeAgo",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 8
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useCallback",
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "NavLink",
+            "Outlet",
+            "useLocation",
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "../../auth/AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        },
+        {
+          "source": "../../api/admin",
+          "specifiers": [
+            "crawlerAction",
+            "crawlerStatus"
+          ]
+        },
+        {
+          "source": "../../api/auth",
+          "specifiers": [
+            "listNotifications",
+            "markNotificationsRead"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Store",
+            "Inbox",
+            "BarChart3",
+            "FileText",
+            "LogOut",
+            "Package",
+            "SearchIcon",
+            "Clock",
+            "HardDrive",
+            "ShieldAlert",
+            "Activity",
+            "Tag",
+            "MessageSquare",
+            "Users",
+            "Menu",
+            "X",
+            "Bell",
+            "Plus",
+            "Settings",
+            "Play",
+            "Loader2",
+            "CheckCircle2",
+            "Database",
+            "CreditCard"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminLayout"
+      ],
+      "totalLines": 433,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/admin/AdminNewsletter.jsx": {
+      "filePath": "src/pages/admin/AdminNewsletter.jsx",
+      "contentHash": "3bc5b424a96553cf5f7269fa052782a2e6ea5e1f0ca05e9b366cbbf26e83ad7b",
+      "functions": [
+        {
+          "name": "AdminNewsletter",
+          "params": [],
+          "exported": true,
+          "lineCount": 131
+        },
+        {
+          "name": "StatCard",
+          "params": [],
+          "exported": false,
+          "lineCount": 11
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "../../api/admin",
+          "specifiers": [
+            "newsletterAnalytics",
+            "listSubscribers",
+            "triggerNewsletter"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Mail",
+            "Send",
+            "Users",
+            "Activity",
+            "Loader2",
+            "CheckCircle2",
+            "AlertCircle"
+          ]
+        },
+        {
+          "source": "../../components/LoadingSpinner",
+          "specifiers": [
+            "LoadingSpinner"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminNewsletter"
+      ],
+      "totalLines": 149,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/admin/AdminOffers.jsx": {
+      "filePath": "src/pages/admin/AdminOffers.jsx",
+      "contentHash": "748d8a9bba29276ac125f3b1e4ed3a2952d60f05e7c33151a779cccdfe3bc793",
+      "functions": [
+        {
+          "name": "fmt",
+          "params": [
+            "p"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "AdminOffers",
+          "params": [],
+          "exported": true,
+          "lineCount": 73
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "../../api/admin",
+          "specifiers": [
+            "listOffers",
+            "approveOffer",
+            "rejectOffer"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Check",
+            "X",
+            "ExternalLink",
+            "Tag"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminOffers"
+      ],
+      "totalLines": 81,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/admin/AdminPayments.jsx": {
+      "filePath": "src/pages/admin/AdminPayments.jsx",
+      "contentHash": "b81449d034c6490750bb81567309521c9691cfe999801b312a786089d56696b2",
+      "functions": [
+        {
+          "name": "compactId",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "dateTime",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "number",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "money",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "first",
+          "params": [
+            "...values"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "Status",
+          "params": [],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "Metric",
+          "params": [],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "DataTable",
+          "params": [],
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "ConfirmAction",
+          "params": [],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "AdminPayments",
+          "params": [],
+          "exported": true,
+          "lineCount": 66
+        },
+        {
+          "name": "Safety",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "Panel",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useCallback",
+            "useEffect",
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "AlertTriangle",
+            "AppWindow",
+            "BadgeDollarSign",
+            "CheckCircle2",
+            "CircleDollarSign",
+            "ExternalLink",
+            "KeyRound",
+            "Loader2",
+            "Package",
+            "RefreshCw",
+            "ShieldCheck",
+            "Webhook",
+            "XCircle"
+          ]
+        },
+        {
+          "source": "../../api/payments",
+          "specifiers": [
+            "disablePaymentLicense",
+            "ensurePaymentWebhook",
+            "getPaymentOverview",
+            "getPaymentProviderStatus",
+            "listPaymentApplications",
+            "listPaymentProducts",
+            "listPaymentProviderCatalog",
+            "listPaymentRecords",
+            "listPaymentWebhooks",
+            "refundPaymentOrder"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminPayments"
+      ],
+      "totalLines": 141,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/admin/AdminPendingShops.jsx": {
+      "filePath": "src/pages/admin/AdminPendingShops.jsx",
+      "contentHash": "440311e5d281e737815789ade3fcd1ffef96f5aa109487b8819266e9299e28a2",
+      "functions": [
+        {
+          "name": "AdminPendingShops",
+          "params": [],
+          "exported": true,
+          "lineCount": 83
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "../../api/admin",
+          "specifiers": [
+            "listPendingShops",
+            "approvePendingShop",
+            "rejectPendingShop"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Check",
+            "X",
+            "ExternalLink"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminPendingShops"
+      ],
+      "totalLines": 88,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/admin/AdminReviews.jsx": {
+      "filePath": "src/pages/admin/AdminReviews.jsx",
+      "contentHash": "acd9b8ba62af39c1dd5e511b7c162d301f19ef4f5d73b582a6cfd57cfd6554f3",
+      "functions": [
+        {
+          "name": "fmtDate",
+          "params": [
+            "v"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "AdminReviews",
+          "params": [],
+          "exported": true,
+          "lineCount": 86
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "../../api/admin",
+          "specifiers": [
+            "adminFlaggedReviews",
+            "adminSetReviewStatus"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Check",
+            "EyeOff",
+            "Loader2",
+            "ShieldAlert",
+            "RefreshCw",
+            "Star"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminReviews"
+      ],
+      "totalLines": 104,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/admin/AdminSearchLog.jsx": {
+      "filePath": "src/pages/admin/AdminSearchLog.jsx",
+      "contentHash": "7d95404412eabd8b77ee5725b608127fc5e174b93375b59c65036493373ce0ad",
+      "functions": [
+        {
+          "name": "relative",
+          "params": [
+            "ts"
+          ],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "AdminSearchLog",
+          "params": [],
+          "exported": true,
+          "lineCount": 102
+        },
+        {
+          "name": "LatCard",
+          "params": [],
+          "exported": false,
+          "lineCount": 10
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "../../api/admin",
+          "specifiers": [
+            "recentSearches",
+            "searchLatency",
+            "recentSuggestClicks"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "SearchIcon",
+            "Zap",
+            "MousePointerClick"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminSearchLog"
+      ],
+      "totalLines": 129,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/admin/AdminSettings.jsx": {
+      "filePath": "src/pages/admin/AdminSettings.jsx",
+      "contentHash": "019a40ee444e415a354227bdd7a4022145e8acf7b0780de97f504cc8380d4796",
+      "functions": [
+        {
+          "name": "AdminSettings",
+          "params": [],
+          "exported": true,
+          "lineCount": 157
+        },
+        {
+          "name": "CountCard",
+          "params": [],
+          "exported": false,
+          "lineCount": 18
+        },
+        {
+          "name": "QuickLink",
+          "params": [],
+          "exported": false,
+          "lineCount": 17
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "../../api/admin",
+          "specifiers": [
+            "diagCollections",
+            "reseedDirectories"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Settings",
+            "Database",
+            "HardDrive",
+            "Clock",
+            "RefreshCw",
+            "Loader2",
+            "CheckCircle2",
+            "AlertTriangle",
+            "ArrowRight",
+            "Layers"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminSettings"
+      ],
+      "totalLines": 204,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/admin/AdminShops.jsx": {
+      "filePath": "src/pages/admin/AdminShops.jsx",
+      "contentHash": "9d784a59fb6bc6eacf83e708ec61a7bb8a68a240a0a3b73271f67f46464fc345",
+      "functions": [
+        {
+          "name": "AdminShops",
+          "params": [],
+          "exported": true,
+          "lineCount": 403
+        },
+        {
+          "name": "Field",
+          "params": [],
+          "exported": false,
+          "lineCount": 8
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "../../api/admin",
+          "specifiers": [
+            "listShops",
+            "reindexShop",
+            "setShopStatus",
+            "editShop",
+            "bulkSetShopStatus",
+            "diagCollections",
+            "reseedDirectories",
+            "syncShopFeed"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "RotateCcw",
+            "AlertTriangle",
+            "CheckCircle2",
+            "Clock",
+            "Edit2",
+            "X",
+            "Check",
+            "DatabaseZap",
+            "DownloadCloud",
+            "Eye",
+            "EyeOff",
+            "FileText",
+            "Rss",
+            "Zap"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminShops"
+      ],
+      "totalLines": 425,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/admin/AdminStats.jsx": {
+      "filePath": "src/pages/admin/AdminStats.jsx",
+      "contentHash": "1306fa3ca756ea7bbc2ecfbd9b40e79b7ead97610dcc591ab1c449c80b3e269b",
+      "functions": [
+        {
+          "name": "fmt",
+          "params": [
+            "p"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "AdminStats",
+          "params": [],
+          "exported": true,
+          "lineCount": 100
+        },
+        {
+          "name": "Card",
+          "params": [],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "TopList",
+          "params": [],
+          "exported": false,
+          "lineCount": 25
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "../../api/api",
+          "specifiers": [
+            "api"
+          ]
+        },
+        {
+          "source": "../../api/admin",
+          "specifiers": [
+            "adminSellerDepth"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Users",
+            "SearchIcon",
+            "MousePointerClick",
+            "TrendingUp",
+            "Layers"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminStats"
+      ],
+      "totalLines": 146,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/admin/AdminUsers.jsx": {
+      "filePath": "src/pages/admin/AdminUsers.jsx",
+      "contentHash": "3b072b2d09c83609752409082a781893b4833d75edf8648f36ed742d31a71c57",
+      "functions": [
+        {
+          "name": "AdminUsers",
+          "params": [],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "UserList",
+          "params": [],
+          "exported": false,
+          "lineCount": 115
+        },
+        {
+          "name": "ConversionFunnel",
+          "params": [],
+          "exported": false,
+          "lineCount": 29
+        },
+        {
+          "name": "FunnelStep",
+          "params": [],
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "MiniStat",
+          "params": [],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "UserRow",
+          "params": [],
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "UserCard",
+          "params": [],
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "UserIdentity",
+          "params": [],
+          "exported": false,
+          "lineCount": 20
+        },
+        {
+          "name": "SourcePill",
+          "params": [],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "Pagination",
+          "params": [],
+          "exported": false,
+          "lineCount": 16
+        },
+        {
+          "name": "UserDetail",
+          "params": [],
+          "exported": false,
+          "lineCount": 89
+        },
+        {
+          "name": "ActivityItem",
+          "params": [],
+          "exported": false,
+          "lineCount": 21
+        },
+        {
+          "name": "activityIcon",
+          "params": [
+            "item"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "Metric",
+          "params": [],
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "CountCard",
+          "params": [],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "displayName",
+          "params": [
+            "user"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "formatNumber",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "formatDate",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "formatDateTime",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "relativeTime",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 11
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link",
+            "useParams"
+          ]
+        },
+        {
+          "source": "lucide-react",
+          "specifiers": [
+            "Activity",
+            "ArrowLeft",
+            "ArrowRight",
+            "CheckCircle2",
+            "ChevronLeft",
+            "ChevronRight",
+            "Clock3",
+            "ExternalLink",
+            "Eye",
+            "Heart",
+            "LogIn",
+            "Mail",
+            "MessageSquare",
+            "MousePointerClick",
+            "Search",
+            "ShieldCheck",
+            "Sparkles",
+            "Star",
+            "UserPlus",
+            "Users"
+          ]
+        },
+        {
+          "source": "../../api/admin",
+          "specifiers": [
+            "adminUser",
+            "adminUserConversion",
+            "adminUsers"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminUsers"
+      ],
+      "totalLines": 440,
+      "hasStructuralAnalysis": true
+    },
+    "tsconfig.json": {
+      "filePath": "tsconfig.json",
+      "contentHash": "b7aa59d82d596ff47d9f8fa5d7ac624474720495c7deccc9087c17671a8fd687",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 19,
+      "hasStructuralAnalysis": true
+    },
+    "vite.config.js": {
+      "filePath": "vite.config.js",
+      "contentHash": "7411b8a464d5177fe54e0b92ca0b930057831e890b2143f4e412bc0b0fe8654c",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "vite",
+          "specifiers": [
+            "defineConfig"
+          ]
+        },
+        {
+          "source": "@vitejs/plugin-react",
+          "specifiers": [
+            "react"
+          ]
+        },
+        {
+          "source": "@tailwindcss/vite",
+          "specifiers": [
+            "tailwindcss"
+          ]
+        },
+        {
+          "source": "node:url",
+          "specifiers": [
+            "fileURLToPath",
+            "URL"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 31,
+      "hasStructuralAnalysis": true
+    }
+  }
+}

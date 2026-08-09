@@ -1,12 +1,13 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { searchProducts } from '../api/api';
+import { searchProducts, getShopTrust } from '../api/api';
 import SearchProductCard from '../components/SearchProductCard';
-import { SkeletonRow } from '../components/LoadingSpinner';
 import SearchProductCardSkeleton from '../components/SearchProductCardSkeleton';
+import ServiceUnavailable from '../components/ServiceUnavailable';
+import NewsletterInline from '../components/NewsletterInline';
 import {
-  Search, ArrowUpDown, ArrowLeft, Sparkles, TrendingDown,
-  TrendingUp, Equal, AlertTriangle, RefreshCw,
+  Search, ArrowUpDown, ArrowLeft, Sparkles,
+  AlertTriangle, RefreshCw, Lightbulb,
 } from 'lucide-react';
 
 const filterOptions = [
@@ -23,11 +24,6 @@ const sortOptions = [
   { id: 'rating',     label: 'Top rated' },
 ];
 
-function formatPrice(price) {
-  if (!price && price !== 0) return 'N/A';
-  return '৳' + Number(price).toLocaleString('en-IN');
-}
-
 export default function SearchResults() {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
@@ -39,21 +35,39 @@ export default function SearchResults() {
   const [sortBy, setSortBy] = useState('relevance');
   const [showSort, setShowSort] = useState(false);
   const [searchInput, setSearchInput] = useState(query);
+  const [trust, setTrust] = useState({});
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  // Accessories (cases/covers/protectors) are hidden by default on device
+  // searches; this toggle re-includes them via the backend `acc` param.
+  const [showAccessories, setShowAccessories] = useState(false);
+  // Variant spec filters (item 3): { RAM, Storage, Display } -> selected value.
+  const [specFilters, setSpecFilters] = useState({});
+  const lastQueryRef = useRef(query);
+
+  const PAGE_SIZE = 30;
 
   const runSearch = (q) => {
     if (!q) { setLoading(false); setError(null); return; }
     setLoading(true);
     setError(null);
-    searchProducts(q)
+    setPage(0);
+    setHasMore(false);
+    searchProducts(q, 0, PAGE_SIZE, showAccessories, specFilters)
       .then((res) => {
         const data = res.data || {};
         setProducts(Array.isArray(data.products) ? data.products : []);
+        setHasMore(!!data.hasMore);
         setMeta({
           totalResults: data.totalResults ?? 0,
           sitesSearched: data.sitesSearched ?? [],
           detectedCategory: data.detectedCategory,
           brands: data.brands ?? [],
           confidence: data.confidence,
+          didYouMean: data.didYouMean,
+          sponsoredProductIds: data.sponsoredProductIds || [],
+          facets: data.facets || {},
         });
       })
       .catch((err) => {
@@ -64,23 +78,93 @@ export default function SearchResults() {
       .finally(() => setLoading(false));
   };
 
+  // Append the next ranked page; dedupe by id so a product can't show twice.
+  const loadMore = () => {
+    if (loadingMore || !hasMore || !query) return;
+    const next = page + 1;
+    setLoadingMore(true);
+    searchProducts(query, next, PAGE_SIZE, showAccessories, specFilters)
+      .then((res) => {
+        const data = res.data || {};
+        const more = Array.isArray(data.products) ? data.products : [];
+        setProducts((prev) => {
+          const seen = new Set(prev.map((p) => p.id));
+          return [...prev, ...more.filter((p) => p.id && !seen.has(p.id))];
+        });
+        setHasMore(!!data.hasMore);
+        setPage(next);
+      })
+      .catch(() => { /* keep what we have; Load more can be retried */ })
+      .finally(() => setLoadingMore(false));
+  };
+
   useEffect(() => {
     setSearchInput(query);
+    // Reset variant filters when the search TERM changes (not on a filter/
+    // accessory toggle). The reset re-triggers this effect with an empty set.
+    if (lastQueryRef.current !== query) {
+      lastQueryRef.current = query;
+      if (Object.keys(specFilters).length) { setSpecFilters({}); return; }
+    }
     runSearch(query);
-  }, [query]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query, showAccessories, specFilters]);
+
+  // Trust hint on each card uses the cheapest seller's profile; batch them.
+  useEffect(() => {
+    if (!products.length) { setTrust({}); return; }
+    const slugs = [...new Set(products.map((p) => {
+      const ps = (p.prices || []).slice().sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
+      return ps[0]?.siteSlug || ps[0]?.siteName;
+    }).filter(Boolean))].slice(0, 50);
+    if (!slugs.length) return;
+    let alive = true;
+    getShopTrust(slugs).then((r) => { if (alive && r.data) setTrust(r.data); }).catch(() => {});
+    return () => { alive = false; };
+  }, [products]);
 
   const handleNewSearch = (e) => {
     e.preventDefault();
     if (searchInput.trim()) setSearchParams({ q: searchInput.trim() });
   };
 
-  const filtered = useMemo(() => products.filter((p) => {
+  // Single-select per spec dimension; clicking the active value clears it.
+  const toggleSpec = (dim, value) => {
+    setSpecFilters((prev) => {
+      const next = { ...prev };
+      if (next[dim] === value) delete next[dim];
+      else next[dim] = value;
+      return next;
+    });
+  };
+
+  // Collapse duplicate rows for the SAME physical product (item 1): two docs that
+  // share a non-null matchKey are the same product fragmented across rows — keep
+  // the richer one (most sellers) so we never show two comparison sets for it.
+  const deduped = useMemo(() => {
+    const byKey = new Map();
+    const out = [];
+    for (const p of products) {
+      const key = p.matchKey;
+      if (!key) { out.push(p); continue; }
+      const prev = byKey.get(key);
+      if (!prev) { byKey.set(key, p); out.push(p); continue; }
+      if ((p.prices || []).length > (prev.prices || []).length) {
+        const idx = out.indexOf(prev);
+        if (idx >= 0) out[idx] = p;
+        byKey.set(key, p);
+      }
+    }
+    return out;
+  }, [products]);
+
+  const filtered = useMemo(() => deduped.filter((p) => {
     const prices = p.prices || [];
     if (activeFilter === 'in_stock') return prices.some((sp) => sp.inStock !== false);
     if (activeFilter === 'rating')   return (p.averageRating || 0) >= 4;
     if (activeFilter === 'multi')    return prices.length >= 2;
     return true;
-  }), [products, activeFilter]);
+  }), [deduped, activeFilter]);
 
   const sorted = useMemo(() => {
     const arr = [...filtered];
@@ -90,22 +174,13 @@ export default function SearchResults() {
     return arr;
   }, [filtered, sortBy]);
 
-  const stats = useMemo(() => {
-    const lows = sorted.map((p) => p.lowestPrice).filter((v) => v != null);
-    if (lows.length === 0) return null;
-    const low = Math.min(...lows);
-    const high = Math.max(...lows);
-    const avg = Math.round(lows.reduce((s, v) => s + v, 0) / lows.length);
-    return { low, high, avg, savings: high - low };
-  }, [sorted]);
-
   if (!query) {
     return (
       <div className="container-tight py-16 sm:py-24 text-center">
         <div className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-cream-soft mb-6">
           <Search className="w-10 h-10 sm:w-12 sm:h-12 text-ink/30" />
         </div>
-        <h2 className="font-serif text-2xl sm:text-3xl font-bold italic text-ink mb-2">Search for products</h2>
+        <h2 className="font-sans text-2xl sm:text-3xl font-extrabold tracking-[-0.02em] text-ink mb-2">Search for products</h2>
         <p className="text-gray text-sm sm:text-base">Enter a product name to compare prices across sellers</p>
       </div>
     );
@@ -127,11 +202,28 @@ export default function SearchResults() {
             className="w-full pl-10 pr-24 py-3 bg-white border border-line-strong rounded-2xl text-sm sm:text-[15px] text-ink placeholder-gray-soft focus:outline-none focus:border-ink/40 focus:shadow-[0_0_0_4px_rgba(21,19,26,0.04)] transition-all"
             placeholder="Search again…"
           />
-          <button type="submit" className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-ink hover:bg-red text-cream text-xs font-semibold px-3.5 py-2 rounded-xl transition-colors">
+          <button type="submit" className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-acid hover:brightness-95 text-ink text-xs font-bold px-3.5 py-2 rounded-xl transition-all">
             Search
           </button>
         </form>
       </div>
+
+      {/* Did-you-mean hint — surfaces when literal search returned nothing
+          and we fell back to fuzzy. Click to re-search with the suggestion. */}
+      {!loading && !error && meta?.didYouMean && meta.didYouMean !== query && (
+        <button
+          onClick={() => setSearchParams({ q: meta.didYouMean })}
+          className="w-full mb-3 inline-flex items-center justify-between gap-3 px-4 py-3 rounded-2xl bg-acid-soft border border-acid/50 text-left hover:bg-acid/20 transition-colors group"
+        >
+          <span className="inline-flex items-center gap-2 text-sm">
+            <Lightbulb className="w-4 h-4 text-acid-deep shrink-0" />
+            <span className="text-gray">Did you mean</span>
+            <span className="font-sans font-bold text-ink truncate">{meta.didYouMean}</span>
+            <span className="text-gray">?</span>
+          </span>
+          <span className="text-xs font-mono text-ink group-hover:underline shrink-0">Search this</span>
+        </button>
+      )}
 
       {/* Context */}
       <div className="card-elev p-4 sm:p-5 mb-3 sm:mb-4">
@@ -145,14 +237,14 @@ export default function SearchResults() {
               ) : (
                 <>
                   <span className="font-mono text-base sm:text-lg">{sorted.length}</span> {sorted.length === 1 ? 'product' : 'products'} for{' '}
-                  <span className="font-serif italic text-red">"{query}"</span>
+                  <span className="font-sans font-bold text-acid-deep">"{query}"</span>
                 </>
               )}
             </h1>
             {!loading && !error && meta?.detectedCategory && (
               <div className="flex flex-wrap items-center gap-2 mt-2">
                 <span className="chip chip-ghost !text-[10px] !py-1 !px-2.5">
-                  <Sparkles className="w-3 h-3 text-yellow" />
+                  <Sparkles className="w-3 h-3 text-acid-deep" />
                   Category: <b className="ml-1 capitalize">{meta.detectedCategory}</b>
                 </span>
                 {meta?.brands?.length > 0 && (
@@ -167,31 +259,7 @@ export default function SearchResults() {
                 )}
               </div>
             )}
-            {!loading && !error && stats && (
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] sm:text-xs text-gray mt-2">
-                <span className="inline-flex items-center gap-1">
-                  <TrendingDown className="w-3 h-3 text-green" /> Low <span className="text-green font-bold">{formatPrice(stats.low)}</span>
-                </span>
-                <span className="text-line-strong">·</span>
-                <span className="inline-flex items-center gap-1">
-                  <TrendingUp className="w-3 h-3 text-red" /> High <span className="text-red font-bold">{formatPrice(stats.high)}</span>
-                </span>
-                <span className="text-line-strong">·</span>
-                <span className="inline-flex items-center gap-1">
-                  <Equal className="w-3 h-3" /> Avg <span className="text-ink font-bold">{formatPrice(stats.avg)}</span>
-                </span>
-              </div>
-            )}
           </div>
-          {!loading && !error && stats && stats.savings > 0 && (
-            <div className="inline-flex items-center gap-2 bg-lime/30 border border-green/20 text-green px-3 py-2 rounded-xl shrink-0 self-start">
-              <Sparkles className="w-4 h-4" />
-              <div className="text-[11px] sm:text-xs font-mono leading-tight">
-                <div className="font-bold">Save {formatPrice(stats.savings)}</div>
-                <div className="text-green/70 text-[10px]">cheapest vs priciest</div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
@@ -205,13 +273,24 @@ export default function SearchResults() {
                 onClick={() => setActiveFilter(chip.id)}
                 className={`shrink-0 font-mono text-[11px] sm:text-xs px-3 sm:px-3.5 py-2 rounded-full border transition-all whitespace-nowrap ${
                   activeFilter === chip.id
-                    ? 'bg-ink text-cream border-ink'
+                    ? 'bg-acid text-ink border-acid'
                     : 'bg-white text-ink/70 border-line hover:border-line-strong hover:text-ink'
                 }`}
               >
                 {chip.label}
               </button>
             ))}
+            <button
+              onClick={() => setShowAccessories((v) => !v)}
+              title="Show phone cases, covers, screen protectors and other accessories"
+              className={`shrink-0 font-mono text-[11px] sm:text-xs px-3 sm:px-3.5 py-2 rounded-full border transition-all whitespace-nowrap ${
+                showAccessories
+                  ? 'bg-ink text-cream border-ink'
+                  : 'bg-white text-ink/70 border-line hover:border-line-strong hover:text-ink'
+              }`}
+            >
+              {showAccessories ? '✓ Accessories' : '+ Accessories'}
+            </button>
           </div>
           <div className="relative shrink-0">
             <button
@@ -238,46 +317,108 @@ export default function SearchResults() {
         </div>
       </div>
 
+      {/* Variant spec facets (item 3) — RAM / Storage / Display parsed from the matches */}
+      {!loading && !error && meta?.facets && Object.keys(meta.facets).length > 0 && (
+        <div className="mb-3 sm:mb-4 space-y-2">
+          {Object.entries(meta.facets).map(([dim, values]) => (
+            <div key={dim} className="flex items-start gap-2 flex-wrap">
+              <span className="text-[11px] font-mono text-gray shrink-0 w-16 pt-1.5">{dim}</span>
+              <div className="flex gap-1.5 flex-wrap flex-1">
+                {values.map((v) => {
+                  const active = specFilters[dim] === v.value;
+                  return (
+                    <button
+                      key={v.value}
+                      onClick={() => toggleSpec(dim, v.value)}
+                      className={`font-mono text-[11px] px-2.5 py-1 rounded-full border transition-all ${
+                        active ? 'bg-acid text-ink border-acid' : 'bg-white text-ink/70 border-line hover:border-line-strong'
+                      }`}
+                    >
+                      {v.value} <span className={active ? 'text-ink/50' : 'text-ink/40'}>{v.count}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Content */}
       {loading ? (
-        <div className="space-y-2.5 sm:space-y-3">
-          {[...Array(4)].map((_, i) => <SearchProductCardSkeleton key={i} />)}
+        <div className="columns-1 md:columns-2 gap-3 sm:gap-4">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="mb-3 sm:mb-4 break-inside-avoid">
+              <SearchProductCardSkeleton />
+            </div>
+          ))}
         </div>
       ) : error ? (
-        <div className="card-soft p-8 sm:p-10 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-red-soft mb-4">
-            <AlertTriangle className="w-8 h-8 text-red" />
+        (error.kind === 'network' || error.status >= 500) ? (
+          <ServiceUnavailable onRetry={() => runSearch(query)} />
+        ) : (
+          <div className="card-soft p-8 sm:p-10 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-red-soft mb-4">
+              <AlertTriangle className="w-8 h-8 text-red" />
+            </div>
+            <h2 className="font-sans text-xl sm:text-2xl font-extrabold tracking-[-0.02em] text-ink mb-2">Search failed</h2>
+            <p className="text-gray text-sm max-w-md mx-auto mb-5">
+              {error.message || 'Try again in a moment.'}
+            </p>
+            <button onClick={() => runSearch(query)} className="btn-ghost inline-flex">
+              <RefreshCw className="w-4 h-4" /> Retry
+            </button>
           </div>
-          <h2 className="font-serif text-xl sm:text-2xl font-bold italic text-ink mb-2">
-            {error.kind === 'network' ? 'Backend unreachable' : 'Search failed'}
-          </h2>
-          <p className="text-gray text-sm max-w-md mx-auto mb-5">
-            {error.kind === 'network'
-              ? <>The backend at <code className="font-mono text-ink bg-cream-soft px-1.5 py-0.5 rounded">/api</code> isn't responding. Start it with <code className="font-mono text-ink bg-cream-soft px-1.5 py-0.5 rounded">./gradlew bootRun</code>.</>
-              : error.message || 'Try again in a moment.'}
-          </p>
-          <button onClick={() => runSearch(query)} className="btn-ghost inline-flex">
-            <RefreshCw className="w-4 h-4" /> Retry
-          </button>
-        </div>
+        )
       ) : sorted.length === 0 ? (
         <div className="card-soft p-8 sm:p-12 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-cream-soft mb-4">
             <Search className="w-8 h-8 text-ink/30" />
           </div>
-          <h2 className="font-serif text-xl sm:text-2xl font-bold italic text-ink mb-2">No results yet</h2>
+          <h2 className="font-sans text-xl sm:text-2xl font-extrabold tracking-[-0.02em] text-ink mb-2">No results yet</h2>
           <p className="text-gray text-sm max-w-md mx-auto">
-            Our catalog doesn't have anything matching <b>"{query}"</b> yet.
-            The indexer crawls 60+ BD shops nightly at 3 AM — try a broader term, or trigger a reindex
-            from <Link to="/dashboard" className="text-ink underline">Dashboard → Quick scrape</Link>.
+            Our catalog doesn't have anything matching <b>"{query}"</b> yet —
+            try a broader term, or check back soon as we add more every day.
           </p>
+          <div className="mt-6 max-w-xl mx-auto text-left">
+            <NewsletterInline title="Meanwhile, get the week's biggest price drops in your inbox" />
+          </div>
         </div>
       ) : (
-        <div className="space-y-3 sm:space-y-4">
-          {sorted.map((p, i) => (
-            <SearchProductCard key={p.id || p.slug || i} product={p} rank={i + 1} />
-          ))}
-        </div>
+        <>
+          <div className="columns-1 md:columns-2 gap-3 sm:gap-4">
+            {sorted.map((p, i) => (
+              <div key={p.id || p.slug || i} className="mb-3 sm:mb-4 break-inside-avoid">
+                <SearchProductCard
+                  product={p}
+                  query={query}
+                  sponsored={!!meta?.sponsoredProductIds?.includes(p.id)}
+                  trust={trust}
+                />
+              </div>
+            ))}
+          </div>
+          {hasMore && (
+            <div className="mt-5 sm:mt-6 flex flex-col items-center gap-2">
+              <button
+                onClick={loadMore}
+                disabled={loadingMore}
+                className="btn-ghost inline-flex disabled:opacity-60"
+              >
+                {loadingMore ? (
+                  <><RefreshCw className="w-4 h-4 animate-spin" /> Loading…</>
+                ) : (
+                  <>Load more products</>
+                )}
+              </button>
+              {meta?.totalResults > sorted.length && (
+                <span className="font-mono text-[11px] text-gray">
+                  showing {sorted.length} of {meta.totalResults}
+                </span>
+              )}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

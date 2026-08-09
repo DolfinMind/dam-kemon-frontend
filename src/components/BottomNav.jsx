@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Search, GitCompare, MessageCircle, BarChart3 } from 'lucide-react';
+import { Home, LayoutGrid, GitCompare, TrendingUp, BarChart3 } from 'lucide-react';
+import { SHOW_PUBLIC_DASHBOARD } from '../config/features';
 
 const tabs = [
-  { to: '/',          icon: Home,          label: 'Home' },
-  { to: '/search',    icon: Search,        label: 'Search' },
-  { to: '/compare',   icon: GitCompare,    label: 'Compare' },
-  { to: '/sellers',   icon: MessageCircle, label: 'Sellers' },
-  { to: '/dashboard', icon: BarChart3,     label: 'Dash' },
+  { to: '/',          icon: Home,       label: 'Home' },
+  { to: '/browse',    icon: LayoutGrid, label: 'Browse' },
+  { to: '/compare',   icon: GitCompare, label: 'Compare' },
+  { to: '/trending',  icon: TrendingUp, label: 'Trending' },
+  ...(SHOW_PUBLIC_DASHBOARD ? [{ to: '/dashboard', icon: BarChart3, label: 'Dash' }] : []),
 ];
 
 export default function BottomNav() {
@@ -29,7 +30,6 @@ export default function BottomNav() {
   const isActive = (to) => {
     if (to === '/') return pathname === '/';
     if (to.startsWith('/#')) return false;
-    if (to === '/search') return pathname === '/search';
     return pathname.startsWith(to);
   };
 

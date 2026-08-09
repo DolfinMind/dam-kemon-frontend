@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
-import { Sparkles, Code2 } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
+import AlphaBadge from './AlphaBadge';
+import { SHOW_SAATHI, SHOW_PUBLIC_DASHBOARD } from '../config/features';
 
 export default function Footer() {
   return (
@@ -17,6 +19,7 @@ export default function Footer() {
               <span className="font-serif text-xl sm:text-[22px] font-bold italic text-cream">
                 dam<span className="text-red">.</span>kemon
               </span>
+              <AlphaBadge className="ml-0.5 !bg-cream/15 !text-cream !border-cream/25" />
             </Link>
             <p className="text-cream/55 text-sm leading-relaxed max-w-xs">
               Bangladesh price comparison. Searches live BD shops, never shows fake prices.
@@ -25,25 +28,19 @@ export default function Footer() {
 
           <nav className="flex flex-wrap items-center gap-3 sm:gap-5">
             <Link to="/" className="text-cream/70 hover:text-cream text-sm transition-colors">Home</Link>
+            <Link to="/guides" className="text-cream/70 hover:text-cream text-sm transition-colors">Guides</Link>
             <Link to="/compare" className="text-cream/70 hover:text-cream text-sm transition-colors">Compare</Link>
-            <Link to="/sellers" className="text-cream/70 hover:text-cream text-sm transition-colors">Sellers</Link>
+            <Link to="/sellers" className="text-cream/70 hover:text-cream text-sm transition-colors">Shops</Link>
+            {SHOW_SAATHI && <Link to="/saathi" className="text-cream/70 hover:text-cream text-sm transition-colors">Sell with us</Link>}
             <Link to="/submit-shop" className="text-cream/70 hover:text-cream text-sm transition-colors">Submit shop</Link>
-            <Link to="/fcommerce/signup" className="text-cream/70 hover:text-cream text-sm transition-colors">List FB shop</Link>
-            <Link to="/dashboard" className="text-cream/70 hover:text-cream text-sm transition-colors">Dashboard</Link>
-            <a
-              href="https://github.com/Saif64/dam-kemon-backend"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-cream/70 hover:text-cream text-sm transition-colors"
-            >
-              <Code2 className="w-3.5 h-3.5" /> Source
-            </a>
+            <Link to="/privacy" className="text-cream/70 hover:text-cream text-sm transition-colors">Privacy</Link>
+            {SHOW_PUBLIC_DASHBOARD && <Link to="/dashboard" className="text-cream/70 hover:text-cream text-sm transition-colors">Dashboard</Link>}
           </nav>
         </div>
 
         <div className="border-t border-cream/10 mt-8 pt-5 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-cream/40 text-xs sm:text-sm inline-flex items-center gap-1.5">
-            <Sparkles className="w-3 h-3 text-yellow" /> Made with chai in Dhaka
+            <Sparkles className="w-3 h-3 text-yellow" /> A product of Dolfinmind
           </p>
           <p className="text-cream/40 text-xs sm:text-sm font-mono">© 2026 Damkemon</p>
         </div>

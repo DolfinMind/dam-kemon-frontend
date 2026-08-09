@@ -1,17 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
-import { getProduct, getProductHistory, getDailyPriceHistory } from '../api/api';
-import { trackView } from '../api/analytics';
+import { getProduct, getProductHistory, getDailyPriceHistory, getShopTrust, getSellerTrust } from '../api/api';
+import { trackAction, trackView } from '../api/analytics';
 import { pushRecent } from '../api/recentlyViewed';
 import { addToWishlist, removeFromWishlist, listWishlist } from '../api/auth';
 import { useAuth } from '../auth/AuthContext';
 import PriceComparisonTable from '../components/PriceComparisonTable';
 import PriceHistoryChart from '../components/PriceHistoryChart';
+import ReviewsPanel from '../components/ReviewsPanel';
+import AddOffer from '../components/AddOffer';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ProductSEO from '../components/ProductSEO';
+import ServiceUnavailable from '../components/ServiceUnavailable';
+import FeedbackPulse from '../components/FeedbackPulse';
 import {
-  ArrowLeft, Star, Share2, Bell, TrendingDown, Sparkles, ShieldCheck, ExternalLink, AlertTriangle, Heart,
+  ArrowLeft, Share2, Bell, Store, AlertTriangle, Heart, Clock, ChevronDown,
 } from 'lucide-react';
+import { CategoryIcon } from '../lib/categoryIcon';
+import { cleanName, saneSavePct, relTime } from '../lib/display';
 
 function formatPrice(price) {
   if (!price && price !== 0) return 'N/A';
@@ -21,7 +27,7 @@ function formatPrice(price) {
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { state } = useLocation();
+  const { state, pathname, search } = useLocation();
   // If the user arrived from a search result, the full product travels in
   // router state — use it immediately so the page renders even when the
   // backend can't look it up (e.g. live-search results before Mongo persists).
@@ -31,7 +37,12 @@ export default function ProductDetail() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(!seedProduct);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('prices');
+  const [retryTick, setRetryTick] = useState(0);
+  const { user } = useAuth();
+  const pid = product?.id || id;
+  const intentParams = new URLSearchParams(search);
+  const memberAction = intentParams.get('memberAction');
+  const requestedTargetPrice = Number(intentParams.get('targetPrice'));
 
   useEffect(() => {
     let cancelled = false;
@@ -55,7 +66,7 @@ export default function ProductDetail() {
     });
 
     return () => { cancelled = true; };
-  }, [id, seedProduct]);
+  }, [id, seedProduct, retryTick]);
 
   useEffect(() => {
     const pid = product?.id || id;
@@ -65,38 +76,212 @@ export default function ProductDetail() {
     }
   }, [product?.id, id]);
 
-  const { user } = useAuth();
+  // One-click pulse survey, armed when the shopper returns from a store tab —
+  // the moment they know whether we actually helped.
+  const [pulseArmed, setPulseArmed] = useState(false);
+  useEffect(() => {
+    const onVis = () => {
+      if (document.visibilityState === 'visible' && sessionStorage.getItem('dk_outclick')) {
+        sessionStorage.removeItem('dk_outclick');
+        setPulseArmed(true);
+      }
+    };
+    document.addEventListener('visibilitychange', onVis);
+    return () => document.removeEventListener('visibilitychange', onVis);
+  }, []);
+
   const [inWishlist, setInWishlist] = useState(false);
   const [wishlistBusy, setWishlistBusy] = useState(false);
+  const [memberNotice, setMemberNotice] = useState(null);
+  const [alertError, setAlertError] = useState(null);
+  const [alertModalOpen, setAlertModalOpen] = useState(false);
+  const completedIntentRef = useRef(null);
+  const [alertSettings, setAlertSettings] = useState({
+    alertsEnabled: false,
+    targetPrice: '',
+    alertOnDropPercent: 10,
+  });
 
   useEffect(() => {
     if (!user) { setInWishlist(false); return; }
-    const pid = product?.id || id;
+    if (memberAction) return; // the pending-action effect owns this first load
     if (!pid) return;
     listWishlist().then((r) => {
-      setInWishlist((r.data || []).some((w) => (w.product?.id || w.productId) === pid));
+      const row = (r.data || []).find((w) => (w.product?.id || w.productId) === pid);
+      setInWishlist(!!row);
+      if (row) {
+        setAlertSettings({
+          alertsEnabled: !!row.alertsEnabled,
+          targetPrice: row.targetPrice ?? '',
+          alertOnDropPercent: row.alertOnDropPercent != null
+            ? Math.round(row.alertOnDropPercent * 100) : 10,
+        });
+      }
     }).catch(() => {});
-  }, [user, product?.id, id]);
+  }, [user, pid, memberAction]);
+
+  // Complete the exact action that motivated signup. The intent lives in the
+  // whitelisted relative next URL, so it survives both Google and email auth.
+  useEffect(() => {
+    // Wait for the canonical Mongo ID; the route may contain a product slug.
+    if (!user || !product?.id || !['save', 'track'].includes(memberAction)) return;
+    if (memberAction === 'track' && (!Number.isFinite(requestedTargetPrice) || requestedTargetPrice <= 0)) return;
+    const intentKey = `${user.id || user.email}:${product.id}:${memberAction}:${requestedTargetPrice || ''}`;
+    if (completedIntentRef.current === intentKey) return;
+    completedIntentRef.current = intentKey;
+    const track = memberAction === 'track';
+    const targetPid = product.id;
+    const cleanParams = new URLSearchParams(search);
+    cleanParams.delete('memberAction');
+    cleanParams.delete('targetPrice');
+    const cleanPath = `${pathname}${cleanParams.size ? `?${cleanParams}` : ''}`;
+    setWishlistBusy(true);
+    addToWishlist(targetPid, track, track ? requestedTargetPrice : null)
+      .then(() => {
+        setInWishlist(true);
+        if (track) setAlertSettings((s) => ({ ...s, alertsEnabled: true, targetPrice: requestedTargetPrice }));
+        setMemberNotice(track
+          ? (user.emailVerified === true
+            ? `Alert saved. We’ll email when a fresh observed price reaches ${formatPrice(requestedTargetPrice)}.`
+            : 'Alert saved. Verify your email to receive alerts.')
+          : 'Product saved to your wishlist.');
+        trackAction(`member_action_completed_${memberAction}`, targetPid);
+      })
+      .catch(() => setMemberNotice('Your account is ready, but that action could not be saved. Try again.'))
+      .finally(() => {
+        setWishlistBusy(false);
+        navigate(cleanPath, { replace: true, state });
+      });
+  }, [user, product?.id, memberAction, requestedTargetPrice, navigate, pathname, search, state]);
+
+  const requestMemberAction = (action, targetPrice = null) => {
+    const params = new URLSearchParams(search);
+    params.set('memberAction', action);
+    if (targetPrice != null) params.set('targetPrice', String(targetPrice));
+    const next = `${pathname}?${params.toString()}`;
+    if (action === 'track') trackAction('alert_target_set', pid);
+    trackAction(`member_intent_${action}`, pid);
+    navigate(`/sign-up?next=${encodeURIComponent(next)}`);
+  };
 
   const toggleWishlist = async () => {
-    const pid = product?.id || id;
-    if (!pid || !user) { navigate('/sign-in'); return; }
+    if (!pid) return;
+    if (!user) { requestMemberAction('save'); return; }
     setWishlistBusy(true);
     try {
       if (inWishlist) { await removeFromWishlist(pid); setInWishlist(false); }
-      else { await addToWishlist(pid); setInWishlist(true); }
+      else {
+        await addToWishlist(pid, false);
+        setInWishlist(true);
+        setMemberNotice('Product saved to your wishlist.');
+        trackAction('member_action_completed_save', pid);
+      }
     } catch { /* noop */ }
+    finally { setWishlistBusy(false); }
+  };
+
+  const openTrackPrice = () => {
+    if (!pid) return;
+    setAlertError(null);
+    setAlertSettings((s) => ({ ...s, alertsEnabled: true, targetPrice: s.targetPrice || (lowestPrice ? Math.round(lowestPrice * 0.9) : '') }));
+    setAlertModalOpen(true);
+  };
+
+  const saveAlertSettings = async () => {
+    if (!pid) return;
+    const targetPrice = Number(alertSettings.targetPrice);
+    if (!Number.isFinite(targetPrice) || targetPrice <= 0) {
+      setAlertError('Enter a positive target price.');
+      return;
+    }
+    if (lowestPrice != null && targetPrice >= lowestPrice) {
+      setAlertError(`Choose a target below the currently observed ${formatPrice(lowestPrice)}.`);
+      return;
+    }
+    setAlertError(null);
+    if (!user) {
+      setAlertModalOpen(false);
+      requestMemberAction('track', targetPrice);
+      return;
+    }
+    setWishlistBusy(true);
+    try {
+      await addToWishlist(pid, true, targetPrice);
+      setAlertModalOpen(false);
+      setInWishlist(true);
+      setAlertSettings((s) => ({ ...s, alertsEnabled: true, targetPrice }));
+      setMemberNotice(user.emailVerified === true
+        ? `Alert saved. We’ll email when a fresh observed price reaches ${formatPrice(targetPrice)}.`
+        : 'Alert saved. Verify your email to receive alerts.');
+      trackAction('member_action_completed_track', pid);
+    } catch { setAlertError('Could not save this alert. Try again.'); }
     finally { setWishlistBusy(false); }
   };
 
   const [dailySeries, setDailySeries] = useState([]);
   useEffect(() => {
-    const pid = product?.id || id;
     if (!pid) return;
     getDailyPriceHistory(pid, 30).then((r) => {
       setDailySeries(Array.isArray(r.data) ? r.data : []);
     }).catch(() => {});
-  }, [product?.id, id]);
+  }, [pid]);
+
+  // Trust / delivery / genuineness profiles for every seller on this product,
+  // fetched in one batched call keyed by shop slug.
+  const [trust, setTrust] = useState({});
+  useEffect(() => {
+    const slugs = [...new Set((product?.prices || []).map((p) => p.siteSlug || p.siteName).filter(Boolean))];
+    if (slugs.length === 0) { setTrust({}); return; }
+    let alive = true;
+    getShopTrust(slugs).then((r) => { if (alive && r.data) setTrust(r.data); }).catch(() => {});
+    return () => { alive = false; };
+  }, [product?.id, product?.prices, id]);
+
+  // Per-seller reputation for marketplace sub-sellers (Daraz storefronts, etc),
+  // keyed by sellerId — real, data-derived scores so we can rank one Daraz
+  // seller against another, not just show the marketplace's blanket score.
+  const [sellerTrust, setSellerTrust] = useState({});
+  useEffect(() => {
+    const ids = [...new Set((product?.prices || []).map((p) => p.sellerId).filter(Boolean))];
+    if (ids.length === 0) { setSellerTrust({}); return; }
+    let alive = true;
+    getSellerTrust(ids).then((r) => { if (alive && r.data) setSellerTrust(r.data); }).catch(() => {});
+    return () => { alive = false; };
+  }, [product?.id, product?.prices, id]);
+
+  // A freshly submitted review returns the seller's updated trust profile —
+  // merge it so the comparison table reflects it without a refetch.
+  const onTrustUpdated = (t) => {
+    if (t && t.shopSlug) setTrust((m) => ({ ...m, [t.shopSlug]: t }));
+  };
+
+  // ── Decision math for the hero "best deal" champion ───────────────────────
+  // One row per seller — duplicate listings keep only their cheapest price.
+  const prices = useMemo(() => {
+    const sorted = [...(product?.prices || [])].sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
+    const seen = new Set();
+    return sorted.filter((p) => {
+      const key = p.sellerId || `${p.siteSlug || p.siteName}|${p.sellerName || ''}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }, [product?.prices]);
+  const lowestPrice = useMemo(() => {
+    const vals = prices.map((p) => p.price).filter((v) => v != null);
+    return vals.length ? Math.min(...vals) : (product?.lowestPrice ?? null);
+  }, [prices, product?.lowestPrice]);
+  const highestPrice = useMemo(() => {
+    // Prefer the index-time field so the comparison spread is stable.
+    if (product?.highestPrice != null) return product.highestPrice;
+    const vals = prices.map((p) => p.price).filter((v) => v != null);
+    return vals.length ? Math.max(...vals) : null;
+  }, [prices, product?.highestPrice]);
+  // Hidden when the spread is implausible for one product (bad match, not a deal).
+  const savings = saneSavePct(lowestPrice, highestPrice) > 0 ? highestPrice - lowestPrice : 0;
+  const sellerCount = product?.totalSellerCount ?? prices.length;
+  const cheapest = prices.find((p) => p.price === lowestPrice) || null;
+  const pick = cheapest;
 
   if (loading) {
     return (
@@ -108,18 +293,25 @@ export default function ProductDetail() {
 
   if (!product) {
     const isNetwork = error?.kind === 'network';
+    if (isNetwork) {
+      return (
+        <div className="container-tight py-16 sm:py-24">
+          <ServiceUnavailable onRetry={() => setRetryTick((t) => t + 1)}>
+            <Link to="/" className="btn-ghost inline-flex">
+              <ArrowLeft className="w-4 h-4" /> Back to home
+            </Link>
+          </ServiceUnavailable>
+        </div>
+      );
+    }
     return (
       <div className="container-tight py-16 sm:py-24 text-center">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-red-soft mb-4">
           <AlertTriangle className="w-8 h-8 text-red" />
         </div>
-        <h2 className="font-serif text-2xl sm:text-3xl font-bold italic text-ink mb-2">
-          {isNetwork ? 'Backend unreachable' : 'Product not found'}
-        </h2>
+        <h2 className="font-sans text-2xl sm:text-3xl font-extrabold tracking-[-0.02em] text-ink mb-2">Product not found</h2>
         <p className="text-gray text-sm mb-6 max-w-md mx-auto">
-          {isNetwork
-            ? <>Backend at <code className="font-mono text-ink bg-cream-soft px-1.5 py-0.5 rounded">/api</code> isn't responding. Start the Spring Boot server with <code className="font-mono text-ink bg-cream-soft px-1.5 py-0.5 rounded">./gradlew bootRun</code>.</>
-            : <>We can't find this product. Start a new search from the home page.</>}
+          We can’t find this product. Start a new search from the home page.
         </p>
         <Link to="/" className="btn-primary inline-flex">
           <ArrowLeft className="w-4 h-4" /> Back to home
@@ -128,175 +320,182 @@ export default function ProductDetail() {
     );
   }
 
-  const lowestPrice = product.prices ? Math.min(...product.prices.map((p) => p.price || Infinity)) : product.lowestPrice;
-  const highestPrice = product.prices ? Math.max(...product.prices.map((p) => p.price || 0)) : product.highestPrice;
-  const savings = highestPrice && lowestPrice ? highestPrice - lowestPrice : 0;
-  const sellerCount = product.prices?.length || 0;
-  const cheapest = product.prices?.find((p) => p.price === lowestPrice);
-
-  const tabs = [
-    { id: 'prices', label: 'Prices', count: sellerCount },
-    { id: 'history', label: 'History' },
-  ];
-
   return (
-    <div className="container-tight py-4 sm:py-6 lg:py-8">
+    <div className="container-tight py-3 sm:py-5 lg:py-6">
       <ProductSEO product={product} />
       <button
         onClick={() => navigate(-1)}
-        className="inline-flex items-center gap-1.5 text-gray hover:text-ink text-sm font-medium mb-4 sm:mb-6 transition-colors"
+        className="inline-flex items-center gap-1.5 text-gray hover:text-ink text-xs font-bold mb-3 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" /> Back to results
       </button>
 
-      <div className="card-elev overflow-hidden mb-4 sm:mb-6">
-        <div className="flex flex-col md:flex-row">
-          <div className="relative w-full md:w-72 lg:w-96 aspect-[4/3] md:aspect-auto bg-gradient-to-br from-cream-soft via-cream to-yellow-soft flex items-center justify-center shrink-0 overflow-hidden">
+      {/* Product identity is context, not the destination. */}
+      <header className="rounded-3xl border border-line bg-white p-3 sm:p-4 mb-4 sm:mb-5 shadow-[var(--shadow-soft)]">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-2xl bg-surface-alt border border-line flex items-center justify-center p-2 overflow-hidden">
             {product.imageUrl ? (
-              <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" onError={(e) => { e.target.style.display = 'none'; }} />
+              <img src={product.imageUrl} alt="" className="max-w-full max-h-full object-contain mix-blend-multiply" onError={(e) => { e.target.style.display = 'none'; }} />
             ) : (
-              <span className="font-serif text-7xl sm:text-8xl italic text-ink/10">{(product.category || 'P')[0]}</span>
+              <CategoryIcon category={product.category} className="w-8 h-8 text-ink/15" />
             )}
-            {/* Seller-count badge — the cross-shop value prop, prominent */}
-            <div className={`absolute bottom-3 left-3 sm:bottom-4 sm:left-4 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-mono font-bold ${
-              sellerCount > 1
-                ? 'bg-green text-white shadow-[0_4px_12px_-2px_rgba(15,77,42,0.4)]'
-                : 'bg-white/95 text-ink/70 border border-line backdrop-blur'
-            }`}>
-              <Sparkles className="w-3 h-3" />
-              {sellerCount === 0 ? 'No sellers' : sellerCount === 1 ? '1 seller' : `${sellerCount} sellers compared`}
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <h1 className="font-sans text-lg sm:text-2xl lg:text-[28px] font-extrabold text-ink leading-tight tracking-[-0.025em] line-clamp-2">
+              {cleanName(product.name)}
+            </h1>
+            <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] sm:text-[11px] font-mono text-gray">
+              <span className="inline-flex items-center gap-1 font-bold text-ink"><Store className="w-3.5 h-3.5" /> {sellerCount} {sellerCount === 1 ? 'shop' : 'shops'}</span>
+              {relTime(product.lastScraped || product.updatedAt) && (
+                <span className="inline-flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> Checked {relTime(product.lastScraped || product.updatedAt)}</span>
+              )}
+              {product.category && <span className="capitalize hidden sm:inline">{product.category}</span>}
             </div>
           </div>
 
-          <div className="flex-1 p-4 sm:p-6 lg:p-8">
-            {product.category && (
-              <span className="chip chip-ghost !text-[10px] mb-2.5">
-                {product.category}
-              </span>
-            )}
-
-            <h1 className="font-serif text-xl sm:text-2xl lg:text-[28px] font-bold text-ink mb-3 leading-[1.15] tracking-tight">
-              {product.name}
-            </h1>
-
-            {product.description && (
-              <p className="text-gray text-[13px] sm:text-sm leading-relaxed mb-4 max-w-2xl line-clamp-3">
-                {product.description}
-              </p>
-            )}
-
-            <div className="flex items-center gap-2 sm:gap-3 mb-5 flex-wrap">
-              {product.averageRating > 0 ? (
-                <>
-                  <div className="flex items-center gap-0.5">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className={`w-4 h-4 ${i < Math.round(product.averageRating || 0) ? 'text-yellow fill-yellow' : 'text-line-strong'}`} />
-                    ))}
-                  </div>
-                  <span className="text-ink font-semibold text-sm">{Number(product.averageRating).toFixed(1)}</span>
-                  {product.totalReviews > 0 && (
-                    <span className="text-gray text-xs sm:text-sm">
-                      ({Number(product.totalReviews).toLocaleString('en-IN')} {product.totalReviews === 1 ? 'review' : 'reviews'} across all sellers)
-                    </span>
-                  )}
-                </>
-              ) : (
-                <span className="text-gray text-xs sm:text-sm">No reviews aggregated yet</span>
-              )}
-            </div>
-
-            <div className="rounded-2xl bg-gradient-to-br from-cream-soft to-white border border-line p-3 sm:p-4 mb-4">
-              <div className="flex flex-col sm:flex-row sm:items-end gap-2 sm:gap-4">
-                <div>
-                  <div className="font-mono text-[10px] sm:text-[11px] uppercase tracking-wider text-gray mb-0.5">Lowest right now</div>
-                  <div className="flex items-baseline gap-2 flex-wrap">
-                    <span className="font-serif text-3xl sm:text-4xl font-bold italic text-red leading-none">{formatPrice(lowestPrice)}</span>
-                    {cheapest && <span className="text-xs sm:text-sm text-gray">on <span className="font-semibold text-ink">{cheapest.siteName}</span></span>}
-                  </div>
-                  {savings > 0 && (
-                    <div className="flex items-center gap-1.5 mt-2">
-                      <span className="inline-flex items-center gap-1 bg-green/10 text-green text-[11px] sm:text-xs font-semibold px-2 py-1 rounded-full">
-                        <TrendingDown className="w-3.5 h-3.5" /> Save {formatPrice(savings)}
-                      </span>
-                      <span className="text-gray text-[11px] sm:text-xs">vs highest seller</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {cheapest && cheapest.productUrl && (
-                <a href={cheapest.productUrl} target="_blank" rel="noopener noreferrer" className="btn-accent flex-1 sm:flex-none">
-                  Buy from {cheapest.siteName} <ExternalLink className="w-4 h-4" />
-                </a>
-              )}
-              <button
-                onClick={toggleWishlist}
-                disabled={wishlistBusy}
-                className={`btn-ghost ${inWishlist ? 'text-red' : ''}`}
-                title={user ? (inWishlist ? 'Remove from wishlist' : 'Add to wishlist') : 'Sign in to save'}
-              >
-                <Heart className={`w-4 h-4 ${inWishlist ? 'fill-red' : ''}`} />
-                {inWishlist ? 'Saved' : 'Wishlist'}
-              </button>
-              <button
-                onClick={() => {
-                  if (!user) { navigate('/sign-in'); return; }
-                  navigate('/account');
-                }}
-                className="btn-ghost"
-                title="Manage saved searches & alerts"
-              >
-                <Bell className="w-4 h-4" /> Price alert
-              </button>
-              <button
-                onClick={() => {
-                  const url = window.location.href;
-                  if (navigator.share) navigator.share({ title: product.name, url }).catch(() => {});
-                  else navigator.clipboard?.writeText(url);
-                }}
-                className="btn-ghost"
-              >
-                <Share2 className="w-4 h-4" /> Share
-              </button>
-            </div>
-
-            {sellerCount > 0 && (
-              <p className="text-gray text-xs mt-4 flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-green" />
-                Available from <span className="font-semibold text-ink">{sellerCount}</span> {sellerCount === 1 ? 'seller' : 'sellers'}
-              </p>
-            )}
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            <button onClick={toggleWishlist} disabled={wishlistBusy} aria-label={inWishlist ? 'Remove from saved products' : 'Save product'} title={inWishlist ? 'Saved' : 'Save'} className={`w-9 h-9 sm:w-auto sm:px-3 rounded-full border inline-flex items-center justify-center gap-1.5 text-xs font-bold transition-colors ${inWishlist ? 'border-red/30 bg-red-soft text-red' : 'border-line text-gray hover:text-ink'}`}>
+              <Heart className={`w-4 h-4 ${inWishlist ? 'fill-red' : ''}`} /><span className="hidden sm:inline">{inWishlist ? 'Saved' : 'Save'}</span>
+            </button>
+            <button onClick={openTrackPrice} disabled={wishlistBusy} aria-label="Set a target price alert" title="Set a target price alert" className={`w-9 h-9 sm:w-auto sm:px-3 rounded-full border inline-flex items-center justify-center gap-1.5 text-xs font-bold transition-colors disabled:opacity-50 ${alertSettings.alertsEnabled ? 'border-green/30 bg-green-soft text-green' : 'border-line text-gray hover:text-ink'}`}>
+              <Bell className="w-4 h-4" /><span className="hidden sm:inline">{alertSettings.alertsEnabled ? 'Edit alert' : (user ? 'Set alert' : 'Alert me at my price')}</span>
+            </button>
+            <button
+              onClick={() => {
+                const url = window.location.href;
+                if (navigator.share) navigator.share({ title: product.name, url }).catch(() => {});
+                else navigator.clipboard?.writeText(url);
+              }}
+              aria-label="Share this comparison"
+              title="Share"
+              className="w-9 h-9 rounded-full border border-line text-gray hover:text-ink inline-flex items-center justify-center transition-colors"
+            >
+              <Share2 className="w-4 h-4" />
+            </button>
           </div>
         </div>
-      </div>
-
-      <div className="flex gap-1 bg-white border border-line rounded-full p-1 mb-4 sm:mb-6 overflow-x-auto no-scrollbar sticky top-14 sm:top-16 z-10 shadow-[var(--shadow-soft)]">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex-1 sm:flex-none px-4 sm:px-6 py-2.5 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition-all inline-flex items-center justify-center gap-1.5 ${
-              activeTab === tab.id ? 'bg-ink text-cream shadow-sm' : 'text-gray hover:text-ink'
-            }`}
-          >
-            {tab.label}
-            {tab.count !== undefined && (
-              <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${activeTab === tab.id ? 'bg-cream/10' : 'bg-ink/5'}`}>
-                {tab.count}
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
-
-      <div className="animate-fade-in">
-        {activeTab === 'prices' && (
-          <PriceComparisonTable prices={product.prices || []} productId={product.id || id} />
+        {memberNotice && (
+          <p role="status" className="mt-3 rounded-2xl bg-acid-soft px-3 py-2 text-center text-xs font-semibold text-ink">
+            {memberNotice}
+          </p>
         )}
-        {activeTab === 'history' && <PriceHistoryChart history={history} dailySeries={dailySeries} />}
-      </div>
+      </header>
+
+      <main className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.65fr)_minmax(320px,.85fr)] gap-5 lg:gap-6 items-start">
+        <section aria-labelledby="price-check-title" className="min-w-0">
+          <div className="flex items-end justify-between gap-3 mb-3">
+            <div>
+              <p className="text-[10px] font-mono font-bold uppercase tracking-[0.14em] text-acid-deep mb-1">Shop-first comparison</p>
+              <h2 id="price-check-title" className="font-sans text-xl sm:text-2xl font-extrabold tracking-[-0.02em] text-ink">See the shops, not the sales pitch</h2>
+            </div>
+            <p className="hidden sm:block text-right text-[10px] font-mono text-gray shrink-0">
+              Lowest {formatPrice(lowestPrice)}<br />
+              {savings > 0 ? `${formatPrice(savings)} price spread` : `${sellerCount} observed ${sellerCount === 1 ? 'offer' : 'offers'}`}
+            </p>
+          </div>
+
+          <PriceComparisonTable
+            prices={prices}
+            productId={pid}
+            trust={trust}
+            sellerTrust={sellerTrust}
+            recommended={pick}
+          />
+
+          <AddOffer productId={pid} />
+        </section>
+
+        <section id="reviews-section" aria-labelledby="reviews-title" className="min-w-0">
+          <div className="mb-3">
+            <p className="text-[10px] font-mono font-bold uppercase tracking-[0.14em] text-acid-deep mb-1">Buyer reality check</p>
+            <h2 id="reviews-title" className="font-sans text-xl sm:text-2xl font-extrabold tracking-[-0.02em] text-ink">What happened after checkout</h2>
+            <p className="text-xs text-gray mt-1">Seller-specific reviews, delivery and trust—not product hype.</p>
+          </div>
+          <ReviewsPanel productId={pid} product={product} onTrustUpdated={onTrustUpdated} initialVisible={3} />
+        </section>
+      </main>
+
+      <details className="group mt-5 rounded-3xl border border-line bg-white overflow-hidden">
+        <summary className="list-none cursor-pointer flex items-center justify-between gap-3 px-4 sm:px-5 py-4 text-sm font-bold text-ink hover:bg-cream-soft/50 transition-colors">
+          <span>
+            Price history <span className="ml-1 text-xs font-normal text-gray">See whether today’s price is actually good</span>
+          </span>
+          <ChevronDown className="w-4 h-4 text-gray transition-transform group-open:rotate-180" />
+        </summary>
+        <div className="border-t border-line p-3 sm:p-5">
+          <PriceHistoryChart history={history} dailySeries={dailySeries} />
+        </div>
+      </details>
+
+      {alertModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-ink/40 backdrop-blur-sm p-3 sm:p-6 animate-fade-in"
+          onClick={() => setAlertModalOpen(false)}
+        >
+          <div
+            className="bg-cream rounded-3xl shadow-[var(--shadow-lift)] border border-line-strong w-full max-w-md p-5 sm:p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <h3 className="font-sans text-xl sm:text-2xl font-extrabold tracking-[-0.02em] text-ink">Set your target price</h3>
+                <p className="text-xs text-gray mt-1">{user ? 'Email alerts require a verified address.' : 'We’ll save this alert after you sign up. Email alerts require a verified address.'}</p>
+              </div>
+              <button
+                onClick={() => setAlertModalOpen(false)}
+                className="p-1.5 -mr-1 rounded-full hover:bg-ink/5 text-gray hover:text-ink"
+                aria-label="Close"
+              >
+                <ArrowLeft className="w-4 h-4 rotate-45" />
+              </button>
+            </div>
+
+            <div className="mb-4 px-3 py-2.5 rounded-2xl bg-white border border-line text-sm">
+              <span className="font-semibold text-ink">Currently observed lowest</span>
+              <span className="block text-[11px] text-gray mt-0.5 font-mono">{formatPrice(lowestPrice)}</span>
+            </div>
+
+            <div className="space-y-3 mb-5">
+              <div>
+                <label className="block text-[11px] uppercase tracking-wider font-mono text-gray mb-1.5">
+                  Target price (notify at or below)
+                </label>
+                <div className="flex items-center gap-2 bg-white border border-line rounded-2xl px-3 py-2">
+                  <span className="text-gray font-mono">৳</span>
+                  <input
+                    type="number"
+                    value={alertSettings.targetPrice}
+                    onChange={(e) => setAlertSettings((s) => ({ ...s, targetPrice: e.target.value }))}
+                    placeholder={lowestPrice ? Math.round(lowestPrice * 0.9).toString() : 'e.g. 65000'}
+                    className="flex-1 bg-transparent outline-none text-sm font-mono"
+                  />
+                </div>
+              </div>
+
+            </div>
+
+            {alertError && <p role="alert" className="mb-4 text-sm text-red">{alertError}</p>}
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setAlertModalOpen(false)}
+                className="btn-ghost flex-1"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveAlertSettings}
+                disabled={wishlistBusy}
+                className="btn-primary flex-1 disabled:opacity-50"
+              >
+                {wishlistBusy ? 'Saving…' : (user ? 'Save alert' : 'Continue to sign up')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      <FeedbackPulse armed={pulseArmed} />
     </div>
   );
 }

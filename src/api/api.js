@@ -1,12 +1,9 @@
 import axios from 'axios';
 import { getAnonId } from './analytics';
+import { API_BASE } from './config';
 
-// VITE_API_URL — leave blank for dev (Vite proxies /api) or same-origin prod
-// (reverse-proxy /api → backend). Set to e.g. https://api.example.com if the
-// backend lives on a different domain.
-const baseURL = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api`
-  : '/api';
+// Where every request goes. Cloaked/same-origin config lives in ./config.
+const baseURL = API_BASE;
 
 const api = axios.create({
   baseURL,
@@ -32,24 +29,17 @@ api.interceptors.response.use(
   }
 );
 
-export const searchProducts = (query, page = 0, size = 20) =>
-  api.get('/search', { params: { q: query, page, size } });
+export const searchProducts = (query, page = 0, size = 20, includeAccessories = false, specs = {}) =>
+  api.get('/search', { params: {
+    q: query, page, size, acc: includeAccessories,
+    ...(specs.RAM ? { ram: specs.RAM } : {}),
+    ...(specs.Storage ? { storage: specs.Storage } : {}),
+    ...(specs.Display ? { display: specs.Display } : {}),
+  } });
 
 /** Autocomplete dropdown — returns up to N matching products by prefix. */
 export const suggestProducts = (prefix, limit = 8) =>
   api.get('/search/suggest', { params: { q: prefix, limit } });
-
-/** Trigger the nightly catalog reindex on demand. */
-export const triggerReindex = () => api.post('/admin/index/run');
-export const indexStatus = () => api.get('/admin/index/status');
-export const listShops = () => api.get('/admin/shops');
-export const retryFailedShops = () => api.post('/admin/index/retry');
-export const reindexShop = (slug) => api.post(`/admin/index/shop/${encodeURIComponent(slug)}`);
-export const setShopStatus = (slug, status) =>
-  api.post(`/admin/shops/${encodeURIComponent(slug)}/status`, { status });
-export const listPendingShops = () => api.get('/admin/pending-shops');
-export const approvePendingShop = (id) => api.post(`/admin/pending-shops/${id}/approve`);
-export const rejectPendingShop = (id, note) => api.post(`/admin/pending-shops/${id}/reject`, { note });
 
 export const getProduct = (id) =>
   api.get(`/products/${id}`);
@@ -66,8 +56,18 @@ export const getDashboardStats = () =>
 export const triggerScrape = (query, sites) =>
   api.post('/scrape', { query, sites });
 
-export const getAllProducts = (page = 0, size = 20) =>
-  api.get('/products', { params: { page, size } });
+export const getAllProducts = (page = 0, size = 20, category) =>
+  api.get('/products', { params: { page, size, ...(category ? { category } : {}) } });
+
+export const getMostSellers = (limit = 24, minSellers = 6) =>
+  api.get('/products/most-sellers', { params: { limit, minSellers } });
+
+/** Distinct catalog categories — powers the Browse filter chips. */
+export const getCategories = () => api.get('/products/categories');
+
+/** Homepage rails: top categories, each with a handful of fresh products. */
+export const getShowcase = (perCategory = 6) =>
+  api.get('/products/showcase', { params: { perCategory } });
 
 export const compareProducts = (ids) =>
   api.get('/compare', { params: { ids: Array.isArray(ids) ? ids.join(',') : ids } });
@@ -75,18 +75,86 @@ export const compareProducts = (ids) =>
 export const getSellers = (params = {}) =>
   api.get('/sellers', { params });
 
+/**
+ * Public directory of indexed shops (active shops + catalog size). Powers the
+ * shop-vs-shop comparison picker. Trust/delivery signals for selected shops
+ * come from getShopTrust().
+ */
+export const getShops = () => api.get('/shops');
+
 export const getSeller = (id) =>
   api.get(`/sellers/${id}`);
 
 /** Public-facing live counters: active users, trending searches, hot drops. */
 export const getLiveStats = () => api.get('/stats/live');
+/** Homepage social-proof headline figures: saved this month, comparisons today, drops this week. */
+export const getHeadlineStats = () => api.get('/stats/headline');
 export const getTrendingSearches = (limit = 10) =>
-  api.get('/stats/trending', { params: { limit } });
+  api.get(`/events/trending-searches?limit=${limit}`);
+
+export const getTrending = () => api.get('/events/trending');
+export const getTrendingShops = () => api.get('/events/trending-shops');
 export const getHotDrops = (limit = 12) =>
   api.get('/stats/hot-drops', { params: { limit } });
+export const getWorldCup = (limit = 12) =>
+  api.get('/stats/world-cup', { params: { limit } });
 
 /** Public shop submission. */
 export const submitShop = (payload) => api.post('/shops/submit', payload);
+
+// ─── Trust & delivery decision layer ───
+/**
+ * Batch-fetch the trust/delivery/genuineness profile for a set of shop
+ * slugs (the siteSlug on each SitePrice). Returns a slug→profile map.
+ */
+export const getShopTrust = (slugs) =>
+  api.get('/trust/shops', { params: { slugs: Array.isArray(slugs) ? slugs.join(',') : slugs } });
+
+/**
+ * Per-seller reputation for marketplace sub-sellers (e.g. Daraz storefronts),
+ * keyed by sellerId. Returns a sellerId→profile map; unknown ids are omitted.
+ */
+export const getSellerTrust = (ids) =>
+  api.get('/trust/sellers', { params: { ids: Array.isArray(ids) ? ids.join(',') : ids } });
+
+/** Community + scraped reviews for a product, newest first. */
+export const getProductReviews = (idOrSlug) =>
+  api.get(`/products/${idOrSlug}/reviews`);
+
+/**
+ * Submit a community review. The signed-in user is the identity, one review
+ * per product. Payload:
+ * { rating, title, content, reviewerName, shopSlug, siteName,
+ *   deliveryDaysReported, wouldRecommend, trustVote }.
+ */
+export const postProductReview = (idOrSlug, payload) =>
+  api.post(`/products/${idOrSlug}/reviews`, payload);
+
+/** Lightweight delivery-time report (no full review). { shopSlug, days }. */
+export const postDeliveryReport = (idOrSlug, payload) =>
+  api.post(`/products/${idOrSlug}/delivery-report`, payload);
+
+/** Validated member vote: +1 / -1. Repeating the same value toggles it off. */
+export const voteReview = (id, value) => api.post(`/reviews/${id}/vote`, { value });
+export const getReviewVotes = (ids) => api.get('/reviews/votes', {
+  params: { ids: Array.isArray(ids) ? ids.join(',') : ids },
+});
+
+/** Reviews written by the signed-in user, newest first. */
+export const getMyReviews = () => api.get('/reviews/me');
+
+/** "দরদাম" shopping assistant — { reply, products[], trust{}, suggestions[] }. */
+export const assistantChat = (message) => api.post('/assistant/chat', { message });
+
+// ─── Damkemon Protect (buyer protection) ───
+/** Scam-risk verdict for a purchase. { sellerName?, shopSlug?, productId?, amount?, paymentMethod }. */
+export const protectAssess = (payload) => api.post('/protect/assess', payload);
+/** Open a protected order; returns { order, risk } with a protection code. */
+export const protectCreateOrder = (payload) => api.post('/protect/orders', payload);
+export const protectGetOrder = (code) => api.get(`/protect/orders/${encodeURIComponent(code)}`);
+export const protectConfirmOrder = (code) => api.post(`/protect/orders/${encodeURIComponent(code)}/confirm`);
+export const protectDisputeOrder = (code, reason) =>
+  api.post(`/protect/orders/${encodeURIComponent(code)}/dispute`, { reason });
 
 /** Hydrate a list of product ids — used by the recently-viewed rail. */
 export const getProductsByIds = (ids) =>
@@ -96,42 +164,34 @@ export const getProductsByIds = (ids) =>
 export const getDailyPriceHistory = (id, days = 30) =>
   api.get(`/products/${id}/history/daily`, { params: { days } });
 
-// ─── Admin: indexer history ───
-export const getIndexerHistory = (limit = 30) =>
-  api.get('/admin/index/history', { params: { limit } });
-
-// ─── Admin: shop edit ───
-export const editShop = (slug, patch) =>
-  api.patch(`/admin/shops/${encodeURIComponent(slug)}`, patch);
-export const bulkSetShopStatus = (slugs, status) =>
-  api.post('/admin/shops/bulk-status', { slugs, status });
-
-// ─── Admin: catalog ───
-export const adminListCatalog = (params = {}) =>
-  api.get('/admin/catalog', { params });
-export const adminEditProduct = (id, patch) =>
-  api.patch(`/admin/catalog/${id}`, patch);
-export const adminDeleteProduct = (id) =>
-  api.delete(`/admin/catalog/${id}`);
-export const adminMergeProducts = (toId, fromId) =>
-  api.post(`/admin/catalog/${toId}/merge`, { from: fromId });
-
-// ─── Admin: cache ───
-export const listCaches = () => api.get('/admin/cache');
-export const flushCache = (name) => api.post(`/admin/cache/${name}/flush`);
-export const flushAllCaches = () => api.post('/admin/cache/flush-all');
-
-// ─── Admin: jobs ───
-export const listJobs = () => api.get('/admin/jobs');
-export const runJob = (id) => api.post(`/admin/jobs/${id}/run`);
-export const jobRuns = (id) => api.get(`/admin/jobs/${id}/runs`);
-
-// ─── Admin: search log + latency ───
-export const recentSearches = (limit = 200) =>
-  api.get('/admin/stats/recent-searches', { params: { limit } });
-export const searchLatency = () => api.get('/admin/stats/latency');
-
 // ─── Account: per-user search history ───
 export const accountSearchHistory = () => api.get('/account/search-history');
+
+/**
+ * Tracked outbound URL for "Visit shop" buttons. The backend records the
+ * click + appends affiliate parameters before 302-ing to the shop. Pass
+ * the search query when known so attribution analytics know what led to
+ * the click.
+ */
+export const affiliateUrl = (productId, siteSlug, fromQuery, offerUrl) => {
+  if (!productId) return '#';
+  const base = `${baseURL}/r/${encodeURIComponent(productId)}`;
+  const params = new URLSearchParams();
+  if (siteSlug) params.set('site', siteSlug);
+  // Specific offer URL — disambiguates between multiple sellers of the same
+  // product within one marketplace (e.g. two Daraz storefronts).
+  if (offerUrl) params.set('u', offerUrl);
+  if (fromQuery) params.set('q', fromQuery);
+  const qs = params.toString();
+  return qs ? `${base}?${qs}` : base;
+};
+
+// ─── Community offers: "I sell this for ৳X here" (moderated → comparison row) ───
+export const submitOffer = (productId, payload) =>
+  api.post(`/products/${encodeURIComponent(productId)}/offers`, payload);
+
+// ─── Engagement: Newsletter & Feedback ───
+export const subscribeNewsletter = (email) => api.post('/newsletter', { email });
+export const submitFeedback = (data) => api.post('/feedback', data);
 
 export default api;

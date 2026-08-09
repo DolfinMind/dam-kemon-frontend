@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, ArrowRight, Sparkles, Store } from 'lucide-react';
 import { suggestProducts } from '../api/api';
+import { trackSuggestClick } from '../api/analytics';
 
 function fmt(p) {
   if (p == null) return '';
@@ -52,12 +53,17 @@ export default function SearchBar({ large = false, onSearch, placeholder }) {
     else navigate(`/search?q=${encodeURIComponent(term)}`);
   };
 
+  const pickSuggestion = (s) => {
+    setFocused(false);
+    trackSuggestClick(query, s.id || s.slug, s.name);
+    if (s.id || s.slug) navigate(`/product/${s.id || s.slug}`);
+    else submitQuery(s.name);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (activeIndex >= 0 && suggestions[activeIndex]) {
-      const s = suggestions[activeIndex];
-      if (s.id || s.slug) navigate(`/product/${s.id || s.slug}`);
-      else submitQuery(s.name);
+      pickSuggestion(suggestions[activeIndex]);
     } else {
       submitQuery();
     }
@@ -83,7 +89,7 @@ export default function SearchBar({ large = false, onSearch, placeholder }) {
     <div ref={containerRef} className="w-full max-w-2xl mx-auto relative">
       <form onSubmit={handleSubmit}>
         <div
-          className={`relative flex items-center bg-white rounded-2xl border transition-all duration-300 ${
+          className={`relative flex items-center bg-white rounded-full border transition-all duration-300 ${
             large ? 'p-1.5 pl-4 sm:pl-5 sm:p-2' : 'p-1 pl-3 sm:p-1.5 sm:pl-4'
           } ${
             focused
@@ -105,12 +111,12 @@ export default function SearchBar({ large = false, onSearch, placeholder }) {
           />
           <button
             type="submit"
-            className={`bg-ink text-cream font-semibold rounded-xl shrink-0 hover:bg-red active:scale-95 transition-all flex items-center gap-1.5 group ${
-              large ? 'px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-[15px]' : 'px-3.5 sm:px-5 py-2 text-sm'
+            aria-label="Search"
+            className={`bg-ink text-cream rounded-full shrink-0 hover:bg-acid hover:text-ink active:scale-95 transition-all flex items-center justify-center group ${
+              large ? 'w-11 h-11 sm:w-[52px] sm:h-[52px]' : 'w-9 h-9 sm:w-10 sm:h-10'
             }`}
           >
-            <span className={large ? 'hidden sm:inline' : 'hidden xs:inline'}>Compare</span>
-            <ArrowRight className={`${large ? 'w-4 h-4 sm:w-[18px] sm:h-[18px]' : 'w-4 h-4'} transition-transform group-hover:translate-x-0.5`} />
+            <ArrowRight className={`${large ? 'w-5 h-5' : 'w-4 h-4'} transition-transform group-hover:translate-x-0.5`} />
           </button>
         </div>
 
@@ -124,11 +130,7 @@ export default function SearchBar({ large = false, onSearch, placeholder }) {
                   key={(s.id || s.slug || s.name) + i}
                   onMouseEnter={() => setActiveIndex(i)}
                   onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => {
-                    setFocused(false);
-                    if (s.id || s.slug) navigate(`/product/${s.id || s.slug}`);
-                    else submitQuery(s.name);
-                  }}
+                  onClick={() => pickSuggestion(s)}
                   className={`w-full text-left flex items-center gap-3 px-4 py-2.5 border-t border-line first:border-t-0 ${active ? 'bg-cream-soft' : 'hover:bg-cream-soft/60'} transition-colors`}
                 >
                   <div className="w-10 h-10 rounded-xl overflow-hidden bg-cream-soft flex items-center justify-center shrink-0">
@@ -164,12 +166,6 @@ export default function SearchBar({ large = false, onSearch, placeholder }) {
         )}
       </form>
 
-      {large && !showDropdown && (
-        <p className="mt-3 text-xs sm:text-sm text-gray flex items-center justify-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5 text-yellow" />
-          60+ BD shops indexed nightly · Type 2+ chars for suggestions
-        </p>
-      )}
     </div>
   );
 }

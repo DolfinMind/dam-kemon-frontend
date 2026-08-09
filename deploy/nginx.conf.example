@@ -1,0 +1,67 @@
+# ───────────────────────────────────────────────────────────────────────────
+# Reference reverse proxy for Damkemon — serves the built SPA and the API from
+# ONE origin, with the API reachable only under an opaque path.
+#
+# Why: when the frontend calls a separate "api.damkemon.com", every request is an
+# obvious cross-origin call to a named backend in the browser network tab. Serving
+# the API same-origin under an opaque prefix makes those calls look like ordinary
+# first-party requests to your own site and stops the bundle from advertising the
+# real route structure (/api/search, /api/products, …).
+#
+# Pair with the frontend build env:
+#   VITE_API_URL=        (blank → same origin)
+#   VITE_API_BASE=/_dk   (opaque prefix the bundle calls)
+#
+# This does NOT hide traffic from a determined user — nothing can; DevTools always
+# sees what the page fetches. The real guard rails are server-side: /api/admin/**
+# requires an admin JWT or X-Admin-Key, and /api/search* is rate-limited.
+# ───────────────────────────────────────────────────────────────────────────
+
+upstream damkemon_backend {
+    server 127.0.0.1:8080;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name damkemon.com www.damkemon.com;
+
+    # ssl_certificate     /etc/letsencrypt/live/damkemon.com/fullchain.pem;
+    # ssl_certificate_key /etc/letsencrypt/live/damkemon.com/privkey.pem;
+
+    root /var/www/damkemon;          # the built dist/ from `npm run build`
+    index index.html;
+
+    # Opaque API alias → backend /api. The bundle calls /_dk/...; the backend
+    # still sees its real /api/... routes. Change "_dk" to whatever you like and
+    # keep VITE_API_BASE in sync.
+    location /_dk/ {
+        rewrite ^/_dk/(.*)$ /api/$1 break;
+        proxy_pass         http://damkemon_backend;
+        proxy_set_header   Host              $host;
+        proxy_set_header   X-Real-IP         $remote_addr;
+        proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+    }
+
+    # Optional hardening: keep the admin surface off the public internet entirely
+    # (operators reach it over VPN / office IP). Uncomment to enforce.
+    # location /_dk/admin/ {
+    #     allow 203.0.113.0/24;   # your office / VPN range
+    #     deny  all;
+    #     rewrite ^/_dk/(.*)$ /api/$1 break;
+    #     proxy_pass http://damkemon_backend;
+    #     proxy_set_header Host $host;
+    #     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    # }
+
+    # SPA fallback — every non-asset path serves index.html for client routing.
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Long-cache fingerprinted assets.
+    location /assets/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+}

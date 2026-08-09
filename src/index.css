@@ -1,16 +1,20 @@
 @import "tailwindcss";
 
 @theme {
-  --color-cream: #FFF6EC;
-  --color-cream-soft: #FBF1E5;
+  --color-cream: #F2F2EF;
+  --color-cream-soft: #E9E9E3;
   --color-surface: #FFFFFF;
-  --color-surface-alt: #FAF5EE;
+  --color-surface-alt: #F2F2EF;
   --color-ink: #15131A;
   --color-ink-soft: #2A2630;
   --color-red: #FF4521;
   --color-red-soft: #FFE4DD;
   --color-lime: #D4F542;
   --color-lime-soft: #F0FBC4;
+  --color-acid: #9FE231;
+  --color-acid-soft: #EAFBC9;
+  --color-acid-deep: #3F6B12;
+  --color-neutral-bg: #E7E7E1;
   --color-green: #0F4D2A;
   --color-green-soft: #E0F3E5;
   --color-yellow: #FFD23F;
@@ -22,7 +26,9 @@
   --color-gray-soft: #A8A8A8;
   --color-line: rgba(21, 19, 26, 0.08);
   --color-line-strong: rgba(21, 19, 26, 0.14);
-  --font-serif: 'Fraunces', serif;
+  /* "serif" token retired for the MAC look — repointed to the sans stack so
+     every legacy `font-serif` usage across the app renders as bold sans. */
+  --font-serif: 'DM Sans', 'Hind Siliguri', system-ui, sans-serif;
   --font-sans: 'DM Sans', 'Hind Siliguri', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
@@ -32,6 +38,9 @@
   --shadow-pop: 0 20px 60px -20px rgba(255, 69, 33, 0.35);
 }
 
+/* Completely disable system dark mode override by requiring a manual class */
+@custom-variant dark (&:where(.dark, .dark *));
+
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
@@ -39,11 +48,17 @@ html {
 }
 
 /*
- * Dark theme overrides. The toggle on the navbar sets data-theme="dark"
- * on <html>. Tailwind utility classes that reference --color-cream /
- * --color-surface / etc. flip automatically; hard-coded hex in JSX stays
- * unchanged but the canvas around it inverts.
- */
+ * Dark theme — DISABLED for now. The contrast across our shop tables,
+ * sponsored chips, F-commerce hero gradients and pricing cards never
+ * came together; rather than ship a half-broken dark mode we're
+ * holding it back until we can reimagine the palette properly
+ * (probably: warm dark greys + amber/cream accents, mirroring the
+ * Notion/Stripe Atlas aesthetic rather than inverting the light
+ * tokens 1:1).
+ *
+ * Kept in source so re-enabling is a single block uncomment + revert
+ * of the toggle hide in Navbar.jsx + theme.js.
+ *
 html[data-theme="dark"] {
   color-scheme: dark;
   --color-cream: #15131A;
@@ -71,10 +86,10 @@ html[data-theme="dark"] {
   --shadow-lift: 0 8px 24px -8px rgba(0, 0, 0, 0.65), 0 2px 4px rgba(0, 0, 0, 0.35);
 }
 
-/* Tone down stark white image backgrounds so dark mode doesn't feel patchy. */
 html[data-theme="dark"] img {
   filter: brightness(0.92);
 }
+*/
 
 body {
   font-family: var(--font-sans);
@@ -109,9 +124,7 @@ body::after {
   pointer-events: none;
   z-index: -1;
   background:
-    radial-gradient(800px 600px at 0% 0%, rgba(255, 210, 63, 0.10), transparent 60%),
-    radial-gradient(700px 500px at 100% 30%, rgba(255, 69, 33, 0.06), transparent 60%),
-    radial-gradient(900px 700px at 50% 100%, rgba(123, 97, 255, 0.05), transparent 60%);
+    radial-gradient(900px 620px at 100% 0%, rgba(159, 226, 49, 0.05), transparent 62%);
 }
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -152,6 +165,30 @@ body::after {
   stroke-dashoffset: 400;
   animation: scribbleIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
 }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+.animate-shake { animation: shake 0.4s ease-in-out; }
+@keyframes authSuccess { from { opacity: 0; transform: translateY(10px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes authRing { from { opacity: 0.8; transform: scale(0.65); } to { opacity: 0; transform: scale(1.3); } }
+@keyframes authCheck { 0% { opacity: 0; transform: scale(0.4) rotate(-15deg); } 70% { transform: scale(1.15) rotate(2deg); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes authProgress { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+.animate-auth-success { animation: authSuccess 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-auth-ring { animation: authRing 1s ease-out infinite; }
+.animate-auth-check { animation: authCheck 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both; }
+.animate-auth-progress { animation: authProgress 1s ease-out both; }
+
+/* Instant-finish all motion for users who ask for it; `forwards` fills still
+   apply, so entrance-animated content stays visible. */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 
 /* ========= Card system ========= */
 .card-soft {
@@ -159,7 +196,7 @@ body::after {
   border: 1px solid var(--color-line);
   border-radius: 20px;
   box-shadow: var(--shadow-soft);
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1), scale 0.25s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
 }
 .card-soft:hover {
   transform: translateY(-2px);
@@ -210,11 +247,10 @@ body::after {
   font-size: 0.875rem;
   padding: 0.75rem 1.25rem;
   border-radius: 999px;
-  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.2s ease;
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.2s ease, scale 0.15s ease, opacity 0.15s ease;
   white-space: nowrap;
 }
 .btn-primary:hover { background: var(--color-ink-soft); box-shadow: 0 10px 24px -10px rgba(21,19,26,0.4); }
-.btn-primary:active { transform: scale(0.97); }
 
 .btn-accent {
   display: inline-flex;
@@ -227,11 +263,40 @@ body::after {
   font-size: 0.875rem;
   padding: 0.75rem 1.25rem;
   border-radius: 999px;
-  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.2s ease;
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.2s ease, scale 0.15s ease, opacity 0.15s ease;
   white-space: nowrap;
 }
 .btn-accent:hover { background: #E83A18; box-shadow: var(--shadow-pop); }
-.btn-accent:active { transform: scale(0.97); }
+
+/* Neon-green CTA — the MAC accent button (acid bg, ink label). */
+.btn-acid {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--color-acid);
+  color: var(--color-ink);
+  font-weight: 700;
+  font-size: 0.875rem;
+  padding: 0.8rem 1.4rem;
+  border-radius: 999px;
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.2s ease, scale 0.15s ease, opacity 0.15s ease;
+  white-space: nowrap;
+}
+.btn-acid:hover { background: #8FD624; box-shadow: 0 12px 28px -10px rgba(159, 226, 49, 0.6); }
+
+/* MAC-style pill tabs (used on the dark "examples" band). */
+.pill-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, scale 0.18s ease, opacity 0.18s ease;
+}
 
 .btn-ghost {
   display: inline-flex;
@@ -292,16 +357,27 @@ body::after {
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* Edge-fade mask for the trust marquee. */
+.mask-fade {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
 /* Safe-area mobile */
 .pb-safe { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
 .pt-safe { padding-top: max(0px, env(safe-area-inset-top)); }
 
 /* Focus rings */
 :focus-visible {
-  outline: 2px solid var(--color-red);
+  outline: 2px solid var(--color-acid-deep);
   outline-offset: 2px;
   border-radius: 8px;
 }
+
+/* Form fields show focus via their own border/container, not a hard ring. */
+input:focus, input:focus-visible,
+textarea:focus, textarea:focus-visible,
+select:focus, select:focus-visible { outline: none; }
 
 /* Recharts tweaks */
 .recharts-wrapper .recharts-cartesian-axis-tick text {
@@ -331,4 +407,66 @@ body::after {
   height: 1px;
   background: currentColor;
   opacity: 0.5;
+}
+
+/* ── Protect showcase (homepage) animations ───────────────────────────── */
+@keyframes pmScan   { 0% { transform: translateY(-110%); } 100% { transform: translateY(620%); } }
+@keyframes pmRing   { 0% { transform: scale(0.7); opacity: 0.7; } 100% { transform: scale(2.4); opacity: 0; } }
+@keyframes pmPop    { 0% { opacity: 0; transform: scale(0.7) rotate(-6deg); } 60% { opacity: 1; transform: scale(1.06) rotate(1.5deg); } 100% { opacity: 1; transform: scale(1) rotate(0); } }
+@keyframes pmFloatA { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(4px, -9px); } }
+@keyframes pmFloatB { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-5px, 7px); } }
+
+.pm-scan    { animation: pmScan 3.6s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+.pm-ring    { animation: pmRing 2.4s ease-out infinite; }
+.pm-float-a { animation: pmFloatA 5.5s ease-in-out infinite; }
+.pm-float-b { animation: pmFloatB 6.5s ease-in-out infinite; }
+
+/* Scroll-reveal: children hidden until .pm-in is set on the panel. */
+.pm-reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+.pm-in .pm-reveal { opacity: 1; transform: translateY(0); }
+.pm-in .pm-reveal.d1 { transition-delay: 0.08s; }
+.pm-in .pm-reveal.d2 { transition-delay: 0.16s; }
+.pm-in .pm-reveal.d3 { transition-delay: 0.26s; }
+.pm-in .pm-reveal.d4 { transition-delay: 0.36s; }
+
+/* Floating signal chips fade in after the card. */
+.pm-chip { opacity: 0; }
+.pm-in .pm-chip { opacity: 1; transition: opacity 0.5s ease 0.55s; }
+
+/* Risk meter fills to --pm-risk once visible. */
+.pm-meter-fill { width: 0; transition: width 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.25s; }
+.pm-in .pm-meter-fill { width: var(--pm-risk, 58%); }
+
+/* "Order protected" stamp lands last. */
+.pm-stamp { opacity: 0; }
+.pm-in .pm-stamp { animation: pmPop 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.95s forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pm-scan, .pm-ring, .pm-float-a, .pm-float-b { animation: none !important; }
+  .pm-reveal, .pm-chip, .pm-stamp { opacity: 1 !important; transform: none !important; transition: none !important; animation: none !important; }
+  .pm-meter-fill { transition: none !important; width: var(--pm-risk, 58%) !important; }
+}
+
+/* ========= Global press feedback =========
+   Everything tappable dips slightly on press and springs back on release.
+   Standalone `scale` composes with existing transforms (card hover lifts,
+   Tailwind translate utilities) instead of clobbering them. Lives in
+   @layer base so component classes and utilities keep winning conflicts. */
+@layer base {
+  :where(a, button, [role="button"], summary, .cursor-pointer) {
+    -webkit-tap-highlight-color: transparent;
+    /* Springy release — the slight overshoot is the "pop". */
+    transition: scale 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.22s ease;
+  }
+  :where(a, button, [role="button"], summary, .cursor-pointer):active {
+    scale: 0.97;
+    opacity: 0.85; /* opacity also covers inline text links, where scale is a no-op */
+    transition-duration: 0.06s; /* press-down lands near-instantly, release springs */
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :where(a, button, [role="button"], summary, .cursor-pointer):active {
+      scale: none;
+      opacity: 1;
+    }
+  }
 }

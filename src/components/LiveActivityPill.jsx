@@ -32,7 +32,7 @@ export default function LiveActivityPill({ fallbackProductsCount }) {
           <span className="text-ink/70"> searching now</span>
         </span>
       ) : (
-        <span>{fallbackProductsCount ? `${fallbackProductsCount.toLocaleString()} products indexed` : 'Live BD price comparison'}</span>
+        <span>{fallbackProductsCount ? `${fallbackProductsCount.toLocaleString()} products compared` : 'Live BD price comparison'}</span>
       )}
     </div>
   );

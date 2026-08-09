@@ -65,8 +65,8 @@ export default function SubmitShop() {
           </div>
           <h1 className="font-serif text-3xl sm:text-4xl font-semibold mb-3">Thanks!</h1>
           <p className="text-gray text-[15px] leading-relaxed mb-8">
-            Your shop is in the review queue. We'll test-crawl it, sanity-check the
-            catalog, and email you when it goes live.
+            Your shop is in the review queue. We'll review it and email you
+            when it goes live.
           </p>
           <Link to="/" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ink text-cream font-semibold text-sm hover:bg-red transition-colors">
             <ArrowLeft className="w-4 h-4" /> Back home
@@ -90,9 +90,8 @@ export default function SubmitShop() {
           Get your shop on Dam Kemon
         </h1>
         <p className="text-gray text-[15px] leading-relaxed">
-          Bangladesh-based online shop? Paste your URL below. We'll crawl your
-          catalog nightly and surface your prices in side-by-side comparisons.
-          No fee, no integration work — if you publish a sitemap, you're good.
+          Bangladesh-based online shop? Paste your URL below and we'll surface
+          your prices in side-by-side comparisons — no fee, no integration work.
         </p>
       </div>
 
@@ -120,7 +119,7 @@ export default function SubmitShop() {
           />
         </Field>
 
-        <Field label="Sitemap URL" hint="Optional but speeds up indexing massively.">
+        <Field label="Sitemap URL" hint="Optional, but helps us list your products faster.">
           <input
             type="url"
             value={form.sitemapUrl}
@@ -210,7 +209,7 @@ export default function SubmitShop() {
         }
         .input-base:focus {
           outline: none;
-          border-color: #0F4D2A;
+          border-color: #4F46E5;
         }
       `}</style>
     </div>

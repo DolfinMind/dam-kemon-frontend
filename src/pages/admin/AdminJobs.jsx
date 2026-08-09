@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { listJobs, runJob, jobRuns } from '../../api/api';
+import { listJobs, runJob, jobRuns } from '../../api/admin';
 import { Play, Clock, CheckCircle2, AlertTriangle } from 'lucide-react';
 
 function relative(ts) {

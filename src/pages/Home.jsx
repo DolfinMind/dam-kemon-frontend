@@ -1,188 +1,456 @@
 import { useEffect, useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { getAllProducts, getDashboardStats } from '../api/api';
+import { Helmet } from 'react-helmet-async';
+import {
+  getHotDrops, getAllProducts, getMostSellers,
+  getShops, getShopTrust, subscribeNewsletter,
+} from '../api/api';
 import SearchBar from '../components/SearchBar';
-import LiveActivityPill from '../components/LiveActivityPill';
-import TrendingStrip from '../components/TrendingStrip';
-import HotDropsRail from '../components/HotDropsRail';
-import RecentlyViewedRail from '../components/RecentlyViewedRail';
-import { Sparkles, Database, ShieldCheck, Store, ArrowRight, Crown } from 'lucide-react';
+import HomeProductCard, { HomeProductCardSkeleton } from '../components/HomeProductCard';
+import SearchProductCard from '../components/SearchProductCard';
+import SearchProductCardSkeleton from '../components/SearchProductCardSkeleton';
+import { useAuth } from '../auth/AuthContext';
+// ponytail: Protect hidden from frontend per request.
+// import ProtectShowcase from '../components/ProtectShowcase';
+import { TrustScore, deliveryText } from '../components/TrustBadge';
+import { CategoryIcon } from '../lib/categoryIcon';
+import { WovenLightHero } from '../components/ui/woven-light-hero';
+import { cleanName, saneSavePct } from '../lib/display';
+import {
+  ArrowRight, ShieldCheck, Flame, TrendingDown, Truck, Heart, Check,
+} from 'lucide-react';
 
 function fmt(p) {
   if (p == null) return 'N/A';
   return '৳' + Number(p).toLocaleString('en-IN');
 }
+const fmtNum = (n) => (n == null ? '—' : Number(n).toLocaleString('en-IN'));
+const HERO_TITLE_WORDS = ['Dam', 'kemon?'];
+
+// Quick paths into the catalog — doubles as "what we cover", right under search.
+const QUICK_CATS = [
+  { label: 'Smartphones', category: 'smartphones' },
+  { label: 'Laptops', category: 'laptops' },
+  { label: 'Desktops & PC', category: 'desktops & pc' },
+  { label: 'Monitors', category: 'monitors' },
+  { label: 'Audio', category: 'headphones & audio' },
+  { label: 'Accessories', category: 'accessories' },
+];
+
+// Normalise a hot-drop or a catalog product into one card shape.
+function fromDrop(p) {
+  return {
+    id: p.id, slug: p.slug, name: cleanName(p.name), category: p.category, imageUrl: p.imageUrl,
+    price: p.currentPrice, pct: p.dropPct, kind: 'drop', sellers: p.sellerCount || 0, offers: [],
+  };
+}
+function fromProduct(p) {
+  const sellers = Array.isArray(p.prices) ? p.prices.length : 0;
+  const lo = p.lowestPrice, hi = p.highestPrice;
+  const savePct = saneSavePct(lo, hi);
+  return {
+    id: p.id, slug: p.slug, name: cleanName(p.name), category: p.category, imageUrl: p.imageUrl,
+    price: lo, pct: savePct, kind: 'save', sellers, offers: p.prices || [],
+    rating: p.damkemonRating, reviews: p.damkemonReviews,
+    product: p,
+  };
+}
+// Hide drop badges when upstream returns a degenerate wall of identical pcts
+// (a known hot-drops bug renders every card "70%", which reads as fake).
+function guardDegeneratePcts(ds) {
+  if (ds.length >= 4 && new Set(ds.map((d) => d.pct)).size === 1) {
+    return ds.map((d) => ({ ...d, pct: 0 }));
+  }
+  return ds;
+}
 
 export default function Home() {
   const navigate = useNavigate();
-  const [trending, setTrending] = useState([]);
-  const [stats, setStats] = useState(null);
+  const reduceMotion = useReducedMotion();
+  const [deals, setDeals] = useState([]);
+  const [shops, setShops] = useState([]);
+  const [allProducts, setAllProducts] = useState(null);   // null = loading
+  const [allProductsTrust, setAllProductsTrust] = useState({});
+  // No FeedbackPulse here: its value moment is returning from a store visit,
+  // which can't happen on the homepage — a timer-armed ask is just a nag.
 
   useEffect(() => {
-    getAllProducts(0, 12)
+    // All Products Grid — grab 24 products with the most sellers (minimum 18).
+    getMostSellers(24, 18)
       .then((res) => {
-        const items = res.data?.content || [];
-        const withPrice = items.filter((p) => p.lowestPrice != null && p.imageUrl);
-        setTrending(withPrice.slice(0, 6));
+        const ps = Array.isArray(res.data) ? res.data : (res.data?.content || []);
+        setAllProducts(ps);
+        const slugs = [...new Set(ps.map((p) => {
+          const prices = (p.prices || []).slice().sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
+          return prices[0]?.siteSlug || prices[0]?.siteName;
+        }).filter(Boolean))].slice(0, 50);
+        if (slugs.length) {
+          getShopTrust(slugs).then((tr) => setAllProductsTrust(tr.data || {})).catch(() => {});
+        }
       })
-      .catch(() => setTrending([]));
-    getDashboardStats().then((res) => setStats(res.data)).catch(() => setStats(null));
+      .catch(() => setAllProducts([]));
+
+    // Deals rail: prefer real hot-drops; fall back to featured catalog with
+    // cross-seller savings so the rail is never empty.
+    getHotDrops(10)
+      .then((r) => {
+        const drops = Array.isArray(r.data) ? r.data : [];
+        if (drops.length >= 4) { setDeals(guardDegeneratePcts(drops.slice(0, 10).map(fromDrop))); return; }
+        return getAllProducts(0, 14).then((res) => {
+          const ps = (res.data?.content || []).filter((p) => p.lowestPrice != null && p.imageUrl);
+          setDeals(ps.slice(0, 10).map(fromProduct));
+        });
+      })
+      .catch(() => {
+        getAllProducts(0, 14).then((res) => {
+          const ps = (res.data?.content || []).filter((p) => p.lowestPrice != null && p.imageUrl);
+          setDeals(ps.slice(0, 10).map(fromProduct));
+        }).catch(() => {});
+      });
+
+    // Most-trusted well-stocked shops (real trust scores).
+    getShops().then((r) => {
+      const dir = (Array.isArray(r.data) ? r.data : []).filter((s) => s.productCount > 0).slice(0, 14);
+      if (!dir.length) return;
+      getShopTrust(dir.map((s) => s.slug))
+        .then((tr) => {
+          const t = tr.data || {};
+          const ranked = dir
+            .map((s) => ({ ...s, trust: t[s.slug] || null }))
+            .sort((a, b) => (b.trust?.trustScore ?? 0) - (a.trust?.trustScore ?? 0))
+            .slice(0, 5);
+          setShops(ranked);
+        })
+        .catch(() => setShops(dir.slice(0, 5)));
+    }).catch(() => {});
   }, []);
 
   const handleSearch = (query) => {
     if (query.trim()) navigate(`/search?q=${encodeURIComponent(query.trim())}`);
   };
 
-  const steps = [
-    { num: '01', title: 'Nightly index',  desc: 'Every night at 3 AM we crawl 60+ Bangladesh shops and refresh prices into our catalog.', icon: Database },
-    { num: '02', title: 'Cross-shop merge', desc: 'When the same product is sold by multiple shops, we merge them so you see every seller in one row.', icon: ShieldCheck },
-    { num: '03', title: 'You search, instantly', desc: 'No live scraping at search time. The DB serves you a complete comparison the moment you hit Enter.', icon: Sparkles },
-  ];
-
   return (
-    <div className="min-h-screen overflow-x-hidden">
-      <section className="relative">
-        <div className="absolute top-20 -left-32 w-80 h-80 rounded-full bg-yellow/30 blur-3xl animate-blob pointer-events-none" />
-        <div className="absolute top-40 -right-32 w-96 h-96 rounded-full bg-red/15 blur-3xl animate-blob pointer-events-none" style={{ animationDelay: '4s' }} />
-        <div className="absolute -bottom-20 left-1/3 w-72 h-72 rounded-full bg-lime/25 blur-3xl animate-blob pointer-events-none" style={{ animationDelay: '8s' }} />
+    <div className="overflow-x-hidden">
+      <Helmet>
+        <title>Damkemon - The Ultimate Price Comparison Engine</title>
+        <meta name="description" content="Find the best deals on laptops, phones, and tech gear across trusted BD sellers. Never overpay again." />
+      </Helmet>
 
-        <div className="container-tight pt-8 sm:pt-14 lg:pt-20 pb-10 sm:pb-14 lg:pb-16 text-center relative">
-          <LiveActivityPill fallbackProductsCount={stats?.totalProducts} />
+      {/* ── Hero: the brand question, a search box, and nothing else ── */}
+      <section className="relative isolate container-tight pt-6 sm:pt-10 lg:pt-14 pb-8 text-center flex flex-col items-center">
+        <WovenLightHero className="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-12 h-[27rem] w-[27rem] sm:-top-20 sm:h-[34rem] sm:w-[34rem] lg:-top-24 lg:h-[42rem] lg:w-[42rem] opacity-30 z-0" />
 
-          <h1 className="font-serif font-semibold leading-[0.92] tracking-[-0.035em] mb-4 sm:mb-5 text-[clamp(2.5rem,8.5vw,6.75rem)]">
-            <em className="text-red font-medium">Dam kemon,</em>
-            <br />
-            <span className="scribble-underline">
-              really?
-              <svg viewBox="0 0 200 14" preserveAspectRatio="none">
-                <path d="M2 10 Q 50 2, 100 8 T 198 6" stroke="#FF4521" strokeWidth="3" fill="none" strokeLinecap="round" className="animate-scribble" />
-              </svg>
+        <div className="relative z-10">
+          <h1 aria-label="Dam kemon?" className="max-w-4xl mx-auto mb-4">
+            <span aria-hidden="true" className="block font-sans font-extrabold leading-[0.92] tracking-[-0.04em] text-[clamp(3.2rem,8vw,6.5rem)] text-ink">
+              {HERO_TITLE_WORDS.map((word, wordIndex) => (
+                <span
+                  key={word}
+                  className={`relative isolate inline-block ${wordIndex === 0 ? 'mr-[0.22em]' : 'px-3 -mx-1'}`}
+                >
+                  {wordIndex === 1 && (
+                    <motion.span
+                      className="absolute inset-0 z-0 origin-left bg-acid"
+                      initial={reduceMotion ? { scaleX: 1 } : { scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ delay: 0.2, duration: 0.7, ease: [0.2, 0.65, 0.3, 0.9] }}
+                    />
+                  )}
+                  <span className="relative z-10">
+                    {[...word].map((character, characterIndex) => (
+                      <motion.span
+                        key={`${word}-${characterIndex}`}
+                        className="inline-block"
+                        initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                          delay: reduceMotion ? 0 : (wordIndex * 4 + characterIndex) * 0.1 + 0.35,
+                          duration: reduceMotion ? 0 : 1.2,
+                          ease: [0.2, 0.65, 0.3, 0.9],
+                        }}
+                      >
+                        {character}
+                      </motion.span>
+                    ))}
+                  </span>
+                </span>
+              ))}
             </span>
           </h1>
 
-          <p className="text-[15px] sm:text-lg lg:text-xl text-gray max-w-[600px] mx-auto mb-7 sm:mb-10 px-2 leading-relaxed">
-            One search across <span className="text-ink font-semibold">{stats?.totalSites ?? '60+'} Bangladesh shops</span>.
-            Side-by-side prices, the cheapest seller wins.
-          </p>
+          <div className="w-full max-w-2xl mx-auto relative z-10 text-left mt-6">
+            <SearchBar large onSearch={handleSearch} />
+          </div>
 
-          <SearchBar large onSearch={handleSearch} />
-
-          {stats && (stats.totalProducts > 0 || stats.totalSites > 0) && (
-            <div className="grid grid-cols-3 max-w-md mx-auto mt-8 sm:mt-10 gap-2">
-              <Stat label="products" value={stats.totalProducts?.toLocaleString() || '—'} />
-              <Stat label="shops" value={String(stats.totalSites || '—')} />
-              <Stat label="prices tracked" value={stats.totalPricePoints?.toLocaleString() || '—'} />
-            </div>
-          )}
+          {/* Quick paths into the catalog */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mt-6 max-w-2xl mx-auto">
+            {QUICK_CATS.map((c) => (
+              <Link
+                key={c.category}
+                to={`/browse?category=${encodeURIComponent(c.category)}`}
+                className="inline-flex items-center gap-1.5 bg-white border border-line hover:border-ink text-ink/80 hover:text-ink text-[13px] font-semibold px-3.5 py-2 rounded-full transition-colors"
+              >
+                <CategoryIcon category={c.category} className="w-3.5 h-3.5 text-acid-deep" />
+                {c.label}
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
-      <TrendingStrip />
-
-      <RecentlyViewedRail />
-
-      <HotDropsRail />
-
-      {trending.length > 0 && (
-        <section className="container-tight py-10 sm:py-14 lg:py-16">
-          <div className="flex items-end justify-between mb-5 sm:mb-7">
-            <div>
-              <div className="tag-bar mb-2">From the catalog</div>
-              <h2 className="font-serif font-semibold text-[clamp(1.5rem,3.5vw,2.25rem)] leading-tight">
-                Recently <em className="text-red">indexed</em>
-              </h2>
+      {/* ── Today's deals (scroll rail) ──────────────────────────── */}
+      <section className="container-tight pt-6 sm:pt-8">
+        <div className="flex items-end justify-between gap-3 mb-6 sm:mb-8">
+          <div>
+            <div className="inline-flex items-center gap-1.5 bg-[#FFECE8] text-[#C53012] px-2.5 py-1 rounded-full text-[11px] font-bold tracking-widest uppercase mb-3">
+              <Flame className="w-3 h-3" /> Today&apos;s deals
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C53012] animate-pulse-dot ml-0.5" />
             </div>
-            <Link to="/search?q=" className="text-sm font-semibold text-ink/70 hover:text-ink inline-flex items-center gap-1.5">
-              Browse all <ArrowRight className="w-4 h-4" />
-            </Link>
+            <h2 className="font-sans font-extrabold text-[clamp(1.5rem,3.5vw,2.5rem)] leading-tight tracking-tight text-[#2A2A2A]">
+              Deals you can check <span className="text-acid-deep">right now</span>
+            </h2>
           </div>
+          <Link to="/browse" className="text-[13px] font-bold text-[#A3A3A3] hover:text-[#2A2A2A] transition-colors inline-flex items-center gap-1.5 shrink-0 uppercase tracking-widest">
+            See all <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-4">
-            {trending.map((p) => {
-              const sellers = p.prices || [];
-              const cheapest = sellers.slice().sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity))[0];
-              return (
+        <div className="flex gap-4 sm:gap-5 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 pb-5">
+          {(deals.length ? deals : Array.from({ length: 6 })).slice(0, 10).map((d, i) => (
+            d ? (
+              <div key={d.id} className="contents">
                 <Link
-                  key={p.id}
-                  to={`/product/${p.id || p.slug}`}
-                  state={{ product: p }}
-                  className="card-soft overflow-hidden flex flex-col hover:shadow-[var(--shadow-card)] transition-shadow group"
+                  to={`/product/${d.id || d.slug}`}
+                  state={d.product ? { product: d.product } : undefined}
+                  className="group snap-start flex w-[170px] shrink-0 flex-col overflow-hidden rounded-[1.25rem] border border-black/[0.03] bg-white shadow-[0_4px_20px_rgb(0,0,0,0.04)] transition-all duration-300 sm:w-[220px] md:hidden"
                 >
-                  <div className="aspect-[4/3] bg-cream-soft flex items-center justify-center overflow-hidden">
-                    {p.imageUrl ? (
-                      <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover transition-transform group-hover:scale-[1.03]" onError={(e)=>{e.target.style.display='none'}} />
+                  <div className="relative flex aspect-square items-center justify-center overflow-hidden bg-[#F8F8F6] p-5">
+                    {d.imageUrl ? (
+                      <img src={d.imageUrl} alt={d.name} className="h-full w-full object-contain mix-blend-multiply" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                     ) : (
-                      <span className="font-serif text-5xl italic text-ink/15">{(p.category || 'P')[0]}</span>
+                      <CategoryIcon category={d.category} className="h-10 w-10 text-black/10" />
+                    )}
+                    {d.pct > 0 && (
+                      <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-md bg-[#D63615] px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+                        <TrendingDown className="h-3 w-3" /> {d.kind === 'drop' ? `${d.pct}%` : `save ${d.pct}%`}
+                      </span>
                     )}
                   </div>
-                  <div className="p-3 sm:p-4 flex-1 flex flex-col">
-                    {p.category && (
-                      <span className="font-mono text-[10px] uppercase tracking-wider text-gray mb-1">{p.category}</span>
-                    )}
-                    <h3 className="font-serif text-sm sm:text-[15px] font-semibold text-ink leading-snug line-clamp-2 mb-2">
-                      {p.name}
-                    </h3>
-                    <div className="mt-auto flex items-baseline justify-between gap-2">
-                      <span className="font-mono text-base sm:text-lg font-bold text-ink">{fmt(p.lowestPrice)}</span>
-                      {sellers.length > 1 ? (
-                        <span className="text-[10px] sm:text-[11px] font-mono text-green inline-flex items-center gap-0.5">
-                          <Crown className="w-3 h-3" /> {sellers.length} sellers
-                        </span>
-                      ) : (
-                        <span className="text-[10px] sm:text-[11px] font-mono text-gray inline-flex items-center gap-0.5">
-                          <Store className="w-3 h-3" /> {cheapest?.siteName?.slice(0,18) || ''}
-                        </span>
-                      )}
-                    </div>
+                  <div className="flex flex-1 flex-col bg-white p-4">
+                    {d.category && <span className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-ink/60">{d.category}</span>}
+                    <h3 className="line-clamp-2 text-[14px] font-bold leading-[1.3] text-[#2A2A2A]">{d.name}</h3>
+                    <span className="mt-auto pt-4 text-[1.05rem] font-extrabold tracking-tight text-[#2A2A2A]">{fmt(d.price)}</span>
                   </div>
                 </Link>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      <section className="bg-ink text-cream py-14 sm:py-20 lg:py-28 relative overflow-hidden">
-        <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-red/20 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-20 -left-20 w-96 h-96 rounded-full bg-lime/10 blur-3xl pointer-events-none" />
-        <div className="container-tight relative">
-          <div className="max-w-2xl mb-10 sm:mb-14">
-            <div className="tag-bar text-lime mb-3 sm:mb-4">How it works</div>
-            <h2 className="font-serif font-semibold leading-[1.02] tracking-[-0.025em] text-[clamp(1.85rem,5vw,3.5rem)]">
-              Pre-indexed. <em className="text-lime">Instant.</em>
-            </h2>
-            <p className="text-cream/55 text-sm sm:text-base mt-3 max-w-xl">
-              No live scraping at search time. We do the slow, expensive work overnight so you get the cheapest BD seller in milliseconds.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
-            {steps.map((s) => {
-              const Icon = s.icon;
-              return (
-                <div key={s.num} className="relative pt-12 sm:pt-14 group">
-                  <div className="absolute top-0 left-0 flex items-center gap-3">
-                    <span className="font-serif text-4xl sm:text-5xl font-bold italic text-lime/80 leading-none">{s.num}</span>
-                    <div className="w-10 h-10 rounded-2xl bg-cream/10 flex items-center justify-center group-hover:bg-lime group-hover:text-ink transition-colors">
-                      <Icon className="w-4 h-4" />
-                    </div>
+                <HomeProductCard item={d} className="hidden w-[285px] shrink-0 snap-start md:flex" />
+              </div>
+            ) : (
+              <div key={i} className="contents">
+                <div className="w-[170px] shrink-0 snap-start overflow-hidden rounded-[1.25rem] border border-black/[0.03] bg-white shadow-[0_4px_20px_rgb(0,0,0,0.04)] sm:w-[220px] md:hidden">
+                  <div className="aspect-square animate-pulse bg-[#F8F8F6]" />
+                  <div className="space-y-3 p-4">
+                    <div className="h-2 w-1/3 animate-pulse rounded bg-black/5" />
+                    <div className="h-4 animate-pulse rounded bg-black/5" />
+                    <div className="h-5 w-1/2 animate-pulse rounded bg-black/5" />
                   </div>
-                  <h3 className="font-serif text-lg sm:text-xl lg:text-2xl font-semibold mb-2 sm:mb-3 tracking-tight">{s.title}</h3>
-                  <p className="text-cream/55 text-sm sm:text-[15px] leading-relaxed">{s.desc}</p>
                 </div>
-              );
-            })}
-          </div>
+                <HomeProductCardSkeleton className="hidden w-[285px] shrink-0 snap-start md:block" />
+              </div>
+            )
+          ))}
         </div>
       </section>
+
+      {/* ponytail: Protect spotlight hidden from frontend per request. Restore to bring it back. */}
+      {/* <ProtectShowcase /> */}
+
+      {/* ── All Products Grid ────── */}
+      <section className="container-tight pt-10 sm:pt-16">
+        <div className="flex items-end justify-between gap-3 mb-6 sm:mb-8">
+          <div>
+            <h2 className="font-sans font-extrabold text-[clamp(1.5rem,3.5vw,2.5rem)] leading-tight tracking-tight text-ink">
+              Everything you need, <span className="text-acid-deep">in one place.</span>
+            </h2>
+            <p className="text-ink/60 text-[14px] sm:text-[16px] mt-2 font-medium max-w-xl">
+              Browse our complete collection of products at the best prices, sorted just for you.
+            </p>
+          </div>
+          <Link
+            to="/browse"
+            className="hidden sm:inline-flex text-[13px] font-bold text-[#A3A3A3] hover:text-[#2A2A2A] transition-colors items-center gap-1.5 shrink-0 uppercase tracking-widest"
+          >
+            See all <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        {allProducts === null ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="contents">
+                <div className="md:hidden"><SearchProductCardSkeleton /></div>
+                <HomeProductCardSkeleton className="hidden md:block" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+              {allProducts.map((p) => (
+                <div key={p.id || p.slug} className="contents">
+                  <div className="md:hidden"><SearchProductCard product={p} trust={allProductsTrust} /></div>
+                  <HomeProductCard className="hidden md:flex" item={fromProduct(p)} trust={allProductsTrust} />
+                </div>
+              ))}
+            </div>
+            
+            <div className="mt-10 flex justify-center">
+              <Link
+                to="/browse"
+                className="inline-flex items-center gap-2 bg-ink text-white hover:bg-ink/90 font-bold text-[14px] px-8 py-3.5 rounded-full transition-all hover:scale-105 active:scale-95 shadow-sm"
+              >
+                Browse all products <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </>
+        )}
+      </section>
+
+      {/* ── Trust strip: who you can safely buy from, one row ────── */}
+      <section className="container-tight pt-10 sm:pt-14">
+        <div className="flex items-end justify-between gap-3 mb-4 sm:mb-6">
+          <h2 className="font-sans font-extrabold text-[clamp(1.4rem,3vw,2rem)] leading-tight tracking-tight text-ink inline-flex items-center gap-2.5">
+            <ShieldCheck className="w-6 h-6 text-acid-deep shrink-0" />
+            Shops you can trust
+          </h2>
+          <Link to="/sellers" className="text-[13px] font-bold text-[#A3A3A3] hover:text-[#2A2A2A] transition-colors inline-flex items-center gap-1.5 shrink-0 uppercase tracking-widest">
+            All sellers <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <div className="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar snap-x -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 pb-4">
+          {(shops.length ? shops : Array.from({ length: 5 })).map((s, i) => (
+            s ? (
+              <Link
+                key={s.slug}
+                to="/sellers"
+                className="group snap-start shrink-0 w-[230px] bg-white rounded-2xl border border-line hover:border-ink/30 p-4 sm:p-5 transition-colors"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <span className="font-sans text-2xl font-extrabold text-ink/15 tabular-nums leading-none">{String(i + 1).padStart(2, '0')}</span>
+                  {s.trust?.trustScore != null && <TrustScore score={s.trust.trustScore} size="sm" showLabel={false} />}
+                </div>
+                <div className="mt-3 text-[15px] font-bold text-ink truncate group-hover:text-acid-deep transition-colors">{s.name}</div>
+                <div className="text-[11px] text-gray mt-1 flex items-center gap-2">
+                  <span className="font-mono">{fmtNum(s.productCount)} products</span>
+                  {s.trust && deliveryText(s.trust) && (
+                    <span className="inline-flex items-center gap-0.5"><Truck className="w-3 h-3" /> {deliveryText(s.trust)}</span>
+                  )}
+                </div>
+              </Link>
+            ) : (
+              <div key={i} className="snap-start shrink-0 w-[230px] h-28 bg-white rounded-2xl border border-line animate-pulse" />
+            )
+          ))}
+        </div>
+      </section>
+
+      {/* ── Close: turn a visit into a tracked price ─────────────── */}
+      <section className="container-tight pt-10 sm:pt-14 pb-14 sm:pb-20">
+        <CloseBand />
+      </section>
+      
     </div>
   );
 }
 
-function Stat({ value, label }) {
+/* ───────────────────────── pieces ───────────────────────── */
+
+// One conversion block instead of four content sections: wishlist alerts for
+// the signed-out, the weekly digest for everyone.
+function CloseBand() {
+  const { user } = useAuth();
   return (
-    <div className="text-center">
-      <div className="font-serif text-lg sm:text-xl font-bold italic text-ink">{value}</div>
-      <div className="font-mono text-[10px] sm:text-[11px] uppercase tracking-wider text-gray">{label}</div>
+    <div className="rounded-[2rem] bg-ink text-cream p-7 sm:p-10 lg:p-12 relative overflow-hidden">
+      <span
+        aria-hidden="true"
+        className="absolute -bottom-24 -left-6 font-sans font-extrabold text-[16rem] leading-none text-acid/10 select-none pointer-events-none"
+      >
+        ৳
+      </span>
+      <div className="relative grid lg:grid-cols-2 gap-8 lg:gap-14 items-center">
+        <div>
+          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-cream px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
+            <Flame className="w-3.5 h-3.5 text-acid" /> Free price-drop alerts
+          </div>
+          <h2 className="font-sans font-extrabold text-[clamp(1.7rem,3.6vw,2.6rem)] leading-[1.05] tracking-[-0.02em]">
+            Never quietly <span className="text-acid">overpay</span> again.
+          </h2>
+          <p className="text-cream/60 text-[15px] mt-3 max-w-md">
+            Set a target price for a product and, after you verify your email, we&apos;ll notify you when a fresh observed price reaches it.
+          </p>
+          <Link
+            to={user ? '/account' : '/sign-up'}
+            className="mt-6 inline-flex items-center gap-2 bg-acid text-ink font-bold text-sm px-6 py-3.5 rounded-full hover:brightness-95 transition-all"
+          >
+            <Heart className="w-4 h-4" />
+            {user ? 'Open your wishlist' : 'Create a free account'}
+          </Link>
+        </div>
+        <NewsletterMini />
+      </div>
+    </div>
+  );
+}
+
+function NewsletterMini() {
+  const [email, setEmail] = useState('');
+  const [state, setState] = useState('idle'); // idle | busy | done
+  const [error, setError] = useState(null);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setState('busy');
+    setError(null);
+    try {
+      await subscribeNewsletter(email.trim());
+      setState('done');
+    } catch {
+      setError('Could not subscribe — try again.');
+      setState('idle');
+    }
+  };
+
+  return (
+    <div className="lg:border-l lg:border-cream/10 lg:pl-14">
+      <h3 className="font-sans text-lg font-bold">The Monday digest</h3>
+      <p className="text-cream/60 text-sm mt-1.5 max-w-sm">
+        The week&apos;s biggest real price drops, once a week. No spam, unsubscribe anytime.
+      </p>
+      {state === 'done' ? (
+        <p className="mt-5 inline-flex items-center gap-2 text-acid font-semibold text-sm">
+          <Check className="w-4 h-4" /> You&apos;re on the list — see you Monday.
+        </p>
+      ) : (
+        <form onSubmit={submit} className="mt-5 flex gap-2 max-w-sm">
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@email.com"
+            className="flex-1 min-w-0 bg-cream/10 border border-cream/20 rounded-full px-4 py-2.5 text-sm text-cream placeholder-cream/40 focus:outline-none focus:border-acid"
+          />
+          <button
+            type="submit"
+            disabled={state === 'busy'}
+            className="shrink-0 bg-cream text-ink text-sm font-bold px-5 py-2.5 rounded-full hover:bg-acid transition-colors disabled:opacity-60"
+          >
+            {state === 'busy' ? '…' : 'Join'}
+          </button>
+        </form>
+      )}
+      {error && <p className="text-red text-xs mt-2">{error}</p>}
     </div>
   );
 }

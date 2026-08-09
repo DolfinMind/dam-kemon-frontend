@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../api/api';
-import { Users, Search as SearchIcon, MousePointerClick, TrendingUp } from 'lucide-react';
+import { adminSellerDepth } from '../../api/admin';
+import { Users, Search as SearchIcon, MousePointerClick, TrendingUp, Layers } from 'lucide-react';
 
 function fmt(p) { if (p == null) return 'N/A'; return '৳' + Number(p).toLocaleString('en-IN'); }
 
@@ -10,12 +11,14 @@ export default function AdminStats() {
   const [zeroResults, setZeroResults] = useState([]);
   const [shopCtr, setShopCtr] = useState([]);
   const [top, setTop] = useState(null);
+  const [depth, setDepth] = useState(null);
 
   useEffect(() => {
     api.get('/admin/stats/overview').then((r) => setOverview(r.data)).catch(() => {});
     api.get('/admin/stats/zero-results', { params: { limit: 20 } }).then((r) => setZeroResults(r.data || [])).catch(() => {});
     api.get('/admin/stats/shop-ctr', { params: { limit: 20 } }).then((r) => setShopCtr(r.data || [])).catch(() => {});
     api.get('/admin/stats/top-products', { params: { limit: 8 } }).then((r) => setTop(r.data)).catch(() => {});
+    adminSellerDepth().then((r) => setDepth(r.data)).catch(() => {});
   }, []);
 
   return (
@@ -26,6 +29,31 @@ export default function AdminStats() {
         <Card icon={SearchIcon} label="Last indexer URLs" value={(overview?.lastIndexerRun?.urlsScraped ?? '—').toLocaleString?.() ?? '—'} />
         <Card icon={TrendingUp} label="Last inserted" value={(overview?.lastIndexerRun?.productsInserted ?? '—').toLocaleString?.() ?? '—'} />
       </section>
+
+      {depth && (
+        <section>
+          <h2 className="font-serif text-lg font-semibold mb-3 inline-flex items-center gap-2">
+            <Layers className="w-4 h-4" /> Seller depth
+            <span className="text-[10px] font-mono uppercase tracking-wider text-gray font-normal">the comparison metric</span>
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <Card icon={Layers} label="Avg sellers / product" value={depth.avgSellersPerProduct ?? '—'} />
+            <Card icon={Layers} label="Multi-seller" value={depth.multiSellerPct != null ? `${depth.multiSellerPct}%` : '—'} />
+            <Card icon={Layers} label="≥3 sellers" value={(depth.atLeast3Sellers ?? 0).toLocaleString()} />
+            <Card icon={Layers} label="≥5 sellers" value={(depth.atLeast5Sellers ?? 0).toLocaleString()} />
+          </div>
+          {depth.deepestProducts?.length > 0 && (
+            <ul className="mt-3 space-y-1">
+              {depth.deepestProducts.slice(0, 5).map((p) => (
+                <li key={p.name} className="flex items-center justify-between text-sm py-1.5 border-b border-line/50">
+                  <span className="truncate">{p.name}</span>
+                  <span className="text-xs text-gray font-mono shrink-0 ml-3">{p.sellers} sellers</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
 
       <section>
         <h2 className="font-serif text-lg font-semibold mb-3">Zero-result searches · last 7 days</h2>

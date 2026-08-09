@@ -75,9 +75,9 @@ export default function FcommerceSignup() {
           List your Facebook shop
         </h1>
         <p className="text-gray text-[15px] leading-relaxed">
-          Running a Facebook page shop? We don't scrape Facebook (their ToS forbids it), so
-          we work with you instead — register your page, upload your inventory CSV, and
-          we'll surface your listings inline next to the big shops.
+          Running a Facebook page shop? We work with you directly — register your
+          page, upload your inventory CSV, and we'll surface your listings inline
+          next to the big shops.
         </p>
       </div>
 
@@ -89,7 +89,7 @@ export default function FcommerceSignup() {
             <input
               type="text" required value={form.name} maxLength={80}
               onChange={(e) => upd('name', e.target.value)}
-              className="input-base" placeholder="e.g. Gadget Lounge BD"
+              className="input-base" placeholder="Your shop's display name"
             />
           </Field>
 
@@ -200,9 +200,9 @@ export default function FcommerceSignup() {
 
       <style>{`
         .input-base { width:100%; background:white; border:1px solid #e5e3df; border-radius:12px; padding:10px 14px; font-size:14px; }
-        .input-base:focus { outline:none; border-color:#0F4D2A; }
-        .btn-primary { padding:12px 20px; border-radius:9999px; background:#1d1d1b; color:#fbf7ed; font-weight:600; font-size:14px; }
-        .btn-primary:hover:not(:disabled) { background:#FF4521; }
+        .input-base:focus { outline:none; border-color:#4F46E5; }
+        .btn-primary { padding:12px 20px; border-radius:9999px; background:#0F172A; color:#F6F8FB; font-weight:600; font-size:14px; }
+        .btn-primary:hover:not(:disabled) { background:#4F46E5; }
         .btn-primary:disabled { opacity:.5; cursor:not-allowed; }
       `}</style>
     </div>

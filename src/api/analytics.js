@@ -1,10 +1,12 @@
-// Anonymous, no-PII telemetry. The anon id is a UUID minted once per
-// browser and stored in localStorage. The server treats it as best-effort
-// uniqueness, never identity.
+// Privacy-conscious telemetry. The anon id is a UUID minted once per browser
+// and stored in localStorage. Authenticated conversion events also carry the
+// user's JWT so the server can measure activation without adding PII here.
 //
 // All event hits go via sendBeacon so they don't add latency to the user's
 // navigation. We fall back to fetch(..., {keepalive: true}) when sendBeacon
 // is unavailable (older browsers, locked-down environments).
+
+import { API_BASE } from './config';
 
 const ANON_KEY = 'dk_anon_id';
 
@@ -23,15 +25,15 @@ export function getAnonId() {
   }
 }
 
-const baseURL = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api`
-  : '/api';
-
 function fireBeacon(path, payload) {
-  const url = `${baseURL}${path}`;
+  const url = `${API_BASE}${path}`;
   const body = JSON.stringify({ ...payload, anonId: getAnonId() });
+  let token = null;
+  try { token = localStorage.getItem('dk_auth_token'); } catch { /* anonymous */ }
   try {
-    if (navigator.sendBeacon) {
+    // sendBeacon cannot attach Authorization. Signed-in activity uses fetch so
+    // JwtAuthFilter can link the event to the real user; guests keep the cheap beacon.
+    if (!token && navigator.sendBeacon) {
       const blob = new Blob([body], { type: 'application/json' });
       if (navigator.sendBeacon(url, blob)) return;
     }
@@ -41,7 +43,10 @@ function fireBeacon(path, payload) {
   try {
     fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
       body,
       keepalive: true,
       mode: 'cors',
@@ -60,3 +65,66 @@ export const trackClick = (productId, sellerSlug) => {
   if (!productId && !sellerSlug) return;
   fireBeacon('/events/click', { productId, sellerSlug });
 };
+
+// Autosuggest pick: the user typed `query` and clicked suggestion `name`.
+// Powers the admin search log's "searched X, chose Y" view.
+export const trackSuggestClick = (query, productId, productName) => {
+  if (!productId && !productName) return;
+  fireBeacon('/events/suggest-click', { query, productId, productName });
+};
+
+// A single-page-app route change. Fired on every navigation so the backend sees
+// the full page-by-page journey, not just API calls. The referrer is the
+// browser's document.referrer (external entry) — internal hops are reconstructed
+// server-side from the sequence of page views per anon id.
+export const trackPageView = (path) => {
+  metaPixelPageView();
+  let p = path;
+  try {
+    if (!p) p = `${location.pathname}${location.search}`;
+  } catch {
+    /* no window */
+  }
+  if (!p) return;
+  // Pageview analytics needs the route, not query values. Dropping the query
+  // keeps auth/reset tokens, alert targets, searches, and nested next URLs out
+  // of the event stream; dedicated events capture the useful actions.
+  p = p.split(/[?#]/, 1)[0];
+  let referer = null;
+  try { referer = document.referrer || null; } catch { /* ignore */ }
+  fireBeacon('/events/pageview', { path: p, referer });
+};
+
+// Bounded conversion actions; the server rejects unknown event types.
+export const trackAction = (type, productId) => {
+  if (!type) return;
+  fireBeacon('/events/action', { type, ...(productId ? { productId } : {}) });
+};
+
+// Meta Pixel for ad retargeting. Inert until VITE_META_PIXEL_ID is set at
+// build time; bootstraps fbq on the first page view, then logs one PageView
+// per SPA navigation. ponytail: PageView only — add ViewContent/Lead events
+// when ad campaigns need conversion optimization.
+const PIXEL_ID = import.meta.env.VITE_META_PIXEL_ID;
+
+function metaPixelPageView() {
+  // Advertising pixels wait for an explicit local consent signal. There is no
+  // consent control yet, so this stays off by default.
+  try {
+    if (!PIXEL_ID || localStorage.getItem('dk_meta_consent') !== 'granted') return;
+    if (!window.fbq) {
+      const n = (window.fbq = function () {
+        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+      });
+      n.push = n; n.loaded = true; n.version = '2.0'; n.queue = [];
+      const s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://connect.facebook.net/en_US/fbevents.js';
+      document.head.appendChild(s);
+      window.fbq('init', PIXEL_ID);
+    }
+    window.fbq('track', 'PageView');
+  } catch {
+    /* analytics must never break the UI */
+  }
+}
